@@ -1,0 +1,147 @@
+# Cline Rules for Beeve Project
+
+## 🚨 CRITICAL RULES - ZERO HALLUCINATION TOLERANCE
+
+```
+1. NEVER guess APIs - query context7 for documentation first
+2. NEVER assume library behavior - verify everything
+3. NEVER confuse React with Solid patterns
+4. ALWAYS use serena to analyze code before modifications
+5. ALWAYS validate with typecheck and lint
+6. ALWAYS cite documentation sources
+7. CHINESE RESPONSE: Reply in Simplified Chinese (except terms, code, commands)
+8. VISUAL TESTING: Use chromeDevtools MCP for frontend visual inspection
+```
+
+## MCP Requirements
+
+- **context7**: MUST query before using ANY library API
+- **serena**: MUST analyze code before ANY modifications
+- **chromeDevtools**: MUST use for frontend visual testing and debugging
+
+Full requirements: `.ai/mcp-usage.md`
+
+## Libraries Requiring Doc Lookup (ALL)
+
+NEVER guess - ALWAYS verify:
+- solid-js, @tanstack/solid-*, tailwind-variants
+- hono, drizzle-orm, zod
+- vite, astro, biome
+
+---
+
+## Project Overview
+
+Beeve is a SolidJS-based low-code platform monorepo.
+
+### Packages
+- `@beeve/ui` - Solid component library
+- `@beeve/lowcode-core` - Low-code engine
+- `@beeve/auth-client` - Auth client SDK  
+- `@beeve/db` - Drizzle ORM + PostgreSQL
+- `@beeve/shared` - Shared types/utils
+- `apps/web` - Frontend (SolidJS + TanStack)
+- `apps/server` - Backend (Hono)
+- `apps/docs` - Documentation (Astro + Starlight)
+
+### Tech Stack
+- Frontend: SolidJS, TanStack Router/Query/Form/Table, TailwindCSS v4
+- Backend: Hono, PostgreSQL, Drizzle ORM, Zod
+- Tooling: pnpm, Turborepo, Biome, Vite
+
+## Code Patterns
+
+### SolidJS Component Template
+```typescript
+import { splitProps, type Component } from 'solid-js'
+import { tv, type VariantProps } from 'tailwind-variants'
+
+const variants = tv({
+  base: 'classes',
+  variants: { variant: { primary: '...', secondary: '...' } },
+})
+
+export interface Props extends VariantProps<typeof variants> {}
+
+export const MyComponent: Component<Props> = (props) => {
+  const [local, variantProps, rest] = splitProps(props, ['class'], ['variant'])
+  return <div class={variants({ ...variantProps, class: local.class })} {...rest} />
+}
+```
+
+### Hono API Template
+```typescript
+import { Hono } from 'hono'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
+
+const app = new Hono()
+
+app.post('/', zValidator('json', z.object({ ... })), async (c) => {
+  const body = c.req.valid('json')
+  return c.json({ data: result })
+})
+
+export default app
+```
+
+### Drizzle Schema Template
+```typescript
+import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core'
+
+export const items = pgTable('items', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export type Item = typeof items.$inferSelect
+```
+
+## Rules
+
+### Must Do
+- Use TypeScript strict mode
+- Use splitProps in SolidJS (never destructure props)
+- Use tailwind-variants for styling
+- Use Zod for validation
+- Use named exports
+- Use UUID primary keys
+- Handle all errors
+
+### Must Not
+- Don't use `any` type
+- Don't use ESLint/Prettier (use Biome)
+- Don't use default exports for components
+- Don't skip validation
+- Don't guess API signatures - verify with docs first
+- Don't modify code without serena analysis first
+
+## Anti-Hallucination Checklist
+
+- [ ] API verified via context7?
+- [ ] This is Solid, not React?
+- [ ] Existing code analyzed with serena?
+- [ ] All uncertainties marked?
+
+## Naming
+- Components: PascalCase.tsx
+- Hooks: use-kebab-case.ts
+- Utils: kebab-case.ts
+- DB tables: plural snake_case
+- DB columns: snake_case
+
+## Commands
+```bash
+pnpm dev          # Development
+pnpm lint         # Biome lint
+pnpm format       # Biome format
+pnpm typecheck    # Type check
+pnpm db:generate  # Generate migrations
+pnpm db:migrate   # Run migrations
+```
+
+## Documentation
+See `.ai/` directory for detailed docs:
+- `mcp-usage.md` - **MCP requirements (MUST READ)**
+- Other: architecture, conventions, components, api, database

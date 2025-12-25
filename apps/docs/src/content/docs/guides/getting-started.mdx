@@ -1,0 +1,68 @@
+---
+title: 快速开始
+description: 安装和使用 Beeve UI
+---
+
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components'
+
+## 安装
+
+<Tabs>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @beeve/ui solid-js
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install @beeve/ui solid-js
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @beeve/ui solid-js
+    ```
+  </TabItem>
+</Tabs>
+
+## 配置 TailwindCSS v4
+
+Beeve UI 使用 TailwindCSS v4，确保你的项目已正确配置：
+
+```css title="src/styles/app.css"
+@import 'tailwindcss';
+@import '@beeve/ui/styles';
+```
+
+## 使用组件
+
+```tsx title="src/App.tsx"
+import { Button } from '@beeve/ui'
+
+export function App() {
+  return (
+    <div class="p-4">
+      <Button variant="primary" onClick={() => alert('Hello!')}>
+        点击我
+      </Button>
+    </div>
+  )
+}
+```
+
+## TypeScript 配置
+
+确保 `tsconfig.json` 正确配置 JSX：
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  }
+}
+```
+
+## 下一步
+
+查看 [Button 组件](/components/button/) 文档了解更多用法。
