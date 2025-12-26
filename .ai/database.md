@@ -166,20 +166,20 @@ import { pgTable, uuid, varchar, text, jsonb, timestamp, boolean } from 'drizzle
 import { projects } from './projects'
 
 // 定义 JSON 结构类型
-export interface PageSchema {
+export type PageSchema = {
   version: string
   components: ComponentNode[]
   dataSource?: DataSource[]
 }
 
-interface ComponentNode {
+type ComponentNode = {
   id: string
   type: string
   props: Record<string, unknown>
   children?: ComponentNode[]
 }
 
-interface DataSource {
+type DataSource = {
   id: string
   type: 'api' | 'static'
   config: Record<string, unknown>

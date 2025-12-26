@@ -362,7 +362,7 @@ import { eq } from 'drizzle-orm'
 import type { User } from '@beeve/db/schema'
 
 // 定义 Hono 环境类型
-export interface AuthEnv {
+export type AuthEnv = {
   Variables: {
     userId: string
     user: User
@@ -529,7 +529,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!)
 const JWT_ISSUER = 'beeve'
 
-interface TokenPayload extends JWTPayload {
+type TokenPayload = JWTPayload & {
   sub: string  // userId
   type: 'access' | 'refresh'
 }

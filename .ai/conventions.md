@@ -19,8 +19,8 @@
 // ✅ 组件使用命名导出
 export const Button: Component<ButtonProps> = (props) => { ... }
 
-// ✅ 类型使用命名导出
-export interface ButtonProps { ... }
+// ✅ 类型使用命名导出（优先 type）
+export type ButtonProps = { ... }
 export type ButtonVariant = 'primary' | 'secondary'
 
 // ✅ 工具函数使用命名导出
@@ -60,9 +60,15 @@ import './styles.css'
 
 ### 类型定义
 
+**优先使用 `type` 而非 `interface`**，原因：
+- 语法一致性，减少心智负担
+- 配合 Zod `z.infer<>` 更自然
+- 避免 interface 的声明合并问题
+- 支持联合类型、条件类型等高级特性
+
 ```typescript
-// ✅ 优先使用 interface 定义对象类型
-interface User {
+// ✅ 使用 type 定义对象类型
+type User = {
   id: string
   email: string
   name: string
@@ -72,8 +78,8 @@ interface User {
 type Status = 'idle' | 'loading' | 'success' | 'error'
 type UserWithRole = User & { role: Role }
 
-// ✅ 组件 Props 使用 interface 并加 Props 后缀
-interface ButtonProps {
+// ✅ 组件 Props 使用 type 并加 Props 后缀
+type ButtonProps = {
   variant?: 'primary' | 'secondary'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
@@ -82,15 +88,30 @@ interface ButtonProps {
 }
 
 // ✅ 使用 readonly 保护不可变数据
-interface Config {
+type Config = {
   readonly apiUrl: string
   readonly version: string
 }
 
 // ✅ 使用泛型提高复用性
-interface ApiResponse<T> {
+type ApiResponse<T> = {
   data: T
   meta?: PaginationMeta
+}
+
+// ✅ 从 Zod schema 推断类型
+const userSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+})
+type User = z.infer<typeof userSchema>
+
+// ⚠️ 仅当需要类实现（implements）时使用 interface
+interface Disposable {
+  dispose(): void
+}
+class Resource implements Disposable {
+  dispose() { /* ... */ }
 }
 
 // ✅ 使用 satisfies 进行类型检查同时保留字面量类型
@@ -244,7 +265,7 @@ setState('users', users.length, newUser)
 import { createContext, useContext, type ParentComponent } from 'solid-js'
 
 // ✅ 创建带类型的 Context
-interface AuthContextValue {
+type AuthContextValue = {
   user: () => User | null
   login: (email: string, password: string) => Promise<void>
   logout: () => void

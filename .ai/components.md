@@ -91,16 +91,15 @@ const buttonVariants = tv({
 })
 
 // 2. 定义 Props 类型
-export interface ButtonProps
-  extends JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  /** 是否处于加载状态 */
-  loading?: boolean
-  /** 左侧图标 */
-  leftIcon?: JSX.Element
-  /** 右侧图标 */
-  rightIcon?: JSX.Element
-}
+export type ButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & {
+    /** 是否处于加载状态 */
+    loading?: boolean
+    /** 左侧图标 */
+    leftIcon?: JSX.Element
+    /** 右侧图标 */
+    rightIcon?: JSX.Element
+  }
 
 // 3. 实现组件
 export const Button: Component<ButtonProps> = (props) => {
@@ -149,7 +148,7 @@ import {
 import { Portal } from 'solid-js/web'
 
 // 1. 定义 Context
-interface DialogContextValue {
+type DialogContextValue = {
   open: () => boolean
   setOpen: (open: boolean) => void
   contentId: string
@@ -168,7 +167,7 @@ function useDialogContext() {
 }
 
 // 2. Root 组件
-export interface DialogRootProps {
+export type DialogRootProps = {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -202,7 +201,7 @@ const Root: ParentComponent<DialogRootProps> = (props) => {
 }
 
 // 3. Trigger 组件
-export interface DialogTriggerProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {}
+export type DialogTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>
 
 const Trigger: Component<DialogTriggerProps> = (props) => {
   const context = useDialogContext()
@@ -225,7 +224,7 @@ const Trigger: Component<DialogTriggerProps> = (props) => {
 }
 
 // 4. Content 组件
-export interface DialogContentProps extends JSX.HTMLAttributes<HTMLDivElement> {}
+export type DialogContentProps = JSX.HTMLAttributes<HTMLDivElement>
 
 const Content: ParentComponent<DialogContentProps> = (props) => {
   const context = useDialogContext()
@@ -271,7 +270,7 @@ export const Dialog = {
 // hooks/use-controllable-state.ts
 import { createSignal, type Accessor } from 'solid-js'
 
-export interface UseControllableStateProps<T> {
+export type UseControllableStateProps<T> = {
   value?: T
   defaultValue?: T
   onChange?: (value: T) => void

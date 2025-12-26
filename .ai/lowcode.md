@@ -7,7 +7,7 @@
 Schema 是低代码系统的核心数据结构，描述了页面的完整信息。
 
 ```typescript
-interface PageSchema {
+type PageSchema = {
   /** Schema 版本 */
   version: string
   /** 组件树 */
@@ -28,7 +28,7 @@ interface PageSchema {
 组件节点是 Schema 的基本单元。
 
 ```typescript
-interface ComponentNode {
+type ComponentNode = {
   /** 唯一标识 */
   id: string
   /** 组件类型（对应物料 name） */
@@ -60,7 +60,7 @@ type PropValue =
   | Expression
 
 // 表达式
-interface Expression {
+type Expression = {
   type: 'expression'
   value: string // JavaScript 表达式
 }
@@ -136,7 +136,7 @@ interface Expression {
 物料是可在设计器中使用的组件定义。
 
 ```typescript
-interface Material {
+type Material = {
   /** 物料名称（唯一标识） */
   name: string
   /** 显示名称 */
@@ -172,13 +172,13 @@ type MaterialCategory =
   | 'navigation' // 导航组件
   | 'advanced'   // 高级组件
 
-interface PropsSchema {
+type PropsSchema = {
   type: 'object'
   properties: Record<string, PropSchema>
   required?: string[]
 }
 
-interface PropSchema {
+type PropSchema = {
   type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'expression'
   title: string
   description?: string
@@ -325,7 +325,7 @@ import { evaluateExpression } from './expression'
 import { RendererContext, useRendererContext } from './context'
 import type { ComponentNode, PageSchema } from '../schema/types'
 
-interface RendererProps {
+type RendererProps = {
   schema: PageSchema
   mode?: 'preview' | 'design'
 }
@@ -402,7 +402,7 @@ const NodeRenderer: Component<{ node: ComponentNode }> = (props) => {
 ```typescript
 // renderer/expression.ts
 
-interface EvalContext {
+type EvalContext = {
   state: Record<string, unknown>
   props?: Record<string, unknown>
   item?: unknown      // 循环项
@@ -467,7 +467,7 @@ export function resolveProps(
 import { createStore, produce } from 'solid-js/store'
 import type { ComponentNode, PageSchema } from '../schema/types'
 
-interface DesignerState {
+type DesignerState = {
   /** 当前 Schema */
   schema: PageSchema
   /** 选中的组件 ID */
@@ -482,7 +482,7 @@ interface DesignerState {
   historyIndex: number
 }
 
-interface DraggingState {
+type DraggingState = {
   type: 'material' | 'node'
   materialName?: string
   nodeId?: string
@@ -678,7 +678,7 @@ import { ComponentTree } from './ComponentTree'
 import { Toolbar } from './Toolbar'
 import type { PageSchema } from '../schema/types'
 
-interface DesignerProps {
+type DesignerProps = {
   schema: PageSchema
   onChange?: (schema: PageSchema) => void
 }
@@ -721,7 +721,7 @@ export const Designer: Component<DesignerProps> = (props) => {
 ### 事件绑定
 
 ```typescript
-interface EventBinding {
+type EventBinding = {
   /** 事件名称 */
   name: string // onClick, onChange, etc.
   /** 动作列表 */
@@ -734,12 +734,12 @@ type Action =
   | NavigateAction
   | CustomAction
 
-interface SetStateAction {
+type SetStateAction = {
   type: 'setState'
   payload: Record<string, unknown | Expression>
 }
 
-interface CallApiAction {
+type CallApiAction = {
   type: 'callApi'
   dataSourceId: string
   params?: Record<string, unknown | Expression>
@@ -747,13 +747,13 @@ interface CallApiAction {
   onError?: Action[]
 }
 
-interface NavigateAction {
+type NavigateAction = {
   type: 'navigate'
   path: string | Expression
   params?: Record<string, unknown | Expression>
 }
 
-interface CustomAction {
+type CustomAction = {
   type: 'custom'
   code: string // JavaScript 代码
 }
@@ -765,7 +765,7 @@ interface CustomAction {
 // renderer/events.ts
 import type { EventBinding, Action } from '../schema/types'
 
-interface ActionContext {
+type ActionContext = {
   state: Record<string, unknown>
   setState: (updates: Record<string, unknown>) => void
   navigate?: (path: string, params?: Record<string, unknown>) => void
@@ -853,7 +853,7 @@ async function executeAction(
 ### DataSource 定义
 
 ```typescript
-interface DataSource {
+type DataSource = {
   /** 数据源 ID */
   id: string
   /** 数据源类型 */
@@ -862,7 +862,7 @@ interface DataSource {
   config: ApiConfig | StaticConfig | ComputedConfig
 }
 
-interface ApiConfig {
+type ApiConfig = {
   url: string
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   headers?: Record<string, string>
@@ -871,11 +871,11 @@ interface ApiConfig {
   transform?: string // 响应转换表达式
 }
 
-interface StaticConfig {
+type StaticConfig = {
   data: unknown
 }
 
-interface ComputedConfig {
+type ComputedConfig = {
   expression: string // 计算表达式
   deps: string[]     // 依赖的数据源 ID
 }

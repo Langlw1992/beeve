@@ -147,6 +147,7 @@ export type User = typeof users.$inferSelect
 5. **Never use `any`** - use `unknown` with type guards instead
 6. **Always handle errors** in API routes
 7. **Use UUID** for all primary keys
+8. **Use `type` over `interface`** - prefer `type` for consistency (works better with Zod infer, union types, etc.)
 
 ## 🚫 Forbidden Patterns
 

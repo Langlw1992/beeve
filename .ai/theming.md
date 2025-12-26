@@ -1,0 +1,764 @@
+# @beeve/ui 主题系统设计
+
+## 概述
+
+参考 shadcn/ui v4 的主题系统，实现支持多配色方案切换的主题系统，包括：
+- **Base Colors**: 基础灰色调（neutral, slate, zinc, stone, gray）
+- **Theme Colors**: 主题强调色（blue, green, pink, orange, violet 等）
+- **Radius**: 圆角大小配置
+- **Dark Mode**: 深色模式支持
+
+## 技术架构
+
+### 1. 颜色空间：OKLCH
+
+使用 OKLCH 颜色空间，具有以下优势：
+- 感知均匀性：亮度/饱和度/色相的调整更直观
+- TailwindCSS v4 原生支持
+- 更好的色彩一致性
+
+**格式**: `oklch(L C H)` 或 `oklch(L C H / alpha)`
+- L: Lightness (0-1)
+- C: Chroma (0-0.4+)
+- H: Hue (0-360)
+
+### 2. CSS 变量策略
+
+采用语义化 CSS 变量，运行时可切换：
+
+```css
+:root {
+  --radius: 0.625rem;
+  
+  /* 背景色 */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  
+  /* 卡片 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  
+  /* 弹出层 */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  
+  /* 主色 */
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  
+  /* 次要色 */
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  
+  /* 静音色 */
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  
+  /* 强调色 */
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  
+  /* 警告色 */
+  --destructive: oklch(0.58 0.22 27);
+  
+  /* 边框和输入 */
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  
+  /* 图表色 */
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  
+  /* 侧边栏 */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  /* ... dark mode values ... */
+}
+```
+
+### 3. TailwindCSS v4 集成
+
+使用 `@theme inline` 指令将 CSS 变量暴露为 Tailwind 工具类：
+
+```css
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+```
+
+## Base Colors 配色方案
+
+### Neutral (默认)
+
+```typescript
+export const neutral = {
+  light: {
+    background: 'oklch(1 0 0)',
+    foreground: 'oklch(0.145 0 0)',
+    card: 'oklch(1 0 0)',
+    'card-foreground': 'oklch(0.145 0 0)',
+    popover: 'oklch(1 0 0)',
+    'popover-foreground': 'oklch(0.145 0 0)',
+    primary: 'oklch(0.205 0 0)',
+    'primary-foreground': 'oklch(0.985 0 0)',
+    secondary: 'oklch(0.97 0 0)',
+    'secondary-foreground': 'oklch(0.205 0 0)',
+    muted: 'oklch(0.97 0 0)',
+    'muted-foreground': 'oklch(0.556 0 0)',
+    accent: 'oklch(0.97 0 0)',
+    'accent-foreground': 'oklch(0.205 0 0)',
+    destructive: 'oklch(0.58 0.22 27)',
+    border: 'oklch(0.922 0 0)',
+    input: 'oklch(0.922 0 0)',
+    ring: 'oklch(0.708 0 0)',
+  },
+  dark: {
+    background: 'oklch(0.145 0 0)',
+    foreground: 'oklch(0.985 0 0)',
+    card: 'oklch(0.205 0 0)',
+    'card-foreground': 'oklch(0.985 0 0)',
+    popover: 'oklch(0.205 0 0)',
+    'popover-foreground': 'oklch(0.985 0 0)',
+    primary: 'oklch(0.87 0.00 0)',
+    'primary-foreground': 'oklch(0.205 0 0)',
+    secondary: 'oklch(0.269 0 0)',
+    'secondary-foreground': 'oklch(0.985 0 0)',
+    muted: 'oklch(0.269 0 0)',
+    'muted-foreground': 'oklch(0.708 0 0)',
+    accent: 'oklch(0.371 0 0)',
+    'accent-foreground': 'oklch(0.985 0 0)',
+    destructive: 'oklch(0.704 0.191 22.216)',
+    border: 'oklch(1 0 0 / 10%)',
+    input: 'oklch(1 0 0 / 15%)',
+    ring: 'oklch(0.556 0 0)',
+  },
+}
+```
+
+### Zinc
+
+```typescript
+export const zinc = {
+  light: {
+    background: 'oklch(1 0 0)',
+    foreground: 'oklch(0.141 0.005 285.823)',
+    card: 'oklch(1 0 0)',
+    'card-foreground': 'oklch(0.141 0.005 285.823)',
+    popover: 'oklch(1 0 0)',
+    'popover-foreground': 'oklch(0.141 0.005 285.823)',
+    primary: 'oklch(0.21 0.006 285.885)',
+    'primary-foreground': 'oklch(0.985 0 0)',
+    secondary: 'oklch(0.967 0.001 286.375)',
+    'secondary-foreground': 'oklch(0.21 0.006 285.885)',
+    muted: 'oklch(0.967 0.001 286.375)',
+    'muted-foreground': 'oklch(0.552 0.016 285.938)',
+    accent: 'oklch(0.967 0.001 286.375)',
+    'accent-foreground': 'oklch(0.21 0.006 285.885)',
+    destructive: 'oklch(0.577 0.245 27.325)',
+    border: 'oklch(0.92 0.004 286.32)',
+    input: 'oklch(0.92 0.004 286.32)',
+    ring: 'oklch(0.552 0.016 285.938)',
+  },
+  dark: {
+    background: 'oklch(0.141 0.005 285.823)',
+    foreground: 'oklch(0.985 0 0)',
+    card: 'oklch(0.21 0.006 285.885)',
+    'card-foreground': 'oklch(0.985 0 0)',
+    popover: 'oklch(0.21 0.006 285.885)',
+    'popover-foreground': 'oklch(0.985 0 0)',
+    primary: 'oklch(0.92 0.004 286.32)',
+    'primary-foreground': 'oklch(0.21 0.006 285.885)',
+    secondary: 'oklch(0.274 0.006 286.033)',
+    'secondary-foreground': 'oklch(0.985 0 0)',
+    muted: 'oklch(0.274 0.006 286.033)',
+    'muted-foreground': 'oklch(0.705 0.015 286.067)',
+    accent: 'oklch(0.274 0.006 286.033)',
+    'accent-foreground': 'oklch(0.985 0 0)',
+    destructive: 'oklch(0.704 0.191 22.216)',
+    border: 'oklch(1 0 0 / 10%)',
+    input: 'oklch(1 0 0 / 15%)',
+    ring: 'oklch(0.552 0.016 285.938)',
+  },
+}
+```
+
+### Stone
+
+```typescript
+export const stone = {
+  light: {
+    background: 'oklch(1 0 0)',
+    foreground: 'oklch(0.147 0.004 49.25)',
+    card: 'oklch(1 0 0)',
+    'card-foreground': 'oklch(0.147 0.004 49.25)',
+    popover: 'oklch(1 0 0)',
+    'popover-foreground': 'oklch(0.147 0.004 49.25)',
+    primary: 'oklch(0.216 0.006 56.043)',
+    'primary-foreground': 'oklch(0.985 0.001 106.423)',
+    secondary: 'oklch(0.97 0.001 106.424)',
+    'secondary-foreground': 'oklch(0.216 0.006 56.043)',
+    muted: 'oklch(0.97 0.001 106.424)',
+    'muted-foreground': 'oklch(0.553 0.013 58.071)',
+    accent: 'oklch(0.97 0.001 106.424)',
+    'accent-foreground': 'oklch(0.216 0.006 56.043)',
+    destructive: 'oklch(0.577 0.245 27.325)',
+    border: 'oklch(0.923 0.003 48.717)',
+    input: 'oklch(0.923 0.003 48.717)',
+    ring: 'oklch(0.709 0.01 56.259)',
+  },
+  dark: {
+    background: 'oklch(0.147 0.004 49.25)',
+    foreground: 'oklch(0.985 0.001 106.423)',
+    card: 'oklch(0.216 0.006 56.043)',
+    'card-foreground': 'oklch(0.985 0.001 106.423)',
+    popover: 'oklch(0.216 0.006 56.043)',
+    'popover-foreground': 'oklch(0.985 0.001 106.423)',
+    primary: 'oklch(0.923 0.003 48.717)',
+    'primary-foreground': 'oklch(0.216 0.006 56.043)',
+    secondary: 'oklch(0.268 0.007 34.298)',
+    'secondary-foreground': 'oklch(0.985 0.001 106.423)',
+    muted: 'oklch(0.268 0.007 34.298)',
+    'muted-foreground': 'oklch(0.709 0.01 56.259)',
+    accent: 'oklch(0.268 0.007 34.298)',
+    'accent-foreground': 'oklch(0.985 0.001 106.423)',
+    destructive: 'oklch(0.704 0.191 22.216)',
+    border: 'oklch(1 0 0 / 10%)',
+    input: 'oklch(1 0 0 / 15%)',
+    ring: 'oklch(0.553 0.013 58.071)',
+  },
+}
+```
+
+### Gray
+
+```typescript
+export const gray = {
+  light: {
+    background: 'oklch(0.985 0.002 247.839)',
+    foreground: 'oklch(0.13 0.028 261.692)',
+    card: 'oklch(1 0 0)',
+    'card-foreground': 'oklch(0.13 0.028 261.692)',
+    popover: 'oklch(1 0 0)',
+    'popover-foreground': 'oklch(0.13 0.028 261.692)',
+    primary: 'oklch(0.21 0.034 264.665)',
+    'primary-foreground': 'oklch(0.985 0.002 247.839)',
+    secondary: 'oklch(0.967 0.003 264.542)',
+    'secondary-foreground': 'oklch(0.21 0.034 264.665)',
+    muted: 'oklch(0.967 0.003 264.542)',
+    'muted-foreground': 'oklch(0.551 0.027 264.364)',
+    accent: 'oklch(0.967 0.003 264.542)',
+    'accent-foreground': 'oklch(0.21 0.034 264.665)',
+    destructive: 'oklch(0.577 0.245 27.325)',
+    border: 'oklch(0.928 0.006 264.531)',
+    input: 'oklch(0.928 0.006 264.531)',
+    ring: 'oklch(0.707 0.022 261.325)',
+  },
+  dark: {
+    background: 'oklch(0.13 0.028 261.692)',
+    foreground: 'oklch(0.985 0.002 247.839)',
+    card: 'oklch(0.21 0.034 264.665)',
+    'card-foreground': 'oklch(0.985 0.002 247.839)',
+    popover: 'oklch(0.21 0.034 264.665)',
+    'popover-foreground': 'oklch(0.985 0.002 247.839)',
+    primary: 'oklch(0.928 0.006 264.531)',
+    'primary-foreground': 'oklch(0.21 0.034 264.665)',
+    secondary: 'oklch(0.278 0.033 256.848)',
+    'secondary-foreground': 'oklch(0.985 0.002 247.839)',
+    muted: 'oklch(0.278 0.033 256.848)',
+    'muted-foreground': 'oklch(0.707 0.022 261.325)',
+    accent: 'oklch(0.278 0.033 256.848)',
+    'accent-foreground': 'oklch(0.985 0.002 247.839)',
+    destructive: 'oklch(0.704 0.191 22.216)',
+    border: 'oklch(1 0 0 / 10%)',
+    input: 'oklch(1 0 0 / 15%)',
+    ring: 'oklch(0.551 0.027 264.364)',
+  },
+}
+```
+
+### Slate
+
+```typescript
+export const slate = {
+  light: {
+    background: 'oklch(1 0 0)',
+    foreground: 'oklch(0.129 0.042 264.695)',
+    card: 'oklch(1 0 0)',
+    'card-foreground': 'oklch(0.129 0.042 264.695)',
+    popover: 'oklch(1 0 0)',
+    'popover-foreground': 'oklch(0.129 0.042 264.695)',
+    primary: 'oklch(0.208 0.042 265.755)',
+    'primary-foreground': 'oklch(0.984 0.003 247.858)',
+    secondary: 'oklch(0.968 0.007 264.536)',
+    'secondary-foreground': 'oklch(0.208 0.042 265.755)',
+    muted: 'oklch(0.968 0.007 264.536)',
+    'muted-foreground': 'oklch(0.554 0.046 257.417)',
+    accent: 'oklch(0.968 0.007 264.536)',
+    'accent-foreground': 'oklch(0.208 0.042 265.755)',
+    destructive: 'oklch(0.577 0.245 27.325)',
+    border: 'oklch(0.929 0.013 255.508)',
+    input: 'oklch(0.929 0.013 255.508)',
+    ring: 'oklch(0.704 0.04 256.788)',
+  },
+  dark: {
+    background: 'oklch(0.129 0.042 264.695)',
+    foreground: 'oklch(0.984 0.003 247.858)',
+    card: 'oklch(0.208 0.042 265.755)',
+    'card-foreground': 'oklch(0.984 0.003 247.858)',
+    popover: 'oklch(0.208 0.042 265.755)',
+    'popover-foreground': 'oklch(0.984 0.003 247.858)',
+    primary: 'oklch(0.929 0.013 255.508)',
+    'primary-foreground': 'oklch(0.208 0.042 265.755)',
+    secondary: 'oklch(0.279 0.041 260.031)',
+    'secondary-foreground': 'oklch(0.984 0.003 247.858)',
+    muted: 'oklch(0.279 0.041 260.031)',
+    'muted-foreground': 'oklch(0.704 0.04 256.788)',
+    accent: 'oklch(0.279 0.041 260.031)',
+    'accent-foreground': 'oklch(0.984 0.003 247.858)',
+    destructive: 'oklch(0.704 0.191 22.216)',
+    border: 'oklch(1 0 0 / 10%)',
+    input: 'oklch(1 0 0 / 15%)',
+    ring: 'oklch(0.554 0.046 257.417)',
+  },
+}
+```
+
+## Theme Colors (主题强调色)
+
+主题色只覆盖 primary 相关变量和 chart/sidebar 颜色：
+
+### Blue
+
+```typescript
+export const blue = {
+  light: {
+    primary: 'oklch(0.488 0.243 264.376)',
+    'primary-foreground': 'oklch(0.97 0.014 254.604)',
+    'chart-1': 'oklch(0.809 0.105 251.813)',
+    'chart-2': 'oklch(0.623 0.214 259.815)',
+    'chart-3': 'oklch(0.546 0.245 262.881)',
+    'chart-4': 'oklch(0.488 0.243 264.376)',
+    'chart-5': 'oklch(0.424 0.199 265.638)',
+    'sidebar-primary': 'oklch(0.546 0.245 262.881)',
+    'sidebar-primary-foreground': 'oklch(0.97 0.014 254.604)',
+  },
+  dark: {
+    primary: 'oklch(0.42 0.18 266)',
+    'primary-foreground': 'oklch(0.97 0.014 254.604)',
+    'chart-1': 'oklch(0.809 0.105 251.813)',
+    'chart-2': 'oklch(0.623 0.214 259.815)',
+    'chart-3': 'oklch(0.546 0.245 262.881)',
+    'chart-4': 'oklch(0.488 0.243 264.376)',
+    'chart-5': 'oklch(0.424 0.199 265.638)',
+    'sidebar-primary': 'oklch(0.623 0.214 259.815)',
+    'sidebar-primary-foreground': 'oklch(0.97 0.014 254.604)',
+  },
+}
+```
+
+### Green
+
+```typescript
+export const green = {
+  light: {
+    primary: 'oklch(0.648 0.2 131.684)',
+    'primary-foreground': 'oklch(0.986 0.031 120.757)',
+    'chart-1': 'oklch(0.871 0.15 154.449)',
+    'chart-2': 'oklch(0.723 0.219 149.579)',
+    'chart-3': 'oklch(0.627 0.194 149.214)',
+    'chart-4': 'oklch(0.527 0.154 150.069)',
+    'chart-5': 'oklch(0.448 0.119 151.328)',
+    'sidebar-primary': 'oklch(0.648 0.2 131.684)',
+    'sidebar-primary-foreground': 'oklch(0.986 0.031 120.757)',
+  },
+  dark: {
+    primary: 'oklch(0.648 0.2 131.684)',
+    'primary-foreground': 'oklch(0.986 0.031 120.757)',
+    'chart-1': 'oklch(0.871 0.15 154.449)',
+    'chart-2': 'oklch(0.723 0.219 149.579)',
+    'chart-3': 'oklch(0.627 0.194 149.214)',
+    'chart-4': 'oklch(0.527 0.154 150.069)',
+    'chart-5': 'oklch(0.448 0.119 151.328)',
+    'sidebar-primary': 'oklch(0.768 0.233 130.85)',
+    'sidebar-primary-foreground': 'oklch(0.986 0.031 120.757)',
+  },
+}
+```
+
+### Pink
+
+```typescript
+export const pink = {
+  light: {
+    primary: 'oklch(0.59 0.22 1)',
+    'primary-foreground': 'oklch(0.97 0.01 343)',
+    'chart-1': 'oklch(0.82 0.11 346)',
+    'chart-2': 'oklch(0.73 0.18 350)',
+    'chart-3': 'oklch(0.66 0.21 354)',
+    'chart-4': 'oklch(0.59 0.22 1)',
+    'chart-5': 'oklch(0.52 0.20 4)',
+    'sidebar-primary': 'oklch(0.59 0.22 1)',
+    'sidebar-primary-foreground': 'oklch(0.97 0.01 343)',
+  },
+  dark: {
+    primary: 'oklch(0.66 0.21 354)',
+    'primary-foreground': 'oklch(0.97 0.01 343)',
+    'chart-1': 'oklch(0.82 0.11 346)',
+    'chart-2': 'oklch(0.73 0.18 350)',
+    'chart-3': 'oklch(0.66 0.21 354)',
+    'chart-4': 'oklch(0.59 0.22 1)',
+    'chart-5': 'oklch(0.52 0.20 4)',
+    'sidebar-primary': 'oklch(0.73 0.18 350)',
+    'sidebar-primary-foreground': 'oklch(0.97 0.01 343)',
+  },
+}
+```
+
+### Orange
+
+```typescript
+export const orange = {
+  light: {
+    primary: 'oklch(0.646 0.222 41.116)',
+    'primary-foreground': 'oklch(0.98 0.016 73.684)',
+    'chart-1': 'oklch(0.837 0.128 66.29)',
+    'chart-2': 'oklch(0.705 0.213 47.604)',
+    'chart-3': 'oklch(0.646 0.222 41.116)',
+    'chart-4': 'oklch(0.553 0.195 38.402)',
+    'chart-5': 'oklch(0.47 0.157 37.304)',
+    'sidebar-primary': 'oklch(0.646 0.222 41.116)',
+    'sidebar-primary-foreground': 'oklch(0.98 0.016 73.684)',
+  },
+  dark: {
+    primary: 'oklch(0.705 0.213 47.604)',
+    'primary-foreground': 'oklch(0.98 0.016 73.684)',
+    'chart-1': 'oklch(0.837 0.128 66.29)',
+    'chart-2': 'oklch(0.705 0.213 47.604)',
+    'chart-3': 'oklch(0.646 0.222 41.116)',
+    'chart-4': 'oklch(0.553 0.195 38.402)',
+    'chart-5': 'oklch(0.47 0.157 37.304)',
+    'sidebar-primary': 'oklch(0.705 0.213 47.604)',
+    'sidebar-primary-foreground': 'oklch(0.98 0.016 73.684)',
+  },
+}
+```
+
+### Violet
+
+```typescript
+export const violet = {
+  light: {
+    primary: 'oklch(0.541 0.281 293.009)',
+    'primary-foreground': 'oklch(0.969 0.016 293.756)',
+    'chart-1': 'oklch(0.811 0.111 293.571)',
+    'chart-2': 'oklch(0.606 0.25 292.717)',
+    'chart-3': 'oklch(0.541 0.281 293.009)',
+    'chart-4': 'oklch(0.491 0.27 292.581)',
+    'chart-5': 'oklch(0.432 0.232 292.759)',
+    'sidebar-primary': 'oklch(0.541 0.281 293.009)',
+    'sidebar-primary-foreground': 'oklch(0.969 0.016 293.756)',
+  },
+  dark: {
+    primary: 'oklch(0.606 0.25 292.717)',
+    'primary-foreground': 'oklch(0.969 0.016 293.756)',
+    'chart-1': 'oklch(0.811 0.111 293.571)',
+    'chart-2': 'oklch(0.606 0.25 292.717)',
+    'chart-3': 'oklch(0.541 0.281 293.009)',
+    'chart-4': 'oklch(0.491 0.27 292.581)',
+    'chart-5': 'oklch(0.432 0.232 292.759)',
+    'sidebar-primary': 'oklch(0.606 0.25 292.717)',
+    'sidebar-primary-foreground': 'oklch(0.969 0.016 293.756)',
+  },
+}
+```
+
+### Red
+
+```typescript
+export const red = {
+  light: {
+    primary: 'oklch(0.577 0.245 27.325)',
+    'primary-foreground': 'oklch(0.971 0.013 17.38)',
+    'chart-1': 'oklch(0.808 0.114 19.571)',
+    'chart-2': 'oklch(0.637 0.237 25.331)',
+    'chart-3': 'oklch(0.577 0.245 27.325)',
+    'chart-4': 'oklch(0.505 0.213 27.518)',
+    'chart-5': 'oklch(0.444 0.177 26.899)',
+    'sidebar-primary': 'oklch(0.577 0.245 27.325)',
+    'sidebar-primary-foreground': 'oklch(0.971 0.013 17.38)',
+  },
+  dark: {
+    primary: 'oklch(0.637 0.237 25.331)',
+    'primary-foreground': 'oklch(0.971 0.013 17.38)',
+    'chart-1': 'oklch(0.808 0.114 19.571)',
+    'chart-2': 'oklch(0.637 0.237 25.331)',
+    'chart-3': 'oklch(0.577 0.245 27.325)',
+    'chart-4': 'oklch(0.505 0.213 27.518)',
+    'chart-5': 'oklch(0.444 0.177 26.899)',
+    'sidebar-primary': 'oklch(0.645 0.246 16.439)',
+    'sidebar-primary-foreground': 'oklch(0.969 0.015 12.422)',
+  },
+}
+```
+
+### Rose
+
+```typescript
+export const rose = {
+  light: {
+    primary: 'oklch(0.586 0.253 17.585)',
+    'primary-foreground': 'oklch(0.969 0.015 12.422)',
+    'chart-1': 'oklch(0.81 0.117 11.638)',
+    'chart-2': 'oklch(0.645 0.246 16.439)',
+    'chart-3': 'oklch(0.586 0.253 17.585)',
+    'chart-4': 'oklch(0.514 0.222 16.935)',
+    'chart-5': 'oklch(0.455 0.188 13.697)',
+    'sidebar-primary': 'oklch(0.586 0.253 17.585)',
+    'sidebar-primary-foreground': 'oklch(0.969 0.015 12.422)',
+  },
+  dark: {
+    primary: 'oklch(0.645 0.246 16.439)',
+    'primary-foreground': 'oklch(0.969 0.015 12.422)',
+    'chart-1': 'oklch(0.81 0.117 11.638)',
+    'chart-2': 'oklch(0.645 0.246 16.439)',
+    'chart-3': 'oklch(0.586 0.253 17.585)',
+    'chart-4': 'oklch(0.514 0.222 16.935)',
+    'chart-5': 'oklch(0.455 0.188 13.697)',
+    sidebar: 'oklch(0.21 0.006 285.885)',
+    'sidebar-primary': 'oklch(0.645 0.246 16.439)',
+    'sidebar-primary-foreground': 'oklch(0.969 0.015 12.422)',
+  },
+}
+```
+
+### Yellow
+
+```typescript
+export const yellow = {
+  light: {
+    primary: 'oklch(0.852 0.199 91.936)',
+    'primary-foreground': 'oklch(0.421 0.095 57.708)',
+    'chart-1': 'oklch(0.905 0.182 98.111)',
+    'chart-2': 'oklch(0.795 0.184 86.047)',
+    'chart-3': 'oklch(0.681 0.162 75.834)',
+    'chart-4': 'oklch(0.554 0.135 66.442)',
+    'chart-5': 'oklch(0.476 0.114 61.907)',
+    'sidebar-primary': 'oklch(0.681 0.162 75.834)',
+    'sidebar-primary-foreground': 'oklch(0.987 0.026 102.212)',
+  },
+  dark: {
+    primary: 'oklch(0.795 0.184 86.047)',
+    'primary-foreground': 'oklch(0.421 0.095 57.708)',
+    'chart-1': 'oklch(0.905 0.182 98.111)',
+    'chart-2': 'oklch(0.795 0.184 86.047)',
+    'chart-3': 'oklch(0.681 0.162 75.834)',
+    'chart-4': 'oklch(0.554 0.135 66.442)',
+    'chart-5': 'oklch(0.476 0.114 61.907)',
+    'sidebar-primary': 'oklch(0.795 0.184 86.047)',
+    'sidebar-primary-foreground': 'oklch(0.987 0.026 102.212)',
+  },
+}
+```
+
+## 更多 Theme Colors
+
+- **Amber**: H ≈ 58-70
+- **Cyan**: H ≈ 215-222
+- **Emerald**: H ≈ 163
+- **Fuchsia**: H ≈ 320-323
+- **Indigo**: H ≈ 277
+- **Lime**: H ≈ 127-132
+- **Purple**: H ≈ 302-306
+- **Sky**: H ≈ 237-242
+- **Teal**: H ≈ 181-185
+
+## 文件结构
+
+```
+packages/ui/src/
+├── themes/
+│   ├── types.ts              # 类型定义
+│   ├── base/                 # Base colors
+│   │   ├── index.ts
+│   │   ├── neutral.ts
+│   │   ├── zinc.ts
+│   │   ├── stone.ts
+│   │   ├── gray.ts
+│   │   └── slate.ts
+│   ├── colors/               # Theme colors
+│   │   ├── index.ts
+│   │   ├── blue.ts
+│   │   ├── green.ts
+│   │   ├── pink.ts
+│   │   ├── orange.ts
+│   │   ├── violet.ts
+│   │   ├── red.ts
+│   │   ├── rose.ts
+│   │   ├── yellow.ts
+│   │   └── ...
+│   └── index.ts              # 导出合并函数
+├── providers/
+│   └── ThemeProvider.tsx     # SolidJS 主题上下文
+├── styles/
+│   └── index.css             # CSS 变量 + @theme inline
+└── index.ts
+```
+
+## ThemeProvider 实现
+
+```tsx
+import { createContext, useContext, createSignal, type ParentComponent } from 'solid-js'
+import type { BaseColorName, ThemeColorName } from '../themes/types'
+
+type ThemeConfig = {
+  mode: 'light' | 'dark' | 'system'
+  baseColor: BaseColorName
+  themeColor: ThemeColorName
+  radius: number
+}
+
+type ThemeContextType = {
+  config: () => ThemeConfig
+  setMode: (mode: ThemeConfig['mode']) => void
+  setBaseColor: (color: BaseColorName) => void
+  setThemeColor: (color: ThemeColorName) => void
+  setRadius: (radius: number) => void
+}
+
+const ThemeContext = createContext<ThemeContextType>()
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext)
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
+  return context
+}
+
+export const ThemeProvider: ParentComponent<{ defaultConfig?: Partial<ThemeConfig> }> = (props) => {
+  const [config, setConfig] = createSignal<ThemeConfig>({
+    mode: props.defaultConfig?.mode ?? 'system',
+    baseColor: props.defaultConfig?.baseColor ?? 'neutral',
+    themeColor: props.defaultConfig?.themeColor ?? 'blue',
+    radius: props.defaultConfig?.radius ?? 0.625,
+  })
+
+  // Apply CSS variables effect
+  // ...
+
+  return (
+    <ThemeContext.Provider value={{
+      config,
+      setMode: (mode) => setConfig((c) => ({ ...c, mode })),
+      setBaseColor: (color) => setConfig((c) => ({ ...c, baseColor: color })),
+      setThemeColor: (color) => setConfig((c) => ({ ...c, themeColor: color })),
+      setRadius: (radius) => setConfig((c) => ({ ...c, radius })),
+    }}>
+      {props.children}
+    </ThemeContext.Provider>
+  )
+}
+```
+
+## 组件使用示例
+
+重构后的 Button 组件使用语义色：
+
+```tsx
+const buttonVariants = tv({
+  base: [
+    'inline-flex items-center justify-center gap-2',
+    'font-medium rounded-lg',
+    'transition-colors duration-200',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+    'disabled:pointer-events-none disabled:opacity-50',
+  ],
+  variants: {
+    variant: {
+      primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+      outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+      ghost: 'hover:bg-accent hover:text-accent-foreground',
+      destructive: 'bg-destructive text-white hover:bg-destructive/90',
+      link: 'text-primary underline-offset-4 hover:underline',
+    },
+    size: {
+      sm: 'h-8 px-3 text-sm rounded-sm',
+      md: 'h-10 px-4 text-sm rounded-md',
+      lg: 'h-12 px-6 text-base rounded-lg',
+      icon: 'h-10 w-10 rounded-md',
+    },
+  },
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+  },
+})
+```
+
+## Radius 配置
+
+```css
+:root {
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+```
+
+可选圆角值：
+- 0 (Sharp)
+- 0.3rem (Small)
+- 0.5rem (Medium)
+- 0.625rem (Default)
+- 0.75rem (Large)
+- 1rem (Full)
+
+## 参考资料
+
+- [shadcn/ui v4 Theming](https://ui.shadcn.com/docs/theming)
+- [shadcn/ui Themes Registry](https://github.com/shadcn-ui/ui/tree/main/apps/v4/registry/themes.ts)
+- [TailwindCSS v4 Theme](https://tailwindcss.com/docs/theme)
+- [OKLCH Color Space](https://oklch.com/)

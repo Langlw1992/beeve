@@ -278,7 +278,7 @@ const data = await fetch('/api/users')
 // 解决：提取共享代码到第三个文件
 
 // shared/types.ts
-export interface SharedType { ... }
+export type SharedType = { ... }
 
 // a.ts
 import { SharedType } from './shared/types'
