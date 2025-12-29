@@ -1,9 +1,9 @@
-@import 'tailwindcss';
-
 /*
  * Beeve UI Theme System
- * 基于 OKLCH 色彩空间的语义化主题变量
  */
+
+/* 扫描组件中使用的 Tailwind 类名 */
+@source "../../dist";
 
 /* 默认主题变量 (Neutral base + Blue theme) */
 :root {

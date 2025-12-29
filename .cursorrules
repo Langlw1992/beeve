@@ -12,6 +12,7 @@ You are an expert developer working on Beeve, a SolidJS-based low-code platform.
 5. ALWAYS validate code with typecheck and lint
 6. CHINESE RESPONSE: Reply in Simplified Chinese (except terms, code, commands)
 7. VISUAL TESTING: Use chromeDevtools MCP for frontend visual inspection
+8. SERVER CHECK: Before starting dev server, check if one is already running to avoid port conflicts
 ```
 
 ## MCP Requirements
@@ -132,6 +133,8 @@ export type NewModel = typeof tableName.$inferInsert
 6. **Linting**: Use Biome, not ESLint/Prettier
 7. **Database**: Use UUID primary keys, snake_case for columns
 8. **APIs**: NEVER guess - verify with context7 first
+9. **No forEach**: Use `for...of` or array methods (`map`, `filter`, `reduce`) instead
+10. **Braces Required**: Always use `{}` in if/else statements, even for single lines
 
 ## Anti-Hallucination Checklist
 

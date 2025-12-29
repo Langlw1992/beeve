@@ -13,7 +13,7 @@ import {
   type ParentComponent,
   type Accessor,
 } from 'solid-js'
-import type { BaseColorName, ThemeColorName, ColorMode, ThemeConfig } from '../themes/types'
+import type { BaseColorName, ThemeColorName, ColorMode, ThemeConfig } from '../themes'
 import {
   defaultThemeConfig,
   getThemeVariables,
@@ -81,7 +81,7 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Listen for system color scheme changes
   onMount(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') { return }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handler = (e: MediaQueryListEvent) => {
@@ -94,7 +94,7 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Apply theme to document
   createEffect(() => {
-    if (!applyToDocument || typeof document === 'undefined') return
+    if (!applyToDocument || typeof document === 'undefined') { return }
 
     const { baseColor, themeColor, radius } = config()
     const mode = resolvedMode()
@@ -105,9 +105,9 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
     root.style.setProperty('--radius', `${radius}rem`)
 
     // Set all theme variables
-    Object.entries(vars).forEach(([key, value]) => {
-      root.style.setProperty(`--${key}`, value)
-    })
+    for (const [key, value1] of Object.entries(vars)) {
+      root.style.setProperty(`--${key}`, value1)
+    }
 
     // Update dark class
     if (mode === 'dark') {
@@ -119,7 +119,7 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Persist config to storage
   createEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') { return }
 
     try {
       localStorage.setItem(storageKey, JSON.stringify(config()))

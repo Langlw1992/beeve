@@ -10,6 +10,7 @@
 5. TRANSPARENCY: State your sources, mark uncertainties
 6. CHINESE RESPONSE: Reply in Simplified Chinese (except terms, code, commands)
 7. VISUAL TESTING: Use chromeDevtools MCP for frontend visual inspection
+8. SERVER CHECK: Before starting dev server, check if one is already running to avoid port conflicts
 ```
 
 ## MCP Requirements
@@ -163,6 +164,15 @@ const Component = ({ value }) => { }
 // ❌ NEVER use ESLint/Prettier (use Biome)
 
 // ❌ NEVER use default exports for components
+
+// ❌ NEVER use forEach - use for...of or array methods (map, filter, reduce)
+items.forEach(item => doSomething(item))  // Bad
+for (const item of items) { doSomething(item) }  // Good
+items.map(item => transform(item))  // Good
+
+// ❌ NEVER omit braces in if/else statements
+if (condition) doSomething()  // Bad
+if (condition) { doSomething() }  // Good
 ```
 
 ## Anti-Hallucination Checklist

@@ -8,6 +8,7 @@
 3. CODE ANALYSIS: Use serena to understand existing code before modifications
 4. VALIDATION: Code must pass typecheck and lint
 5. TRANSPARENCY: State your sources, mark any uncertainties
+6. SERVER CHECK: Before starting dev server, check if one is already running to avoid port conflicts
 ```
 
 ## MCP Requirements
@@ -61,6 +62,8 @@ Tooling: pnpm workspace, Turborepo, Biome (linting/formatting)
 - Use UUID for primary keys
 - Handle all errors in API routes
 - Follow existing code patterns
+- Use `for...of` or array methods (`map`, `filter`, `reduce`) for iteration
+- Always use `{}` braces in if/else statements
 
 ### DON'T
 - Don't use `any` type - use `unknown` with type guards
@@ -71,6 +74,8 @@ Tooling: pnpm workspace, Turborepo, Biome (linting/formatting)
 - Don't skip error handling
 - Don't guess API signatures - verify with documentation first
 - Don't assume library behavior without checking docs
+- Don't use `forEach` - use `for...of` or functional methods instead
+- Don't omit braces in if/else - always use `{}`
 
 ## Anti-Hallucination Checklist
 

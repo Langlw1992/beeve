@@ -14,8 +14,23 @@ type: always
 6. **必须引用文档来源** - 在回复中说明
 7. **简体中文回复** - 除技术术语、代码、命令外
 8. **前端视觉测试** - 使用 chromeDevtools MCP
+9. **服务器检查** - 启动 dev 服务前先检查是否已运行，避免端口冲突
 
-## MCP 要求
+## 代码规范
+
+- **禁止 forEach**：使用 `for...of` 或数组方法（`map`, `filter`, `reduce`）
+- **强制花括号**：所有 `if/else` 语句必须使用 `{}`，即使单行
+
+```typescript
+// ❌ 禁止
+items.forEach(item => doSomething(item))
+if (condition) doSomething()
+
+// ✅ 正确
+for (const item of items) { doSomething(item) }
+items.map(item => transform(item))
+if (condition) { doSomething() }
+```
 
 - **context7**: 使用任何库 API 前必须查询
 - **serena**: 修改代码前必须分析结构
