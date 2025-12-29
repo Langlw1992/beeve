@@ -32,7 +32,7 @@ export const radiusPresets = [
   { value: 0.5, label: 'Medium' },
   { value: 0.625, label: 'Default' },
   { value: 0.75, label: 'Large' },
-  { value: 1, label: 'Full' },
+  { value: 'full', label: 'Full' },
 ] as const
 
 /**
@@ -58,7 +58,7 @@ export function getThemeVariables(
 export function generateThemeCSS(
   baseColor: BaseColorName,
   themeColor: ThemeColorName,
-  radius: number
+  radius: number | 'full'
 ): string {
   const lightVars = getThemeVariables(baseColor, themeColor, 'light')
   const darkVars = getThemeVariables(baseColor, themeColor, 'dark')
@@ -68,8 +68,15 @@ export function generateThemeCSS(
       .map(([key, value]) => `  --${key}: ${value};`)
       .join('\n')
 
+  const isFull = radius === 'full'
+  const radiusValue = isFull ? '9999px' : `${radius}rem`
+  const radiusLgValue = isFull ? '1.5rem' : `${radius}rem`
+  const radiusSmValue = isFull ? '0.5rem' : `${Number(radius) * 0.75}rem`
+
   return `:root {
-  --radius: ${radius}rem;
+  --radius: ${radiusValue};
+  --radius-lg: ${radiusLgValue};
+  --radius-sm: ${radiusSmValue};
 ${formatVars(lightVars)}
 }
 
@@ -85,17 +92,24 @@ ${formatVars(darkVars)}
 export function applyThemeToDOM(
   baseColor: BaseColorName,
   themeColor: ThemeColorName,
-  radius: number,
+  radius: number | 'full',
   mode: 'light' | 'dark'
 ): void {
   const vars = getThemeVariables(baseColor, themeColor, mode)
   const root = document.documentElement
 
-  root.style.setProperty('--radius', `${radius}rem`)
+  const isFull = radius === 'full'
+  const radiusValue = isFull ? '9999px' : `${radius}rem`
+  const radiusLgValue = isFull ? '1.5rem' : `${radius}rem`
+  const radiusSmValue = isFull ? '0.5rem' : `${Number(radius) * 0.75}rem`
 
-  Object.entries(vars).forEach(([key, value]) => {
+  root.style.setProperty('--radius', radiusValue)
+  root.style.setProperty('--radius-lg', radiusLgValue)
+  root.style.setProperty('--radius-sm', radiusSmValue)
+
+  for (const [key, value] of Object.entries(vars)) {
     root.style.setProperty(`--${key}`, value)
-  })
+  }
 
   // Update dark class
   if (mode === 'dark') {
@@ -109,7 +123,7 @@ export function applyThemeToDOM(
  * Get system color mode preference
  */
 export function getSystemColorMode(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light'
+  if (typeof window === 'undefined') { return 'light' }
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 

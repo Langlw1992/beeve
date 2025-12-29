@@ -1,0 +1,24 @@
+---
+/**
+ * ComponentPreview - 组件预览容器
+ * 提供统一的预览样式，隔离 Starlight 的 markdown 样式
+ */
+interface Props {
+  /** 预览区域的背景样式 */
+  background?: 'default' | 'card' | 'muted'
+}
+
+const { background = 'default' } = Astro.props
+
+const bgClass = {
+  default: 'bg-background',
+  card: 'bg-card',
+  muted: 'bg-muted',
+}[background]
+---
+
+<div class="not-content my-6">
+  <div class={`p-6 border border-border rounded-lg ${bgClass}`}>
+    <slot />
+  </div>
+</div>

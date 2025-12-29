@@ -32,7 +32,7 @@ type ThemeContextValue = {
   /** Set theme color */
   setThemeColor: (color: ThemeColorName) => void
   /** Set radius */
-  setRadius: (radius: number) => void
+  setRadius: (radius: number | 'full') => void
   /** Set full config */
   setConfig: (config: Partial<ThemeConfig>) => void
 }
@@ -101,8 +101,16 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
     const vars = getThemeVariables(baseColor, themeColor, mode)
     const root = document.documentElement
 
-    // Set radius
-    root.style.setProperty('--radius', `${radius}rem`)
+    // Set radius variables (support 'full' for pill shape)
+    const isFull = radius === 'full'
+    const radiusValue = isFull ? '9999px' : `${radius}rem`
+    // --radius-lg has a max value to prevent oversized corners on containers
+    const radiusLgValue = isFull ? '1.5rem' : `${radius}rem`
+    const radiusSmValue = isFull ? '0.5rem' : `${Number(radius) * 0.75}rem`
+
+    root.style.setProperty('--radius', radiusValue)
+    root.style.setProperty('--radius-lg', radiusLgValue)
+    root.style.setProperty('--radius-sm', radiusSmValue)
 
     // Set all theme variables
     for (const [key, value1] of Object.entries(vars)) {

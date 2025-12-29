@@ -7,6 +7,9 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
+/* 导入 Beeve UI 样式（包含主题变量和组件类名扫描） */
+@import '@beeve/ui/styles';
+
 /* 自定义主题变量 */
 @theme {
   /* 主色调 - 紫色 */
@@ -36,7 +39,7 @@
   --color-gray-950: var(--color-slate-950);
 }
 
-/* 内容区域宽度 */
+/* Starlight 内容区域宽度 */
 body {
   --sl-content-width: 55rem;
 }

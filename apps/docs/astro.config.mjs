@@ -38,13 +38,14 @@ export default defineConfig({
       customCss: ['./src/styles/global.css'],
     }),
     solidJs({
-      include: ['**/demos/**'],
+      include: ['**/demos/**', '**/components/**/*.tsx'],
     }),
   ],
   vite: {
+    // @ts-expect-error - Vite version mismatch between @tailwindcss/vite and Astro
     plugins: [tailwindcss()],
     ssr: {
-      noExternal: ['@beeve/ui'],
+      noExternal: ['@beeve/ui', 'tailwind-variants'],
     },
   },
 })

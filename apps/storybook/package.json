@@ -1,0 +1,26 @@
+{
+  "name": "@beeve/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
+    "lint": "biome lint ./src ./stories"
+  },
+  "devDependencies": {
+    "@storybook/addon-themes": "^10.1.10",
+    "@tailwindcss/vite": "^4.0.0",
+    "solid-js": "^1.9.3",
+    "storybook": "^10.1.10",
+    "storybook-solidjs-vite": "^10.0.9",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vite-plugin-solid": "^2.11.0"
+  },
+  "dependencies": {
+    "@beeve/ui": "workspace:*"
+  }
+}
+

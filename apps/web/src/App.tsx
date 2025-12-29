@@ -186,7 +186,7 @@ export default function App() {
         {/* Sample Card */}
         <section class="space-y-3">
           <h2 class="text-xl font-semibold">Sample Card</h2>
-          <div class="bg-card text-card-foreground p-6 rounded-xl border shadow-sm">
+          <div class="bg-card text-card-foreground p-6 rounded-(--radius-lg) border shadow-sm">
             <h3 class="text-lg font-semibold mb-2">Card Title</h3>
             <p class="text-muted-foreground mb-4">
               这是一个示例卡片，展示了主题系统在实际组件中的效果。

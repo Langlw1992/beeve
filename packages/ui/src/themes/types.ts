@@ -29,8 +29,8 @@ export type ThemeColorName =
 /** Color mode */
 export type ColorMode = 'light' | 'dark' | 'system'
 
-/** Radius preset values (in rem) */
-export type RadiusPreset = 0 | 0.3 | 0.5 | 0.625 | 0.75 | 1
+/** Radius preset values (in rem, or 'full' for pill shape) */
+export type RadiusPreset = 0 | 0.3 | 0.5 | 0.625 | 0.75 | 1 | 'full'
 
 /** Base color variables - 完整的基础配色变量 */
 export type BaseColorVariables = {
@@ -101,7 +101,7 @@ export type ThemeConfig = {
   mode: ColorMode
   baseColor: BaseColorName
   themeColor: ThemeColorName
-  radius: number
+  radius: number | 'full'
 }
 
 /** Resolved theme (after system mode detection) */
@@ -109,5 +109,5 @@ export type ResolvedTheme = {
   resolvedMode: 'light' | 'dark'
   baseColor: BaseColorName
   themeColor: ThemeColorName
-  radius: number
+  radius: number | 'full'
 }

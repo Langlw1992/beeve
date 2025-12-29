@@ -7,8 +7,11 @@
 
 /* 默认主题变量 (Neutral base + Blue theme) */
 :root {
-  /* Radius */
+  /* Radius - 基础值，小组件直接使用 */
   --radius: 0.625rem;
+  /* Radius 语义化变量 - 用于不同场景 */
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius); /* 容器圆角，full 模式下会被限制 */
 
   /* Background & Foreground */
   --background: oklch(1 0 0);
