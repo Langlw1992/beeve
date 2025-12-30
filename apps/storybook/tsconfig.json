@@ -12,6 +12,6 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "include": ["stories", ".storybook"]
+  "include": [".storybook", "../../packages/ui/src/**/*.stories.tsx"]
 }
 

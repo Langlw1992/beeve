@@ -94,6 +94,7 @@ beeve/
 - 文件命名：`kebab-case.ts` 或 `PascalCase.tsx`（组件）
 - 禁止 `forEach`：使用 `for...of` 或数组方法（`map`, `filter`, `reduce`）
 - 强制花括号：所有 `if/else` 语句必须使用 `{}`，即使单行
+- CSS 尺寸：宽高相同时使用 `size-x` 而不是 `w-x h-x`
 
 ### 导入顺序
 

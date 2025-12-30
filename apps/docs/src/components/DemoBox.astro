@@ -1,0 +1,198 @@
+---
+/**
+ * DemoBox - 组件演示容器（类似 Ant Design 的 Demo 展示）
+ * 包含：预览区域、标题、描述、代码展示、复制按钮
+ */
+interface Props {
+  /** Demo 标题 */
+  title?: string
+  /** Demo 描述 */
+  description?: string
+  /** 代码字符串 */
+  code?: string
+  /** 是否默认展开代码 */
+  defaultExpanded?: boolean
+}
+
+const { title, description, code, defaultExpanded = false } = Astro.props
+const uniqueId = `demo-${Math.random().toString(36).slice(2, 9)}`
+---
+
+<div class="demo-box">
+  {/* 预览区域 */}
+  <div class="demo-preview not-content">
+    <slot />
+  </div>
+
+  {/* 标题和描述 */}
+  {(title || description) && (
+    <div class="demo-info">
+      {title && <h4 class="demo-title">{title}</h4>}
+      {description && <p class="demo-desc">{description}</p>}
+    </div>
+  )}
+
+  {/* 代码区域 */}
+  {code && (
+    <div class="demo-code-section">
+      <div class="demo-actions">
+        <button
+          class="demo-action-btn"
+          data-copy-btn={uniqueId}
+          title="复制代码"
+          aria-label="复制代码"
+        >
+          <svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <svg class="icon-check hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </button>
+        <button
+          class="demo-action-btn"
+          data-expand-btn={uniqueId}
+          title="展开/收起代码"
+          aria-label="展开/收起代码"
+          aria-expanded={defaultExpanded}
+        >
+          <svg class="icon-code" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div
+        class:list={['demo-code', { expanded: defaultExpanded }]}
+        data-code-block={uniqueId}
+      >
+        <pre><code class="language-tsx">{code}</code></pre>
+      </div>
+    </div>
+  )}
+</div>
+
+<script define:vars={{ uniqueId, code }}>
+  // 复制功能
+  const copyBtn = document.querySelector(`[data-copy-btn="${uniqueId}"]`)
+  if (copyBtn && code) {
+    copyBtn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code)
+      const iconCopy = copyBtn.querySelector('.icon-copy')
+      const iconCheck = copyBtn.querySelector('.icon-check')
+      iconCopy?.classList.add('hidden')
+      iconCheck?.classList.remove('hidden')
+      setTimeout(() => {
+        iconCopy?.classList.remove('hidden')
+        iconCheck?.classList.add('hidden')
+      }, 2000)
+    })
+  }
+
+  // 展开/收起功能
+  const expandBtn = document.querySelector(`[data-expand-btn="${uniqueId}"]`)
+  const codeBlock = document.querySelector(`[data-code-block="${uniqueId}"]`)
+  if (expandBtn && codeBlock) {
+    expandBtn.addEventListener('click', () => {
+      const isExpanded = codeBlock.classList.toggle('expanded')
+      expandBtn.setAttribute('aria-expanded', String(isExpanded))
+    })
+  }
+</script>
+
+<style>
+  .demo-box {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+
+  .demo-preview {
+    padding: 2rem;
+    background: var(--sl-color-bg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .demo-info {
+    padding: 1rem 1.5rem;
+    border-top: 1px dashed var(--sl-color-gray-5);
+    background: var(--sl-color-bg-nav);
+  }
+
+  .demo-title {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .demo-desc {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--sl-color-gray-3);
+    line-height: 1.5;
+  }
+
+  .demo-code-section {
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  .demo-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--sl-color-gray-6);
+  }
+
+  .demo-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    border: none;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .demo-action-btn:hover {
+    color: var(--sl-color-accent);
+    background: var(--sl-color-gray-5);
+  }
+
+  .demo-code {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .demo-code.expanded {
+    max-height: 600px;
+    overflow: auto;
+  }
+
+  .demo-code pre {
+    margin: 0;
+    padding: 1rem 1.5rem;
+    background: var(--sl-color-gray-6);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .demo-code code {
+    font-family: var(--sl-font-mono);
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+

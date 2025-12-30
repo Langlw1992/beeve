@@ -20,20 +20,33 @@
     "dev": "tsup --watch",
     "lint": "biome lint ./src",
     "lint:fix": "biome lint --write ./src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@zag-js/dialog": "^1.31.1",
+    "@zag-js/presence": "^1.31.1",
+    "@zag-js/solid": "^1.31.1",
+    "lucide-solid": "^0.562.0",
     "tailwind-variants": "^0.3.1"
   },
   "peerDependencies": {
     "solid-js": "^1.9.0"
   },
   "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
     "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.1",
     "esbuild-plugin-solid": "^0.6.0",
+    "jsdom": "^27.4.0",
     "solid-js": "^1.9.3",
     "tailwindcss": "^4.0.0",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite-plugin-solid": "^2.11.10",
+    "vitest": "^4.0.16"
   }
 }

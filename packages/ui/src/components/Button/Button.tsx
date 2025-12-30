@@ -3,7 +3,8 @@
  * 按钮组件
  */
 
-import { splitProps, type Component, type JSX } from 'solid-js'
+import { splitProps, Show, type Component, type JSX } from 'solid-js'
+import { Loader2 } from 'lucide-solid'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonVariants = tv({
@@ -28,7 +29,7 @@ const buttonVariants = tv({
       sm: 'h-8 px-3 text-sm',
       md: 'h-10 px-4 text-sm',
       lg: 'h-12 px-6 text-base',
-      icon: 'h-10 w-10',
+      icon: 'size-10',
     },
   },
   defaultVariants: {
@@ -45,6 +46,8 @@ export interface ButtonProps extends ButtonVariants {
   style?: JSX.CSSProperties
   children?: JSX.Element
   disabled?: boolean
+  /** 加载状态 */
+  loading?: boolean
   type?: 'button' | 'submit' | 'reset'
   onClick?: (e: MouseEvent) => void
   title?: string
@@ -53,17 +56,22 @@ export interface ButtonProps extends ButtonVariants {
 export const Button: Component<ButtonProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'classList', 'style', 'children'],
+    ['class', 'classList', 'style', 'children', 'type', 'loading', 'disabled'],
     ['variant', 'size']
   )
 
   return (
     <button
+      type={local.type ?? 'button'}
       class={buttonVariants({ ...variants, class: local.class })}
       classList={local.classList}
       style={local.style}
+      disabled={local.disabled || local.loading}
       {...rest}
     >
+      <Show when={local.loading}>
+        <Loader2 class="size-4 animate-spin" />
+      </Show>
       {local.children}
     </button>
   )

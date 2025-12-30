@@ -20,6 +20,7 @@ type: always
 
 - **禁止 forEach**：使用 `for...of` 或数组方法（`map`, `filter`, `reduce`）
 - **强制花括号**：所有 `if/else` 语句必须使用 `{}`，即使单行
+- **使用 size-x**：当宽高相同时，使用 `size-x` 而不是 `w-x h-x`
 
 ```typescript
 // ❌ 禁止
@@ -30,6 +31,16 @@ if (condition) doSomething()
 for (const item of items) { doSomething(item) }
 items.map(item => transform(item))
 if (condition) { doSomething() }
+```
+
+```html
+<!-- ❌ 禁止：宽高相同时分别设置 -->
+<div class="w-4 h-4">...</div>
+<div class="w-10 h-10">...</div>
+
+<!-- ✅ 正确：使用 size-x -->
+<div class="size-4">...</div>
+<div class="size-10">...</div>
 ```
 
 - **context7**: 使用任何库 API 前必须查询

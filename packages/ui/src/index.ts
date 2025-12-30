@@ -5,6 +5,7 @@
 
 // Components
 export * from './components/Button'
+export * from './components/Dialog'
 
 // Themes
 export * from './themes'

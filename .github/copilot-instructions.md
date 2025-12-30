@@ -173,6 +173,10 @@ items.map(item => transform(item))  // Good
 // ❌ NEVER omit braces in if/else statements
 if (condition) doSomething()  // Bad
 if (condition) { doSomething() }  // Good
+
+// ❌ NEVER use w-x h-x when width equals height - use size-x instead
+<div class="w-4 h-4">...</div>  // Bad
+<div class="size-4">...</div>   // Good
 ```
 
 ## Anti-Hallucination Checklist

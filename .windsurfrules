@@ -76,6 +76,7 @@ Tooling: pnpm workspace, Turborepo, Biome (linting/formatting)
 - Don't assume library behavior without checking docs
 - Don't use `forEach` - use `for...of` or functional methods instead
 - Don't omit braces in if/else - always use `{}`
+- Don't use `w-x h-x` when width equals height - use `size-x` instead
 
 ## Anti-Hallucination Checklist
 

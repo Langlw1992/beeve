@@ -63,6 +63,7 @@ export const Button: Component<ButtonProps> = (props) => {
 - ✅ 使用 `tailwind-variants` (tv) 做样式
 - ✅ 只用命名导出
 - ✅ 完整的 TypeScript 类型
+- ✅ 宽高相同时使用 `size-x` 而不是 `w-x h-x`
 
 ## 禁止模式
 
@@ -78,6 +79,12 @@ export default function Button() { }
 
 // ❌ 错误：内联样式做变体
 <button class={`${variant === 'primary' ? 'bg-blue' : 'bg-gray'}`}>
+
+// ❌ 错误：宽高相同时分别设置
+<div class="w-4 h-4">...</div>
+
+// ✅ 正确：使用 size-x
+<div class="size-4">...</div>
 ```
 
 ## 导入顺序

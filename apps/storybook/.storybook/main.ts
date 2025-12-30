@@ -2,7 +2,10 @@ import type { StorybookConfig } from 'storybook-solidjs-vite'
 import tailwindcss from '@tailwindcss/vite'
 
 const config: StorybookConfig = {
-  stories: ['../stories/**/*.mdx', '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: [
+    // 从 @beeve/ui 组件包读取 stories
+    '../../../packages/ui/src/**/*.stories.@(ts|tsx)',
+  ],
   addons: ['@storybook/addon-themes'],
   framework: 'storybook-solidjs-vite',
   async viteFinal(config) {

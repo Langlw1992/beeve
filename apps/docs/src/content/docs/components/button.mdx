@@ -3,12 +3,18 @@ title: Button
 description: 按钮组件 - 用于触发操作或事件
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components'
+import { Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components'
 import PropsTable from '../../../components/PropsTable.astro'
-import ComponentPreview from '../../../components/ComponentPreview.astro'
+import DemoBox from '../../../components/DemoBox.astro'
 import { ButtonVariants, ButtonSizes, ButtonStates, ButtonWithIcons } from '../../../components/demos/ButtonDemo'
 
 Button 组件是最基础的交互元素，用于触发操作或事件。
+
+## 安装
+
+```bash
+pnpm add @beeve/ui
+```
 
 ## 导入
 
@@ -16,66 +22,76 @@ Button 组件是最基础的交互元素，用于触发操作或事件。
 import { Button } from '@beeve/ui'
 ```
 
-## 变体 Variants
+## 代码演示
+
+### 按钮变体
 
 Button 支持多种视觉变体，适用于不同的使用场景。
 
-<ComponentPreview>
-  <ButtonVariants client:load />
-</ComponentPreview>
-
-```tsx
-<Button variant="primary">Primary</Button>
+<DemoBox
+  title="六种变体"
+  description="使用 variant 属性设置按钮样式：primary（主要）、secondary（次要）、outline（描边）、ghost（幽灵）、destructive（危险）、link（链接）"
+  code={`<Button variant="primary">Primary</Button>
 <Button variant="secondary">Secondary</Button>
 <Button variant="outline">Outline</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="destructive">Destructive</Button>
-<Button variant="link">Link</Button>
-```
+<Button variant="link">Link</Button>`}
+>
+  <ButtonVariants client:load />
+</DemoBox>
 
-### 变体说明
+<CardGrid>
+  <Card title="primary" icon="star">
+    主要操作，页面上最重要的 CTA
+  </Card>
+  <Card title="secondary" icon="puzzle">
+    次要操作，辅助性的按钮
+  </Card>
+  <Card title="outline" icon="open-book">
+    带边框的按钮，用于次要操作
+  </Card>
+  <Card title="ghost" icon="seti:shell">
+    最弱视觉强调，常用于工具栏
+  </Card>
+  <Card title="destructive" icon="warning">
+    危险操作，如删除、取消
+  </Card>
+  <Card title="link" icon="external">
+    外观像链接的按钮
+  </Card>
+</CardGrid>
 
-| 变体 | 用途 |
-|------|------|
-| `primary` | 主要操作，页面上最重要的 CTA |
-| `secondary` | 次要操作 |
-| `outline` | 带边框的次要操作 |
-| `ghost` | 最弱视觉强调，常用于工具栏 |
-| `destructive` | 破坏性操作，如删除 |
-| `link` | 外观像链接的按钮 |
+### 按钮尺寸
 
-## 尺寸 Sizes
-
-<ComponentPreview>
-  <ButtonSizes client:load />
-</ComponentPreview>
-
-```tsx
-<Button size="sm">Small</Button>
+<DemoBox
+  title="四种尺寸"
+  description="使用 size 属性调整按钮大小：sm（小）、md（中，默认）、lg（大）、icon（图标按钮）"
+  code={`<Button size="sm">Small</Button>
 <Button size="md">Medium</Button>
 <Button size="lg">Large</Button>
-<Button size="icon">🔔</Button>
-```
+<Button size="icon">🔔</Button>`}
+>
+  <ButtonSizes client:load />
+</DemoBox>
 
-## 状态 States
+### 禁用状态
 
-<ComponentPreview>
+<DemoBox
+  title="禁用状态"
+  description="添加 disabled 属性禁用按钮，禁用后按钮不可点击且样式变灰"
+  code={`<Button>Normal</Button>
+<Button disabled>Disabled</Button>`}
+>
   <ButtonStates client:load />
-</ComponentPreview>
+</DemoBox>
 
-```tsx
-<Button>Normal</Button>
-<Button disabled>Disabled</Button>
-```
+### 带图标按钮
 
-## 带图标 With Icons
-
-<ComponentPreview>
-  <ButtonWithIcons client:load />
-</ComponentPreview>
-
-```tsx
-<Button>
+<DemoBox
+  title="图标按钮"
+  description="按钮可以包含图标，图标可以放在文字前面或后面"
+  code={`<Button>
   <PlusIcon />
   Add Item
 </Button>
@@ -86,8 +102,10 @@ Button 支持多种视觉变体，适用于不同的使用场景。
 <Button variant="secondary">
   Settings
   <ChevronRightIcon />
-</Button>
-```
+</Button>`}
+>
+  <ButtonWithIcons client:load />
+</DemoBox>
 
 ## API
 

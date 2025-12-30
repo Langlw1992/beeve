@@ -135,6 +135,7 @@ export type NewModel = typeof tableName.$inferInsert
 8. **APIs**: NEVER guess - verify with context7 first
 9. **No forEach**: Use `for...of` or array methods (`map`, `filter`, `reduce`) instead
 10. **Braces Required**: Always use `{}` in if/else statements, even for single lines
+11. **Use size-x**: When width and height are the same, use `size-x` instead of `w-x h-x`
 
 ## Anti-Hallucination Checklist
 
