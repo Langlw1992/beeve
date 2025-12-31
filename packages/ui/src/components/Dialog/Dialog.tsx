@@ -330,7 +330,7 @@ export const Dialog: Component<DialogProps> = (props) => {
                 title="关闭"
                 aria-label={api().getCloseTriggerProps()['aria-label']}
               >
-                <X class="size-4" />
+                <X class="size-3.5" />
               </Button>
             </Show>
           </div>

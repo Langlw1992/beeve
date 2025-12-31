@@ -36,18 +36,20 @@ export interface ButtonProps extends VariantProps<typeof buttonVariants> {
   onClick?: () => void
   disabled?: boolean
   children: JSX.Element
+  ref?: (el: HTMLButtonElement) => void
 }
 
 // 使用 splitProps 分离关注点
 export const Button: Component<ButtonProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'children'],
+    ['class', 'children', 'ref'],
     ['variant', 'size']
   )
 
   return (
     <button
+      ref={local.ref}
       class={buttonVariants({ ...variants, class: local.class })}
       {...rest}
     >
@@ -56,6 +58,15 @@ export const Button: Component<ButtonProps> = (props) => {
   )
 }
 ```
+
+## 关键规则
+
+1. **Ref 支持**：所有组件必须支持 `ref` 属性，并正确转发到底层 DOM 元素。
+2. **样式合并**：必须接受 `class` 属性，并使用 `tailwind-variants` 或 `clsx` 与内部样式合并。
+3. **Props 分离**：使用 `splitProps` 将 props 分为三类：
+   - `local`: 组件内部逻辑使用的 props (如 children, ref, class)
+   - `variants`: 样式变体 props (如 size, variant)
+   - `rest`: 传递给底层元素的 HTML 属性 (如 onClick, disabled)
 
 ## 关键要点
 

@@ -70,25 +70,25 @@ describe('Button', () => {
     it('默认尺寸应该是 md', () => {
       render(() => <Button>Medium</Button>)
       const button = screen.getByRole('button')
-      expect(button.className).toContain('h-10')
+      expect(button.className).toContain('h-8')
     })
 
     it('应该支持 sm 尺寸', () => {
       render(() => <Button size="sm">Small</Button>)
       const button = screen.getByRole('button')
-      expect(button.className).toContain('h-8')
+      expect(button.className).toContain('h-7')
     })
 
     it('应该支持 lg 尺寸', () => {
       render(() => <Button size="lg">Large</Button>)
       const button = screen.getByRole('button')
-      expect(button.className).toContain('h-12')
+      expect(button.className).toContain('h-9')
     })
 
     it('应该支持 icon 尺寸', () => {
       render(() => <Button size="icon">🔔</Button>)
       const button = screen.getByRole('button')
-      expect(button.className).toContain('size-10')
+      expect(button.className).toContain('size-8')
     })
   })
 

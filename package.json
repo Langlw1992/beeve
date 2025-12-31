@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=@beeve/web --filter=@beeve/docs --filter=@beeve/storybook",
+    "dev:server": "turbo dev --filter=@beeve/server",
     "build": "turbo build",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
@@ -23,5 +25,8 @@
   "packageManager": "pnpm@10.22.0",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }

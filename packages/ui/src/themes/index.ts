@@ -20,9 +20,9 @@ export * from './colors'
 /** Default theme configuration */
 export const defaultThemeConfig: ThemeConfig = {
   mode: 'system',
-  baseColor: 'neutral',
+  baseColor: 'zinc',
   themeColor: 'blue',
-  radius: 0.625,
+  radius: 0.5,
 }
 
 /** Radius presets */

@@ -12,7 +12,7 @@ const buttonVariants = tv({
     'inline-flex items-center justify-center gap-2',
     'font-medium',
     'transition-colors duration-200',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
     'disabled:pointer-events-none disabled:opacity-50',
     'rounded-[var(--radius)]',
   ],
@@ -26,10 +26,10 @@ const buttonVariants = tv({
       link: 'text-primary underline-offset-4 hover:underline',
     },
     size: {
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-10 px-4 text-sm',
-      lg: 'h-12 px-6 text-base',
-      icon: 'size-10',
+      sm: 'h-7 px-2 text-xs',
+      md: 'h-8 px-3 text-sm',
+      lg: 'h-9 px-4 text-sm',
+      icon: 'size-8',
     },
   },
   defaultVariants: {
@@ -70,7 +70,7 @@ export const Button: Component<ButtonProps> = (props) => {
       {...rest}
     >
       <Show when={local.loading}>
-        <Loader2 class="size-4 animate-spin" />
+        <Loader2 class="size-3.5 animate-spin" />
       </Show>
       {local.children}
     </button>

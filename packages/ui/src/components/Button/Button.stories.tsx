@@ -127,15 +127,13 @@ export const Playground: Story = {}
  */
 export const Variants: Story = {
   render: () => (
-    <div class="flex flex-col gap-6">
-      <div class="flex flex-wrap items-center gap-3">
-        <Button variant="primary">Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="outline">Outline</Button>
-        <Button variant="ghost">Ghost</Button>
-        <Button variant="destructive">Destructive</Button>
-        <Button variant="link">Link</Button>
-      </div>
+    <div class="flex flex-wrap items-center gap-4">
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="link">Link</Button>
     </div>
   ),
   parameters: {
@@ -159,7 +157,7 @@ export const Variants: Story = {
  */
 export const Sizes: Story = {
   render: () => (
-    <div class="flex items-end gap-3">
+    <div class="flex items-end gap-4">
       <Button size="lg">Large</Button>
       <Button size="md">Medium</Button>
       <Button size="sm">Small</Button>
@@ -183,7 +181,7 @@ export const Sizes: Story = {
  */
 export const Disabled: Story = {
   render: () => (
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-4">
       <Button disabled>Primary Disabled</Button>
       <Button variant="secondary" disabled>Secondary Disabled</Button>
       <Button variant="outline" disabled>Outline Disabled</Button>
@@ -207,27 +205,27 @@ export const Disabled: Story = {
  */
 export const WithIcons: Story = {
   render: () => (
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-4">
       <Button>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
         新建
       </Button>
       <Button variant="outline">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
         </svg>
         上传
       </Button>
       <Button variant="secondary">
         设置
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </Button>
       <Button variant="destructive">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
         删除
@@ -251,22 +249,31 @@ export const WithIcons: Story = {
  */
 export const ButtonGroups: Story = {
   render: () => (
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-8">
       {/* 确认/取消 */}
-      <div class="flex gap-3">
-        <Button variant="outline">取消</Button>
-        <Button>确定</Button>
+      <div class="space-y-2">
+        <p class="text-sm text-muted-foreground">确认/取消</p>
+        <div class="flex gap-4">
+          <Button variant="outline">取消</Button>
+          <Button>确定</Button>
+        </div>
       </div>
       {/* 表单提交 */}
-      <div class="flex gap-3">
-        <Button variant="ghost">重置</Button>
-        <Button variant="outline">保存草稿</Button>
-        <Button>提交</Button>
+      <div class="space-y-2">
+        <p class="text-sm text-muted-foreground">表单提交</p>
+        <div class="flex gap-4">
+          <Button variant="ghost">重置</Button>
+          <Button variant="outline">保存草稿</Button>
+          <Button>提交</Button>
+        </div>
       </div>
       {/* 危险操作确认 */}
-      <div class="flex gap-3">
-        <Button variant="outline">取消</Button>
-        <Button variant="destructive">确认删除</Button>
+      <div class="space-y-2">
+        <p class="text-sm text-muted-foreground">危险操作确认</p>
+        <div class="flex gap-4">
+          <Button variant="outline">取消</Button>
+          <Button variant="destructive">确认删除</Button>
+        </div>
       </div>
     </div>
   ),
@@ -296,22 +303,28 @@ export const Loading: Story = {
     }
 
     return (
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-8">
         {/* 静态展示 */}
-        <div class="flex flex-wrap items-center gap-3">
-          <Button loading>Loading</Button>
-          <Button variant="secondary" loading>Secondary</Button>
-          <Button variant="outline" loading>Outline</Button>
-          <Button variant="destructive" loading>Destructive</Button>
+        <div class="space-y-2">
+          <p class="text-sm text-muted-foreground">各变体加载状态</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button loading>Loading</Button>
+            <Button variant="secondary" loading>Secondary</Button>
+            <Button variant="outline" loading>Outline</Button>
+            <Button variant="destructive" loading>Destructive</Button>
+          </div>
         </div>
         {/* 交互演示 */}
-        <div class="flex items-center gap-3">
-          <Button loading={loading()} onClick={handleClick}>
-            {loading() ? '提交中...' : '点击提交'}
-          </Button>
-          <span class="text-sm text-muted-foreground">
-            点击按钮体验加载效果
-          </span>
+        <div class="space-y-2">
+          <p class="text-sm text-muted-foreground">交互演示</p>
+          <div class="flex items-center gap-4">
+            <Button loading={loading()} onClick={handleClick}>
+              {loading() ? '提交中...' : '点击提交'}
+            </Button>
+            <span class="text-sm text-muted-foreground">
+              点击按钮体验加载效果
+            </span>
+          </div>
         </div>
       </div>
     )

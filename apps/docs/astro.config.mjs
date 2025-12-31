@@ -45,7 +45,7 @@ export default defineConfig({
     // @ts-expect-error - Vite version mismatch between @tailwindcss/vite and Astro
     plugins: [tailwindcss()],
     ssr: {
-      noExternal: ['@beeve/ui', 'tailwind-variants'],
+      noExternal: ['@beeve/ui', 'tailwind-variants', 'lucide-solid'],
     },
   },
 })

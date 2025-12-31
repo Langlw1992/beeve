@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-**Phase 1: 核心包开发** 🔄 进行中
+**Phase 2: 认证系统** 🔄 进行中
 
 ## 待办事项
 
@@ -19,14 +19,15 @@
 ### Phase 1: 核心包开发
 - [x] `@beeve/shared` - 共享类型和工具（基础版）
 - [x] `@beeve/ui` - 组件库基础（Button 组件）
-- [ ] `@beeve/db` - 数据库层 (Drizzle + PostgreSQL)
-- [ ] `apps/server` - API 服务器骨架
+- [x] `@beeve/db` - 数据库层 (Drizzle + PostgreSQL)
+- [x] `apps/server` - API 服务器骨架 (Hono)
 
 ### Phase 2: 认证系统
-- [ ] 数据库 Schema (users, sessions, oauth_accounts)
-- [ ] `@beeve/auth-client` - 认证客户端 SDK
-- [ ] OAuth 集成 (GitHub, Google)
-- [ ] JWT 会话管理
+- [x] 数据库 Schema (users, sessions, accounts, verifications)
+- [x] `@beeve/auth-client` - 认证客户端 SDK
+- [x] Better-Auth 集成 (框架配置)
+- [ ] OAuth 集成 (GitHub, Google) - 需配置环境变量
+- [ ] 数据库迁移运行
 
 ### Phase 3: 低代码引擎
 - [ ] `@beeve/lowcode-core` - Schema 定义
@@ -41,6 +42,15 @@
 ---
 
 ## 会话日志
+
+### 2025-12-31
+- ✅ 创建 `@beeve/db` 包（Drizzle ORM + PostgreSQL）
+- ✅ 定义认证相关 Schema（users, sessions, accounts, verifications）
+- ✅ 创建 `apps/server`（Hono API 服务器）
+- ✅ 集成 Better-Auth 认证框架
+- ✅ 创建 `@beeve/auth-client` 认证客户端 SDK
+- ✅ 配置 GitHub/Google OAuth 支持（待填写环境变量）
+- ✅ 验证 typecheck 全部通过
 
 ### 2025-01-07
 - ✅ 初始化 pnpm workspace + Turborepo 2.7.2
@@ -76,6 +86,7 @@
 | 2024-12-25 | 使用 SolidJS 而非 React | 更好的性能、更简单的心智模型 | [ADR-001](/.ai/decisions/001-solidjs.md) |
 | 2024-12-25 | 使用 Biome 而非 ESLint | 更快、配置更简单、格式化+lint 一体 | [ADR-002](/.ai/decisions/002-biome.md) |
 | 2024-12-25 | 使用 Astro+Starlight 做文档 | 统一组件文档和技术文档 | [ADR-003](/.ai/decisions/003-docs-system.md) |
+| 2025-12-31 | 使用 Better-Auth 而非自建 | 开箱即用、支持 Drizzle、可扩展 Generic OAuth | - |
 
 ---
 
@@ -87,7 +98,7 @@
 
 ## 下一步行动
 
-1. 创建 `@beeve/db` 包（Drizzle + PostgreSQL）
-2. 创建 `apps/server` 骨架（Hono）
+1. 配置 PostgreSQL 数据库并运行迁移
+2. 配置 GitHub/Google OAuth 环境变量
 3. 扩展 `@beeve/ui` 组件（Input, Card, Dialog 等）
 4. 配置 CI/CD (GitHub Actions)
