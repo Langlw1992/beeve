@@ -18,9 +18,9 @@ const sliderStyles = tv({
     track: 'relative grow overflow-hidden rounded-full bg-muted',
     range: 'absolute bg-primary',
     thumb: [
-      'group block rounded-full border-2 border-primary bg-background',
+      'group block rounded-full border-2 border-primary bg-background shadow-sm',
       'ring-offset-background transition-colors',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
       'disabled:pointer-events-none disabled:opacity-50',
       'cursor-grab active:cursor-grabbing',
     ],
@@ -31,42 +31,47 @@ const sliderStyles = tv({
       'opacity-0 scale-95 transition-all duration-150',
       'group-hover:opacity-100 group-hover:scale-100',
       'group-focus-within:opacity-100 group-focus-within:scale-100',
+      'group-active:opacity-100 group-active:scale-100',
+      'group-data-[dragging]:opacity-100 group-data-[dragging]:scale-100',
       'pointer-events-none whitespace-nowrap',
+      // Arrow
+      'after:content-[""] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2',
+      'after:border-[4px] after:border-transparent after:border-t-foreground',
     ],
     markerGroup: 'relative w-full',
     marker: 'absolute text-xs text-muted-foreground',
-    inputWrapper: 'flex items-center gap-3',
+    inputWrapper: 'flex items-center gap-3 w-full',
     inputContainer: 'shrink-0',
   },
   variants: {
     size: {
       sm: {
         track: 'h-1',
-        range: 'h-1',
+        range: 'h-full',
         thumb: 'size-3.5',
       },
       md: {
         track: 'h-1.5',
-        range: 'h-1.5',
+        range: 'h-full',
         thumb: 'size-4',
       },
       lg: {
         track: 'h-2',
-        range: 'h-2',
+        range: 'h-full',
         thumb: 'size-5',
       },
     },
     orientation: {
       horizontal: {
         root: 'flex-row',
-        control: 'h-5 w-full',
-        track: 'h-full w-full',
+        control: 'h-5 flex-1',
+        track: 'w-full',
         range: 'h-full',
       },
       vertical: {
         root: 'flex-col h-full',
-        control: 'w-5 h-full',
-        track: 'w-full h-full',
+        control: 'w-5 flex-1',
+        track: 'h-full',
         range: 'w-full',
       },
     },
@@ -92,6 +97,8 @@ export interface SliderProps extends BaseProps, VariantProps<typeof sliderStyles
   showInput?: boolean
   /** 输入框宽度 */
   inputWidth?: string
+  /** Ref */
+  ref?: (el: HTMLDivElement) => void
 }
 
 // ==================== 组件实现 ====================
@@ -99,7 +106,7 @@ export interface SliderProps extends BaseProps, VariantProps<typeof sliderStyles
 export const Slider: Component<SliderProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'label', 'marks', 'showTooltip', 'showInput', 'inputWidth'],
+    ['class', 'label', 'marks', 'showTooltip', 'showInput', 'inputWidth', 'ref'],
     ['size', 'orientation']
   )
 
@@ -110,7 +117,7 @@ export const Slider: Component<SliderProps> = (props) => {
   const isRange = () => api().value.length > 1
 
   return (
-    <div {...api().getRootProps()} class={styles().root({ class: local.class })}>
+    <div ref={local.ref} {...api().getRootProps()} class={styles().root({ class: local.class })}>
       {/* Label */}
       <Show when={local.label}>
         {/* biome-ignore lint/a11y/noLabelWithoutControl: zag-js getLabelProps provides htmlFor */}
@@ -136,7 +143,12 @@ export const Slider: Component<SliderProps> = (props) => {
 
               return (
                 <div {...thumbProps()} class={styles().thumb()}>
-                  <input {...hiddenInputProps()} />
+                  <Input
+                    inputType="number"
+                    name={hiddenInputProps().name}
+                    value={thumbValue()}
+                    class="hidden"
+                  />
                   <Show when={local.showTooltip !== false}>
                     <div class={styles().thumbTooltip()}>{thumbValue()}</div>
                   </Show>
@@ -180,37 +192,64 @@ interface SliderInputProps {
 
 const SliderInput: Component<SliderInputProps> = (props) => {
   const [inputValue, setInputValue] = createSignal('')
+  const [isEditing, setIsEditing] = createSignal(false)
 
-  // 同步 slider 值到 input
+  // 同步 slider 值到 input（仅在非编辑状态时）
   createEffect(() => {
-    setInputValue(String(props.api.value[props.index] ?? 0))
-  })
-
-  const handleBlur = () => {
-    const num = Number(inputValue())
-    if (!Number.isNaN(num)) {
-      const newValue = [...props.api.value]
-      newValue[props.index] = Math.min(Math.max(num, props.min), props.max)
-      props.api.setValue(newValue)
-    } else {
-      // 恢复原值
+    if (!isEditing()) {
       setInputValue(String(props.api.value[props.index] ?? 0))
     }
+  })
+
+  // 更新 slider 值
+  const updateSliderValue = (value: number) => {
+    const clampedValue = Math.min(Math.max(value, props.min), props.max)
+    const newValue = [...props.api.value]
+    newValue[props.index] = clampedValue
+    props.api.setValue(newValue)
+  }
+
+  const handleInput = (value: string) => {
+    setInputValue(value)
+    // 如果是有效数字，立即更新 slider（支持增减按钮）
+    const num = Number(value)
+    if (!Number.isNaN(num)) {
+      updateSliderValue(num)
+    }
+  }
+
+  const handleFocus = () => {
+    setIsEditing(true)
+  }
+
+  const handleBlur = () => {
+    setIsEditing(false)
+    const num = Number(inputValue())
+    if (!Number.isNaN(num)) {
+      updateSliderValue(num)
+    }
+    // 同步显示值（处理超出范围或无效输入）
+    setInputValue(String(props.api.value[props.index] ?? 0))
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleBlur()
+      (e.target as HTMLInputElement)?.blur()
     }
   }
 
   return (
     <Input
+      inputType="number"
       size={props.size === 'lg' ? 'md' : 'sm'}
       value={inputValue()}
-      onInput={(value) => setInputValue(value)}
+      onInput={handleInput}
+      onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
+      showControls
+      min={props.min}
+      max={props.max}
       class="text-center"
     />
   )
