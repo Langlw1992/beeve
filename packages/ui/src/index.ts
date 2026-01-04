@@ -5,10 +5,14 @@
 
 // Components
 export * from './components/Button'
+export * from './components/Checkbox'
 export * from './components/Dialog'
 export * from './components/Input'
 export * from './components/Label'
+export * from './components/NumberInput'
+export * from './components/Radio'
 export * from './components/Select'
+export * from './components/Switch'
 
 // Themes
 export * from './themes'

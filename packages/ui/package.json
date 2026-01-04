@@ -26,10 +26,11 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@zag-js/combobox": "^1.31.1",
-    "@zag-js/dialog": "^1.31.1",
-    "@zag-js/presence": "^1.31.1",
-    "@zag-js/solid": "^1.31.1",
+    "@zag-js/combobox": "^1.32.0",
+    "@zag-js/dialog": "^1.32.0",
+    "@zag-js/number-input": "^1.32.0",
+    "@zag-js/presence": "^1.32.0",
+    "@zag-js/solid": "^1.32.0",
     "lucide-solid": "^0.562.0",
     "tailwind-variants": "^0.3.1"
   },

@@ -497,5 +497,128 @@ describe('Input', () => {
       expect(handlePressEnter).not.toHaveBeenCalled()
     })
   })
-})
 
+  // ==================== Textarea 模式测试 ====================
+  describe('Textarea 模式 (inputType="textarea")', () => {
+    it('应该渲染 textarea 元素', () => {
+      render(() => <Input inputType="textarea" />)
+      const textarea = document.querySelector('textarea')
+      expect(textarea).toBeInTheDocument()
+    })
+
+    it('应该支持 rows 属性', () => {
+      render(() => <Input inputType="textarea" rows={5} />)
+      const textarea = document.querySelector('textarea')
+      expect(textarea).toHaveAttribute('rows', '5')
+    })
+
+    it('默认 rows 应该是 3', () => {
+      render(() => <Input inputType="textarea" />)
+      const textarea = document.querySelector('textarea')
+      expect(textarea).toHaveAttribute('rows', '3')
+    })
+
+    it('应该支持字数统计', () => {
+      render(() => <Input inputType="textarea" showCount maxLength={100} defaultValue="测试" />)
+      expect(screen.getByText('2/100')).toBeInTheDocument()
+    })
+
+    it('textarea 应该支持手动拉伸 (resize-y)', () => {
+      render(() => <Input inputType="textarea" />)
+      const textarea = document.querySelector('textarea')
+      expect(textarea?.className).toContain('resize-y')
+    })
+
+    it('输入时应该触发 onInput', async () => {
+      const handleInput = vi.fn()
+      render(() => <Input inputType="textarea" onInput={handleInput} />)
+
+      const textarea = document.querySelector('textarea') as HTMLTextAreaElement
+      await fireEvent.input(textarea, { target: { value: '多行文本' } })
+
+      expect(handleInput).toHaveBeenCalledWith('多行文本', expect.any(Object))
+    })
+  })
+
+  // ==================== Number 模式测试 ====================
+  describe('Number 模式 (inputType="number")', () => {
+    it('应该渲染 number 类型的 input', () => {
+      render(() => <Input inputType="number" />)
+      const input = document.querySelector('input')
+      expect(input).toHaveAttribute('type', 'number')
+    })
+
+    it('应该支持 min/max 属性', () => {
+      render(() => <Input inputType="number" min={0} max={100} />)
+      const input = document.querySelector('input')
+      expect(input).toHaveAttribute('min', '0')
+      expect(input).toHaveAttribute('max', '100')
+    })
+
+    it('应该支持 step 属性', () => {
+      render(() => <Input inputType="number" step={5} />)
+      const input = document.querySelector('input')
+      expect(input).toHaveAttribute('step', '5')
+    })
+
+    it('showControls 时应该显示增减按钮', () => {
+      render(() => <Input inputType="number" showControls />)
+      expect(screen.getByLabelText('增加')).toBeInTheDocument()
+      expect(screen.getByLabelText('减少')).toBeInTheDocument()
+    })
+
+    it('不设置 showControls 时不应该显示增减按钮', () => {
+      render(() => <Input inputType="number" />)
+      expect(screen.queryByLabelText('增加')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('减少')).not.toBeInTheDocument()
+    })
+
+    it('点击增加按钮应该增加值', async () => {
+      const handleInput = vi.fn()
+      render(() => <Input inputType="number" showControls defaultValue="5" onInput={handleInput} />)
+
+      await fireEvent.click(screen.getByLabelText('增加'))
+
+      expect(handleInput).toHaveBeenCalledWith('6', expect.any(Object))
+    })
+
+    it('点击减少按钮应该减少值', async () => {
+      const handleInput = vi.fn()
+      render(() => <Input inputType="number" showControls defaultValue="5" onInput={handleInput} />)
+
+      await fireEvent.click(screen.getByLabelText('减少'))
+
+      expect(handleInput).toHaveBeenCalledWith('4', expect.any(Object))
+    })
+
+    it('达到最大值时增加按钮应该禁用', async () => {
+      render(() => <Input inputType="number" showControls max={10} defaultValue="10" />)
+
+      const incrementBtn = screen.getByLabelText('增加')
+      expect(incrementBtn).toBeDisabled()
+    })
+
+    it('达到最小值时减少按钮应该禁用', async () => {
+      render(() => <Input inputType="number" showControls min={0} defaultValue="0" />)
+
+      const decrementBtn = screen.getByLabelText('减少')
+      expect(decrementBtn).toBeDisabled()
+    })
+
+    it('应该按 step 步长增减', async () => {
+      const handleIncrement = vi.fn()
+      render(() => <Input inputType="number" showControls step={5} defaultValue="10" onInput={handleIncrement} />)
+
+      await fireEvent.click(screen.getByLabelText('增加'))
+      expect(handleIncrement).toHaveBeenCalledWith('15', expect.any(Object))
+    })
+
+    it('减少时应该按 step 步长', async () => {
+      const handleDecrement = vi.fn()
+      render(() => <Input inputType="number" showControls step={5} defaultValue="20" onInput={handleDecrement} />)
+
+      await fireEvent.click(screen.getByLabelText('减少'))
+      expect(handleDecrement).toHaveBeenCalledWith('15', expect.any(Object))
+    })
+  })
+})
