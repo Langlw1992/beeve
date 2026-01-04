@@ -216,15 +216,18 @@ importers:
       '@zag-js/dialog':
         specifier: ^1.32.0
         version: 1.32.0
-      '@zag-js/number-input':
+      '@zag-js/presence':
         specifier: ^1.32.0
         version: 1.32.0
-      '@zag-js/presence':
+      '@zag-js/slider':
         specifier: ^1.32.0
         version: 1.32.0
       '@zag-js/solid':
         specifier: ^1.32.0
         version: 1.32.0(solid-js@1.9.10)
+      '@zag-js/tooltip':
+        specifier: ^1.32.0
+        version: 1.32.0
       lucide-solid:
         specifier: ^0.562.0
         version: 0.562.0(solid-js@1.9.10)
@@ -1269,9 +1272,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@internationalized/number@3.6.5':
-    resolution: {integrity: sha512-6hY4Kl4HPBvtfS62asS/R22JzNNy8vi/Ssev7x6EobfCp+9QIB2hKvI2EtbdJ0VSQacxVNtqhE/NmF/NZ0gm6g==}
-
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
     engines: {node: 20 || >=22}
@@ -1832,11 +1832,11 @@ packages:
   '@zag-js/focus-trap@1.32.0':
     resolution: {integrity: sha512-irzYMaz1ycAnHOGLr4r6+3MwhfKnA67N9jPft9ejnE2QoTp40W+xp07K2KQNf6xN7Boe6xGlw8SwLBnGZw2eCQ==}
 
+  '@zag-js/focus-visible@1.32.0':
+    resolution: {integrity: sha512-/Gwu6Yt/c8tgpx32vkOxj2AIdmNdJv0WFHNBTl3xu60FR65oFfdpJsZR6MEbyL0F+srTYxuLZMdIoW5bN6nkQA==}
+
   '@zag-js/interact-outside@1.32.0':
     resolution: {integrity: sha512-OwQgBxijmv9ZXFu6WzhLRULJh0FoixuP6DJV9B2CGBKJZz4hbQAqVrW9PFaPiBuWOILZpZ/iI6ZDjkGSKZ0WHw==}
-
-  '@zag-js/number-input@1.32.0':
-    resolution: {integrity: sha512-Yx3x5klS6vZT9APkiIeB40+Q+0AJ/5ZKVT86LFP51MZvlg4wlFLfL4augfPFhkJkih+7trx4n98LXkoCmiXJow==}
 
   '@zag-js/popper@1.32.0':
     resolution: {integrity: sha512-nTSdbgZKIEERNEpNhMlbATRiKhMrxo0t2206MbVhrM52TuraIc+nRmJNwWKoagalXs62/TlSpFvXmcpVyfWTMQ==}
@@ -1847,6 +1847,9 @@ packages:
   '@zag-js/remove-scroll@1.32.0':
     resolution: {integrity: sha512-gWx8z/8ayNo624ibET4cNWbdVLc8A0Vyy9L9t67KT/slrBjcOA/zp9JL3Ngw/TZKgtR+wDh7P8ZoNAe0euaLSQ==}
 
+  '@zag-js/slider@1.32.0':
+    resolution: {integrity: sha512-sbxQWp+/YxSvMDNkl5QDU7JyN6AGszASBZ1fT41Ctup17CQXnTwRK6CaAr00fgd4d21JlWd7T74/M393XgA6iQ==}
+
   '@zag-js/solid@1.32.0':
     resolution: {integrity: sha512-lH1XhOJN6uS1aNWOiotvPKAEVg4Mm/dfc/E08ku3VKiAMqCOT1C/sq/J1BHdJgh5unzt8CCyrOHeY2UYsOTgQw==}
     peerDependencies:
@@ -1854,6 +1857,9 @@ packages:
 
   '@zag-js/store@1.32.0':
     resolution: {integrity: sha512-m9jvTKJB/lTC2I8NpDf+yo2XVN+ogxjiVbGsooAFTpyUAiXZY50nVc9cFcswnwFMo/GzXMk81oalyz9u65jqRQ==}
+
+  '@zag-js/tooltip@1.32.0':
+    resolution: {integrity: sha512-V3GJXCgSTiijqZTqJnRQ5HClL8GUtGhfczcB9fV+T2+mbwZXahfNQ0Fjrfi2Itb4WLCTovOi9iIAlfl3S1V/pQ==}
 
   '@zag-js/types@1.32.0':
     resolution: {integrity: sha512-9UV5mFnTgJRyFCCH9g/TIqtxxfw6FUphpe7E0AHK9+WSq3PRvflMeaRT/O6HgdWo0Rc+JN9vVwkFYyGD81uAbw==}
@@ -5124,10 +5130,6 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@internationalized/number@3.6.5':
-    dependencies:
-      '@swc/helpers': 0.5.17
-
   '@isaacs/balanced-match@4.0.1': {}
 
   '@isaacs/brace-expansion@5.0.0':
@@ -5722,18 +5724,13 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.32.0
 
+  '@zag-js/focus-visible@1.32.0':
+    dependencies:
+      '@zag-js/dom-query': 1.32.0
+
   '@zag-js/interact-outside@1.32.0':
     dependencies:
       '@zag-js/dom-query': 1.32.0
-      '@zag-js/utils': 1.32.0
-
-  '@zag-js/number-input@1.32.0':
-    dependencies:
-      '@internationalized/number': 3.6.5
-      '@zag-js/anatomy': 1.32.0
-      '@zag-js/core': 1.32.0
-      '@zag-js/dom-query': 1.32.0
-      '@zag-js/types': 1.32.0
       '@zag-js/utils': 1.32.0
 
   '@zag-js/popper@1.32.0':
@@ -5752,6 +5749,14 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.32.0
 
+  '@zag-js/slider@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
+
   '@zag-js/solid@1.32.0(solid-js@1.9.10)':
     dependencies:
       '@solid-primitives/keyed': 1.5.2(solid-js@1.9.10)
@@ -5764,6 +5769,16 @@ snapshots:
   '@zag-js/store@1.32.0':
     dependencies:
       proxy-compare: 3.0.1
+
+  '@zag-js/tooltip@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/focus-visible': 1.32.0
+      '@zag-js/popper': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
 
   '@zag-js/types@1.32.0':
     dependencies:
