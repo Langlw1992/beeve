@@ -11,7 +11,7 @@ const inputVariants = tv({
   slots: {
     root: 'relative w-full',
     wrapper: [
-      'flex gap-2 w-full',
+      'group/input flex gap-2 w-full',
       'rounded-[var(--radius)] border bg-background',
       'transition-colors duration-200',
       'focus-within:ring-1 focus-within:ring-ring',
@@ -40,7 +40,11 @@ const inputVariants = tv({
     ],
     count: 'text-xs text-muted-foreground shrink-0 tabular-nums',
     footer: 'flex items-center justify-end px-3 pb-2',
-    numberControls: 'flex flex-col border-l border-input',
+    numberControls: [
+      'flex flex-col border-l border-input',
+      'w-0 overflow-hidden transition-[width] duration-150',
+      'group-hover/input:w-6 group-focus-within/input:w-6',
+    ],
     numberButton: [
       'flex items-center justify-center px-1.5',
       'text-muted-foreground hover:text-foreground hover:bg-accent/50',
