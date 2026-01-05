@@ -12,7 +12,7 @@ const switchVariants = tv({
     track: [
       'relative shrink-0 rounded-full',
       'bg-input transition-colors duration-200',
-      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20',
       'data-[state=checked]:bg-primary',
     ],
     thumb: [

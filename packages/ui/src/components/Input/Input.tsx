@@ -14,7 +14,7 @@ const inputVariants = tv({
       'group/input flex gap-2 w-full',
       'rounded-[var(--radius)] border bg-background',
       'transition-colors duration-200',
-      'focus-within:ring-1 focus-within:ring-ring',
+      'focus-within:ring-1 focus-within:ring-primary/20',
     ],
     input: [
       'flex-1 w-full bg-transparent outline-none',
@@ -76,8 +76,8 @@ const inputVariants = tv({
       borderless: { wrapper: '!border-transparent shadow-none hover:bg-accent/50' },
     },
     status: {
-      error: { wrapper: '!border-destructive focus-within:ring-destructive/50' },
-      warning: { wrapper: '!border-warning focus-within:ring-warning/50' },
+      error: { wrapper: '!border-destructive focus-within:ring-destructive/20' },
+      warning: { wrapper: '!border-warning focus-within:ring-warning/20' },
     },
     disabled: {
       true: { wrapper: 'opacity-50 cursor-not-allowed bg-muted' },

@@ -2,49 +2,64 @@
  * useSelect hook - 基于 @zag-js/combobox 实现
  */
 
-import { createMemo, createSignal, createUniqueId } from 'solid-js'
+import { type Accessor, createMemo, createSignal, createUniqueId } from 'solid-js'
 import * as combobox from '@zag-js/combobox'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import type { SelectOption, SelectProps, SelectValue } from './types'
+import { type PropTypes, useMachine, normalizeProps } from '@zag-js/solid'
+import type {
+  SelectOption,
+  SelectProps,
+  SelectValue,
+  SelectCollection,
+} from './types'
 
-/** 将 SelectOption 转换为 zag-js collection item */
-function createCollection<T>(
+// ==================== 类型定义 ====================
+
+/** combobox API 类型 */
+export type SelectApi = combobox.Api<PropTypes, SelectOption>
+
+/** useSelect 返回类型 */
+export type UseSelectReturn<T = unknown> = {
+  /** combobox API accessor - 调用 api() 获取当前状态 */
+  api: Accessor<SelectApi>
+  /** 当前过滤后的选项 */
+  filteredOptions: Accessor<SelectOption<T>[]>
+  /** 是否有值 */
+  hasValue: Accessor<boolean>
+  /** 获取 option 对象 by value */
+  getOption: (value: SelectValue) => SelectOption<T> | undefined
+  /** Collection 对象 */
+  collection: Accessor<SelectCollection<SelectOption<T>>>
+}
+
+// ==================== 工具函数 ====================
+
+/** 将 SelectOption 转换为 zag-js collection */
+function createSelectCollection<T>(
   options: SelectOption<T>[],
-  fieldNames?: SelectProps<T>['fieldNames']
-) {
+  fieldNames?: SelectProps['fieldNames']
+): SelectCollection<SelectOption<T>> {
   const labelKey = fieldNames?.label ?? 'label'
   const valueKey = fieldNames?.value ?? 'value'
   const disabledKey = fieldNames?.disabled ?? 'disabled'
 
   return combobox.collection({
     items: options,
-    itemToValue: (item: SelectOption<T>) => String((item as Record<string, unknown>)[valueKey]),
-    itemToString: (item: SelectOption<T>) => String((item as Record<string, unknown>)[labelKey]),
-    isItemDisabled: (item: SelectOption<T>) => Boolean((item as Record<string, unknown>)[disabledKey]),
+    itemToValue: (item) => String((item as Record<string, unknown>)[valueKey]),
+    itemToString: (item) => String((item as Record<string, unknown>)[labelKey]),
+    isItemDisabled: (item) => Boolean((item as Record<string, unknown>)[disabledKey]),
   })
 }
 
-export type UseSelectProps<T = unknown> = SelectProps<T>
+// ==================== Hook 实现 ====================
 
-export type UseSelectReturn<T = unknown> = {
-  /** combobox API accessor - 调用 api() 获取当前状态 */
-  api: () => ReturnType<typeof combobox.connect>
-  /** 当前过滤后的选项 */
-  filteredOptions: () => SelectOption<T>[]
-  /** 是否有值 */
-  hasValue: () => boolean
-  /** 获取 option 对象 by value */
-  getOption: (value: SelectValue) => SelectOption<T> | undefined
-}
-
-export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectReturn<T> {
+export function useSelect<T = unknown>(props: SelectProps<T>): UseSelectReturn<T> {
   const options = () => props.options ?? []
 
   // 用于存储过滤后的选项
   const [filteredOptions, setFilteredOptions] = createSignal<SelectOption<T>[]>(options())
 
   // 创建 collection
-  const collection = createMemo(() => createCollection(filteredOptions(), props.fieldNames))
+  const collection = createMemo(() => createSelectCollection(filteredOptions(), props.fieldNames))
 
   // 值查找 map
   const optionMap = createMemo(() => {
@@ -55,10 +70,10 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
     return map
   })
 
-  const getOption = (value: SelectValue) => optionMap().get(String(value))
+  const getOption = (value: SelectValue): SelectOption<T> | undefined => optionMap().get(String(value))
 
   // 过滤函数
-  const filterFn = (inputValue: string) => {
+  const filterFn = (inputValue: string): SelectOption<T>[] => {
     if (props.filterOption === false) {
       return options()
     }
@@ -66,14 +81,14 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
     const filterProp = props.optionFilterProp ?? 'label'
 
     if (typeof props.filterOption === 'function') {
-      const filterFn = props.filterOption
-      return options().filter((opt) => filterFn(inputValue, opt))
+      const customFilter = props.filterOption
+      return options().filter((opt) => customFilter(inputValue, opt))
     }
 
     // 默认过滤逻辑
     const lowerInput = inputValue.toLowerCase()
     return options().filter((opt) => {
-      const fieldValue = String(opt[filterProp as keyof SelectOption<T>] ?? opt.label)
+      const fieldValue = String(opt[filterProp as keyof SelectOption] ?? opt.label)
       return fieldValue.toLowerCase().includes(lowerInput)
     })
   }
@@ -91,18 +106,20 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
     id: createUniqueId(),
     collection: collection(),
     multiple: props.mode === 'multiple' || props.mode === 'tags',
-    disabled: props.disabled,
-    // readOnly 只影响输入框是否可编辑，不影响下拉菜单的打开
-    // 当 showSearch 为 false 时，输入框只读但仍可打开下拉选择
-    readOnly: props.showSearch === false,
+    disabled: props.disabled || props.loading,
+    // 不使用 readOnly，让 zag-js 正常处理点击事件
+    // 搜索功能通过 inputBehavior 控制
     placeholder: props.placeholder,
     value: getInitialValue(),
-    inputBehavior: (props.showSearch ? 'autocomplete' : 'none') as 'autocomplete' | 'none',
-    selectionBehavior: (props.mode ? 'preserve' : 'replace') as 'preserve' | 'replace',
+    // inputBehavior: 'none' 时输入不会触发过滤，但点击仍可打开
+    inputBehavior: props.showSearch ? 'autocomplete' as const : 'none' as const,
+    selectionBehavior: props.mode ? 'preserve' as const : 'replace' as const,
+    // 确保点击能打开
     openOnClick: true,
+    openOnKeyPress: true,
     allowCustomValue: props.mode === 'tags',
 
-    onOpenChange: (details: { open: boolean }) => {
+    onOpenChange: (details) => {
       props.onOpenChange?.(details.open)
       if (details.open) {
         // 重置过滤
@@ -110,7 +127,7 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
       }
     },
 
-    onInputValueChange: (details: { inputValue: string }) => {
+    onInputValueChange: (details) => {
       props.onSearch?.(details.inputValue)
 
       if (props.showSearch && props.filterOption !== false) {
@@ -119,7 +136,7 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
       }
     },
 
-    onValueChange: (details: { value: string[] }) => {
+    onValueChange: (details) => {
       const selectedValues = details.value
       const isMultiple = props.mode === 'multiple' || props.mode === 'tags'
 
@@ -143,13 +160,14 @@ export function useSelect<T = unknown>(props: UseSelectProps<T>): UseSelectRetur
 
   const api = createMemo(() => combobox.connect(service, normalizeProps))
 
-  const hasValue = () => api().value.length > 0
+  const hasValue = createMemo(() => api().value.length > 0)
 
   return {
-    api, // 返回 accessor 函数，保持响应式
+    api,
     filteredOptions,
     hasValue,
     getOption,
+    collection,
   }
 }
 

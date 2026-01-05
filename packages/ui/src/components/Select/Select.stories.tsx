@@ -83,6 +83,13 @@ const meta = {
     onSearch: action('onSearch'),
     onOpenChange: action('onOpenChange'),
   },
+  decorators: [
+    (Story) => (
+      <div class="w-64">
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof Select>
 
 export default meta
@@ -124,33 +131,33 @@ export const Loading: Story = {
 
 /** 不同尺寸 */
 export const Sizes: Story = {
-  render: () => (
+  render: (args) => (
     <div class="flex flex-col gap-4 w-64">
-      <Select options={fruitOptions} size="sm" placeholder="小尺寸" />
-      <Select options={fruitOptions} size="md" placeholder="中等尺寸（默认）" />
-      <Select options={fruitOptions} size="lg" placeholder="大尺寸" />
+      <Select {...args} size="sm" placeholder="小尺寸" />
+      <Select {...args} size="md" placeholder="中等尺寸（默认）" />
+      <Select {...args} size="lg" placeholder="大尺寸" />
     </div>
   ),
 }
 
 /** 状态样式 */
 export const Status: Story = {
-  render: () => (
+  render: (args) => (
     <div class="flex flex-col gap-4 w-64">
-      <Select options={fruitOptions} status="error" placeholder="错误状态" />
-      <Select options={fruitOptions} status="warning" placeholder="警告状态" />
+      <Select {...args} status="error" placeholder="错误状态" />
+      <Select {...args} status="warning" placeholder="警告状态" />
     </div>
   ),
 }
 
 /** 受控模式 */
 export const Controlled: Story = {
-  render: () => {
+  render: (args) => {
     const [value, setValue] = createSignal<string | undefined>('banana')
     return (
       <div class="flex flex-col gap-4 w-64">
         <Select
-          options={fruitOptions}
+          {...args}
           value={value()}
           onChange={(v) => setValue(v as string)}
           placeholder="受控选择"

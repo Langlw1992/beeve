@@ -7,7 +7,7 @@ import { splitProps, Show, For, type Component } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { tv } from 'tailwind-variants'
 import { ChevronDown, X, Loader2 } from 'lucide-solid'
-import { useSelect } from '../../primitives/select/use-select'
+import { useSelect } from '../../primitives/select'
 import type { SelectProps } from '../../primitives/select'
 
 // ==================== 样式定义 ====================
@@ -19,10 +19,11 @@ const selectStyles = tv({
       'flex items-center gap-2 w-full',
       'rounded-[var(--radius)] border bg-background',
       'transition-colors duration-200',
-      'focus-within:ring-1 focus-within:ring-ring',
+      'cursor-pointer',
+      'focus-within:ring-1 focus-within:ring-primary/20',
     ],
     input: [
-      'flex-1 bg-transparent outline-none',
+      'flex-1 bg-transparent outline-none cursor-pointer',
       'placeholder:text-muted-foreground',
       'disabled:cursor-not-allowed disabled:opacity-50',
     ],
@@ -65,8 +66,8 @@ const selectStyles = tv({
       borderless: { control: 'border-transparent hover:bg-accent/50' },
     },
     status: {
-      error: { control: 'border-destructive focus-within:ring-destructive/50' },
-      warning: { control: 'border-warning focus-within:ring-warning/50' },
+      error: { control: '!border-destructive focus-within:ring-destructive/20' },
+      warning: { control: '!border-warning focus-within:ring-warning/20' },
     },
     disabled: {
       true: { control: 'opacity-50 cursor-not-allowed', input: 'cursor-not-allowed' },
@@ -89,20 +90,28 @@ export const Select: Component<SelectProps> = (props) => {
     'size',
     'variant',
     'status',
-    'disabled',
-    'loading',
     'allowClear',
     'notFoundContent',
   ])
 
-  const { api, filteredOptions, hasValue } = useSelect(rest)
+  // loading 和 disabled 需要传递给 useSelect
+  const { api, filteredOptions } = useSelect(rest)
+
+  // 计算是否禁用 (disabled 或 loading 状态)
+  const isDisabled = () => rest.disabled || rest.loading
+
+  // 是否有选中的值 - 使用 selectedItems 更可靠
+  const hasSelectedValue = () => {
+    const items = api().selectedItems
+    return items && items.length > 0
+  }
 
   const styles = () =>
     selectStyles({
       size: local.size,
       variant: local.variant,
       status: local.status,
-      disabled: local.disabled,
+      disabled: isDisabled(),
       open: api().open,
     })
 
@@ -118,12 +127,11 @@ export const Select: Component<SelectProps> = (props) => {
       <div {...api().getControlProps()} class={styles().control()}>
         <input
           {...api().getInputProps()}
-          class={styles().input()}
-          disabled={local.disabled}
+          class={`${styles().input()} ${!rest.showSearch ? 'caret-transparent selection:bg-transparent' : ''}`}
         />
 
-        {/* Clear Button */}
-        <Show when={local.allowClear && hasValue() && !local.disabled}>
+        {/* Clear Button - 只在有选中值时显示 */}
+        <Show when={local.allowClear && hasSelectedValue() && !isDisabled()}>
           <button
             type="button"
             aria-label="Clear"
@@ -135,7 +143,7 @@ export const Select: Component<SelectProps> = (props) => {
         </Show>
 
         {/* Loading Indicator */}
-        <Show when={local.loading}>
+        <Show when={rest.loading}>
           <div data-testid="select-loading" class={styles().loading()}>
             <Loader2 class="size-3.5 animate-spin" />
           </div>

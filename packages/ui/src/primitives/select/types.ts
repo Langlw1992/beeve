@@ -1,13 +1,34 @@
 /**
  * Select 组件类型定义
+ * 基于 @zag-js/combobox 类型扩展
  */
 
 import type { JSX } from 'solid-js'
+import type * as combobox from '@zag-js/combobox'
+
+// ==================== 复用 zag-js 类型 ====================
+
+/** Collection 类型 - 复用 combobox.collection 返回类型 */
+export type SelectCollection<T> = ReturnType<typeof combobox.collection<T>>
+
+/** 值变化详情 - 复用 zag-js 类型 */
+export type SelectValueChangeDetails = combobox.ValueChangeDetails
+
+/** 输入值变化详情 */
+export type SelectInputValueChangeDetails = combobox.InputValueChangeDetails
+
+/** 开关状态变化详情 */
+export type SelectOpenChangeDetails = combobox.OpenChangeDetails
+
+/** 高亮变化详情 */
+export type SelectHighlightChangeDetails = combobox.HighlightChangeDetails
+
+// ==================== 基础类型 ====================
 
 /** 值类型 - 仅支持 string | number */
 export type SelectValue = string | number
 
-/** Option 定义 */
+/** Option 定义 - 兼容 zag-js CollectionItem */
 export type SelectOption<T = unknown> = {
   label: string
   value: SelectValue
@@ -26,14 +47,16 @@ export type SelectFieldNames = {
   children?: string
 }
 
-/** Option 渲染状态 */
+/** Option 渲染状态 - 与 zag-js ItemState 对齐 */
 export type SelectOptionState = {
   selected: boolean
   highlighted: boolean
   disabled: boolean
 }
 
-/** Select Props */
+// ==================== Select Props ====================
+
+/** Select Props - 扩展部分 zag-js combobox.Props */
 export type SelectProps<T = unknown> = {
   // ==================== 数据 ====================
   /** 选项列表 */

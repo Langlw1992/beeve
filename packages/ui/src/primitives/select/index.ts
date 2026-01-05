@@ -1,3 +1,3 @@
 export * from './types'
-export { useSelect, type UseSelectProps, type UseSelectReturn } from './use-select'
+export { useSelect, type SelectApi, type UseSelectReturn } from './use-select'
 

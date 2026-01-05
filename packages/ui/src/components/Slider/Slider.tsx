@@ -146,12 +146,30 @@ export const Slider: Component<SliderProps> = (props) => {
   )
 
   // 获取 thumb 尺寸，避免 marker 位置闪动
-  const thumbSize = () => rest.thumbSize ?? THUMB_SIZES[variants.size ?? 'md']
+  const getThumbSize = () => rest.thumbSize ?? THUMB_SIZES[variants.size ?? 'md']
 
-  const { api } = useSlider({
-    ...rest,
-    thumbSize: thumbSize(),
-  })
+  // 使用 useSlider hook
+  // 传入函数以保持 SolidJS 响应性：函数内部读取 props 会建立追踪依赖
+  const { api } = useSlider(() => ({
+    id: rest.id,
+    value: rest.value,
+    defaultValue: rest.defaultValue,
+    min: rest.min,
+    max: rest.max,
+    step: rest.step,
+    disabled: rest.disabled,
+    readOnly: rest.readOnly,
+    invalid: rest.invalid,
+    orientation: variants.orientation,
+    origin: rest.origin,
+    thumbAlignment: rest.thumbAlignment,
+    thumbSize: getThumbSize(),
+    name: rest.name,
+    dir: rest.dir,
+    onValueChange: rest.onValueChange,
+    onValueChangeEnd: rest.onValueChangeEnd,
+    getAriaValueText: rest.getAriaValueText,
+  }))
   const styles = createMemo(() =>
     sliderStyles({ size: variants.size, orientation: variants.orientation ?? 'horizontal' })
   )
