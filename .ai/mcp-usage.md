@@ -26,10 +26,558 @@
 
 | MCP | 用途 | 使用场景 |
 |-----|------|---------|
-| **chromeDevtools** | 前端视觉测试 | 页面渲染检查、UI 调试、样式验证 |
-| **github** | GitHub 操作 | PR、Issue、代码审查 |
+| **typescript-lsp** | TypeScript 语言服务 | 符号重命名、代码重构、类型推断 |
+| **playwright** | 浏览器自动化测试 | E2E 测试、可视化回归测试 |
+| **frontend-design** | 前端设计和 UI 开发 | 组件设计、样式优化、设计系统 |
 | **sequential-thinking** | 分步推理 | 复杂任务分解、架构设计 |
 | **memory** | 持久记忆 | 跨会话上下文、项目知识 |
+| **github** | GitHub 操作 | PR、Issue、代码审查 |
+| **document-skills** | 文档操作 | Marketplace 技能管理 |
+| **chromeDevtools** | 前端视觉测试 | 页面渲染检查、UI 调试、样式验证 |
+
+---
+
+## typescript-lsp 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景建议使用 typescript-lsp：
+
+1. 大规模重命名符号（函数、变量、类型）
+2. 跨文件的代码重构
+3. 获取准确的类型信息和推断
+4. 代码补全和智能提示
+5. 查找定义和类型定义
+```
+
+### 常用操作
+
+#### 重命名符号
+```typescript
+// 安全地重命名符号，自动更新所有引用
+mcp_typescript-lsp_rename({
+  file: "path/to/file.ts",
+  line: 10,
+  character: 5,
+  newName: "newSymbolName"
+})
+```
+
+#### 获取符号定义
+```typescript
+// 跳转到符号定义位置
+mcp_typescript-lsp_definition({
+  file: "path/to/file.ts",
+  line: 10,
+  character: 5
+})
+```
+
+#### 获取类型定义
+```typescript
+// 获取类型的定义位置
+mcp_typescript-lsp_typeDefinition({
+  file: "path/to/file.ts",
+  line: 10,
+  character: 5
+})
+```
+
+#### 查找所有引用
+```typescript
+// 查找符号的所有引用位置
+mcp_typescript-lsp_references({
+  file: "path/to/file.ts",
+  line: 10,
+  character: 5
+})
+```
+
+### 使用建议
+
+- **与 serena 配合**：serena 提供语义分析，typescript-lsp 提供精确的类型信息
+- **重构前必用**：大规模重命名前使用 typescript-lsp 确保安全性
+- **类型问题排查**：遇到类型错误时使用获取准确的类型推断信息
+
+---
+
+## playwright 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景必须使用 playwright：
+
+1. E2E 测试编写和执行
+2. 用户交互流程测试
+3. 跨浏览器兼容性测试
+4. 可视化回归测试
+5. 复杂表单提交流程测试
+```
+
+### 使用流程
+
+```
+1. 启动开发服务器
+2. 使用 playwright 连接到页面
+3. 执行测试操作和断言
+4. 截图记录测试结果
+5. 生成测试报告
+```
+
+### 常用操作
+
+#### 页面导航和交互
+```typescript
+// 导航到页面并执行操作
+await page.goto('http://localhost:3000')
+await page.click('button[type="submit"]')
+await page.fill('input[name="email"]', 'test@example.com')
+await page.selectOption('select', 'option-value')
+```
+
+#### 断言和验证
+```typescript
+// 验证元素状态
+await expect(page.locator('.success-message')).toBeVisible()
+await expect(page.locator('h1')).toHaveText('Welcome')
+```
+
+#### 截图和录制
+```typescript
+// 截图当前页面
+await page.screenshot({ path: 'screenshot.png' })
+
+// 录制视频
+const context = await browser.newContext({ recordVideo: { dir: 'videos/' } })
+```
+
+### 与 chromeDevtools 的区别
+
+| 场景 | 使用工具 |
+|------|---------|
+| 手动调试、样式调整 | chromeDevtools |
+| 自动化测试、回归测试 | playwright |
+| 快速视觉检查 | chromeDevtools |
+| 完整用户流程测试 | playwright |
+
+---
+
+## frontend-design 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景建议使用 frontend-design：
+
+1. UI 组件设计和开发
+2. 设计系统构建和维护
+3. 样式优化和主题定制
+4. 响应式布局设计
+5. 组件库文档和 Storybook 开发
+6. 设计 token 管理
+```
+
+### 使用流程
+
+```
+1. 确定组件设计需求和规格
+2. 使用 frontend-design 生成设计方案
+3. 应用项目的设计系统（TailwindCSS + tailwind-variants）
+4. 结合 chromeDevtools 进行视觉验证
+5. 使用 Storybook 记录组件用法
+```
+
+### 常用操作
+
+#### 组件设计咨询
+```typescript
+// 获取组件设计建议
+// - 布局方案
+// - 样式变体设计
+// - 可访问性建议
+// - 响应式设计策略
+```
+
+#### 设计系统集成
+```typescript
+// 确保设计符合项目规范：
+// - TailwindCSS v4 样式
+// - tailwind-variants 变体定义
+// - 设计 token 使用
+// - 组件 API 设计
+```
+
+#### 样式优化建议
+```typescript
+// 获取样式改进建议：
+// - CSS 性能优化
+// - 主题切换支持
+// - 动画和过渡效果
+// - 深色模式适配
+```
+
+### 与项目规范的集成
+
+**必须遵循的项目约定：**
+
+1. **样式框架**：TailwindCSS v4
+   - 使用 `size-x` 而不是 `w-x h-x`
+   - 遵循项目的 Tailwind 配置
+
+2. **组件变体**：tailwind-variants
+   ```typescript
+   const componentVariants = tv({
+     base: '...',
+     variants: { ... },
+     defaultVariants: { ... }
+   })
+   ```
+
+3. **组件结构**：
+   - 使用 `splitProps` 分离 props
+   - 导出 `VariantProps` 类型
+   - 支持 `class` prop 合并
+
+4. **文档化**：
+   - 为组件创建 Storybook stories
+   - 提供使用示例和 API 文档
+
+### 工作流程示例
+
+```
+用户需求：设计一个 Card 组件
+
+1. [frontend-design] 生成设计方案
+   - 确定变体：default, outlined, elevated
+   - 定义尺寸：sm, md, lg
+   - 设计 slots：header, body, footer
+
+2. [实现] 按项目规范编码
+   - 使用 tailwind-variants 定义样式
+   - 遵循组件结构模板
+   - 添加 TypeScript 类型
+
+3. [chromeDevtools] 视觉验证
+   - 检查各变体渲染效果
+   - 验证响应式表现
+   - 测试交互状态
+
+4. [Storybook] 文档化
+   - 创建组件 stories
+   - 展示所有变体和用例
+```
+
+### 与其他工具配合
+
+| 场景 | 工具组合 | 说明 |
+|------|---------|------|
+| 新组件开发 | frontend-design → 手动实现 → chromeDevtools | 设计 → 编码 → 验证 |
+| 样式调试 | chromeDevtools → frontend-design | 发现问题 → 获取优化建议 |
+| 设计系统 | frontend-design → context7 | 设计咨询 → 查询 Tailwind 文档 |
+| 组件文档 | frontend-design → Storybook | 设计说明 → 交互式文档 |
+
+---
+
+## sequential-thinking 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景强烈建议使用 sequential-thinking：
+
+1. 复杂任务分解和规划
+2. 系统架构设计
+3. 多步骤问题求解
+4. 重大技术决策分析
+5. 代码重构方案设计
+6. 性能优化策略制定
+```
+
+### 使用流程
+
+```
+1. 识别复杂任务
+2. 激活 sequential-thinking 模式
+3. 逐步分析和推理
+4. 形成结构化方案
+5. 记录决策依据
+```
+
+### 常用操作
+
+#### 任务分解
+```typescript
+// 将复杂需求分解为可执行步骤
+// - 识别依赖关系
+// - 确定优先级
+// - 评估风险
+// - 制定时间线
+```
+
+#### 架构设计
+```typescript
+// 系统化思考架构方案
+// - 分析需求和约束
+// - 评估技术选型
+// - 设计模块划分
+// - 考虑扩展性和维护性
+```
+
+#### 问题诊断
+```typescript
+// 系统化排查问题
+// - 收集症状和日志
+// - 提出假设
+// - 设计验证方案
+// - 确定根本原因
+```
+
+### 与项目工作流集成
+
+**推荐使用时机：**
+
+1. **新功能开发前**
+   - 使用 sequential-thinking 分析需求
+   - 设计实现方案
+   - 识别潜在问题
+   - 记录在 `.ai/decisions/` 目录（ADR）
+
+2. **重构决策**
+   - 分析现有代码问题
+   - 评估重构方案
+   - 考虑向后兼容性
+   - 制定迁移计划
+
+3. **性能优化**
+   - 识别性能瓶颈
+   - 评估优化策略
+   - 权衡性能和复杂度
+   - 制定优化步骤
+
+### 输出建议
+
+使用 sequential-thinking 后，建议：
+- 在 `.ai/decisions/` 创建 ADR（架构决策记录）
+- 更新 `PROGRESS.md` 记录关键决策
+- 在代码中添加必要的注释说明设计意图
+
+---
+
+## memory 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景建议使用 memory：
+
+1. 跨会话的项目上下文保持
+2. 记录重要的技术决策
+3. 保存常用的命令和配置
+4. 记录已知问题和解决方案
+5. 维护项目知识库
+```
+
+### 使用流程
+
+```
+1. 识别需要记忆的信息
+2. 使用 memory 工具保存
+3. 在后续会话中检索
+4. 定期更新和清理
+```
+
+### 常用操作
+
+#### 保存项目知识
+```typescript
+// 记录项目特定的约定和模式
+// - 代码风格指南
+// - 架构模式
+// - 常见问题解决方案
+// - API 使用示例
+```
+
+#### 记录技术决策
+```typescript
+// 保存重要决策的上下文
+// - 为什么选择特定技术
+// - 技术选型的权衡
+// - 已知的限制和注意事项
+```
+
+#### 维护命令库
+```typescript
+// 保存常用命令和配置
+// - 数据库操作命令
+// - 部署脚本
+// - 调试技巧
+// - 性能分析工具
+```
+
+### 与项目文件的配合
+
+**Memory vs 文件系统：**
+
+| 场景 | 使用工具 | 说明 |
+|------|---------|------|
+| 长期文档 | `.ai/` 目录文件 | 正式的项目文档 |
+| 会话记忆 | memory 工具 | 临时上下文和提示 |
+| 决策记录 | `.ai/decisions/` ADR | 架构决策 |
+| 进度跟踪 | `PROGRESS.md` | 当前状态 |
+
+**建议：**
+- 重要信息应同时保存在文件系统和 memory
+- Memory 用于快速检索和上下文提示
+- 文件系统用于持久化和版本控制
+
+### 记忆内容类型
+
+```
+✅ 适合保存到 memory：
+- 当前开发的功能上下文
+- 临时的调试发现
+- 待解决的问题列表
+- 快速参考的代码片段
+
+❌ 不适合 memory（应用文件）：
+- 完整的设计文档
+- 代码实现
+- 配置文件
+- 测试用例
+```
+
+---
+
+## github 使用规范
+
+### 必须使用的场景
+
+```
+⚠️ 以下场景必须使用 github MCP：
+
+1. 创建和管理 Pull Requests
+2. 查看和回复 Issue
+3. 代码审查和评论
+4. CI/CD 状态检查
+5. Release 管理
+6. 项目看板管理
+```
+
+### 使用流程
+
+```
+1. 连接到 GitHub 仓库
+2. 使用 github 工具执行操作
+3. 结合 git 命令完成工作流
+4. 遵循项目的 PR 和 Issue 规范
+```
+
+### 常用操作
+
+#### 创建 Pull Request
+```bash
+# 使用 github 工具创建 PR
+# - 自动填充标题和描述
+# - 关联相关 Issue
+# - 请求审查者
+# - 添加标签
+```
+
+#### 代码审查
+```bash
+# 审查 PR 代码
+# - 获取 diff
+# - 添加行级评论
+# - 提交审查意见
+# - 批准或请求修改
+```
+
+#### Issue 管理
+```bash
+# 管理 Issues
+# - 创建新 Issue
+# - 更新状态
+# - 添加标签
+# - 分配负责人
+```
+
+### 与项目规范集成
+
+**Beeve 项目的 GitHub 工作流：**
+
+1. **分支策略**
+   - `main` - 主分支
+   - `feat/*` - 功能开发
+   - `fix/*` - 问题修复
+   - `refactor/*` - 重构
+
+2. **PR 规范**
+   - 标题格式：`[feat|fix|refactor] 简短描述`
+   - 必须关联 Issue（如果有）
+   - 需要通过 CI 检查（lint, typecheck, test）
+   - 需要至少一个审查批准
+
+3. **Commit 规范**
+   - 遵循 Conventional Commits
+   - 包含 AI 生成标记（如配置）
+
+### 工作流程示例
+
+```bash
+# 1. 创建功能分支
+git checkout -b feat/add-card-component
+
+# 2. 实现功能并提交
+git add .
+git commit -m "feat: add Card component with variants"
+
+# 3. 推送并创建 PR
+git push origin feat/add-card-component
+# 使用 github 工具创建 PR
+
+# 4. 响应审查意见
+# 通过 github 工具查看评论
+# 修改代码并更新 PR
+
+# 5. 合并 PR
+# 审查通过后，使用 github 工具合并
+```
+
+### 与其他工具配合
+
+| 场景 | 工具组合 | 说明 |
+|------|---------|------|
+| PR 审查 | github + serena | 获取 PR → 分析代码变更 |
+| Issue 修复 | github + sequential-thinking | 理解问题 → 设计方案 |
+| CI 失败调试 | github + bash | 获取 CI 日志 → 本地复现 |
+| Release 管理 | github + changelog | 准备 Release Notes |
+
+---
+
+## document-skills 使用规范
+
+### 用途
+
+- **Marketplace 技能管理**：来自 Anthropic 官方的技能集合
+- **扩展 Claude Code 能力**：提供额外的专业化技能
+
+### 使用场景
+
+```
+⚠️ document-skills 是技能市场插件，主要提供：
+
+1. 专业领域技能（如文档处理、数据分析等）
+2. 预配置的工作流程
+3. 常用任务的自动化
+```
+
+### 注意事项
+
+- 查看可用技能：使用 Claude Code 的技能管理命令
+- 按需启用：只启用项目需要的技能
+- 定期更新：保持技能库最新
 
 ---
 

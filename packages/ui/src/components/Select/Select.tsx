@@ -6,7 +6,7 @@
 import { splitProps, Show, For, type Component } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { tv } from 'tailwind-variants'
-import { ChevronDown, X, Loader2 } from 'lucide-solid'
+import { ChevronDown, X, LoaderCircle } from 'lucide-solid'
 import { useSelect } from '../../primitives/select'
 import type { SelectProps } from '../../primitives/select'
 
@@ -145,7 +145,7 @@ export const Select: Component<SelectProps> = (props) => {
         {/* Loading Indicator */}
         <Show when={rest.loading}>
           <div data-testid="select-loading" class={styles().loading()}>
-            <Loader2 class="size-3.5 animate-spin" />
+            <LoaderCircle class="size-3.5 animate-spin" />
           </div>
         </Show>
 
