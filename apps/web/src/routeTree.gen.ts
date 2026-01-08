@@ -14,6 +14,7 @@ import { Route as SwitchRouteImport } from './routes/switch'
 import { Route as SliderRouteImport } from './routes/slider'
 import { Route as SelectRouteImport } from './routes/select'
 import { Route as RadioRouteImport } from './routes/radio'
+import { Route as NavmenuRouteImport } from './routes/navmenu'
 import { Route as LabelRouteImport } from './routes/label'
 import { Route as InputRouteImport } from './routes/input'
 import { Route as DialogRouteImport } from './routes/dialog'
@@ -44,6 +45,11 @@ const SelectRoute = SelectRouteImport.update({
 const RadioRoute = RadioRouteImport.update({
   id: '/radio',
   path: '/radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NavmenuRoute = NavmenuRouteImport.update({
+  id: '/navmenu',
+  path: '/navmenu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabelRoute = LabelRouteImport.update({
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/navmenu': typeof NavmenuRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
   '/slider': typeof SliderRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/navmenu': typeof NavmenuRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
   '/slider': typeof SliderRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/navmenu': typeof NavmenuRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
   '/slider': typeof SliderRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/dialog'
     | '/input'
     | '/label'
+    | '/navmenu'
     | '/radio'
     | '/select'
     | '/slider'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/dialog'
     | '/input'
     | '/label'
+    | '/navmenu'
     | '/radio'
     | '/select'
     | '/slider'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/dialog'
     | '/input'
     | '/label'
+    | '/navmenu'
     | '/radio'
     | '/select'
     | '/slider'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   DialogRoute: typeof DialogRoute
   InputRoute: typeof InputRoute
   LabelRoute: typeof LabelRoute
+  NavmenuRoute: typeof NavmenuRoute
   RadioRoute: typeof RadioRoute
   SelectRoute: typeof SelectRoute
   SliderRoute: typeof SliderRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/solid-router' {
       path: '/radio'
       fullPath: '/radio'
       preLoaderRoute: typeof RadioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/navmenu': {
+      id: '/navmenu'
+      path: '/navmenu'
+      fullPath: '/navmenu'
+      preLoaderRoute: typeof NavmenuRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/label': {
@@ -262,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   DialogRoute: DialogRoute,
   InputRoute: InputRoute,
   LabelRoute: LabelRoute,
+  NavmenuRoute: NavmenuRoute,
   RadioRoute: RadioRoute,
   SelectRoute: SelectRoute,
   SliderRoute: SliderRoute,

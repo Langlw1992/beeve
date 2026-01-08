@@ -41,6 +41,7 @@ const routes = [
   { path: '/label', label: 'Label' },
   { path: '/dialog', label: 'Dialog' },
   { path: '/tooltip', label: 'Tooltip' },
+  { path: '/navmenu', label: 'NavMenu' },
 ] as const
 
 function RootComponent() {
