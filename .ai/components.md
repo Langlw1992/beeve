@@ -1,5 +1,20 @@
 # 组件开发指南
 
+> **🚨 重要：组件库技术选型**
+> 
+> 本项目使用 **@zag-js** 作为无头组件库基础，所有复杂交互组件（Dialog、Tooltip、Select、Slider 等）必须基于 zag.js 实现。
+> 
+> - **查询文档前必须使用 context7 查询 zag.js 官方文档**
+> - 不要使用 Kobalte、Ark UI 或其他组件库
+> - 参考现有组件实现模式（Dialog、Tooltip、Slider、Select 等）
+> 
+> **为什么选择 Zag.js**
+> 
+> - 框架无关的状态机设计
+> - 完全的可访问性支持
+> - 轻量且灵活
+> - 适合构建自定义组件库
+
 ## 组件分类
 
 ### 1. 基础组件 (Components)

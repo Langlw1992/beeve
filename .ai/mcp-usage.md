@@ -9,6 +9,8 @@
 📖 文档驱动：所有 API 使用必须有文档依据
 🔍 代码优先：修改前必须理解现有代码
 ✅ 验证闭环：代码必须能被类型检查和 lint 验证
+🔧 zag.js 查询：直接使用 library ID `/chakra-ui/zag`，不要搜索
+🧩 组件复用：组合组件时复用已有组件（如 Menu 示例中使用 Button 组件）
 ```
 
 ---
@@ -635,6 +637,7 @@ git push origin feat/add-card-component
 | 库 | context7 ID | 查询重点 |
 |----|-------------|---------|
 | solid-js | `/solidjs/solid` | 响应式 API、生命周期、Context |
+| **@zag-js** | `/chakra-ui/zag` | **状态机、组件 API、可访问性（必查！直接用此 ID，不要搜索！）** |
 | @tanstack/solid-router | `/tanstack/router` | 路由配置、导航、类型安全 |
 | @tanstack/solid-query | `/tanstack/query` | 查询、变更、缓存策略 |
 | @tanstack/solid-form | `/tanstack/form` | 表单状态、验证、字段 API |
@@ -688,6 +691,8 @@ mcp_context7_get-library-docs({
 
 ### 查询示例
 
+#### 示例 1：路由配置
+
 ```typescript
 // ❌ 错误：凭记忆使用 API
 const router = createRouter({ ... }) // 可能是过时或错误的 API
@@ -696,6 +701,53 @@ const router = createRouter({ ... }) // 可能是过时或错误的 API
 // 1. 查询 @tanstack/solid-router 文档
 // 2. 确认 createRouter 的正确用法和选项
 // 3. 引用文档编写代码
+```
+
+#### 示例 2：开发 Menu 组件（重要！）
+
+```typescript
+// ❌ 错误：使用了错误的库
+// AI：用户要开发 menu 组件
+// AI 行为：查询 kobalte menu 文档 ← 错误！项目使用的是 zag.js
+
+// ✅ 正确：先确认项目技术栈
+// 1. 查看 package.json 或阅读 CLAUDE.md 确认使用 zag.js
+// 2. 使用 context7 查询：resolve-library-id("@zag-js/menu")
+// 3. 获取 zag.js menu 组件文档
+// 4. 参考项目中其他 zag 组件实现模式（Dialog、Tooltip）
+// 5. 按项目规范实现组件
+```
+
+#### 示例 3：开发复杂交互组件的完整流程
+
+```typescript
+// 用户：开发一个 Dropdown Menu 组件
+
+// Step 1: 确认技术栈（必须！）
+// - 阅读 CLAUDE.md 或 .ai/components.md
+// - 确认项目使用 @zag-js 作为无头组件库
+
+// Step 2: 查询 context7 文档
+mcp_context7_resolve-library-id({
+  libraryName: "@zag-js/menu",
+  query: "menu dropdown component"
+})
+// 得到 library ID: /chakra-ui/zag
+
+mcp_context7_query-docs({
+  libraryId: "/chakra-ui/zag",
+  query: "menu component API usage state machine props"
+})
+
+// Step 3: 使用 serena 分析现有实现
+mcp_serena_find_symbol({
+  name_path_pattern: "Dialog",
+  relative_path: "packages/ui/src/components/Dialog",
+  include_body: true
+})
+// 学习项目中 zag.js 的使用模式
+
+// Step 4: 实现组件（基于文档和现有模式）
 ```
 
 ---

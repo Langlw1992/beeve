@@ -50,6 +50,7 @@ Beeve 是一个基于 SolidJS 的全栈低代码平台，包含：
 | 类别 | 技术 |
 |------|------|
 | UI 框架 | SolidJS |
+| 无头组件 | Zag.js |
 | 路由 | TanStack Router |
 | 数据请求 | TanStack Query |
 | 表单 | TanStack Form |
