@@ -1,65 +1,79 @@
-/**
- * Button 组件演示
- * 使用真实的 @beeve/ui 组件
- */
-
 import { Button } from '@beeve/ui'
-import type { Component } from 'solid-js'
+import { Loader2, Mail, ChevronRight } from 'lucide-solid'
+import { createSignal } from 'solid-js'
+import { DemoBox } from '../DemoBox'
 
-export const ButtonVariants: Component = () => {
+export function ButtonVariants() {
   return (
-    <div class="flex flex-wrap gap-3 items-center">
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="link">Link</Button>
-    </div>
+    <DemoBox title="按钮变体">
+      <Button variant="primary">主要按钮</Button>
+      <Button variant="secondary">次要按钮</Button>
+      <Button variant="outline">轮廓按钮</Button>
+      <Button variant="ghost">幽灵按钮</Button>
+      <Button variant="destructive">危险按钮</Button>
+    </DemoBox>
   )
 }
 
-export const ButtonSizes: Component = () => {
+export function ButtonSizes() {
   return (
-    <div class="flex flex-wrap gap-3 items-center">
-      <Button size="sm">Small</Button>
-      <Button size="md">Medium</Button>
-      <Button size="lg">Large</Button>
-      <Button size="icon">🔔</Button>
-    </div>
+    <DemoBox title="按钮尺寸">
+      <Button size="sm">小按钮</Button>
+      <Button size="md">中按钮</Button>
+      <Button size="lg">大按钮</Button>
+    </DemoBox>
   )
 }
 
-export const ButtonStates: Component = () => {
+export function ButtonWithIcon() {
   return (
-    <div class="flex flex-wrap gap-3 items-center">
-      <Button>Normal</Button>
-      <Button disabled>Disabled</Button>
-    </div>
-  )
-}
-
-export const ButtonWithIcons: Component = () => {
-  return (
-    <div class="flex flex-wrap gap-3 items-center">
+    <DemoBox title="带图标按钮">
       <Button>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Add Item
+        <Mail class="mr-2 size-4" />
+        发送邮件
       </Button>
       <Button variant="outline">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-        </svg>
-        Upload
+        下一步
+        <ChevronRight class="ml-2 size-4" />
       </Button>
-      <Button variant="secondary">
-        Settings
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+    </DemoBox>
+  )
+}
+
+export function ButtonLoading() {
+  const [loading, setLoading] = createSignal(false)
+
+  const handleClick = () => {
+    setLoading(true)
+    setTimeout(() => setLoading(false), 2000)
+  }
+
+  return (
+    <DemoBox title="加载状态" description="点击按钮查看加载效果">
+      <Button loading={loading()} onClick={handleClick}>
+        {loading() ? (
+          <>
+            <Loader2 class="mr-2 size-4 animate-spin" />
+            加载中...
+          </>
+        ) : (
+          '点击加载'
+        )}
       </Button>
-    </div>
+      <Button loading disabled>
+        <Loader2 class="mr-2 size-4 animate-spin" />
+        处理中
+      </Button>
+    </DemoBox>
+  )
+}
+
+export function ButtonDisabled() {
+  return (
+    <DemoBox title="禁用状态">
+      <Button disabled>禁用按钮</Button>
+      <Button variant="outline" disabled>禁用轮廓</Button>
+      <Button variant="destructive" disabled>禁用危险</Button>
+    </DemoBox>
   )
 }

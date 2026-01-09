@@ -1,0 +1,138 @@
+---
+title: Menu 菜单
+description: 下拉菜单和右键菜单组件
+---
+
+import { MenuDropdown, MenuContextMenu, MenuNested, MenuGroups, MenuWithShortcuts, MenuSizes } from '../../../components/demos/MenuDemo'
+
+Menu 组件用于显示下拉菜单和右键菜单，基于 Zag.js 实现。
+
+## 下拉菜单
+
+<MenuDropdown client:load />
+
+```tsx
+import { Dropdown } from '@beeve/ui'
+import { Edit, Copy, Trash2 } from 'lucide-solid'
+
+const items = [
+  { key: 'edit', label: '编辑', icon: <Edit /> },
+  { key: 'copy', label: '复制', icon: <Copy /> },
+  { type: 'divider' },
+  { key: 'delete', label: '删除', icon: <Trash2 />, danger: true },
+]
+
+<Dropdown items={items} onClick={(key) => console.log(key)}>
+  <Button>操作</Button>
+</Dropdown>
+```
+
+## 右键菜单
+
+<MenuContextMenu client:load />
+
+```tsx
+import { ContextMenu } from '@beeve/ui'
+
+<ContextMenu items={items} onClick={(key) => console.log(key)}>
+  <div class="p-10 border rounded">
+    右键点击此处
+  </div>
+</ContextMenu>
+```
+
+## 嵌套菜单
+
+<MenuNested client:load />
+
+```tsx
+const nestedItems = [
+  { key: 'new', label: '新建' },
+  {
+    key: 'share',
+    label: '分享到...',
+    children: [
+      { key: 'wechat', label: '微信' },
+      { key: 'weibo', label: '微博' },
+      { key: 'email', label: '邮件' },
+    ],
+  },
+]
+
+<Dropdown items={nestedItems}>
+  <Button>文件操作</Button>
+</Dropdown>
+```
+
+## 分组菜单
+
+<MenuGroups client:load />
+
+```tsx
+const groupedItems = [
+  {
+    type: 'group',
+    label: '编辑',
+    children: [
+      { key: 'edit', label: '编辑' },
+      { key: 'copy', label: '复制' },
+    ],
+  },
+  { type: 'divider' },
+  {
+    type: 'group',
+    label: '危险操作',
+    children: [
+      { key: 'delete', label: '删除', danger: true },
+    ],
+  },
+]
+```
+
+## 带快捷键
+
+<MenuWithShortcuts client:load />
+
+```tsx
+const items = [
+  { key: 'copy', label: '复制', shortcut: '⌘C' },
+  { key: 'paste', label: '粘贴', shortcut: '⌘V' },
+  { key: 'cut', label: '剪切', shortcut: '⌘X' },
+]
+```
+
+## 菜单尺寸
+
+<MenuSizes client:load />
+
+```tsx
+<Dropdown items={items} size="sm">小</Dropdown>
+<Dropdown items={items} size="md">中</Dropdown>
+<Dropdown items={items} size="lg">大</Dropdown>
+```
+
+## API
+
+### DropdownProps / ContextMenuProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `items` | `MenuItemType[]` | **必填** | 菜单项数据 |
+| `children` | `JSX.Element` | **必填** | 触发元素 |
+| `onClick` | `(key: string) => void` | - | 点击菜单项回调 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸 |
+| `closeOnSelect` | `boolean` | `true` | 选择后是否关闭 |
+| `positioning` | `PositioningOptions` | - | 定位选项 |
+| `onOpenChange` | `(details: { open: boolean }) => void` | - | 打开状态变化回调 |
+
+### MenuItemType
+
+菜单项可以是以下类型：
+
+| 类型 | 属性 |
+|------|------|
+| 普通项 | `key`, `label`, `icon`, `shortcut`, `disabled`, `danger`, `children`, `onClick` |
+| 分隔线 | `{ type: 'divider' }` |
+| 分组 | `{ type: 'group', label, children }` |
+| 复选框 | `{ type: 'checkbox', key, label, checked, onChange }` |
+| 单选组 | `{ type: 'radiogroup', name, value, children, onChange }` |

@@ -1,0 +1,140 @@
+---
+title: Card 卡片
+description: 通用卡片容器组件
+---
+
+import { CardBasic, CardWithFooter, CardVariants, CardSizes, CardInteractive, CardWithCover, CardLoading, CardStats } from '../../../components/demos/CardDemo'
+
+Card 组件用于展示内容的容器，支持标题、描述、封面、加载状态等功能。
+
+## 基础用法
+
+<CardBasic client:load />
+
+```tsx
+import { Card } from '@beeve/ui'
+
+<Card title="卡片标题" description="这是卡片的描述文本">
+  <p>这里是卡片的主要内容区域。</p>
+</Card>
+```
+
+## 带操作按钮
+
+<CardWithFooter client:load />
+
+```tsx
+<Card
+  title="创建项目"
+  description="填写信息创建新项目"
+  actions={
+    <>
+      <Button variant="outline">取消</Button>
+      <Button>创建</Button>
+    </>
+  }
+>
+  <p>项目将在创建后立即可用。</p>
+</Card>
+```
+
+## 卡片变体
+
+<CardVariants client:load />
+
+```tsx
+<Card variant="outlined" title="边框卡片">边框样式</Card>
+<Card variant="elevated" title="阴影卡片">阴影效果</Card>
+<Card variant="filled" title="填充卡片">填充背景</Card>
+```
+
+## 卡片尺寸
+
+<CardSizes client:load />
+
+```tsx
+<Card size="sm" title="小卡片">小尺寸</Card>
+<Card size="md" title="中卡片">中尺寸</Card>
+<Card size="lg" title="大卡片">大尺寸</Card>
+```
+
+## 可交互卡片
+
+<CardInteractive client:load />
+
+```tsx
+<Card
+  hoverable
+  title="可点击卡片"
+  description="悬停查看效果"
+  extra={<Badge variant="success">新</Badge>}
+  onClick={() => console.log('clicked')}
+>
+  <p>点击此卡片可以执行操作。</p>
+</Card>
+```
+
+## 带封面卡片
+
+<CardWithCover client:load />
+
+```tsx
+<Card
+  cover="https://example.com/image.jpg"
+  coverAlt="图片描述"
+  title="美丽风景"
+  description="瑞士阿尔卑斯山"
+>
+  <p>这是一张美丽的风景照片。</p>
+</Card>
+```
+
+## 加载状态
+
+<CardLoading client:load />
+
+```tsx
+<Card
+  loading
+  loadingConfig={{ title: true, rows: 3 }}
+/>
+
+<Card
+  loading
+  loadingConfig={{ avatar: true, rows: 2 }}
+/>
+```
+
+## 统计卡片
+
+<CardStats client:load />
+
+```tsx
+<Card size="sm">
+  <p class="text-sm text-muted-foreground">总用户</p>
+  <p class="text-3xl font-bold">12,345</p>
+  <p class="text-xs text-success">+12% 较上月</p>
+</Card>
+```
+
+## API
+
+### CardProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `title` | `JSX.Element` | - | 标题 |
+| `description` | `JSX.Element` | - | 描述/副标题 |
+| `extra` | `JSX.Element` | - | 标题栏右侧额外内容 |
+| `cover` | `string` | - | 封面图片 URL |
+| `coverAlt` | `string` | - | 封面图片 alt 文本 |
+| `coverPosition` | `'top' \| 'bottom'` | `'top'` | 封面位置 |
+| `footer` | `JSX.Element` | - | 底部内容 |
+| `actions` | `JSX.Element` | - | 底部操作按钮 |
+| `variant` | `'outlined' \| 'elevated' \| 'filled'` | `'outlined'` | 卡片变体 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 卡片尺寸 |
+| `hoverable` | `boolean` | `false` | 是否可悬停 |
+| `loading` | `boolean` | `false` | 加载状态 |
+| `loadingConfig` | `{ avatar?: boolean, title?: boolean, rows?: number }` | - | 加载骨架配置 |
+| `class` | `string` | - | 自定义类名 |
+| `onClick` | `(e: MouseEvent) => void` | - | 点击事件回调 |

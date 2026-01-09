@@ -1,173 +1,88 @@
 ---
-title: Button
-description: 按钮组件 - 用于触发操作或事件
+title: Button 按钮
+description: 用于触发操作的按钮组件
 ---
 
-import { Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components'
-import PropsTable from '../../../components/PropsTable.astro'
-import DemoBox from '../../../components/DemoBox.astro'
-import { ButtonVariants, ButtonSizes, ButtonStates, ButtonWithIcons } from '../../../components/demos/ButtonDemo'
+import { ButtonVariants, ButtonSizes, ButtonWithIcon, ButtonLoading, ButtonDisabled } from '../../../components/demos/ButtonDemo'
 
-Button 组件是最基础的交互元素，用于触发操作或事件。
+Button 组件用于触发一个操作，如提交表单、打开对话框等。
 
-## 安装
+## 按钮变体
 
-```bash
-pnpm add @beeve/ui
-```
+Button 支持多种视觉变体：
 
-## 导入
+<ButtonVariants client:load />
 
 ```tsx
 import { Button } from '@beeve/ui'
+
+<Button variant="primary">主要按钮</Button>
+<Button variant="secondary">次要按钮</Button>
+<Button variant="outline">轮廓按钮</Button>
+<Button variant="ghost">幽灵按钮</Button>
+<Button variant="destructive">危险按钮</Button>
 ```
 
-## 代码演示
+## 按钮尺寸
 
-### 按钮变体
+<ButtonSizes client:load />
 
-Button 支持多种视觉变体，适用于不同的使用场景。
+```tsx
+<Button size="sm">小按钮</Button>
+<Button size="md">中按钮</Button>
+<Button size="lg">大按钮</Button>
+```
 
-<DemoBox
-  title="六种变体"
-  description="使用 variant 属性设置按钮样式：primary（主要）、secondary（次要）、outline（描边）、ghost（幽灵）、destructive（危险）、link（链接）"
-  code={`<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="destructive">Destructive</Button>
-<Button variant="link">Link</Button>`}
->
-  <ButtonVariants client:load />
-</DemoBox>
+## 带图标按钮
 
-<CardGrid>
-  <Card title="primary" icon="star">
-    主要操作，页面上最重要的 CTA
-  </Card>
-  <Card title="secondary" icon="puzzle">
-    次要操作，辅助性的按钮
-  </Card>
-  <Card title="outline" icon="open-book">
-    带边框的按钮，用于次要操作
-  </Card>
-  <Card title="ghost" icon="seti:shell">
-    最弱视觉强调，常用于工具栏
-  </Card>
-  <Card title="destructive" icon="warning">
-    危险操作，如删除、取消
-  </Card>
-  <Card title="link" icon="external">
-    外观像链接的按钮
-  </Card>
-</CardGrid>
+<ButtonWithIcon client:load />
 
-### 按钮尺寸
+```tsx
+import { Mail, ChevronRight } from 'lucide-solid'
 
-<DemoBox
-  title="四种尺寸"
-  description="使用 size 属性调整按钮大小：sm（小）、md（中，默认）、lg（大）、icon（图标按钮）"
-  code={`<Button size="sm">Small</Button>
-<Button size="md">Medium</Button>
-<Button size="lg">Large</Button>
-<Button size="icon">🔔</Button>`}
->
-  <ButtonSizes client:load />
-</DemoBox>
-
-### 禁用状态
-
-<DemoBox
-  title="禁用状态"
-  description="添加 disabled 属性禁用按钮，禁用后按钮不可点击且样式变灰"
-  code={`<Button>Normal</Button>
-<Button disabled>Disabled</Button>`}
->
-  <ButtonStates client:load />
-</DemoBox>
-
-### 带图标按钮
-
-<DemoBox
-  title="图标按钮"
-  description="按钮可以包含图标，图标可以放在文字前面或后面"
-  code={`<Button>
-  <PlusIcon />
-  Add Item
+<Button>
+  <Mail class="mr-2 size-4" />
+  发送邮件
 </Button>
+
 <Button variant="outline">
-  <UploadIcon />
-  Upload
+  下一步
+  <ChevronRight class="ml-2 size-4" />
 </Button>
-<Button variant="secondary">
-  Settings
-  <ChevronRightIcon />
-</Button>`}
->
-  <ButtonWithIcons client:load />
-</DemoBox>
+```
+
+## 加载状态
+
+<ButtonLoading client:load />
+
+```tsx
+import { Loader2 } from 'lucide-solid'
+
+<Button loading>
+  <Loader2 class="mr-2 size-4 animate-spin" />
+  加载中...
+</Button>
+```
+
+## 禁用状态
+
+<ButtonDisabled client:load />
+
+```tsx
+<Button disabled>禁用按钮</Button>
+<Button variant="outline" disabled>禁用轮廓</Button>
+```
 
 ## API
 
-<PropsTable
-  props={[
-    {
-      name: 'variant',
-      type: "'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'link'",
-      default: "'primary'",
-      description: '按钮的视觉变体'
-    },
-    {
-      name: 'size',
-      type: "'sm' | 'md' | 'lg' | 'icon'",
-      default: "'md'",
-      description: '按钮尺寸'
-    },
-    {
-      name: 'disabled',
-      type: 'boolean',
-      default: 'false',
-      description: '是否禁用按钮'
-    },
-    {
-      name: 'type',
-      type: "'button' | 'submit' | 'reset'",
-      default: "'button'",
-      description: '按钮类型'
-    },
-    {
-      name: 'class',
-      type: 'string',
-      description: '自定义 CSS 类名'
-    },
-    {
-      name: 'onClick',
-      type: '(e: MouseEvent) => void',
-      description: '点击事件处理函数'
-    },
-    {
-      name: 'children',
-      type: 'JSX.Element',
-      required: true,
-      description: '按钮内容'
-    }
-  ]}
-/>
+### ButtonProps
 
-## 无障碍
-
-- 使用原生 `<button>` 元素确保键盘可访问
-- `disabled` 状态会自动添加 `aria-disabled` 属性
-- 确保按钮有清晰的文本标签或 `aria-label`
-
-## 主题集成
-
-Button 组件自动使用主题系统的 CSS 变量：
-
-- `--primary` / `--primary-foreground` - 主按钮颜色
-- `--secondary` / `--secondary-foreground` - 次要按钮颜色
-- `--destructive` - 危险操作颜色
-- `--radius` - 圆角大小
-- `--ring` - 焦点环颜色
-
-当主题设置变化时（如切换深色模式或更改主题色），按钮会自动更新样式。
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost' \| 'destructive' \| 'link'` | `'primary'` | 按钮变体 |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'icon'` | `'md'` | 按钮尺寸 |
+| `loading` | `boolean` | `false` | 加载状态 |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | 按钮类型 |
+| `class` | `string` | - | 自定义类名 |
+| `onClick` | `(e: MouseEvent) => void` | - | 点击事件回调 |

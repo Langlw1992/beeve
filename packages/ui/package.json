@@ -8,9 +8,13 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
+      "solid": {
         "types": "./dist/index.d.ts",
         "default": "./src/index.ts"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       }
     },
     "./styles": "./src/styles/index.css"
@@ -29,6 +33,7 @@
     "@zag-js/combobox": "^1.32.0",
     "@zag-js/dialog": "^1.32.0",
     "@zag-js/menu": "^1.32.0",
+    "@zag-js/navigation-menu": "^1.32.0",
     "@zag-js/presence": "^1.32.0",
     "@zag-js/slider": "^1.32.0",
     "@zag-js/solid": "^1.32.0",

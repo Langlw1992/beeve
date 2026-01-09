@@ -1,0 +1,95 @@
+---
+title: Tooltip 文字提示
+description: 鼠标悬停时显示的提示信息
+---
+
+import { TooltipBasic, TooltipPositions, TooltipWithDelay, TooltipDisabled, TooltipRichContent } from '../../../components/demos/TooltipDemo'
+
+Tooltip 组件用于在用户悬停时显示简短的提示信息，基于 Zag.js 实现。
+
+## 基础用法
+
+<TooltipBasic client:load />
+
+```tsx
+import { Tooltip, Button } from '@beeve/ui'
+
+<Tooltip content="这是提示内容">
+  <Button variant="outline">悬停查看提示</Button>
+</Tooltip>
+```
+
+## 提示位置
+
+<TooltipPositions client:load />
+
+```tsx
+<Tooltip content="顶部提示" positioning={{ placement: 'top' }}>
+  <Button>上</Button>
+</Tooltip>
+<Tooltip content="右侧提示" positioning={{ placement: 'right' }}>
+  <Button>右</Button>
+</Tooltip>
+<Tooltip content="底部提示" positioning={{ placement: 'bottom' }}>
+  <Button>下</Button>
+</Tooltip>
+<Tooltip content="左侧提示" positioning={{ placement: 'left' }}>
+  <Button>左</Button>
+</Tooltip>
+```
+
+## 延迟显示
+
+<TooltipWithDelay client:load />
+
+```tsx
+<Tooltip content="立即显示" openDelay={0}>
+  <Button>无延迟</Button>
+</Tooltip>
+<Tooltip content="延迟显示" openDelay={500}>
+  <Button>500ms 延迟</Button>
+</Tooltip>
+```
+
+## 禁用提示
+
+<TooltipDisabled client:load />
+
+```tsx
+<Tooltip content="不会显示" disabled>
+  <Button>禁用提示</Button>
+</Tooltip>
+```
+
+## 富文本提示
+
+<TooltipRichContent client:load />
+
+```tsx
+<Tooltip
+  content={
+    <div class="space-y-1">
+      <p class="font-medium">提示标题</p>
+      <p class="text-xs text-muted-foreground">
+        详细说明文本
+      </p>
+    </div>
+  }
+>
+  <Button>富文本提示</Button>
+</Tooltip>
+```
+
+## API
+
+### TooltipProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `content` | `JSX.Element` | - | 提示内容 |
+| `children` | `JSX.Element` | - | 触发元素 |
+| `disabled` | `boolean` | `false` | 禁用提示 |
+| `openDelay` | `number` | `300` | 显示延迟 (ms) |
+| `closeDelay` | `number` | `0` | 隐藏延迟 (ms) |
+| `positioning` | `PositioningOptions` | - | 定位选项 |
+| `onOpenChange` | `(details: { open: boolean }) => void` | - | 状态变化回调 |

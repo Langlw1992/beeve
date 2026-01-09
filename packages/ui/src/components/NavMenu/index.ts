@@ -9,6 +9,7 @@ export type {
   NavMenuItemData,
   NavMenuGroupData,
   NavMenuDividerData,
+  NavMenuDirection,
 } from './types'
 export {
   isNavMenuDivider,

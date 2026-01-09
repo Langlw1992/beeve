@@ -1,0 +1,92 @@
+---
+title: Progress 进度条
+description: 显示任务进度的进度条组件
+---
+
+import { ProgressBasic, ProgressVariants, ProgressSizes, ProgressAnimated, ProgressIndeterminate, ProgressWithLabel } from '../../../components/demos/ProgressDemo'
+
+Progress 组件用于展示当前任务的进度。
+
+## 基础用法
+
+<ProgressBasic client:load />
+
+```tsx
+import { Progress } from '@beeve/ui'
+
+<Progress value={60} />
+```
+
+## 进度条变体
+
+<ProgressVariants client:load />
+
+```tsx
+<Progress value={60} />                    {/* 默认 */}
+<Progress value={100} variant="success" /> {/* 成功 */}
+<Progress value={75} variant="warning" />  {/* 警告 */}
+<Progress value={30} variant="error" />    {/* 错误 */}
+```
+
+## 进度条尺寸
+
+<ProgressSizes client:load />
+
+```tsx
+<Progress value={60} size="sm" />
+<Progress value={60} size="md" />
+<Progress value={60} size="lg" />
+```
+
+## 动画进度条
+
+<ProgressAnimated client:load />
+
+```tsx
+import { createSignal, onCleanup } from 'solid-js'
+
+const [value, setValue] = createSignal(0)
+
+const interval = setInterval(() => {
+  setValue((v) => (v >= 100 ? 0 : v + 10))
+}, 500)
+
+onCleanup(() => clearInterval(interval))
+
+<Progress value={value()} />
+```
+
+## 不确定进度
+
+<ProgressIndeterminate client:load />
+
+```tsx
+<Progress indeterminate />
+```
+
+## 带标签进度条
+
+<ProgressWithLabel client:load />
+
+```tsx
+<div class="space-y-2">
+  <div class="flex justify-between text-sm">
+    <span>上传进度</span>
+    <span>45%</span>
+  </div>
+  <Progress value={45} />
+</div>
+```
+
+## API
+
+### ProgressProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `value` | `number` | `0` | 当前进度值 (0-100) |
+| `max` | `number` | `100` | 最大值 |
+| `variant` | `'default' \| 'success' \| 'warning' \| 'error'` | `'default'` | 进度条变体 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 进度条尺寸 |
+| `indeterminate` | `boolean` | `false` | 不确定进度 |
+| `class` | `string` | - | 自定义类名 |

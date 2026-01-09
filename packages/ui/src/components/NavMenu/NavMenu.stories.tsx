@@ -267,3 +267,117 @@ export const WithDisabled: Story = {
   },
 }
 
+/** 水平导航菜单 - 适用于顶部导航栏 */
+export const Horizontal: Story = {
+  decorators: [
+    (Story) => (
+      <div class="w-full min-w-[600px] bg-background p-4 rounded-lg border">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => {
+    const [value, setValue] = createSignal('home')
+
+    const items: NavMenuItemType[] = [
+      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
+      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
+      {
+        key: 'products',
+        label: '产品',
+        icon: <BarChart3 class="size-4" />,
+        children: [
+          { key: 'analytics', label: '数据分析' },
+          { key: 'marketing', label: '营销工具' },
+          { key: 'automation', label: '自动化' },
+        ],
+      },
+      {
+        key: 'settings',
+        label: '设置',
+        icon: <Settings class="size-4" />,
+        children: [
+          { key: 'profile', label: '个人资料' },
+          { key: 'security', label: '安全设置' },
+          { key: 'notifications', label: '通知设置' },
+        ],
+      },
+      { key: 'help', label: '帮助', icon: <HelpCircle class="size-4" /> },
+    ]
+
+    return (
+      <div class="space-y-4">
+        <NavMenu
+          items={items}
+          value={value()}
+          onValueChange={setValue}
+          direction="horizontal"
+        />
+        <p class="text-sm text-muted-foreground">
+          当前选中: <span class="text-foreground font-medium">{value()}</span>
+        </p>
+      </div>
+    )
+  },
+}
+
+/** 水平导航 - 居中布局（适用于网站头部） */
+export const HorizontalCentered: Story = {
+  decorators: [
+    (Story) => (
+      <div class="w-full min-w-[800px] bg-background border-b">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => {
+    const [value, setValue] = createSignal('home')
+
+    const items: NavMenuItemType[] = [
+      { key: 'home', label: '首页' },
+      {
+        key: 'products',
+        label: '产品',
+        children: [
+          { key: 'analytics', label: '数据分析', icon: <BarChart3 class="size-4" /> },
+          { key: 'marketing', label: '营销工具', icon: <Edit class="size-4" /> },
+          { key: 'automation', label: '自动化', icon: <Settings class="size-4" /> },
+        ],
+      },
+      {
+        key: 'solutions',
+        label: '解决方案',
+        children: [
+          { key: 'enterprise', label: '企业版' },
+          { key: 'startup', label: '创业版' },
+          { key: 'personal', label: '个人版' },
+        ],
+      },
+      { key: 'pricing', label: '定价' },
+      { key: 'docs', label: '文档' },
+    ]
+
+    return (
+      <header class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center gap-8">
+          <span class="text-lg font-bold">Logo</span>
+          <NavMenu
+            items={items}
+            value={value()}
+            onValueChange={setValue}
+            direction="horizontal"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+            登录
+          </button>
+          <button class="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+            注册
+          </button>
+        </div>
+      </header>
+    )
+  },
+}
+

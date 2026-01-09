@@ -2,14 +2,14 @@
  * @beeve/ui - Sidebar Component
  * 侧边栏组件，用于应用程序的主导航区域
  *
- * 借鉴 shadcn/ui sidebar 实现：
- * - 使用 data-state 属性控制状态
- * - 使用 CSS 变量控制宽度
- * - 支持多种折叠模式
+ * 支持三种折叠模式：
+ * - none: 不可折叠
+ * - icon: 折叠为仅显示图标
+ * - offcanvas: 完全隐藏
  *
  * @example
  * ```tsx
- * <SidebarProvider>
+ * <Sidebar.Provider defaultOpen collapsible="icon">
  *   <Sidebar>
  *     <Sidebar.Header>
  *       <Logo />
@@ -22,28 +22,29 @@
  *     </Sidebar.Footer>
  *   </Sidebar>
  *   <main class="flex-1">...</main>
- * </SidebarProvider>
+ * </Sidebar.Provider>
  * ```
  */
 
 import {
   createContext,
   createEffect,
+  createMemo,
   createSignal,
+  Show,
   splitProps,
   useContext,
   type Accessor,
   type Component,
   type ComponentProps,
-  type JSX,
 } from 'solid-js'
 import { tv } from 'tailwind-variants'
-import { PanelLeftIcon } from 'lucide-solid'
+import { PanelLeft, PanelLeftClose } from 'lucide-solid'
 
 // ==================== 常量 ====================
 
 const SIDEBAR_WIDTH = '16rem' // 256px
-const SIDEBAR_WIDTH_ICON = '3rem' // 48px
+const SIDEBAR_WIDTH_ICON = '3.5rem' // 56px
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
@@ -52,55 +53,50 @@ const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 
 const sidebarStyles = tv({
   slots: {
-    // 外层 wrapper，包含 sidebar 和主内容
-    wrapper: [
-      'group/sidebar-wrapper flex min-h-svh w-full',
-      'has-[[data-variant=inset]]:bg-sidebar',
-    ],
-    // Sidebar 的外层容器（处理宽度占位）
-    root: [
-      'group peer hidden md:block text-sidebar-foreground',
-    ],
-    // 宽度占位（用于动画过渡）
-    gap: [
-      'relative bg-transparent transition-[width] duration-200 ease-linear',
-      'w-[--sidebar-width]',
-      // offcanvas 模式折叠时宽度为 0
-      'group-data-[collapsible=offcanvas]:w-0',
-      // icon 模式折叠时保持图标宽度
-      'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
-    ],
-    // 实际的 sidebar 容器（fixed 定位）
-    container: [
-      'fixed inset-y-0 z-10 hidden h-svh md:flex',
-      'w-[--sidebar-width] transition-[left,right,width] duration-200 ease-linear',
-      // 左侧 sidebar
-      'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]',
-      // icon 模式宽度
-      'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
-      // 边框
-      'border-r border-sidebar-border',
-    ],
-    // 内部内容区
-    inner: [
-      'flex h-full w-full flex-col bg-sidebar',
+    wrapper: 'group/sidebar flex min-h-svh w-full',
+    sidebar: [
+      'relative flex h-svh flex-col bg-sidebar text-sidebar-foreground',
+      'border-r border-sidebar-border/60',
+      'transition-[width] duration-200 ease-in-out',
     ],
     header: [
-      'flex flex-col gap-2 p-2',
+      'flex h-14 shrink-0 items-center gap-2 px-4',
     ],
     content: [
-      'flex min-h-0 flex-1 flex-col gap-2 overflow-auto',
-      'group-data-[collapsible=icon]:overflow-hidden',
+      'flex-1 overflow-y-auto overflow-x-hidden',
     ],
     footer: [
-      'flex flex-col gap-2 p-2 mt-auto',
+      'mt-auto shrink-0 p-3',
     ],
     trigger: [
-      'flex items-center justify-center size-7 rounded-md',
-      'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-      'transition-colors cursor-pointer outline-none',
-      'focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+      'inline-flex items-center justify-center size-8 rounded-md',
+      'text-sidebar-foreground/50 hover:text-sidebar-foreground',
+      'hover:bg-sidebar-accent/60',
+      'transition-colors duration-150 cursor-pointer outline-none',
+      'focus-visible:ring-2 focus-visible:ring-sidebar-ring/50',
     ],
+  },
+  variants: {
+    collapsed: {
+      true: {
+        sidebar: 'w-(--sidebar-width-icon)',
+        header: 'px-0 justify-center',
+        content: 'px-0',
+        footer: 'px-0 flex justify-center',
+      },
+      false: {
+        sidebar: 'w-(--sidebar-width)',
+      },
+    },
+    hidden: {
+      true: {
+        sidebar: 'w-0 border-r-0 overflow-hidden',
+      },
+    },
+  },
+  defaultVariants: {
+    collapsed: false,
+    hidden: false,
   },
 })
 
@@ -114,7 +110,7 @@ interface SidebarContextValue {
   open: Accessor<boolean>
   setOpen: (open: boolean) => void
   toggleSidebar: () => void
-  collapsible: CollapsibleMode
+  collapsible: Accessor<CollapsibleMode>
 }
 
 const SidebarContext = createContext<SidebarContextValue>()
@@ -136,15 +132,11 @@ export interface SidebarProviderProps extends ComponentProps<'div'> {
   defaultOpen?: boolean
   /** 展开状态变化回调 */
   onOpenChange?: (open: boolean) => void
-}
-
-export interface SidebarProps extends Omit<ComponentProps<'div'>, 'children'> {
-  /** 折叠模式：offcanvas（滑出）| icon（仅图标）| none（不可折叠） */
+  /** 折叠模式：offcanvas（完全隐藏）| icon（仅图标）| none（不可折叠） */
   collapsible?: CollapsibleMode
-  /** 子元素 */
-  children: JSX.Element
 }
 
+export interface SidebarProps extends ComponentProps<'aside'> {}
 export interface SidebarHeaderProps extends ComponentProps<'div'> {}
 export interface SidebarContentProps extends ComponentProps<'div'> {}
 export interface SidebarFooterProps extends ComponentProps<'div'> {}
@@ -157,6 +149,7 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
     'open',
     'defaultOpen',
     'onOpenChange',
+    'collapsible',
     'children',
     'class',
     'style',
@@ -168,8 +161,13 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
   // 计算当前状态
   const open = () => local.open ?? internalOpen()
   const state = () => (open() ? 'expanded' : 'collapsed') as SidebarState
+  const collapsible = () => local.collapsible ?? 'icon'
 
   const setOpen = (value: boolean) => {
+    // 如果不可折叠，忽略
+    if (collapsible() === 'none') {
+      return
+    }
     setInternalOpen(value)
     local.onOpenChange?.(value)
 
@@ -183,7 +181,12 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
 
   // 键盘快捷键
   createEffect(() => {
-    if (typeof window === 'undefined') { return }
+    if (typeof window === 'undefined') {
+      return
+    }
+    if (collapsible() === 'none') {
+      return
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
@@ -208,11 +211,13 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
         open,
         setOpen,
         toggleSidebar,
-        collapsible: 'icon', // 默认使用 icon 模式
+        collapsible,
       }}
     >
       <div
         data-slot="sidebar-wrapper"
+        data-state={state()}
+        data-collapsible={collapsible()}
         style={{
           '--sidebar-width': SIDEBAR_WIDTH,
           '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
@@ -229,12 +234,54 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
 
 // ==================== 子组件 ====================
 
-const SidebarHeader: Component<SidebarHeaderProps> = (props) => {
+const SidebarRoot: Component<SidebarProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const styles = sidebarStyles()
+  const { state, open, collapsible } = useSidebar()
+
+  const styles = createMemo(() => {
+    const mode = collapsible()
+    const isOpen = open()
+
+    if (mode === 'none') {
+      return sidebarStyles({ collapsed: false, hidden: false })
+    }
+
+    if (mode === 'offcanvas') {
+      return sidebarStyles({ collapsed: false, hidden: !isOpen })
+    }
+
+    // icon mode
+    return sidebarStyles({ collapsed: !isOpen, hidden: false })
+  })
 
   return (
-    <div data-slot="sidebar-header" class={styles.header({ class: local.class })} {...rest}>
+    <aside
+      data-slot="sidebar"
+      data-state={state()}
+      data-collapsible={collapsible()}
+      class={styles().sidebar({ class: local.class })}
+      {...rest}
+    >
+      {local.children}
+    </aside>
+  )
+}
+
+const SidebarHeader: Component<SidebarHeaderProps> = (props) => {
+  const [local, rest] = splitProps(props, ['class', 'children'])
+  const { open, collapsible } = useSidebar()
+
+  const styles = createMemo(() => {
+    const mode = collapsible()
+    const isOpen = open()
+    if (mode === 'icon' && !isOpen) {
+      return sidebarStyles({ collapsed: true })
+    }
+    return sidebarStyles({ collapsed: false })
+  })
+
+  return (
+    <div data-slot="sidebar-header" class={styles().header({ class: local.class })} {...rest}>
       {local.children}
     </div>
   )
@@ -242,10 +289,19 @@ const SidebarHeader: Component<SidebarHeaderProps> = (props) => {
 
 const SidebarContent: Component<SidebarContentProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const styles = sidebarStyles()
+  const { open, collapsible } = useSidebar()
+
+  const styles = createMemo(() => {
+    const mode = collapsible()
+    const isOpen = open()
+    if (mode === 'icon' && !isOpen) {
+      return sidebarStyles({ collapsed: true })
+    }
+    return sidebarStyles({ collapsed: false })
+  })
 
   return (
-    <div data-slot="sidebar-content" class={styles.content({ class: local.class })} {...rest}>
+    <div data-slot="sidebar-content" class={styles().content({ class: local.class })} {...rest}>
       {local.children}
     </div>
   )
@@ -253,10 +309,19 @@ const SidebarContent: Component<SidebarContentProps> = (props) => {
 
 const SidebarFooter: Component<SidebarFooterProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const styles = sidebarStyles()
+  const { open, collapsible } = useSidebar()
+
+  const styles = createMemo(() => {
+    const mode = collapsible()
+    const isOpen = open()
+    if (mode === 'icon' && !isOpen) {
+      return sidebarStyles({ collapsed: true })
+    }
+    return sidebarStyles({ collapsed: false })
+  })
 
   return (
-    <div data-slot="sidebar-footer" class={styles.footer({ class: local.class })} {...rest}>
+    <div data-slot="sidebar-footer" class={styles().footer({ class: local.class })} {...rest}>
       {local.children}
     </div>
   )
@@ -264,8 +329,13 @@ const SidebarFooter: Component<SidebarFooterProps> = (props) => {
 
 const SidebarTrigger: Component<SidebarTriggerProps> = (props) => {
   const [local, rest] = splitProps(props, ['class'])
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, open, collapsible } = useSidebar()
   const styles = sidebarStyles()
+
+  // 不可折叠时不显示
+  if (collapsible() === 'none') {
+    return null
+  }
 
   return (
     <button
@@ -273,58 +343,14 @@ const SidebarTrigger: Component<SidebarTriggerProps> = (props) => {
       data-slot="sidebar-trigger"
       class={styles.trigger({ class: local.class })}
       onClick={toggleSidebar}
+      title={open() ? '收起侧边栏' : '展开侧边栏'}
       {...rest}
     >
-      <PanelLeftIcon class="size-4" />
+      <Show when={open()} fallback={<PanelLeft class="size-4" />}>
+        <PanelLeftClose class="size-4" />
+      </Show>
       <span class="sr-only">Toggle Sidebar</span>
     </button>
-  )
-}
-
-// ==================== 主 Sidebar 组件 ====================
-
-const SidebarRoot: Component<SidebarProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    'collapsible',
-    'children',
-    'class',
-  ])
-
-  const { state, collapsible: ctxCollapsible } = useSidebar()
-  const collapsible = () => local.collapsible ?? ctxCollapsible
-  const styles = sidebarStyles()
-
-  // 不可折叠模式
-  if (collapsible() === 'none') {
-    return (
-      <div
-        data-slot="sidebar"
-        class={styles.inner({ class: ['w-[--sidebar-width] h-full border-r border-sidebar-border', local.class] })}
-        {...rest}
-      >
-        {local.children}
-      </div>
-    )
-  }
-
-  return (
-    <div
-      class={styles.root({ class: local.class })}
-      data-state={state()}
-      data-collapsible={state() === 'collapsed' ? collapsible() : ''}
-      data-slot="sidebar"
-      {...rest}
-    >
-      {/* 宽度占位 - 用于动画过渡 */}
-      <div data-slot="sidebar-gap" class={styles.gap()} />
-
-      {/* 实际 sidebar 容器 */}
-      <div data-slot="sidebar-container" class={styles.container()}>
-        <div data-slot="sidebar-inner" class={styles.inner()}>
-          {local.children}
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -337,4 +363,3 @@ export const Sidebar = Object.assign(SidebarRoot, {
   Footer: SidebarFooter,
   Trigger: SidebarTrigger,
 })
-

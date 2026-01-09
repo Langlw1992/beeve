@@ -46,6 +46,9 @@ export interface NavMenuDividerData {
 /** 菜单项类型联合 */
 export type NavMenuItemType = NavMenuItemData | NavMenuGroupData | NavMenuDividerData
 
+/** 导航菜单方向 */
+export type NavMenuDirection = 'vertical' | 'horizontal'
+
 /** NavMenu 组件 Props */
 export interface NavMenuProps extends Omit<ComponentProps<'nav'>, 'onChange'> {
   /** 菜单项数据 */
@@ -62,8 +65,10 @@ export interface NavMenuProps extends Omit<ComponentProps<'nav'>, 'onChange'> {
   expandedKeys?: string[]
   /** 展开状态变化回调 */
   onExpandedKeysChange?: (keys: string[]) => void
-  /** 是否折叠模式（仅显示图标） */
+  /** 是否折叠模式（仅显示图标，仅垂直模式有效） */
   collapsed?: boolean
+  /** 菜单方向：vertical（垂直，用于侧边栏）| horizontal（水平，用于顶部导航） */
+  direction?: NavMenuDirection
 }
 
 // ==================== 类型守卫 ====================

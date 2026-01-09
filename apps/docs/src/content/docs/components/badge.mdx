@@ -1,0 +1,65 @@
+---
+title: Badge 徽标
+description: 用于显示状态或数量的小标签
+---
+
+import { BadgeVariants, BadgeSizes, BadgeUseCases } from '../../../components/demos/BadgeDemo'
+
+Badge 组件用于显示状态、数量或分类信息。
+
+## 徽标变体
+
+<BadgeVariants client:load />
+
+```tsx
+import { Badge } from '@beeve/ui'
+
+<Badge variant="default">默认</Badge>
+<Badge variant="secondary">次要</Badge>
+<Badge variant="outline">轮廓</Badge>
+<Badge variant="success">成功</Badge>
+<Badge variant="warning">警告</Badge>
+<Badge variant="error">错误</Badge>
+```
+
+## 徽标尺寸
+
+<BadgeSizes client:load />
+
+```tsx
+<Badge size="sm">小徽标</Badge>
+<Badge size="md">中徽标</Badge>
+<Badge size="lg">大徽标</Badge>
+```
+
+## 使用场景
+
+<BadgeUseCases client:load />
+
+```tsx
+// 消息计数
+<span class="flex items-center gap-2">
+  消息 <Badge variant="error">99+</Badge>
+</span>
+
+// 版本标签
+<span class="flex items-center gap-2">
+  版本 <Badge variant="outline">v1.0.0</Badge>
+</span>
+
+// 状态指示
+<span class="flex items-center gap-2">
+  状态 <Badge variant="success">已发布</Badge>
+</span>
+```
+
+## API
+
+### BadgeProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `variant` | `'default' \| 'secondary' \| 'outline' \| 'success' \| 'warning' \| 'error'` | `'default'` | 徽标变体 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 徽标尺寸 |
+| `class` | `string` | - | 自定义类名 |
+| `children` | `JSX.Element` | - | 徽标内容 |

@@ -1,0 +1,101 @@
+---
+title: Input 输入框
+description: 基础文本输入组件
+---
+
+import { InputBasic, InputSizes, InputWithIcon, InputPassword, InputStates, InputWithLabel } from '../../../components/demos/InputDemo'
+
+Input 组件用于接收用户输入的文本内容。
+
+## 基础用法
+
+<InputBasic client:load />
+
+```tsx
+import { Input } from '@beeve/ui'
+
+<Input placeholder="请输入内容" />
+```
+
+## 输入框尺寸
+
+<InputSizes client:load />
+
+```tsx
+<Input size="sm" placeholder="小尺寸" />
+<Input size="md" placeholder="中尺寸" />
+<Input size="lg" placeholder="大尺寸" />
+```
+
+## 带图标
+
+<InputWithIcon client:load />
+
+```tsx
+import { Search, Mail } from 'lucide-solid'
+
+<div class="relative">
+  <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+  <Input class="pl-10" placeholder="搜索..." />
+</div>
+```
+
+## 密码输入框
+
+<InputPassword client:load />
+
+```tsx
+import { Eye, EyeOff } from 'lucide-solid'
+import { createSignal } from 'solid-js'
+
+const [show, setShow] = createSignal(false)
+
+<div class="relative">
+  <Input
+    type={show() ? 'text' : 'password'}
+    placeholder="请输入密码"
+  />
+  <button onClick={() => setShow(!show())}>
+    {show() ? <EyeOff /> : <Eye />}
+  </button>
+</div>
+```
+
+## 输入框状态
+
+<InputStates client:load />
+
+```tsx
+<Input placeholder="正常状态" />
+<Input placeholder="禁用状态" disabled />
+<Input placeholder="只读状态" readonly value="只读内容" />
+```
+
+## 与 Label 配合
+
+<InputWithLabel client:load />
+
+```tsx
+import { Label, Input } from '@beeve/ui'
+
+<div class="space-y-2">
+  <Label for="username" required>用户名</Label>
+  <Input id="username" placeholder="请输入用户名" />
+</div>
+```
+
+## API
+
+### InputProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 输入框尺寸 |
+| `type` | `string` | `'text'` | 输入类型 |
+| `placeholder` | `string` | - | 占位文本 |
+| `value` | `string` | - | 输入值 |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `readonly` | `boolean` | `false` | 只读状态 |
+| `class` | `string` | - | 自定义类名 |
+| `onInput` | `(e: InputEvent) => void` | - | 输入事件回调 |
+| `onChange` | `(e: Event) => void` | - | 变化事件回调 |
