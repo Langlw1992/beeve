@@ -1,3 +1,6 @@
 @import 'tailwindcss';
 @import '@beeve/ui/styles';
 
+/* 扫描 stories 文件中使用的 Tailwind 类 */
+@source "../../../packages/ui/src/**/*.stories.tsx";
+

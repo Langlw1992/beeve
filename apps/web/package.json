@@ -12,6 +12,7 @@
   "dependencies": {
     "@beeve/ui": "workspace:*",
     "@tanstack/solid-router": "^1.144.0",
+    "lucide-solid": "^0.562.0",
     "solid-js": "^1.9.5"
   },
   "devDependencies": {

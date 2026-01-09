@@ -14,7 +14,7 @@ import {
   HelpCircle,
   LogOut,
 } from 'lucide-solid'
-import { NavMenu, Sidebar, type NavMenuItemType } from '@beeve/ui'
+import { NavMenu, Sidebar, useSidebar, type NavMenuItemType } from '@beeve/ui'
 
 export const Route = createFileRoute('/navmenu')({
   component: NavMenuPage,
@@ -53,9 +53,6 @@ const menuItems: NavMenuItemType[] = [
 ]
 
 function NavMenuPage() {
-  const [collapsed, setCollapsed] = createSignal(false)
-  const [activeKey, setActiveKey] = createSignal('profile')
-
   return (
     <div class="space-y-8">
       <div>
@@ -68,63 +65,74 @@ function NavMenuPage() {
       {/* Sidebar with NavMenu Demo */}
       <div class="border rounded-lg overflow-hidden">
         <h2 class="text-xl font-semibold p-4 border-b bg-muted/50">Sidebar + NavMenu</h2>
-        <div class="flex h-[600px]">
-          <Sidebar collapsed={collapsed()} onCollapsedChange={setCollapsed}>
-            <Sidebar.Header>
-              <Show when={!collapsed()} fallback={<span class="text-xl font-bold">B</span>}>
-                <span class="text-xl font-bold text-primary">Beeve</span>
-              </Show>
-            </Sidebar.Header>
-            <Sidebar.Content>
-              <NavMenu
-                items={menuItems}
-                value={activeKey()}
-                onValueChange={setActiveKey}
-                collapsed={collapsed()}
-                defaultExpandedKeys={['settings']}
-              />
-            </Sidebar.Content>
-            <Sidebar.Footer class="flex-col gap-2">
-              <Show when={!collapsed()}>
-                <div class="flex items-center gap-2 w-full px-2 py-1">
-                  <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-medium">
-                    U
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium truncate">用户名</div>
-                    <div class="text-xs text-muted-foreground truncate">user@example.com</div>
-                  </div>
-                </div>
-              </Show>
-              <div class="flex items-center gap-1 w-full">
-                <Sidebar.Trigger />
-                <Show when={!collapsed()}>
-                  <button
-                    type="button"
-                    class="flex items-center justify-center size-8 rounded-[var(--radius)] text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                    title="帮助"
-                  >
-                    <HelpCircle class="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    class="flex items-center justify-center size-8 rounded-[var(--radius)] text-muted-foreground hover:bg-accent hover:text-accent-foreground ml-auto"
-                    title="退出"
-                  >
-                    <LogOut class="size-4" />
-                  </button>
-                </Show>
-              </div>
-            </Sidebar.Footer>
-          </Sidebar>
-          <main class="flex-1 p-6 bg-background">
-            <h3 class="text-lg font-medium">主内容区域</h3>
-            <p class="text-muted-foreground mt-2">当前选中: {activeKey()}</p>
-            <p class="text-muted-foreground">侧边栏状态: {collapsed() ? '折叠' : '展开'}</p>
-          </main>
-        </div>
+        <Sidebar.Provider defaultOpen class="flex h-[600px]">
+          <SidebarDemo />
+        </Sidebar.Provider>
       </div>
     </div>
+  )
+}
+
+function SidebarDemo() {
+  const { open, state } = useSidebar()
+  const [activeKey, setActiveKey] = createSignal('profile')
+
+  return (
+    <>
+      <Sidebar>
+        <Sidebar.Header>
+          <Show when={open()} fallback={<span class="text-xl font-bold">B</span>}>
+            <span class="text-xl font-bold text-primary">Beeve</span>
+          </Show>
+        </Sidebar.Header>
+        <Sidebar.Content>
+          <NavMenu
+            items={menuItems}
+            value={activeKey()}
+            onValueChange={setActiveKey}
+            collapsed={!open()}
+            defaultExpandedKeys={['settings']}
+          />
+        </Sidebar.Content>
+        <Sidebar.Footer class="flex-col gap-2">
+          <Show when={open()}>
+            <div class="flex items-center gap-2 w-full px-2 py-1">
+              <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-medium">
+                U
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium truncate">用户名</div>
+                <div class="text-xs text-muted-foreground truncate">user@example.com</div>
+              </div>
+            </div>
+          </Show>
+          <div class="flex items-center gap-1 w-full">
+            <Sidebar.Trigger />
+            <Show when={open()}>
+              <button
+                type="button"
+                class="flex items-center justify-center size-8 rounded-[var(--radius)] text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                title="帮助"
+              >
+                <HelpCircle class="size-4" />
+              </button>
+              <button
+                type="button"
+                class="flex items-center justify-center size-8 rounded-[var(--radius)] text-muted-foreground hover:bg-accent hover:text-accent-foreground ml-auto"
+                title="退出"
+              >
+                <LogOut class="size-4" />
+              </button>
+            </Show>
+          </div>
+        </Sidebar.Footer>
+      </Sidebar>
+      <main class="flex-1 p-6 bg-background">
+        <h3 class="text-lg font-medium">主内容区域</h3>
+        <p class="text-muted-foreground mt-2">当前选中: {activeKey()}</p>
+        <p class="text-muted-foreground">侧边栏状态: {state()}</p>
+      </main>
+    </>
   )
 }
 
