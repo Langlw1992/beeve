@@ -16,6 +16,7 @@
  */
 
 import {
+  createEffect,
   createMemo,
   createSignal,
   createUniqueId,
@@ -26,6 +27,7 @@ import {
 } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import * as dialog from '@zag-js/dialog'
+import * as presence from '@zag-js/presence'
 import { useMachine, normalizeProps } from '@zag-js/solid'
 import { X } from 'lucide-solid'
 import { tv } from 'tailwind-variants'
@@ -38,8 +40,10 @@ const dialogStyles = tv({
     overlay: [
       'fixed inset-0 z-50',
       'bg-black/50',
-      // 进入动画
-      'animate-in fade-in-0 duration-200',
+      // 基于 data-state 的进入/退出动画
+      'data-[state=open]:animate-in data-[state=open]:fade-in-0',
+      'data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
+      'duration-200',
     ],
     positioner: [
       'fixed inset-0 z-50',
@@ -52,8 +56,10 @@ const dialogStyles = tv({
       'grid gap-4',
       'w-full',
       'rounded-lg border p-6 shadow-lg',
-      // 进入动画
-      'animate-in fade-in-0 zoom-in-95 duration-200',
+      // 基于 data-state 的进入/退出动画
+      'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+      'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+      'duration-200',
     ],
     header: [
       'flex flex-col gap-2',
@@ -286,13 +292,46 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   const variantStyles = dialogStyles({ width: local.width })
 
+  // Presence 状态机 - 用于退出动画
+  const [wasEverPresent, setWasEverPresent] = createSignal(false)
+  const presenceService = useMachine(presence.machine, () => ({
+    present: api().open,
+  }))
+  const presenceApi = createMemo(() => presence.connect(presenceService, normalizeProps))
+
+  // 追踪是否曾经显示过
+  createEffect(() => {
+    if (presenceApi().present) {
+      setWasEverPresent(true)
+    }
+  })
+
+  // 设置 presence 节点引用（绑定到 backdrop 以监听动画事件）
+  const setPresenceRef = (node: HTMLElement | null) => {
+    if (!node) { return }
+    presenceService.send({ type: 'NODE.SET', node })
+  }
+
+  // 计算是否应该卸载（退出动画完成后）
+  const shouldUnmount = createMemo(() =>
+    !presenceApi().present && wasEverPresent()
+  )
+
   return (
-    <Show when={api().open}>
+    <Show when={!shouldUnmount()}>
       <Portal>
-        <div {...api().getBackdropProps()} class={styles.overlay()} />
+        <div
+          ref={setPresenceRef}
+          {...api().getBackdropProps()}
+          hidden={!presenceApi().present}
+          data-state={api().open ? 'open' : 'closed'}
+          class={styles.overlay()}
+        />
         <div {...api().getPositionerProps()} class={styles.positioner()}>
           <div
             {...api().getContentProps()}
+            hidden={!presenceApi().present}
+            data-state={api().open ? 'open' : 'closed'}
             class={variantStyles.content({ class: local.class })}
           >
             {/* Header */}

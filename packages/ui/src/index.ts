@@ -21,6 +21,7 @@ export * from './components/Skeleton'
 export * from './components/Slider'
 export * from './components/Switch'
 export * from './components/Tooltip'
+export * from './components/Presence'
 
 // Themes
 export * from './themes'
