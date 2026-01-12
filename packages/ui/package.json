@@ -30,6 +30,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@zag-js/collapsible": "^1.32.0",
     "@zag-js/combobox": "^1.32.0",
     "@zag-js/dialog": "^1.32.0",
     "@zag-js/menu": "^1.32.0",
