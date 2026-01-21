@@ -369,10 +369,10 @@ export const HorizontalCentered: Story = {
           />
         </div>
         <div class="flex items-center gap-2">
-          <button class="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <button type="button" class="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
             登录
           </button>
-          <button class="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+          <button type="button" class="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
             注册
           </button>
         </div>

@@ -36,10 +36,9 @@
 
 #### 2.2 前端 - UI 组件库
 
-**已完成组件：**
+**已完成组件（19个）：**
 - [x] Button - 按钮
 - [x] Input - 输入框
-- [x] NumberInput - 数字输入
 - [x] Checkbox - 复选框
 - [x] Radio - 单选框
 - [x] Switch - 开关
@@ -48,24 +47,26 @@
 - [x] Label - 标签
 - [x] Tooltip - 提示
 - [x] Dialog - 对话框
+- [x] Badge - 徽章
+- [x] Card - 卡片容器
+- [x] Menu - 菜单（含 DropdownMenu 功能）
+- [x] NavMenu - 导航菜单
+- [x] Progress - 进度条
+- [x] Sidebar - 侧边栏
+- [x] Skeleton - 骨架屏
+- [x] Presence - 存在动画
 
-**Sprint 1 - 核心交互组件：**
+**待开发组件：**
 - [ ] Tabs - 选项卡（设计器面板切换）
-- [ ] DropdownMenu - 下拉菜单（右键菜单、操作菜单）
 - [ ] Popover - 气泡卡片
 - [ ] Toast - 消息提示
-
-**Sprint 2 - 数据展示组件：**
-- [ ] Card - 卡片容器
 - [ ] Table - 数据表格
-- [ ] Badge - 徽章
 - [ ] Avatar - 头像
-
-**Sprint 3 - 低代码专用组件：**
 - [ ] Tree - 树形控件（组件树/大纲）
 - [ ] Collapse/Accordion - 折叠面板（属性面板）
 - [ ] ColorPicker - 颜色选择器
 - [ ] Breadcrumb - 面包屑导航
+- [ ] NumberInput - 数字输入
 
 ### Phase 3: 低代码引擎
 - [ ] `@beeve/lowcode-core` - Schema 定义
@@ -151,6 +152,6 @@
 
 **前端并行：**
 1. 开发 Tabs 组件
-2. 开发 DropdownMenu 组件
-3. 开发 Popover 组件
-4. 开发 Toast 组件
+2. 开发 Popover 组件
+3. 开发 Toast 组件
+4. 开发 Table 组件

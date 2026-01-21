@@ -30,6 +30,23 @@
 3. **结束后**：更新 PROGRESS.md 记录完成情况
 4. **重大决策**：在 [.ai/decisions/](.ai/decisions/) 创建 ADR
 
+### ⚠️ 组件开发必须完整交付
+
+**每完成一个组件，必须同时完成以下全部内容：**
+
+| 交付物 | 路径 |
+|--------|------|
+| 组件代码 | `packages/ui/src/components/{Name}/{Name}.tsx` |
+| 导出文件 | `packages/ui/src/components/{Name}/index.ts` |
+| Stories | `packages/ui/src/components/{Name}/{Name}.stories.tsx` |
+| 文档 | `apps/docs/src/content/docs/components/{name}.mdx` |
+| 全局导出 | `packages/ui/src/index.ts` 添加导出 |
+| 进度更新 | `PROGRESS.md` 勾选并添加日志 |
+
+**不完整的组件 = 未完成**
+
+**⚠️ 完成确认**：组件开发完成后，必须询问用户确认，得到确认后才能标记为完成并更新 PROGRESS.md
+
 ---
 
 ## 项目概述

@@ -69,7 +69,7 @@ import {
 
 const navMenuStyles = tv({
   slots: {
-    root: 'flex flex-col gap-1 py-2 px-3',
+    root: 'flex flex-col gap-1 p-2',
     group: 'flex flex-col',
     groupLabel: [
       'flex h-9 items-center text-xs font-medium tracking-wide',
@@ -77,28 +77,21 @@ const navMenuStyles = tv({
     ],
     divider: 'my-2 h-px bg-sidebar-border/50',
     item: [
-      'group/item relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-left outline-none',
+      'group/item relative flex w-full items-center gap-2 rounded-md p-2 text-left outline-none',
       'text-[13px] text-sidebar-foreground/70',
-      'hover:text-sidebar-foreground hover:bg-sidebar-accent/50',
-      'focus-visible:text-sidebar-foreground focus-visible:bg-sidebar-accent/50',
+      'hover:bg-sidebar-accent',
+      'focus-visible:bg-sidebar-accent',
       'transition-colors duration-150 cursor-pointer select-none',
       '[&>svg]:size-[18px] [&>svg]:shrink-0 [&>svg]:text-sidebar-foreground/40',
-      '[&>svg]:transition-colors [&>svg]:duration-150',
-      'hover:[&>svg]:text-sidebar-foreground/70',
     ],
-    itemActive: [
-      'text-sidebar-primary bg-sidebar-primary/8',
-      '[&>svg]:text-sidebar-primary/70',
-      'hover:text-sidebar-primary hover:bg-sidebar-primary/12',
-      'hover:[&>svg]:text-sidebar-primary',
-    ],
-    // 父级菜单展开时的样式
-    itemExpanded: [
-      'text-sidebar-foreground bg-sidebar-accent/40',
-      '[&>svg]:text-sidebar-foreground/60',
-    ],
+    // active 状态：主题色文字，无 hover 变化
+    itemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/10 [&>svg]:text-sidebar-primary/70',
+    // 父级菜单展开时的样式：无特殊高亮
+    itemExpanded: '',
+    // 子节点被选中时，父节点高亮
+    itemHasActiveChild: 'text-sidebar-primary [&>svg]:text-sidebar-primary/70',
     itemDisabled: 'pointer-events-none opacity-40',
-    itemLabel: 'flex-1 truncate font-medium',
+    itemLabel: 'flex-1 truncate',
     itemBadge: [
       'ml-auto flex h-5 min-w-5 items-center justify-center rounded px-1.5',
       'text-[10px] font-medium tabular-nums',
@@ -110,25 +103,17 @@ const navMenuStyles = tv({
       'transition-transform duration-200 ease-out',
     ],
     itemChevronOpen: 'rotate-90',
-    // 子菜单容器 - 带背景和左侧边框表示层级
+    // 子菜单容器 - 移除背景色，简化样式
     subMenuWrapper: [
-      'relative mt-1 rounded-md overflow-hidden',
-      'bg-sidebar-accent/25',
+      'relative mt-1 overflow-hidden',
     ],
     subMenu: [
-      'flex min-w-0 flex-col py-1',
+      'flex min-w-0 flex-col',
       'overflow-hidden',
     ],
-    // 子菜单项 - 简洁文字，通过缩进表示层级
-    subMenuItem: [
-      'text-[13px] py-1.5 px-3',
-      'text-sidebar-foreground/60',
-      'hover:text-sidebar-foreground',
-    ],
-    subMenuItemActive: [
-      'text-sidebar-primary',
-      'hover:text-sidebar-primary',
-    ],
+    // 子菜单项：active 时无 hover 变化
+    subMenuItem: 'text-[13px] py-1.5 px-3 text-sidebar-foreground/60 hover:bg-sidebar-accent',
+    subMenuItemActive: 'text-sidebar-primary hover:bg-transparent',
   },
   variants: {
     collapsed: {
@@ -159,30 +144,23 @@ const horizontalNavStyles = tv({
     trigger: [
       'inline-flex items-center gap-1.5 px-3 py-2 rounded-md',
       'text-sm font-medium text-foreground/70',
-      'hover:text-foreground hover:bg-accent/50',
+      'hover:bg-accent',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
       'transition-colors duration-150 cursor-pointer select-none',
       '[&>svg]:size-4 [&>svg]:shrink-0',
     ],
-    triggerActive: [
-      'text-primary bg-primary/8',
-      'hover:text-primary hover:bg-primary/12',
-    ],
-    triggerOpen: [
-      'text-foreground bg-accent/50',
-    ],
+    // active 状态：无 hover 变化
+    triggerActive: 'text-primary bg-primary/8 hover:bg-primary/8',
+    triggerOpen: 'text-primary bg-accent',
     link: [
       'inline-flex items-center gap-1.5 px-3 py-2 rounded-md',
       'text-sm font-medium text-foreground/70',
-      'hover:text-foreground hover:bg-accent/50',
+      'hover:bg-accent',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
       'transition-colors duration-150 cursor-pointer select-none',
       '[&>svg]:size-4 [&>svg]:shrink-0',
     ],
-    linkActive: [
-      'text-primary bg-primary/8',
-      'hover:text-primary hover:bg-primary/12',
-    ],
+    linkActive: 'text-primary bg-primary/8 hover:bg-primary/8',
     content: [
       'absolute top-full left-0 mt-1 min-w-[200px] z-50',
       'rounded-md border border-border bg-popover p-1 shadow-lg',
@@ -191,15 +169,12 @@ const horizontalNavStyles = tv({
     contentLink: [
       'flex w-full items-center gap-2 rounded-sm px-3 py-2',
       'text-sm text-popover-foreground/80',
-      'hover:text-popover-foreground hover:bg-accent',
+      'hover:bg-accent',
       'focus-visible:outline-none focus-visible:bg-accent',
       'transition-colors duration-150 cursor-pointer select-none',
       '[&>svg]:size-4 [&>svg]:shrink-0',
     ],
-    contentLinkActive: [
-      'text-primary bg-primary/8',
-      'hover:text-primary hover:bg-primary/12',
-    ],
+    contentLinkActive: 'text-primary bg-primary/8 hover:bg-primary/8',
     chevron: [
       'size-3.5 text-foreground/40 transition-transform duration-200',
     ],
@@ -282,6 +257,19 @@ const NavMenuItem: Component<{
   )
 }
 
+/** 递归检查子节点是否包含选中项 */
+function hasActiveChild(children: NavMenuItemData[], activeKey: string | undefined): boolean {
+  if (!activeKey) { return false }
+  for (const child of children) {
+    if (child.key === activeKey) { return true }
+    if (navMenuHasChildren(child)) {
+      const childWithChildren = child as NavMenuItemData & { children: NavMenuItemData[] }
+      if (hasActiveChild(childWithChildren.children, activeKey)) { return true }
+    }
+  }
+  return false
+}
+
 /** 渲染带子菜单的菜单项（支持多层级递归） */
 const NavMenuSubItem: Component<{
   item: NavMenuItemData & { children: NavMenuItemData[] }
@@ -291,11 +279,14 @@ const NavMenuSubItem: Component<{
   const styles = createMemo(() => navMenuStyles({ collapsed: ctx.collapsed() }))
   const isExpanded = () => ctx.expandedKeys().includes(props.item.key)
   const depth = () => props.depth ?? 0
+  const isChildActive = () => hasActiveChild(props.item.children, ctx.value())
 
+  // 受控模式：open 和 onOpenChange 配合使用
   const { api } = useCollapsible({
-    // 传递 Accessor 而不是立即求值，保持响应式
     open: isExpanded,
-    onOpenChange: () => ctx.toggleExpanded(props.item.key),
+    onOpenChange: () => {
+      ctx.toggleExpanded(props.item.key)
+    },
   })
 
   // 根据层级计算内容缩进
@@ -310,7 +301,7 @@ const NavMenuSubItem: Component<{
         class={styles().item({
           class: [
             props.item.disabled && styles().itemDisabled(),
-            isExpanded() && styles().itemExpanded(),
+            isChildActive() && styles().itemHasActiveChild(),
             depth() > 0 && styles().subMenuItem(),
           ].filter(Boolean).join(' '),
         })}
@@ -453,7 +444,9 @@ const HorizontalNavMenu: Component<{
 
             // 检查子项是否有激活的
             const hasActiveChild = () => {
-              if (!item.children) return false
+              if (!item.children) {
+                return false
+              }
               return item.children.some((child) => props.value === child.key)
             }
 
