@@ -28,6 +28,4 @@ export * from './themes'
 
 // Providers
 export * from './providers'
-
-// Re-export tv for consumers who want to create custom variants
 export { tv, type VariantProps } from 'tailwind-variants'

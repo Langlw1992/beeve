@@ -60,7 +60,7 @@ const sidebarStyles = tv({
       'transition-[width] duration-200 ease-in-out',
     ],
     header: [
-      'flex h-14 shrink-0 items-center gap-2 px-4',
+      'flex h-14 shrink-0 items-center gap-2 px-3',
     ],
     content: [
       'flex-1 overflow-y-auto overflow-x-hidden',

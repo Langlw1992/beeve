@@ -69,8 +69,8 @@ import {
 
 const navMenuStyles = tv({
   slots: {
-    root: 'flex flex-col gap-1 p-2',
-    group: 'flex flex-col',
+    root: 'flex flex-col gap-1 p-3',
+    group: 'flex flex-col gap-1',
     groupLabel: [
       'flex h-9 items-center text-xs font-medium tracking-wide',
       'text-sidebar-foreground/40 uppercase select-none',
@@ -84,8 +84,8 @@ const navMenuStyles = tv({
       'transition-colors duration-150 cursor-pointer select-none',
       '[&>svg]:size-[18px] [&>svg]:shrink-0 [&>svg]:text-sidebar-foreground/40',
     ],
-    // active 状态：主题色文字，无 hover 变化
-    itemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/10 [&>svg]:text-sidebar-primary/70',
+    // active 状态：主题色文字 + 背景，hover 保持
+    itemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15 [&>svg]:text-sidebar-primary/70',
     // 父级菜单展开时的样式：无特殊高亮
     itemExpanded: '',
     // 子节点被选中时，父节点高亮
@@ -103,17 +103,17 @@ const navMenuStyles = tv({
       'transition-transform duration-200 ease-out',
     ],
     itemChevronOpen: 'rotate-90',
-    // 子菜单容器 - 移除背景色，简化样式
+    // 子菜单容器
     subMenuWrapper: [
       'relative mt-1 overflow-hidden',
     ],
     subMenu: [
-      'flex min-w-0 flex-col',
+      'flex min-w-0 flex-col gap-1',
       'overflow-hidden',
     ],
-    // 子菜单项：active 时无 hover 变化
+    // 子菜单项：简化为选中/未选中两种状态
     subMenuItem: 'text-[13px] py-1.5 px-3 text-sidebar-foreground/60 hover:bg-sidebar-accent',
-    subMenuItemActive: 'text-sidebar-primary hover:bg-transparent',
+    subMenuItemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15',
   },
   variants: {
     collapsed: {
@@ -226,9 +226,9 @@ const NavMenuItem: Component<{
     ctx.onValueChange(props.item.key)
   }
 
-  // 根据层级计算内容缩进
+  // 根据层级计算内容缩进（与 icon 宽度 18px + gap 8px 一致）
   const contentIndentStyle = () =>
-    depth() > 0 ? { 'padding-left': `${depth() * 16}px` } : {}
+    depth() > 0 ? { 'padding-left': `${depth() * 26}px` } : {}
 
   return (
     <button
@@ -239,7 +239,7 @@ const NavMenuItem: Component<{
           props.item.disabled && styles().itemDisabled(),
           depth() > 0 && styles().subMenuItem(),
           depth() > 0 && isActive() && styles().subMenuItemActive(),
-        ].filter(Boolean).join(' '),
+        ],
       })}
       style={contentIndentStyle()}
       onClick={handleClick}
@@ -289,9 +289,9 @@ const NavMenuSubItem: Component<{
     },
   })
 
-  // 根据层级计算内容缩进
+  // 根据层级计算内容缩进（与 icon 宽度 18px + gap 8px 一致）
   const contentIndentStyle = () =>
-    depth() > 0 ? { 'padding-left': `${depth() * 16}px` } : {}
+    depth() > 0 ? { 'padding-left': `${depth() * 26}px` } : {}
 
   return (
     <div {...api().getRootProps()}>
@@ -303,7 +303,7 @@ const NavMenuSubItem: Component<{
             props.item.disabled && styles().itemDisabled(),
             isChildActive() && styles().itemHasActiveChild(),
             depth() > 0 && styles().subMenuItem(),
-          ].filter(Boolean).join(' '),
+          ],
         })}
         style={contentIndentStyle()}
         disabled={props.item.disabled}
@@ -460,7 +460,7 @@ const HorizontalNavMenu: Component<{
                       class: [
                         (isActive() || hasActiveChild()) && styles.triggerActive(),
                         isOpen() && styles.triggerOpen(),
-                      ].filter(Boolean).join(' '),
+                      ],
                     })}
                   >
                     <Show when={item.icon}>{item.icon}</Show>
