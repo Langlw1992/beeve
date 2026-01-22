@@ -25,9 +25,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div class="w-64 bg-sidebar p-2 rounded-lg border">
-        <Story />
-      </div>
+      <Story />
     ),
   ],
 } satisfies Meta<typeof NavMenu>
@@ -271,7 +269,7 @@ export const WithDisabled: Story = {
 export const Horizontal: Story = {
   decorators: [
     (Story) => (
-      <div class="w-full min-w-[600px] bg-background p-4 rounded-lg border">
+      <div class="bg-background p-4 pb-40 rounded-lg border overflow-visible">
         <Story />
       </div>
     ),
@@ -325,7 +323,7 @@ export const Horizontal: Story = {
 export const HorizontalCentered: Story = {
   decorators: [
     (Story) => (
-      <div class="w-full min-w-[800px] bg-background border-b">
+      <div class="bg-background border-b pb-40 overflow-visible">
         <Story />
       </div>
     ),
@@ -377,6 +375,87 @@ export const HorizontalCentered: Story = {
           </button>
         </div>
       </header>
+    )
+  },
+}
+
+/** 水平导航 - 卡片式菜单（带描述） */
+export const HorizontalWithCards: Story = {
+  decorators: [
+    (Story) => (
+      <div class="bg-background p-4 pb-60 rounded-lg border overflow-visible">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => {
+    const [value, setValue] = createSignal('home')
+
+    const items: NavMenuItemType[] = [
+      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
+      {
+        key: 'products',
+        label: '产品',
+        icon: <BarChart3 class="size-4" />,
+        children: [
+          {
+            key: 'analytics',
+            label: '数据分析',
+            icon: <BarChart3 class="size-4" />,
+            description: '实时监控和分析您的业务数据',
+          },
+          {
+            key: 'marketing',
+            label: '营销工具',
+            icon: <Edit class="size-4" />,
+            description: '自动化营销和客户触达',
+          },
+          {
+            key: 'automation',
+            label: '工作流自动化',
+            icon: <Settings class="size-4" />,
+            description: '构建自定义自动化流程',
+          },
+        ],
+      },
+      {
+        key: 'solutions',
+        label: '解决方案',
+        icon: <Shield class="size-4" />,
+        children: [
+          {
+            key: 'enterprise',
+            label: '企业版',
+            icon: <Shield class="size-4" />,
+            description: '为大型企业设计的完整解决方案',
+          },
+          {
+            key: 'startup',
+            label: '创业版',
+            icon: <Users class="size-4" />,
+            description: '帮助初创公司快速增长',
+          },
+        ],
+      },
+      { key: 'pricing', label: '定价' },
+      { key: 'docs', label: '文档', icon: <FileText class="size-4" /> },
+    ]
+
+    return (
+      <div class="space-y-4">
+        <NavMenu
+          items={items}
+          value={value()}
+          onValueChange={setValue}
+          direction="horizontal"
+        />
+        <p class="text-sm text-muted-foreground">
+          当前选中: <span class="text-foreground font-medium">{value()}</span>
+        </p>
+        <p class="text-xs text-muted-foreground">
+          悬停"产品"或"解决方案"查看带描述的卡片式菜单
+        </p>
+      </div>
     )
   },
 }

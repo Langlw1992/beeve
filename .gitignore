@@ -30,3 +30,25 @@ coverage/
 
 # Misc
 *.tsbuildinfo
+/.playwright-mcp/navmenu-2col-layout.png
+/.playwright-mcp/navmenu-2col-layout-2.png
+/.playwright-mcp/navmenu-2col-layout-3.png
+/.playwright-mcp/navmenu-2col-wider.png
+/.playwright-mcp/navmenu-horizontal-1.png
+/.playwright-mcp/navmenu-horizontal-current.png
+/.playwright-mcp/navmenu-horizontal-dropdown.png
+/.playwright-mcp/navmenu-horizontal-fixed.png
+/.playwright-mcp/navmenu-horizontal-fixed2.png
+/.playwright-mcp/navmenu-horizontal-settings.png
+/.playwright-mcp/navmenu-horizontal-settings-menu.png
+/.playwright-mcp/navmenu-horizontal-with-cards.png
+/.playwright-mcp/navmenu-horizontal-with-cards-solutions.png
+/.playwright-mcp/navmenu-hover-products.png
+/.playwright-mcp/navmenu-indicator-moved-to-settings.png
+/.playwright-mcp/navmenu-indicator-test-products.png
+/.playwright-mcp/navmenu-indicator-working.png
+/.playwright-mcp/navmenu-products-dropdown.png
+/.playwright-mcp/navmenu-products-final.png
+/.playwright-mcp/navmenu-settings-dropdown.png
+/.playwright-mcp/navmenu-settings-open.png
+/.playwright-mcp/navmenu-with-indicator-fix.png

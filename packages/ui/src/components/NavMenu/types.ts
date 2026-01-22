@@ -11,6 +11,8 @@ export interface NavMenuItemData {
   key: string
   /** 菜单项标签 */
   label: string
+  /** 描述文本（用于卡片式菜单） */
+  description?: string
   /** 图标 */
   icon?: JSX.Element
   /** 徽标（数字或文本） */
