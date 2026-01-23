@@ -4,7 +4,7 @@
  */
 
 import { splitProps, Show, type Component, type JSX } from 'solid-js'
-import { Loader2 } from 'lucide-solid'
+import { LoaderCircle } from 'lucide-solid'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonVariants = tv({
@@ -70,7 +70,7 @@ export const Button: Component<ButtonProps> = (props) => {
       {...rest}
     >
       <Show when={local.loading}>
-        <Loader2 class="size-3.5 animate-spin" />
+        <LoaderCircle class="size-3.5 animate-spin" />
       </Show>
       {local.children}
     </button>

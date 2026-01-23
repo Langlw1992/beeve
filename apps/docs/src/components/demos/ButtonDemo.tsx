@@ -1,5 +1,5 @@
 import { Button } from '@beeve/ui'
-import { Loader2, Mail, ChevronRight } from 'lucide-solid'
+import { LoaderCircle, Mail, ChevronRight } from 'lucide-solid'
 import { createSignal } from 'solid-js'
 import { DemoBox } from '../DemoBox'
 
@@ -53,7 +53,7 @@ export function ButtonLoading() {
       <Button loading={loading()} onClick={handleClick}>
         {loading() ? (
           <>
-            <Loader2 class="mr-2 size-4 animate-spin" />
+            <LoaderCircle class="mr-2 size-4 animate-spin" />
             加载中...
           </>
         ) : (
@@ -61,7 +61,7 @@ export function ButtonLoading() {
         )}
       </Button>
       <Button loading disabled>
-        <Loader2 class="mr-2 size-4 animate-spin" />
+        <LoaderCircle class="mr-2 size-4 animate-spin" />
         处理中
       </Button>
     </DemoBox>

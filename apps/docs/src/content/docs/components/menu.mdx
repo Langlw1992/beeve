@@ -13,10 +13,10 @@ Menu 组件用于显示下拉菜单和右键菜单，基于 Zag.js 实现。
 
 ```tsx
 import { Dropdown } from '@beeve/ui'
-import { Edit, Copy, Trash2 } from 'lucide-solid'
+import { SquarePen, Copy, Trash2 } from 'lucide-solid'
 
 const items = [
-  { key: 'edit', label: '编辑', icon: <Edit /> },
+  { key: 'edit', label: '编辑', icon: <SquarePen /> },
   { key: 'copy', label: '复制', icon: <Copy /> },
   { type: 'divider' },
   { key: 'delete', label: '删除', icon: <Trash2 />, danger: true },

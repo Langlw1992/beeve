@@ -7,7 +7,7 @@
  * ```tsx
  * // Dropdown Menu
  * const items = [
- *   { key: 'edit', label: '编辑', icon: <Edit /> },
+ *   { key: 'edit', label: '编辑', icon: <SquarePen /> },
  *   { key: 'copy', label: '复制' },
  *   { type: 'divider' },
  *   { key: 'delete', label: '删除', danger: true },

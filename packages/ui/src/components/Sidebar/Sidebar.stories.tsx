@@ -7,7 +7,7 @@ import { createSignal, Show } from 'solid-js'
 import {
   Home,
   FileText,
-  Edit,
+  SquarePen,
   Settings,
   Users,
   BarChart3,
@@ -38,7 +38,7 @@ const menuItems: NavMenuItemType[] = [
     label: '内容管理',
     children: [
       { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <Edit class="size-4" />, badge: 12 },
+      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 12 },
     ],
   },
   {

@@ -7,7 +7,7 @@ import { createSignal } from 'solid-js'
 import {
   Home,
   FileText,
-  Edit,
+  SquarePen,
   Settings,
   Users,
   BarChart3,
@@ -41,7 +41,7 @@ export const Basic: Story = {
     const items: NavMenuItemType[] = [
       { key: 'home', label: '首页', icon: <Home class="size-4" /> },
       { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <Edit class="size-4" /> },
+      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" /> },
       { key: 'users', label: '用户', icon: <Users class="size-4" /> },
     ]
 
@@ -69,7 +69,7 @@ export const WithGroups: Story = {
         label: '内容管理',
         children: [
           { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-          { key: 'posts', label: '文章', icon: <Edit class="size-4" />, badge: 12 },
+          { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 12 },
         ],
       },
       {
@@ -142,7 +142,7 @@ export const WithBadges: Story = {
     const items: NavMenuItemType[] = [
       { key: 'home', label: '首页', icon: <Home class="size-4" /> },
       { key: 'notifications', label: '通知', icon: <Bell class="size-4" />, badge: 5 },
-      { key: 'posts', label: '文章', icon: <Edit class="size-4" />, badge: 'New' },
+      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 'New' },
       { key: 'help', label: '帮助', icon: <HelpCircle class="size-4" /> },
     ]
 
@@ -227,7 +227,7 @@ export const Collapsed: Story = {
     const items: NavMenuItemType[] = [
       { key: 'home', label: '首页', icon: <Home class="size-4" /> },
       { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <Edit class="size-4" /> },
+      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" /> },
       { key: 'settings', label: '设置', icon: <Settings class="size-4" /> },
     ]
 
@@ -250,7 +250,7 @@ export const WithDisabled: Story = {
     const items: NavMenuItemType[] = [
       { key: 'home', label: '首页', icon: <Home class="size-4" /> },
       { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <Edit class="size-4" />, disabled: true },
+      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, disabled: true },
       { key: 'users', label: '用户', icon: <Users class="size-4" />, disabled: true },
       { key: 'settings', label: '设置', icon: <Settings class="size-4" /> },
     ]
@@ -338,7 +338,7 @@ export const HorizontalCentered: Story = {
         label: '产品',
         children: [
           { key: 'analytics', label: '数据分析', icon: <BarChart3 class="size-4" /> },
-          { key: 'marketing', label: '营销工具', icon: <Edit class="size-4" /> },
+          { key: 'marketing', label: '营销工具', icon: <SquarePen class="size-4" /> },
           { key: 'automation', label: '自动化', icon: <Settings class="size-4" /> },
         ],
       },
@@ -407,7 +407,7 @@ export const HorizontalWithCards: Story = {
           {
             key: 'marketing',
             label: '营销工具',
-            icon: <Edit class="size-4" />,
+            icon: <SquarePen class="size-4" />,
             description: '自动化营销和客户触达',
           },
           {

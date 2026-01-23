@@ -1,9 +1,9 @@
 import { Dropdown, ContextMenu, Button } from '@beeve/ui'
-import { Edit, Copy, Trash2, Share2, Download, Settings } from 'lucide-solid'
+import { SquarePen, Copy, Trash2, Share2, Download, Settings } from 'lucide-solid'
 import { DemoBox } from '../DemoBox'
 
 const basicItems = [
-  { key: 'edit', label: '编辑', icon: <Edit class="size-4" /> },
+  { key: 'edit', label: '编辑', icon: <SquarePen class="size-4" /> },
   { key: 'copy', label: '复制', icon: <Copy class="size-4" /> },
   { type: 'divider' as const },
   { key: 'delete', label: '删除', icon: <Trash2 class="size-4" />, danger: true },

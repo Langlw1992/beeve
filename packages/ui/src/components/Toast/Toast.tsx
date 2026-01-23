@@ -21,7 +21,7 @@ import {
   XCircle,
   Info,
   AlertTriangle,
-  Loader2,
+  LoaderCircle,
 } from 'lucide-solid'
 
 // ==================== 类型定义 ====================
@@ -194,7 +194,7 @@ const ToastIcon: Component<{ type: ToastType }> = (props) => {
   return (
     <Show
       when={props.type !== 'loading'}
-      fallback={<Loader2 class="size-5 animate-spin" />}
+      fallback={<LoaderCircle class="size-5 animate-spin" />}
     >
       <Show when={props.type === 'info'}><Info class="size-5" /></Show>
       <Show when={props.type === 'success'}><CheckCircle2 class="size-5" /></Show>

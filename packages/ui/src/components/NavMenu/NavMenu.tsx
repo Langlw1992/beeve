@@ -13,7 +13,7 @@
  *     label: '内容管理',
  *     children: [
  *       { key: 'pages', label: '页面', icon: <FileText /> },
- *       { key: 'posts', label: '文章', icon: <Edit />, badge: 12 },
+ *       { key: 'posts', label: '文章', icon: <SquarePen />, badge: 12 },
  *     ]
  *   },
  *   {

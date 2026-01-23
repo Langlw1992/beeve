@@ -8,7 +8,7 @@ import { createSignal } from 'solid-js'
 import { Dropdown, ContextMenu } from './Menu'
 import type { MenuItemType } from '../../primitives/menu'
 import { Button } from '../Button'
-import { Copy, Scissors, Clipboard, Trash2, Edit, Share2, Download } from 'lucide-solid'
+import { Copy, Scissors, Clipboard, Trash2, SquarePen, Share2, Download } from 'lucide-solid'
 
 /**
  * # Menu 菜单
@@ -35,7 +35,7 @@ import { Copy, Scissors, Clipboard, Trash2, Edit, Share2, Download } from 'lucid
  *
  * ```tsx
  * const items = [
- *   { key: 'edit', label: '编辑', icon: <Edit /> },
+ *   { key: 'edit', label: '编辑', icon: <SquarePen /> },
  *   { key: 'copy', label: '复制' },
  *   { type: 'divider' },
  *   { key: 'delete', label: '删除', danger: true },
@@ -309,7 +309,7 @@ export const Disabled: Story = {
 export const DangerItems: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'edit', label: '编辑', icon: <Edit class="size-4" /> },
+      { key: 'edit', label: '编辑', icon: <SquarePen class="size-4" /> },
       { key: 'duplicate', label: '复制', icon: <Copy class="size-4" /> },
       { type: 'divider' },
       {
