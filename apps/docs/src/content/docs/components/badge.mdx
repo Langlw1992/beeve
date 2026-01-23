@@ -1,56 +1,68 @@
 ---
 title: Badge 徽标
-description: 用于显示状态或数量的小标签
+description: 用于显示状态或数量的小标记
 ---
 
-import { BadgeVariants, BadgeSizes, BadgeUseCases } from '../../../components/demos/BadgeDemo'
+import { BadgeBasic, BadgeDot, BadgeColors, BadgeStatus } from '../../../components/demos/BadgeDemo'
 
-Badge 组件用于显示状态、数量或分类信息。
+Badge 组件用于显示消息数量、状态指示等信息。
 
-## 徽标变体
+## 基础徽标
 
-<BadgeVariants client:load />
+<BadgeBasic client:load />
 
 ```tsx
 import { Badge } from '@beeve/ui'
 
-<Badge variant="default">默认</Badge>
-<Badge variant="secondary">次要</Badge>
-<Badge variant="outline">轮廓</Badge>
-<Badge variant="success">成功</Badge>
-<Badge variant="warning">警告</Badge>
-<Badge variant="error">错误</Badge>
+<Badge count={5}>
+  <Avatar />
+</Badge>
+
+<Badge count={99}>
+  <Avatar />
+</Badge>
+
+<Badge count={100}>
+  <Avatar />
+</Badge>
 ```
 
-## 徽标尺寸
+## 小红点
 
-<BadgeSizes client:load />
+<BadgeDot client:load />
 
 ```tsx
-<Badge size="sm">小徽标</Badge>
-<Badge size="md">中徽标</Badge>
-<Badge size="lg">大徽标</Badge>
+<Badge dot>
+  <Bell />
+</Badge>
+
+<Badge dot color="blue">
+  <Mail />
+</Badge>
 ```
 
-## 使用场景
+## 徽标颜色
 
-<BadgeUseCases client:load />
+<BadgeColors client:load />
 
 ```tsx
-// 消息计数
-<span class="flex items-center gap-2">
-  消息 <Badge variant="error">99+</Badge>
-</span>
+<Badge count={5} color="default">...</Badge>
+<Badge count={5} color="blue">...</Badge>
+<Badge count={5} color="green">...</Badge>
+<Badge count={5} color="orange">...</Badge>
+<Badge count={5} color="red">...</Badge>
+```
 
-// 版本标签
-<span class="flex items-center gap-2">
-  版本 <Badge variant="outline">v1.0.0</Badge>
-</span>
+## 状态徽标
 
-// 状态指示
-<span class="flex items-center gap-2">
-  状态 <Badge variant="success">已发布</Badge>
-</span>
+<BadgeStatus client:load />
+
+```tsx
+<Badge status="default" text="默认" />
+<Badge status="success" text="成功" />
+<Badge status="processing" text="处理中" />
+<Badge status="warning" text="警告" />
+<Badge status="error" text="错误" />
 ```
 
 ## API
@@ -59,7 +71,14 @@ import { Badge } from '@beeve/ui'
 
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `variant` | `'default' \| 'secondary' \| 'outline' \| 'success' \| 'warning' \| 'error'` | `'default'` | 徽标变体 |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 徽标尺寸 |
-| `class` | `string` | - | 自定义类名 |
-| `children` | `JSX.Element` | - | 徽标内容 |
+| `count` | `number \| JSX.Element` | - | 显示的数字或自定义内容 |
+| `overflowCount` | `number` | `99` | 数字溢出时的最大值 |
+| `dot` | `boolean` | `false` | 显示小红点 |
+| `showZero` | `boolean` | `false` | 是否显示 0 |
+| `color` | `'default' \| 'blue' \| 'green' \| 'orange' \| 'red'` | `'default'` | 徽标颜色 |
+| `status` | `'default' \| 'success' \| 'processing' \| 'warning' \| 'error'` | - | 状态（用于独立状态点） |
+| `text` | `string` | - | 状态文本（与 status 配合使用） |
+| `size` | `'sm' \| 'md'` | `'md'` | 徽标尺寸 |
+| `placement` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | 徽标位置 |
+| `offset` | `[number, number]` | - | 位置偏移 [x, y] |
+| `children` | `JSX.Element` | - | 子元素 |

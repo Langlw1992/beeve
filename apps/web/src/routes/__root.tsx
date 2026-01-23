@@ -31,22 +31,30 @@ const modeOptions: { value: ColorMode; label: string }[] = [
 
 const routes = [
   { path: '/', label: 'Home' },
+  { path: '/badge', label: 'Badge' },
   { path: '/button', label: 'Button' },
-  { path: '/input', label: 'Input' },
-  { path: '/select', label: 'Select' },
+  { path: '/card', label: 'Card' },
   { path: '/checkbox', label: 'Checkbox' },
-  { path: '/switch', label: 'Switch' },
-  { path: '/radio', label: 'Radio' },
-  { path: '/slider', label: 'Slider' },
-  { path: '/label', label: 'Label' },
   { path: '/dialog', label: 'Dialog' },
-  { path: '/tooltip', label: 'Tooltip' },
+  { path: '/input', label: 'Input' },
+  { path: '/label', label: 'Label' },
+  { path: '/menu', label: 'Menu' },
   { path: '/navmenu', label: 'NavMenu' },
+  { path: '/popover', label: 'Popover' },
+  { path: '/presence', label: 'Presence' },
+  { path: '/progress', label: 'Progress' },
+  { path: '/radio', label: 'Radio' },
+  { path: '/select', label: 'Select' },
+  { path: '/sidebar', label: 'Sidebar' },
+  { path: '/skeleton', label: 'Skeleton' },
+  { path: '/slider', label: 'Slider' },
+  { path: '/switch', label: 'Switch' },
+  { path: '/toast', label: 'Toast' },
+  { path: '/tooltip', label: 'Tooltip' },
 ] as const
 
 function RootComponent() {
   const { config, setMode, setBaseColor, setThemeColor, setRadius } = useTheme()
-  const location = useLocation()
 
   return (
     <div class="min-h-screen bg-background text-foreground flex">

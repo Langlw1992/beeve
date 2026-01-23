@@ -21,7 +21,7 @@ const [checked, setChecked] = createSignal(false)
   <Checkbox
     id="agree"
     checked={checked()}
-    onCheckedChange={setChecked}
+    onChange={setChecked}
   />
   <Label for="agree">同意服务条款</Label>
 </div>
@@ -74,7 +74,7 @@ const toggle = (value) => {
     <Checkbox
       id={item.value}
       checked={selected().includes(item.value)}
-      onCheckedChange={() => toggle(item.value)}
+      onChange={() => toggle(item.value)}
     />
     <Label for={item.value}>{item.label}</Label>
   </div>
@@ -89,7 +89,7 @@ const toggle = (value) => {
 |------|------|--------|------|
 | `checked` | `boolean` | - | 是否选中（受控） |
 | `defaultChecked` | `boolean` | `false` | 默认是否选中（非受控） |
-| `onCheckedChange` | `(checked: boolean) => void` | - | 选中状态变化回调 |
+| `onChange` | `(checked: boolean) => void` | - | 选中状态变化回调 |
 | `indeterminate` | `boolean` | `false` | 不确定状态 |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 复选框尺寸 |
 | `disabled` | `boolean` | `false` | 禁用状态 |

@@ -5,7 +5,7 @@ import { DemoBox } from '../DemoBox'
 export function ProgressBasic() {
   return (
     <DemoBox title="基础进度条" class="flex-col items-stretch">
-      <Progress value={60} />
+      <Progress percent={60} />
     </DemoBox>
   )
 }
@@ -15,19 +15,19 @@ export function ProgressVariants() {
     <DemoBox title="进度条变体" class="flex-col items-stretch gap-4">
       <div class="space-y-2">
         <span class="text-sm">默认</span>
-        <Progress value={60} />
+        <Progress percent={60} />
       </div>
       <div class="space-y-2">
         <span class="text-sm">成功</span>
-        <Progress value={100} variant="success" />
+        <Progress percent={100} status="success" />
       </div>
       <div class="space-y-2">
         <span class="text-sm">警告</span>
-        <Progress value={75} variant="warning" />
+        <Progress percent={75} status="active" />
       </div>
       <div class="space-y-2">
         <span class="text-sm">错误</span>
-        <Progress value={30} variant="error" />
+        <Progress percent={30} status="exception" />
       </div>
     </DemoBox>
   )
@@ -38,34 +38,34 @@ export function ProgressSizes() {
     <DemoBox title="进度条尺寸" class="flex-col items-stretch gap-4">
       <div class="space-y-2">
         <span class="text-sm">小</span>
-        <Progress value={60} size="sm" />
+        <Progress percent={60} size="sm" />
       </div>
       <div class="space-y-2">
         <span class="text-sm">中</span>
-        <Progress value={60} size="md" />
+        <Progress percent={60} size="md" />
       </div>
       <div class="space-y-2">
         <span class="text-sm">大</span>
-        <Progress value={60} size="lg" />
+        <Progress percent={60} size="lg" />
       </div>
     </DemoBox>
   )
 }
 
 export function ProgressAnimated() {
-  const [value, setValue] = createSignal(0)
+  const [percent, setPercent] = createSignal(0)
 
   const interval = setInterval(() => {
-    setValue((v) => (v >= 100 ? 0 : v + 10))
+    setPercent((v) => (v >= 100 ? 0 : v + 10))
   }, 500)
 
   onCleanup(() => clearInterval(interval))
 
   return (
     <DemoBox title="动画进度条" class="flex-col items-stretch">
-      <Progress value={value()} />
+      <Progress percent={percent()} />
       <p class="mt-2 text-sm text-muted-foreground">
-        进度: {value()}%
+        进度: {percent()}%
       </p>
     </DemoBox>
   )
@@ -87,14 +87,14 @@ export function ProgressWithLabel() {
           <span>上传进度</span>
           <span>45%</span>
         </div>
-        <Progress value={45} />
+        <Progress percent={45} />
       </div>
       <div class="space-y-2">
         <div class="flex justify-between text-sm">
           <span>下载完成</span>
           <span>100%</span>
         </div>
-        <Progress value={100} variant="success" />
+        <Progress percent={100} status="success" />
       </div>
     </DemoBox>
   )

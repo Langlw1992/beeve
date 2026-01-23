@@ -19,7 +19,7 @@ const [value, setValue] = createSignal([50])
 
 <Slider
   value={value()}
-  onValueChange={setValue}
+  onValueChange={(details) => setValue(details.value)}
   min={0}
   max={100}
 />
@@ -34,7 +34,7 @@ const [value, setValue] = createSignal([20, 80])
 
 <Slider
   value={value()}
-  onValueChange={setValue}
+  onValueChange={(details) => setValue(details.value)}
   min={0}
   max={100}
 />
@@ -57,7 +57,7 @@ const [value, setValue] = createSignal([20, 80])
 ```tsx
 <Slider
   value={value()}
-  onValueChange={setValue}
+  onValueChange={(details) => setValue(details.value)}
   min={0}
   max={100}
   step={10}
@@ -86,7 +86,7 @@ const [volume, setVolume] = createSignal([75])
     <Label>音量</Label>
     <span class="text-sm text-muted-foreground">{volume()[0]}%</span>
   </div>
-  <Slider value={volume()} onValueChange={setVolume} />
+  <Slider value={volume()} onValueChange={(details) => setVolume(details.value)} />
 </div>
 ```
 
@@ -98,7 +98,7 @@ const [volume, setVolume] = createSignal([75])
 |------|------|--------|------|
 | `value` | `number[]` | - | 当前值（受控） |
 | `defaultValue` | `number[]` | `[0]` | 默认值（非受控） |
-| `onValueChange` | `(value: number[]) => void` | - | 值变化回调 |
+| `onValueChange` | `(details: { value: number[] }) => void` | - | 值变化回调 |
 | `min` | `number` | `0` | 最小值 |
 | `max` | `number` | `100` | 最大值 |
 | `step` | `number` | `1` | 步进值 |

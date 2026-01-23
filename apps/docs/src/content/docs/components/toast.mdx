@@ -1,0 +1,196 @@
+---
+title: Toast 消息提示
+description: 轻量级的全局消息通知，支持命令式调用
+---
+
+import { ToastBasic, ToastWithTitle, ToastLoading, ToastPromise, ToastRichContent, ToastManualDismiss, ToastStacking } from '../../../components/demos/ToastDemo'
+
+Toast 组件用于显示轻量级的消息通知，支持命令式调用，基于 Zag.js 实现。
+
+## 安装使用
+
+需要在应用根组件中添加 `<Toaster />` 组件来渲染 Toast：
+
+```tsx
+import { Toaster } from '@beeve/ui'
+
+function App() {
+  return (
+    <>
+      <YourApp />
+      <Toaster />
+    </>
+  )
+}
+```
+
+## 基础用法
+
+通过 `toast` 对象的方法创建不同类型的消息：
+
+<ToastBasic client:load />
+
+```tsx
+import { toast } from '@beeve/ui'
+
+// 四种基础类型
+toast.info('这是一条提示信息')
+toast.success('操作成功')
+toast.warning('请注意检查')
+toast.error('操作失败，请重试')
+```
+
+## 带标题
+
+可以同时显示标题和描述内容：
+
+<ToastWithTitle client:load />
+
+```tsx
+toast.success('您的更改已保存', {
+  title: '保存成功',
+})
+
+toast.error('服务器返回 500 错误，请稍后重试', {
+  title: '网络请求失败',
+})
+```
+
+## Loading 状态
+
+`toast.loading` 创建加载中状态的 Toast，默认不会自动关闭。通过传入相同的 `id` 可以更新 Toast 状态：
+
+<ToastLoading client:load />
+
+```tsx
+// 创建 loading toast 并获取 id
+const id = toast.loading('正在提交...')
+
+// 异步操作完成后更新状态
+try {
+  await submitData()
+  toast.success('提交成功', { id })
+} catch (error) {
+  toast.error('提交失败', { id })
+}
+```
+
+## Promise 辅助
+
+`toast.promise` 可以自动处理 Promise 的三种状态：
+
+<ToastPromise client:load />
+
+```tsx
+toast.promise(fetchData(), {
+  loading: '正在获取数据...',
+  success: (data) => `获取成功: ${data.name}`,
+  error: (err) => `获取失败: ${err.message}`,
+})
+```
+
+## 富文本内容
+
+Toast 支持 JSX 作为标题和描述内容：
+
+<ToastRichContent client:load />
+
+```tsx
+toast.create({
+  title: <span class="font-bold text-primary">重要通知</span>,
+  description: (
+    <div>
+      您的订单已发货，点击{' '}
+      <a href="/orders" class="text-primary underline">这里</a>{' '}
+      查看物流详情
+    </div>
+  ),
+  type: 'info',
+})
+```
+
+## 手动关闭
+
+可以手动控制 Toast 的关闭：
+
+<ToastManualDismiss client:load />
+
+```tsx
+// 创建不会自动关闭的 Toast
+const id = toast.loading('持续显示中...', {
+  duration: Infinity,
+})
+
+// 关闭指定 Toast
+toast.dismiss(id)
+
+// 关闭所有 Toast
+toast.dismiss()
+
+// 立即移除（无动画）
+toast.remove(id)
+toast.remove() // 移除所有
+```
+
+## 堆叠显示
+
+多个 Toast 会自动堆叠显示：
+
+<ToastStacking client:load />
+
+```tsx
+toast.info('第一条消息')
+setTimeout(() => toast.success('第二条消息'), 300)
+setTimeout(() => toast.warning('第三条消息'), 600)
+setTimeout(() => toast.error('第四条消息'), 900)
+```
+
+## API
+
+### toast 方法
+
+| 方法 | 参数 | 返回值 | 说明 |
+|------|------|--------|------|
+| `toast.info` | `(message: string, options?)` | `string` | 显示信息提示 |
+| `toast.success` | `(message: string, options?)` | `string` | 显示成功提示 |
+| `toast.warning` | `(message: string, options?)` | `string` | 显示警告提示 |
+| `toast.error` | `(message: string, options?)` | `string` | 显示错误提示 |
+| `toast.loading` | `(message: string, options?)` | `string` | 显示加载提示（不自动关闭） |
+| `toast.create` | `(options: ToastOptions)` | `string` | 创建自定义 Toast |
+| `toast.update` | `(id: string, options)` | - | 更新指定 Toast |
+| `toast.dismiss` | `(id?: string)` | - | 关闭 Toast（有动画） |
+| `toast.remove` | `(id?: string)` | - | 移除 Toast（无动画） |
+| `toast.promise` | `(promise, options)` | `Promise<T>` | Promise 辅助方法 |
+
+### ToastOptions
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `id` | `string` | - | Toast ID，用于更新已有 Toast |
+| `title` | `JSX.Element` | - | 标题 |
+| `description` | `JSX.Element` | - | 描述内容 |
+| `type` | `'info' \| 'success' \| 'warning' \| 'error' \| 'loading'` | `'info'` | 类型 |
+| `duration` | `number` | `5000` | 自动关闭延迟（ms），`Infinity` 不自动关闭 |
+| `closable` | `boolean` | `true` | 是否显示关闭按钮 |
+| `onClose` | `() => void` | - | 关闭回调 |
+
+### ToasterProps
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `placement` | `ToastPlacement` | `'top-end'` | 显示位置 |
+| `overlap` | `boolean` | `true` | 是否重叠显示 |
+| `gap` | `number` | `16` | Toast 之间的间距 |
+| `max` | `number` | `5` | 最大显示数量 |
+
+### ToastPlacement
+
+```ts
+type ToastPlacement =
+  | 'top-start'
+  | 'top'
+  | 'top-end'
+  | 'bottom-start'
+  | 'bottom'
+  | 'bottom-end'
+```

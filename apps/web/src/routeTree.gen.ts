@@ -10,21 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TooltipRouteImport } from './routes/tooltip'
+import { Route as ToastRouteImport } from './routes/toast'
 import { Route as SwitchRouteImport } from './routes/switch'
 import { Route as SliderRouteImport } from './routes/slider'
+import { Route as SkeletonRouteImport } from './routes/skeleton'
+import { Route as SidebarRouteImport } from './routes/sidebar'
 import { Route as SelectRouteImport } from './routes/select'
 import { Route as RadioRouteImport } from './routes/radio'
+import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as PresenceRouteImport } from './routes/presence'
+import { Route as PopoverRouteImport } from './routes/popover'
 import { Route as NavmenuRouteImport } from './routes/navmenu'
+import { Route as MenuRouteImport } from './routes/menu'
 import { Route as LabelRouteImport } from './routes/label'
 import { Route as InputRouteImport } from './routes/input'
 import { Route as DialogRouteImport } from './routes/dialog'
 import { Route as CheckboxRouteImport } from './routes/checkbox'
+import { Route as CardRouteImport } from './routes/card'
 import { Route as ButtonRouteImport } from './routes/button'
+import { Route as BadgeRouteImport } from './routes/badge'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TooltipRoute = TooltipRouteImport.update({
   id: '/tooltip',
   path: '/tooltip',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToastRoute = ToastRouteImport.update({
+  id: '/toast',
+  path: '/toast',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SwitchRoute = SwitchRouteImport.update({
@@ -37,6 +51,16 @@ const SliderRoute = SliderRouteImport.update({
   path: '/slider',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkeletonRoute = SkeletonRouteImport.update({
+  id: '/skeleton',
+  path: '/skeleton',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SidebarRoute = SidebarRouteImport.update({
+  id: '/sidebar',
+  path: '/sidebar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SelectRoute = SelectRouteImport.update({
   id: '/select',
   path: '/select',
@@ -47,9 +71,29 @@ const RadioRoute = RadioRouteImport.update({
   path: '/radio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PresenceRoute = PresenceRouteImport.update({
+  id: '/presence',
+  path: '/presence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PopoverRoute = PopoverRouteImport.update({
+  id: '/popover',
+  path: '/popover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NavmenuRoute = NavmenuRouteImport.update({
   id: '/navmenu',
   path: '/navmenu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabelRoute = LabelRouteImport.update({
@@ -72,9 +116,19 @@ const CheckboxRoute = CheckboxRouteImport.update({
   path: '/checkbox',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CardRoute = CardRouteImport.update({
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ButtonRoute = ButtonRouteImport.update({
   id: '/button',
   path: '/button',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BadgeRoute = BadgeRouteImport.update({
+  id: '/badge',
+  path: '/badge',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -85,104 +139,167 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/badge': typeof BadgeRoute
   '/button': typeof ButtonRoute
+  '/card': typeof CardRoute
   '/checkbox': typeof CheckboxRoute
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/menu': typeof MenuRoute
   '/navmenu': typeof NavmenuRoute
+  '/popover': typeof PopoverRoute
+  '/presence': typeof PresenceRoute
+  '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
+  '/sidebar': typeof SidebarRoute
+  '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
   '/switch': typeof SwitchRoute
+  '/toast': typeof ToastRoute
   '/tooltip': typeof TooltipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/badge': typeof BadgeRoute
   '/button': typeof ButtonRoute
+  '/card': typeof CardRoute
   '/checkbox': typeof CheckboxRoute
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/menu': typeof MenuRoute
   '/navmenu': typeof NavmenuRoute
+  '/popover': typeof PopoverRoute
+  '/presence': typeof PresenceRoute
+  '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
+  '/sidebar': typeof SidebarRoute
+  '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
   '/switch': typeof SwitchRoute
+  '/toast': typeof ToastRoute
   '/tooltip': typeof TooltipRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/badge': typeof BadgeRoute
   '/button': typeof ButtonRoute
+  '/card': typeof CardRoute
   '/checkbox': typeof CheckboxRoute
   '/dialog': typeof DialogRoute
   '/input': typeof InputRoute
   '/label': typeof LabelRoute
+  '/menu': typeof MenuRoute
   '/navmenu': typeof NavmenuRoute
+  '/popover': typeof PopoverRoute
+  '/presence': typeof PresenceRoute
+  '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
   '/select': typeof SelectRoute
+  '/sidebar': typeof SidebarRoute
+  '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
   '/switch': typeof SwitchRoute
+  '/toast': typeof ToastRoute
   '/tooltip': typeof TooltipRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/badge'
     | '/button'
+    | '/card'
     | '/checkbox'
     | '/dialog'
     | '/input'
     | '/label'
+    | '/menu'
     | '/navmenu'
+    | '/popover'
+    | '/presence'
+    | '/progress'
     | '/radio'
     | '/select'
+    | '/sidebar'
+    | '/skeleton'
     | '/slider'
     | '/switch'
+    | '/toast'
     | '/tooltip'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/badge'
     | '/button'
+    | '/card'
     | '/checkbox'
     | '/dialog'
     | '/input'
     | '/label'
+    | '/menu'
     | '/navmenu'
+    | '/popover'
+    | '/presence'
+    | '/progress'
     | '/radio'
     | '/select'
+    | '/sidebar'
+    | '/skeleton'
     | '/slider'
     | '/switch'
+    | '/toast'
     | '/tooltip'
   id:
     | '__root__'
     | '/'
+    | '/badge'
     | '/button'
+    | '/card'
     | '/checkbox'
     | '/dialog'
     | '/input'
     | '/label'
+    | '/menu'
     | '/navmenu'
+    | '/popover'
+    | '/presence'
+    | '/progress'
     | '/radio'
     | '/select'
+    | '/sidebar'
+    | '/skeleton'
     | '/slider'
     | '/switch'
+    | '/toast'
     | '/tooltip'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BadgeRoute: typeof BadgeRoute
   ButtonRoute: typeof ButtonRoute
+  CardRoute: typeof CardRoute
   CheckboxRoute: typeof CheckboxRoute
   DialogRoute: typeof DialogRoute
   InputRoute: typeof InputRoute
   LabelRoute: typeof LabelRoute
+  MenuRoute: typeof MenuRoute
   NavmenuRoute: typeof NavmenuRoute
+  PopoverRoute: typeof PopoverRoute
+  PresenceRoute: typeof PresenceRoute
+  ProgressRoute: typeof ProgressRoute
   RadioRoute: typeof RadioRoute
   SelectRoute: typeof SelectRoute
+  SidebarRoute: typeof SidebarRoute
+  SkeletonRoute: typeof SkeletonRoute
   SliderRoute: typeof SliderRoute
   SwitchRoute: typeof SwitchRoute
+  ToastRoute: typeof ToastRoute
   TooltipRoute: typeof TooltipRoute
 }
 
@@ -193,6 +310,13 @@ declare module '@tanstack/solid-router' {
       path: '/tooltip'
       fullPath: '/tooltip'
       preLoaderRoute: typeof TooltipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/toast': {
+      id: '/toast'
+      path: '/toast'
+      fullPath: '/toast'
+      preLoaderRoute: typeof ToastRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/switch': {
@@ -209,6 +333,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof SliderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/skeleton': {
+      id: '/skeleton'
+      path: '/skeleton'
+      fullPath: '/skeleton'
+      preLoaderRoute: typeof SkeletonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sidebar': {
+      id: '/sidebar'
+      path: '/sidebar'
+      fullPath: '/sidebar'
+      preLoaderRoute: typeof SidebarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/select': {
       id: '/select'
       path: '/select'
@@ -223,11 +361,39 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof RadioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/presence': {
+      id: '/presence'
+      path: '/presence'
+      fullPath: '/presence'
+      preLoaderRoute: typeof PresenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/popover': {
+      id: '/popover'
+      path: '/popover'
+      fullPath: '/popover'
+      preLoaderRoute: typeof PopoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/navmenu': {
       id: '/navmenu'
       path: '/navmenu'
       fullPath: '/navmenu'
       preLoaderRoute: typeof NavmenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/label': {
@@ -258,11 +424,25 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof CheckboxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/card': {
+      id: '/card'
+      path: '/card'
+      fullPath: '/card'
+      preLoaderRoute: typeof CardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/button': {
       id: '/button'
       path: '/button'
       fullPath: '/button'
       preLoaderRoute: typeof ButtonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/badge': {
+      id: '/badge'
+      path: '/badge'
+      fullPath: '/badge'
+      preLoaderRoute: typeof BadgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -277,16 +457,25 @@ declare module '@tanstack/solid-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BadgeRoute: BadgeRoute,
   ButtonRoute: ButtonRoute,
+  CardRoute: CardRoute,
   CheckboxRoute: CheckboxRoute,
   DialogRoute: DialogRoute,
   InputRoute: InputRoute,
   LabelRoute: LabelRoute,
+  MenuRoute: MenuRoute,
   NavmenuRoute: NavmenuRoute,
+  PopoverRoute: PopoverRoute,
+  PresenceRoute: PresenceRoute,
+  ProgressRoute: ProgressRoute,
   RadioRoute: RadioRoute,
   SelectRoute: SelectRoute,
+  SidebarRoute: SidebarRoute,
+  SkeletonRoute: SkeletonRoute,
   SliderRoute: SliderRoute,
   SwitchRoute: SwitchRoute,
+  ToastRoute: ToastRoute,
   TooltipRoute: TooltipRoute,
 }
 export const routeTree = rootRouteImport

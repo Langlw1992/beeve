@@ -1,44 +1,81 @@
 import { Badge } from '@beeve/ui'
+import { Bell, Mail, MessageSquare } from 'lucide-solid'
 import { DemoBox } from '../DemoBox'
 
-export function BadgeVariants() {
+export function BadgeBasic() {
   return (
-    <DemoBox title="徽标变体">
-      <Badge variant="default">默认</Badge>
-      <Badge variant="secondary">次要</Badge>
-      <Badge variant="outline">轮廓</Badge>
-      <Badge variant="success">成功</Badge>
-      <Badge variant="warning">警告</Badge>
-      <Badge variant="error">错误</Badge>
+    <DemoBox title="基础徽标">
+      <Badge count={5}>
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <Bell class="size-5" />
+        </div>
+      </Badge>
+      <Badge count={99}>
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <Mail class="size-5" />
+        </div>
+      </Badge>
+      <Badge count={100}>
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <MessageSquare class="size-5" />
+        </div>
+      </Badge>
     </DemoBox>
   )
 }
 
-export function BadgeSizes() {
+export function BadgeDot() {
   return (
-    <DemoBox title="徽标尺寸">
-      <Badge size="sm">小徽标</Badge>
-      <Badge size="md">中徽标</Badge>
-      <Badge size="lg">大徽标</Badge>
+    <DemoBox title="小红点">
+      <Badge dot>
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <Bell class="size-5" />
+        </div>
+      </Badge>
+      <Badge dot color="blue">
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <Mail class="size-5" />
+        </div>
+      </Badge>
+      <Badge dot color="green">
+        <div class="size-10 rounded bg-muted flex items-center justify-center">
+          <MessageSquare class="size-5" />
+        </div>
+      </Badge>
     </DemoBox>
   )
 }
 
-export function BadgeUseCases() {
+export function BadgeColors() {
   return (
-    <DemoBox title="使用场景">
-      <span class="flex items-center gap-2">
-        消息 <Badge variant="error">99+</Badge>
-      </span>
-      <span class="flex items-center gap-2">
-        版本 <Badge variant="outline">v1.0.0</Badge>
-      </span>
-      <span class="flex items-center gap-2">
-        状态 <Badge variant="success">已发布</Badge>
-      </span>
-      <span class="flex items-center gap-2">
-        待处理 <Badge variant="warning">进行中</Badge>
-      </span>
+    <DemoBox title="徽标颜色">
+      <Badge count={5} color="default">
+        <div class="size-10 rounded bg-muted" />
+      </Badge>
+      <Badge count={5} color="blue">
+        <div class="size-10 rounded bg-muted" />
+      </Badge>
+      <Badge count={5} color="green">
+        <div class="size-10 rounded bg-muted" />
+      </Badge>
+      <Badge count={5} color="orange">
+        <div class="size-10 rounded bg-muted" />
+      </Badge>
+      <Badge count={5} color="red">
+        <div class="size-10 rounded bg-muted" />
+      </Badge>
+    </DemoBox>
+  )
+}
+
+export function BadgeStatus() {
+  return (
+    <DemoBox title="状态徽标">
+      <Badge status="default" text="默认" />
+      <Badge status="success" text="成功" />
+      <Badge status="processing" text="处理中" />
+      <Badge status="warning" text="警告" />
+      <Badge status="error" text="错误" />
     </DemoBox>
   )
 }

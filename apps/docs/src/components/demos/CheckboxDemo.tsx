@@ -11,7 +11,7 @@ export function CheckboxBasic() {
         <Checkbox
           id="basic"
           checked={checked()}
-          onCheckedChange={setChecked}
+          onChange={setChecked}
         />
         <Label for="basic">同意服务条款</Label>
       </div>
@@ -84,7 +84,7 @@ export function CheckboxGroup() {
             <Checkbox
               id={item.value}
               checked={selected().includes(item.value)}
-              onCheckedChange={() => toggle(item.value)}
+              onChange={() => toggle(item.value)}
             />
             <Label for={item.value}>{item.label}</Label>
           </div>

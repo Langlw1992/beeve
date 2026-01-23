@@ -1,7 +1,7 @@
 /* @refresh reload */
 import { render } from 'solid-js/web'
 import { RouterProvider, createRouter } from '@tanstack/solid-router'
-import { ThemeProvider } from '@beeve/ui'
+import { ThemeProvider, Toaster } from '@beeve/ui'
 import './index.css'
 
 // Import the generated route tree
@@ -23,6 +23,7 @@ render(
   () => (
     <ThemeProvider>
       <RouterProvider router={router} />
+      <Toaster />
     </ThemeProvider>
   ),
   root!

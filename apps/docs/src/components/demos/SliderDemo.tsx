@@ -9,7 +9,7 @@ export function SliderBasic() {
     <DemoBox title="基础滑块" class="flex-col items-stretch">
       <Slider
         value={value()}
-        onValueChange={setValue}
+        onValueChange={(details) => setValue(details.value)}
         min={0}
         max={100}
       />
@@ -27,7 +27,7 @@ export function SliderRange() {
     <DemoBox title="范围滑块" class="flex-col items-stretch">
       <Slider
         value={value()}
-        onValueChange={setValue}
+        onValueChange={(details) => setValue(details.value)}
         min={0}
         max={100}
       />
@@ -64,7 +64,7 @@ export function SliderWithSteps() {
     <DemoBox title="步进滑块" class="flex-col items-stretch">
       <Slider
         value={value()}
-        onValueChange={setValue}
+        onValueChange={(details) => setValue(details.value)}
         min={0}
         max={100}
         step={10}

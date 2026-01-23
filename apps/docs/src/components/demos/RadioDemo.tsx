@@ -14,7 +14,7 @@ export function RadioBasic() {
             name="basic"
             value="option1"
             checked={value() === 'option1'}
-            onValueChange={setValue}
+            onChange={() => setValue('option1')}
           />
           <Label for="opt1">选项一</Label>
         </div>
@@ -24,7 +24,7 @@ export function RadioBasic() {
             name="basic"
             value="option2"
             checked={value() === 'option2'}
-            onValueChange={setValue}
+            onChange={() => setValue('option2')}
           />
           <Label for="opt2">选项二</Label>
         </div>
@@ -34,7 +34,7 @@ export function RadioBasic() {
             name="basic"
             value="option3"
             checked={value() === 'option3'}
-            onValueChange={setValue}
+            onChange={() => setValue('option3')}
           />
           <Label for="opt3">选项三</Label>
         </div>

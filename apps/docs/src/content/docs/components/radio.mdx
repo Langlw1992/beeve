@@ -24,7 +24,7 @@ const [value, setValue] = createSignal('option1')
       name="basic"
       value="option1"
       checked={value() === 'option1'}
-      onValueChange={setValue}
+      onChange={() => setValue('option1')}
     />
     <Label for="opt1">选项一</Label>
   </div>
@@ -34,7 +34,7 @@ const [value, setValue] = createSignal('option1')
       name="basic"
       value="option2"
       checked={value() === 'option2'}
-      onValueChange={setValue}
+      onChange={() => setValue('option2')}
     />
     <Label for="opt2">选项二</Label>
   </div>
@@ -68,7 +68,7 @@ const [value, setValue] = createSignal('option1')
 |------|------|--------|------|
 | `checked` | `boolean` | - | 是否选中（受控） |
 | `defaultChecked` | `boolean` | `false` | 默认是否选中（非受控） |
-| `onValueChange` | `(value: string) => void` | - | 值变化回调 |
+| `onChange` | `(checked: boolean) => void` | - | 状态变化回调 |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 单选框尺寸 |
 | `disabled` | `boolean` | `false` | 禁用状态 |
 | `id` | `string` | - | 元素 ID |

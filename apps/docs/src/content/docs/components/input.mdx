@@ -68,7 +68,7 @@ const [show, setShow] = createSignal(false)
 ```tsx
 <Input placeholder="正常状态" />
 <Input placeholder="禁用状态" disabled />
-<Input placeholder="只读状态" readonly value="只读内容" />
+<Input placeholder="只读状态" readOnly value="只读内容" />
 ```
 
 ## 与 Label 配合
@@ -95,7 +95,7 @@ import { Label, Input } from '@beeve/ui'
 | `placeholder` | `string` | - | 占位文本 |
 | `value` | `string` | - | 输入值 |
 | `disabled` | `boolean` | `false` | 禁用状态 |
-| `readonly` | `boolean` | `false` | 只读状态 |
+| `readOnly` | `boolean` | `false` | 只读状态 |
 | `class` | `string` | - | 自定义类名 |
 | `onInput` | `(e: InputEvent) => void` | - | 输入事件回调 |
 | `onChange` | `(e: Event) => void` | - | 变化事件回调 |

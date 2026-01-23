@@ -11,7 +11,7 @@ export function SwitchBasic() {
         <Switch
           id="basic"
           checked={checked()}
-          onCheckedChange={setChecked}
+          onChange={setChecked}
         />
         <Label for="basic">开启通知</Label>
       </div>
@@ -75,7 +75,7 @@ export function SwitchWithDescription() {
         <Switch
           id="dark"
           checked={darkMode()}
-          onCheckedChange={setDarkMode}
+          onChange={setDarkMode}
         />
       </div>
       <div class="flex items-center justify-between">
@@ -86,7 +86,7 @@ export function SwitchWithDescription() {
         <Switch
           id="autosave"
           checked={autoSave()}
-          onCheckedChange={setAutoSave}
+          onChange={setAutoSave}
         />
       </div>
     </DemoBox>

@@ -19,7 +19,7 @@ const [value, setValue] = createSignal('')
 
 <Select
   value={value()}
-  onValueChange={setValue}
+  onChange={(v) => setValue(v as string)}
   placeholder="请选择"
   options={[
     { value: 'apple', label: '苹果' },
@@ -102,7 +102,7 @@ import { Label, Select } from '@beeve/ui'
 |------|------|--------|------|
 | `value` | `string` | - | 当前值（受控） |
 | `defaultValue` | `string` | - | 默认值（非受控） |
-| `onValueChange` | `(value: string) => void` | - | 值变化回调 |
+| `onChange` | `(value: string, option: SelectOption) => void` | - | 值变化回调 |
 | `options` | `SelectOption[]` | **必填** | 选项数据 |
 | `placeholder` | `string` | - | 占位文本 |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 选择器尺寸 |

@@ -9,7 +9,7 @@ export function SelectBasic() {
     <DemoBox title="基础选择器" class="flex-col items-stretch">
       <Select
         value={value()}
-        onValueChange={setValue}
+        onChange={(v) => setValue(v as string)}
         placeholder="请选择"
         options={[
           { value: 'apple', label: '苹果' },

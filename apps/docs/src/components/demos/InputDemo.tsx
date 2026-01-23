@@ -64,7 +64,7 @@ export function InputStates() {
     <DemoBox title="输入框状态" class="flex-col items-stretch gap-3">
       <Input placeholder="正常状态" />
       <Input placeholder="禁用状态" disabled />
-      <Input placeholder="只读状态" readonly value="只读内容" />
+      <Input placeholder="只读状态" readOnly value="只读内容" />
       <Input placeholder="错误状态" class="border-error focus:ring-error" />
     </DemoBox>
   )

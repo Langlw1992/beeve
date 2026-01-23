@@ -14,7 +14,7 @@ Progress 组件用于展示当前任务的进度。
 ```tsx
 import { Progress } from '@beeve/ui'
 
-<Progress value={60} />
+<Progress percent={60} />
 ```
 
 ## 进度条变体
@@ -22,10 +22,10 @@ import { Progress } from '@beeve/ui'
 <ProgressVariants client:load />
 
 ```tsx
-<Progress value={60} />                    {/* 默认 */}
-<Progress value={100} variant="success" /> {/* 成功 */}
-<Progress value={75} variant="warning" />  {/* 警告 */}
-<Progress value={30} variant="error" />    {/* 错误 */}
+<Progress percent={60} />                    {/* 默认 */}
+<Progress percent={100} status="success" />  {/* 成功 */}
+<Progress percent={75} status="active" />    {/* 活动 */}
+<Progress percent={30} status="exception" /> {/* 错误 */}
 ```
 
 ## 进度条尺寸
@@ -33,9 +33,9 @@ import { Progress } from '@beeve/ui'
 <ProgressSizes client:load />
 
 ```tsx
-<Progress value={60} size="sm" />
-<Progress value={60} size="md" />
-<Progress value={60} size="lg" />
+<Progress percent={60} size="sm" />
+<Progress percent={60} size="md" />
+<Progress percent={60} size="lg" />
 ```
 
 ## 动画进度条
@@ -45,15 +45,15 @@ import { Progress } from '@beeve/ui'
 ```tsx
 import { createSignal, onCleanup } from 'solid-js'
 
-const [value, setValue] = createSignal(0)
+const [percent, setPercent] = createSignal(0)
 
 const interval = setInterval(() => {
-  setValue((v) => (v >= 100 ? 0 : v + 10))
+  setPercent((v) => (v >= 100 ? 0 : v + 10))
 }, 500)
 
 onCleanup(() => clearInterval(interval))
 
-<Progress value={value()} />
+<Progress percent={percent()} />
 ```
 
 ## 不确定进度
@@ -74,7 +74,7 @@ onCleanup(() => clearInterval(interval))
     <span>上传进度</span>
     <span>45%</span>
   </div>
-  <Progress value={45} />
+  <Progress percent={45} />
 </div>
 ```
 
@@ -84,9 +84,13 @@ onCleanup(() => clearInterval(interval))
 
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `value` | `number` | `0` | 当前进度值 (0-100) |
-| `max` | `number` | `100` | 最大值 |
-| `variant` | `'default' \| 'success' \| 'warning' \| 'error'` | `'default'` | 进度条变体 |
+| `percent` | `number` | `0` | 当前进度百分比 (0-100) |
+| `type` | `'line' \| 'circle'` | `'line'` | 进度条类型 |
+| `status` | `'normal' \| 'success' \| 'exception' \| 'active'` | `'normal'` | 进度条状态 |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 进度条尺寸 |
-| `indeterminate` | `boolean` | `false` | 不确定进度 |
+| `showInfo` | `boolean` | `true` | 是否显示进度信息 |
+| `format` | `(percent: number) => JSX.Element \| string` | - | 自定义进度信息格式 |
+| `strokeWidth` | `number` | - | 进度条宽度（仅 circle 类型） |
+| `strokeColor` | `string` | - | 进度条颜色 |
+| `trailColor` | `string` | - | 轨道颜色 |
 | `class` | `string` | - | 自定义类名 |

@@ -77,7 +77,7 @@ export function CardInteractive() {
         hoverable
         title="可点击卡片"
         description="悬停查看效果"
-        extra={<Badge variant="success">新</Badge>}
+        extra={<Badge color="green">新</Badge>}
         onClick={() => console.log('clicked')}
       >
         <p class="text-sm">点击此卡片可以执行操作。</p>
