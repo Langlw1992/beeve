@@ -17,6 +17,7 @@
 
 When using MCP-enabled environments:
 - **context7**: MUST query docs before using ANY library API
+  - **zag-js libraryId**: `/chakra-ui/zag` (use this ID directly, do NOT search)
 - **serena**: MUST analyze code structure before modifications
 - **chromeDevtools**: MUST use for frontend visual testing and debugging
 

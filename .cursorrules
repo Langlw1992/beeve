@@ -18,6 +18,7 @@ You are an expert developer working on Beeve, a SolidJS-based low-code platform.
 ## MCP Requirements
 
 - **context7**: MUST query before using ANY library API
+  - **zag-js libraryId**: `/chakra-ui/zag` (use this ID directly, do NOT search)
 - **serena**: MUST analyze code before ANY modifications
 - **chromeDevtools**: MUST use for frontend visual testing and debugging
 

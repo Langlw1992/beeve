@@ -18,6 +18,7 @@
 ### MCP 使用要求
 
 - **context7**：使用任何库 API 前必须查询文档
+  - **zag-js libraryId**: `/chakra-ui/zag`（直接使用此 ID，不要搜索）
 - **serena**：修改代码前必须分析符号和引用
 - **chromeDevtools**：前端视觉测试和调试时使用
 
