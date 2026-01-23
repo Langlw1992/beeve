@@ -20,12 +20,14 @@ const tooltipStyles = tv({
       'animate-in fade-in-0 zoom-in-95',
       'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
     ],
-    // zag-js 会设置 arrow 的 position/size，我们只需要设置 CSS 变量
-    // --arrow-size 和 --arrow-background 必须定义在 arrow 元素上
     arrow: '[--arrow-size:8px] [--arrow-background:var(--color-foreground)]',
     arrowTip: '',
+    trigger: 'inline-flex bg-transparent border-none p-0 font-inherit cursor-inherit',
   },
 })
+
+// 预先计算样式，避免重复调用
+const styles = tooltipStyles()
 
 // ==================== 类型定义 ====================
 
@@ -51,30 +53,18 @@ export const Tooltip: Component<TooltipProps> = (props) => {
   ])
 
   const { api } = useTooltip(rest)
-  const styles = tooltipStyles()
 
   return (
     <>
-      {/* Trigger - 使用 asChild 模式，包装 children */}
-      {(() => {
-        const triggerProps = api().getTriggerProps()
-        return (
-          <button
-            {...triggerProps}
-            type="button"
-            class="inline-flex"
-            style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'inherit' }}
-          >
-            {local.children}
-          </button>
-        )
-      })()}
+      {/* Trigger */}
+      <button {...api().getTriggerProps()} type="button" class={styles.trigger()}>
+        {local.children}
+      </button>
 
       {/* Content */}
       <Show when={api().open}>
         <Portal>
           <div {...api().getPositionerProps()} class={styles.positioner()}>
-            {/* Arrow - 必须放在 positioner 内、content 外 */}
             <Show when={local.arrow}>
               <div {...api().getArrowProps()} class={styles.arrow()}>
                 <div {...api().getArrowTipProps()} class={styles.arrowTip()} />

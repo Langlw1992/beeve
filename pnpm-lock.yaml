@@ -99,7 +99,7 @@ importers:
         specifier: ^10.1.10
         version: 10.1.11(storybook@10.1.11(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@tailwindcss/vite':
-        specifier: ^4.0.0
+        specifier: ^4.1.18
         version: 4.1.18(vite@6.4.1(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
       solid-js:
         specifier: ^1.9.3
@@ -216,16 +216,25 @@ importers:
 
   packages/ui:
     dependencies:
+      '@zag-js/collapsible':
+        specifier: ^1.32.0
+        version: 1.32.0
       '@zag-js/combobox':
         specifier: ^1.32.0
         version: 1.32.0
       '@zag-js/dialog':
         specifier: ^1.32.0
         version: 1.32.0
+      '@zag-js/hover-card':
+        specifier: ^1.32.0
+        version: 1.32.0
       '@zag-js/menu':
         specifier: ^1.32.0
         version: 1.32.0
       '@zag-js/navigation-menu':
+        specifier: ^1.32.0
+        version: 1.32.0
+      '@zag-js/popover':
         specifier: ^1.32.0
         version: 1.32.0
       '@zag-js/presence':
@@ -237,6 +246,9 @@ importers:
       '@zag-js/solid':
         specifier: ^1.32.0
         version: 1.32.0(solid-js@1.9.10)
+      '@zag-js/toast':
+        specifier: ^1.32.0
+        version: 1.32.0
       '@zag-js/tooltip':
         specifier: ^1.32.0
         version: 1.32.0
@@ -1883,6 +1895,9 @@ packages:
   '@zag-js/aria-hidden@1.32.0':
     resolution: {integrity: sha512-rgOSWjFMbeFwGPCdUWaSFbb4GM0Ovdr6sM0ilHmGQeXsrYkfg56R/o7I4/8P0kDIi/hDoE5TwBMUiGvKwWMLgA==}
 
+  '@zag-js/collapsible@1.32.0':
+    resolution: {integrity: sha512-kQwbPja0Nap1/ighmWCc5pemJG9Sx5Mw4zQ9p77O3znKbroq45AXSMr298Xx0zY44PEDhshKfLmeRT75jJRmpA==}
+
   '@zag-js/collection@1.32.0':
     resolution: {integrity: sha512-m4ViU0CdsTNiLjuIJknpPN8PPrsudfXC5GMAVykSBFnD6cnOWFKr7w4dM19Wp8VnlfsAsf4t86BPO+gsGm598w==}
 
@@ -1907,6 +1922,9 @@ packages:
   '@zag-js/focus-visible@1.32.0':
     resolution: {integrity: sha512-/Gwu6Yt/c8tgpx32vkOxj2AIdmNdJv0WFHNBTl3xu60FR65oFfdpJsZR6MEbyL0F+srTYxuLZMdIoW5bN6nkQA==}
 
+  '@zag-js/hover-card@1.32.0':
+    resolution: {integrity: sha512-ValSCrMOccl6pbCLmQzUqfVMTNd534j79fwrvYKUuklMq58Im2zkZS4rAYsAijkMEZUwbLfd5H9yFApGXcLdoQ==}
+
   '@zag-js/interact-outside@1.32.0':
     resolution: {integrity: sha512-OwQgBxijmv9ZXFu6WzhLRULJh0FoixuP6DJV9B2CGBKJZz4hbQAqVrW9PFaPiBuWOILZpZ/iI6ZDjkGSKZ0WHw==}
 
@@ -1915,6 +1933,9 @@ packages:
 
   '@zag-js/navigation-menu@1.32.0':
     resolution: {integrity: sha512-2ATL+MNeipPDm6N95ZxtZxpcAqPztaiLdyN+pdB47o9Wr1PoTB0xdtNKMRtVX3opZv2dSKJtv6ereSr1/ZcW0g==}
+
+  '@zag-js/popover@1.32.0':
+    resolution: {integrity: sha512-GTUQTWtMLyIXxHeV9dQy+xmIQVZ0KAION0XX/211ncrzWZ5guQXa2LECEH252uIEehRwRaFY08cZsacTqTOKsg==}
 
   '@zag-js/popper@1.32.0':
     resolution: {integrity: sha512-nTSdbgZKIEERNEpNhMlbATRiKhMrxo0t2206MbVhrM52TuraIc+nRmJNwWKoagalXs62/TlSpFvXmcpVyfWTMQ==}
@@ -1938,6 +1959,9 @@ packages:
 
   '@zag-js/store@1.32.0':
     resolution: {integrity: sha512-m9jvTKJB/lTC2I8NpDf+yo2XVN+ogxjiVbGsooAFTpyUAiXZY50nVc9cFcswnwFMo/GzXMk81oalyz9u65jqRQ==}
+
+  '@zag-js/toast@1.32.0':
+    resolution: {integrity: sha512-f5APsASyGmhKlpQ/Wxc4bp9hAUVuXqV6FoHnu7ugfIuYllIaSz/RHgsb4yZvLjweNE24cw4B9Rjj9njOZGPe6Q==}
 
   '@zag-js/tooltip@1.32.0':
     resolution: {integrity: sha512-V3GJXCgSTiijqZTqJnRQ5HClL8GUtGhfczcB9fV+T2+mbwZXahfNQ0Fjrfi2Itb4WLCTovOi9iIAlfl3S1V/pQ==}
@@ -4604,7 +4628,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)':
+  '@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)':
     dependencies:
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
@@ -4615,9 +4639,9 @@ snapshots:
       nanostores: 1.1.0
       zod: 4.3.5
 
-  '@better-auth/telemetry@1.4.10(@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))':
+  '@better-auth/telemetry@1.4.10(@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))':
     dependencies:
-      '@better-auth/core': 1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
+      '@better-auth/core': 1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
 
@@ -5751,6 +5775,14 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.32.0
 
+  '@zag-js/collapsible@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
+
   '@zag-js/collection@1.32.0':
     dependencies:
       '@zag-js/utils': 1.32.0
@@ -5802,6 +5834,16 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.32.0
 
+  '@zag-js/hover-card@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dismissable': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/popper': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
+
   '@zag-js/interact-outside@1.32.0':
     dependencies:
       '@zag-js/dom-query': 1.32.0
@@ -5824,6 +5866,19 @@ snapshots:
       '@zag-js/core': 1.32.0
       '@zag-js/dismissable': 1.32.0
       '@zag-js/dom-query': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
+
+  '@zag-js/popover@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/aria-hidden': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dismissable': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/focus-trap': 1.32.0
+      '@zag-js/popper': 1.32.0
+      '@zag-js/remove-scroll': 1.32.0
       '@zag-js/types': 1.32.0
       '@zag-js/utils': 1.32.0
 
@@ -5865,6 +5920,15 @@ snapshots:
   '@zag-js/store@1.32.0':
     dependencies:
       proxy-compare: 3.0.1
+
+  '@zag-js/toast@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dismissable': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
 
   '@zag-js/tooltip@1.32.0':
     dependencies:
@@ -6085,8 +6149,8 @@ snapshots:
 
   better-auth@1.4.10(drizzle-kit@0.31.8)(drizzle-orm@0.41.0(kysely@0.28.9)(postgres@3.4.8))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)(vitest@4.0.16(@types/node@22.19.3)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(tsx@4.21.0)):
     dependencies:
-      '@better-auth/core': 1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
-      '@better-auth/telemetry': 1.4.10(@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))
+      '@better-auth/core': 1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
+      '@better-auth/telemetry': 1.4.10(@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
       '@noble/ciphers': 2.1.1

@@ -1,5 +1,5 @@
 import { NavMenu } from '@beeve/ui'
-import { Home, LayoutDashboard, Settings, FileText, Users, Bell, ChevronRight } from 'lucide-solid'
+import { Home, LayoutDashboard, Settings, FileText, Users, Bell, } from 'lucide-solid'
 import { createSignal } from 'solid-js'
 import { DemoBox } from '../DemoBox'
 
