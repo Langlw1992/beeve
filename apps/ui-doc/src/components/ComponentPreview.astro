@@ -1,0 +1,25 @@
+---
+/**
+ * 组件预览容器
+ * 使用 Starlight 的 Card 样式，但禁用内容样式以正确展示 UI 组件
+ */
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<div class:list={['not-content', 'sl-flex component-preview', className]}>
+  <slot />
+</div>
+
+<style>
+  .component-preview {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+  }
+</style>

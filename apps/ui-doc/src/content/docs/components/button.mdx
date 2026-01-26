@@ -1,0 +1,46 @@
+---
+title: Button 按钮
+description: 用于触发操作的按钮组件
+---
+
+import { ButtonVariants, ButtonSizes } from '../../../components/ButtonDemo'
+import ComponentPreview from '../../../components/ComponentPreview.astro'
+
+Button 组件用于触发一个操作。
+
+## 按钮变体
+
+<ComponentPreview>
+  <ButtonVariants client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { Button } from '@beeve/ui'
+
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="destructive">Destructive</Button>
+```
+
+## 按钮尺寸
+
+<ComponentPreview class="items-center">
+  <ButtonSizes client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+```
+
+## API
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost' \| 'destructive' \| 'link'` | `'primary'` | 按钮变体 |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'icon'` | `'md'` | 按钮尺寸 |
+| `loading` | `boolean` | `false` | 加载状态 |
+| `disabled` | `boolean` | `false` | 禁用状态 |

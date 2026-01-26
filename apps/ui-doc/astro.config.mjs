@@ -1,31 +1,35 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config'
+import starlight from '@astrojs/starlight'
+import solidJs from '@astrojs/solid-js'
+import tailwindcss from '@tailwindcss/vite'
 
-// https://astro.build/config
 export default defineConfig({
-	integrations: [
-		starlight({
-			title: 'Docs with Tailwind',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
-			sidebar: [
-				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-			],
-			customCss: ['./src/styles/global.css'],
-		}),
-	],
-	vite: {
-		plugins: [tailwindcss()],
-	},
-});
+  integrations: [
+    starlight({
+      title: 'Beeve UI',
+      social: [
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/anthropics/beeve' },
+      ],
+      customCss: ['./src/styles/global.css'],
+      sidebar: [
+        {
+          label: '开始',
+          items: [
+            { label: '介绍', slug: 'guides/introduction' },
+          ],
+        },
+        {
+          label: '组件',
+          items: [
+            { label: 'Button 按钮', slug: 'components/button' },
+          ],
+        },
+      ],
+    }),
+    solidJs(),
+  ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+})
