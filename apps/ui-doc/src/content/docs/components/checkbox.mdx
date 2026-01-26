@@ -1,0 +1,96 @@
+---
+title: Checkbox 复选框
+description: 允许用户在一组选项中进行多项选择
+---
+
+import { CheckboxBasic, CheckboxSizes, CheckboxStates, CheckboxControlled } from '../../../components/CheckboxDemo'
+import ComponentPreview from '../../../components/ComponentPreview.astro'
+
+Checkbox 组件用于在一组选项中进行多项选择，或者在只有一项时表示两种状态之间的切换。
+
+## 何时使用
+
+- 在一组选项中选择多个
+- 单独使用表示两种状态之间的切换（如"同意条款"）
+- 当只有两种状态，但需要展示明确文字标签时（与 Switch 相比）
+
+## 基础用法
+
+可以单独使用。
+
+<ComponentPreview>
+  <CheckboxBasic client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { Checkbox } from '@beeve/ui'
+
+<Checkbox>Accept terms and conditions</Checkbox>
+```
+
+## 尺寸
+
+提供 3 种尺寸：`sm`、`md`（默认）、`lg`。
+
+<ComponentPreview>
+  <CheckboxSizes client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Checkbox size="sm">Small Checkbox</Checkbox>
+<Checkbox size="md">Medium Checkbox</Checkbox>
+<Checkbox size="lg">Large Checkbox</Checkbox>
+```
+
+## 状态
+
+支持未选中、选中、不确定（Indeterminate）和禁用状态。
+
+<ComponentPreview>
+  <CheckboxStates client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Checkbox defaultChecked={false}>Unchecked</Checkbox>
+<Checkbox defaultChecked>Checked</Checkbox>
+<Checkbox indeterminate>Indeterminate</Checkbox>
+<Checkbox disabled>Disabled Unchecked</Checkbox>
+<Checkbox disabled defaultChecked>Disabled Checked</Checkbox>
+```
+
+## 受控模式
+
+通过 `checked` 和 `onChange` 属性控制选中状态。
+
+<ComponentPreview>
+  <CheckboxControlled client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { createSignal } from 'solid-js'
+import { Checkbox } from '@beeve/ui'
+
+const [checked, setChecked] = createSignal(false)
+
+<Checkbox checked={checked()} onChange={setChecked}>
+  {checked() ? 'Checked' : 'Unchecked'}
+</Checkbox>
+```
+
+## API
+
+### Checkbox Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| checked | `boolean` | - | 指定当前是否选中（受控模式） |
+| defaultChecked | `boolean` | `false` | 初始是否选中（非受控模式） |
+| indeterminate | `boolean` | `false` | 设置不确定状态，仅负责样式控制 |
+| disabled | `boolean` | `false` | 失效状态 |
+| size | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸 |
+| name | `string` | - | 原生 name 属性 |
+| value | `string` | - | 原生 value 属性 |
+| id | `string` | - | 原生 id 属性 |
+| onChange | `(checked: boolean) => void` | - | 变化时回调函数 |
+| children | `JSX.Element` | - | 标签内容 |
+| class | `string` | - | 自定义类名 |

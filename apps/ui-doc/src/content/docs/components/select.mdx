@@ -1,0 +1,88 @@
+---
+title: Select 选择器
+description: 下拉选择器。
+---
+
+import ComponentPreview from '../../../components/ComponentPreview.astro';
+import {
+  SelectBasic,
+  SelectSizes,
+  SelectVariants,
+  SelectStates,
+  SelectSearchable,
+  SelectMultiple,
+  SelectClearable
+} from '../../../components/SelectDemo';
+
+## 基础用法
+
+<ComponentPreview>
+  <SelectBasic client:visible />
+</ComponentPreview>
+
+## 尺寸
+
+<ComponentPreview>
+  <SelectSizes client:visible />
+</ComponentPreview>
+
+## 变体
+
+<ComponentPreview>
+  <SelectVariants client:visible />
+</ComponentPreview>
+
+## 状态
+
+<ComponentPreview>
+  <SelectStates client:visible />
+</ComponentPreview>
+
+## 可搜索
+
+<ComponentPreview>
+  <SelectSearchable client:visible />
+</ComponentPreview>
+
+## 多选
+
+<ComponentPreview>
+  <SelectMultiple client:visible />
+</ComponentPreview>
+
+## 可清除
+
+<ComponentPreview>
+  <SelectClearable client:visible />
+</ComponentPreview>
+
+## API
+
+### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- |
+| options | `SelectOption[]` | `[]` | 选项数据源 |
+| value | `SelectValue \| SelectValue[]` | - | 当前值（受控） |
+| defaultValue | `SelectValue \| SelectValue[]` | - | 默认值（非受控） |
+| mode | `'multiple' \| 'tags'` | - | 设置为多选模式 |
+| showSearch | `boolean` | `false` | 是否显示搜索框 |
+| size | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸 |
+| variant | `'default' \| 'filled' \| 'borderless'` | `'default'` | 变体 |
+| status | `'error' \| 'warning'` | - | 校验状态 |
+| disabled | `boolean` | `false` | 是否禁用 |
+| loading | `boolean` | `false` | 是否加载中 |
+| allowClear | `boolean` | `false` | 是否允许清除 |
+| placeholder | `string` | - | 占位符 |
+| onChange | `(value, option) => void` | - | 选中项变化回调 |
+| onSearch | `(value) => void` | - | 搜索文本变化回调 |
+| filterOption | `boolean \| ((inputValue, option) => boolean)` | `true` | 是否根据输入项进行筛选 |
+
+### SelectOption
+
+| 属性 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| label | `string` | 显示的标签 |
+| value | `string \| number` | 唯一值 |
+| disabled | `boolean` | 是否禁用 |
+| data | `T` | 额外数据 |

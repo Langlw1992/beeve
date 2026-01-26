@@ -12,10 +12,10 @@
 |---|------|--------|--------|------|
 | 0 | Button | 按钮 | P0 | ✅ 已完成 |
 | 1 | Input | 输入框 | P0 | ✅ 已完成 |
-| 2 | Checkbox | 复选框 | P0 | ⬜ 待开始 |
+| 2 | Checkbox | 复选框 | P0 | ✅ 已完成 |
 | 3 | Radio | 单选框 | P0 | ⬜ 待开始 |
-| 4 | Switch | 开关 | P0 | ⬜ 待开始 |
-| 5 | Select | 下拉选择 | P0 | ⬜ 待开始 |
+| 4 | Switch | 开关 | P0 | ✅ 已完成 |
+| 5 | Select | 下拉选择 | P0 | ✅ 已完成 |
 | 6 | Slider | 滑块 | P1 | ⬜ 待开始 |
 | 7 | Label | 标签 | P1 | ⬜ 待开始 |
 | 8 | Badge | 徽章 | P1 | ⬜ 待开始 |
@@ -138,6 +138,10 @@ pnpm typecheck --filter=@beeve/ui-doc
 # 访问 http://localhost:4321/components/{name}/
 ```
 
+### Step 6: 后续处理
+1. 更新 `apps/ui-doc/astro.config.mjs` 中的 sidebar 设置
+2. 更新 `docs/component-docs-task.md` 中的组件状态
+
 ## 完成标准
 
 每个组件文档完成后，确认：
@@ -146,6 +150,8 @@ pnpm typecheck --filter=@beeve/ui-doc
 - [ ] 类型检查通过
 - [ ] 页面渲染正常
 - [ ] 所有交互演示可用
+- [ ] sidebar 配置已更新
+- [ ] 任务文档状态已更新
 
 ## 参考文件
 
@@ -165,6 +171,7 @@ pnpm typecheck --filter=@beeve/ui-doc
 3. 创建 Demo：apps/ui-doc/src/components/{Name}Demo.tsx
 4. 创建文档：apps/ui-doc/src/content/docs/components/{name}.mdx
 5. 运行 pnpm typecheck --filter=@beeve/ui-doc 验证
+6. 完成后更新 docs/component-docs-task.md 状态，并更新 apps/ui-doc/astro.config.mjs 的 sidebar 设置
 
 参考 Button 文档格式：apps/ui-doc/src/content/docs/components/button.mdx
 参考 Button Demo 格式：apps/ui-doc/src/components/ButtonDemo.tsx
@@ -177,5 +184,5 @@ pnpm typecheck --filter=@beeve/ui-doc
 3. **简体中文** - 文档内容使用简体中文
 4. **代码高亮** - 示例代码使用 tsx 语法
 5. **client:only** - Demo 组件必须使用 `client:only="solid-js"`
-6. **完成后更新本文档** - 将对应组件状态改为 ✅ 已完成
+6. **完成后更新状态** - 完成文档后更新本文件状态，并更新 ui-doc 的 sidebar 设置
 7. **图标使用 lucide-solid** - 请使用 lucide-solid 图标库，尺寸使用 size-4，禁止创建svg标签

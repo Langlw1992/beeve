@@ -1,0 +1,96 @@
+---
+title: Radio 单选框
+description: 在一组备选中选中单个选项
+---
+
+import { RadioBasic, RadioSizes, RadioStates, RadioControlled } from '../../../components/RadioDemo'
+import ComponentPreview from '../../../components/ComponentPreview.astro'
+
+Radio 组件用于在一组互斥的选项中选择一个。
+
+## 何时使用
+
+- 需要用户从两个或更多选项中选择且只能选择一个时。
+- 选项之间是互斥关系。
+
+## 基础用法
+
+最简单的用法，通过 `RadioGroup` 包裹一组 `Radio`。
+
+<ComponentPreview>
+  <RadioBasic client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { Radio, RadioGroup } from '@beeve/ui'
+
+<RadioGroup defaultValue="apple">
+  <Radio value="apple">Apple</Radio>
+  <Radio value="banana">Banana</Radio>
+  <Radio value="orange">Orange</Radio>
+</RadioGroup>
+```
+
+## 尺寸
+
+提供 3 种尺寸：`sm`、`md`（默认）、`lg`。可以通过 `RadioGroup` 统一设置，也可以在 `Radio` 上独立设置。
+
+<ComponentPreview>
+  <RadioSizes client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<RadioGroup size="sm">
+  <Radio value="s1">Small</Radio>
+</RadioGroup>
+
+<RadioGroup size="md">
+  <Radio value="m1">Medium</Radio>
+</RadioGroup>
+
+<RadioGroup size="lg">
+  <Radio value="l1">Large</Radio>
+</RadioGroup>
+```
+
+## 状态
+
+支持禁用状态，可以禁用整个组或单个选项。
+
+<ComponentPreview>
+  <RadioStates client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+// 禁用整个组
+<RadioGroup disabled>
+  <Radio value="1">Option 1</Radio>
+</RadioGroup>
+
+// 禁用单个选项
+<RadioGroup>
+  <Radio value="1">Enabled</Radio>
+  <Radio value="2" disabled>Disabled</Radio>
+</RadioGroup>
+```
+
+## 受控模式
+
+通过 `value` 和 `onChange` 控制选中状态。
+
+<ComponentPreview>
+  <RadioControlled client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { createSignal } from 'solid-js'
+import { Radio, RadioGroup } from '@beeve/ui'
+
+const [value, setValue] = createSignal('email')
+
+<RadioGroup value={value()} onChange={setValue}>
+  <Radio value="email">Email</Radio>
+  <Radio value="phone">Phone</Radio>
+  <Radio value="push">Push Notification</Radio>
+</RadioGroup>
+```
