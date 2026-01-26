@@ -1,0 +1,203 @@
+---
+title: Input 输入框
+description: 允许用户输入或编辑文本、数字和其他数据的字段
+---
+
+import { InputBasic, InputSizes, InputVariants, InputStates, InputWithIcons, InputPassword, InputTextarea, InputNumber, InputFeatures } from '../../../components/InputDemo'
+import ComponentPreview from '../../../components/ComponentPreview.astro'
+
+Input 组件是一个多功能的输入字段，支持多种数据类型（文本、数字、密码等）和交互模式（单行、多行）。
+
+## 何时使用
+
+- 需要用户输入文本、数字或密码等信息时
+- 需要在表单中收集用户数据时
+- 需要搜索或过滤数据时
+
+## 基础用法
+
+最简单的文本输入框。
+
+<ComponentPreview>
+  <InputBasic client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { Input } from '@beeve/ui'
+
+<Input placeholder="Basic Input" />
+```
+
+## 尺寸
+
+提供 3 种尺寸：`sm`、`md`（默认）、`lg`。
+
+<ComponentPreview>
+  <InputSizes client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input size="sm" placeholder="Small Input" />
+<Input size="md" placeholder="Medium Input" />
+<Input size="lg" placeholder="Large Input" />
+```
+
+## 变体
+
+提供 3 种视觉风格：`default`（默认边框）、`filled`（填充背景）、`borderless`（无边框）。
+
+<ComponentPreview>
+  <InputVariants client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input variant="default" placeholder="Default Variant" />
+<Input variant="filled" placeholder="Filled Variant" />
+<Input variant="borderless" placeholder="Borderless Variant" />
+```
+
+## 状态
+
+支持禁用、错误和警告状态。
+
+<ComponentPreview>
+  <InputStates client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input disabled placeholder="Disabled Input" />
+<Input status="error" placeholder="Error State" />
+<Input status="warning" placeholder="Warning State" />
+```
+
+## 带前后缀
+
+可以通过 `prefix` 和 `suffix` 属性添加图标或文本。
+
+<ComponentPreview>
+  <InputWithIcons client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { SearchIcon, MailIcon, GlobeIcon } from 'lucide-solid'
+
+<Input prefix={<SearchIcon class="size-4" />} placeholder="Search..." />
+<Input suffix={<MailIcon class="size-4" />} placeholder="Email" />
+<Input prefix={<GlobeIcon class="size-4" />} suffix=".com" placeholder="yoursite" />
+```
+
+## 密码输入
+
+设置 `type="password"` 即可。组件会处理原生密码遮罩。
+
+<ComponentPreview>
+  <InputPassword client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input type="password" placeholder="Password" />
+```
+
+## 多行文本 (Textarea)
+
+设置 `inputType="textarea"` 启用多行文本模式。支持 `rows` 属性控制行数。
+
+<ComponentPreview>
+  <InputTextarea client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input inputType="textarea" placeholder="Type your message here." />
+<Input inputType="textarea" rows={4} placeholder="With rows=4" />
+```
+
+## 数字输入
+
+设置 `inputType="number"` 启用数字模式。支持 `min`、`max`、`step` 和 `showControls`（显示增减按钮）。
+
+<ComponentPreview>
+  <InputNumber client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input inputType="number" placeholder="Number input" />
+<Input inputType="number" showControls placeholder="With Controls" />
+<Input inputType="number" min={0} max={10} step={1} showControls />
+```
+
+## 增强功能
+
+支持一键清空 `allowClear` 和字数统计 `showCount`。
+
+<ComponentPreview>
+  <InputFeatures client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<Input allowClear placeholder="Allow Clear" />
+<Input showCount maxLength={20} placeholder="Show Count (max 20)" />
+```
+
+## API
+
+### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `inputType` | `'text' \| 'textarea' \| 'number'` | `'text'` | 输入框模式 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸 |
+| `variant` | `'default' \| 'filled' \| 'borderless'` | `'default'` | 视觉风格 |
+| `status` | `'error' \| 'warning'` | - | 验证状态 |
+| `value` | `string \| number` | - | 受控值 |
+| `defaultValue` | `string \| number` | - | 默认值 |
+| `placeholder` | `string` | - | 占位符 |
+| `type` | `'text' \| 'password' \| 'email' \| ...` | `'text'` | 原生 type (text 模式下) |
+| `disabled` | `boolean` | `false` | 是否禁用 |
+| `readOnly` | `boolean` | `false` | 是否只读 |
+| `prefix` | `JSX.Element` | - | 前缀元素 |
+| `suffix` | `JSX.Element` | - | 后缀元素 |
+| `allowClear` | `boolean` | `false` | 是否显示清空按钮 |
+| `showCount` | `boolean` | `false` | 是否显示字数统计 |
+| `maxLength` | `number` | - | 最大字符数 |
+| `class` | `string` | - | 自定义类名 |
+
+### Textarea 专用 Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `rows` | `number` | 行数 |
+
+### Number 专用 Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `min` | `number` | 最小值 |
+| `max` | `number` | 最大值 |
+| `step` | `number` | 步长 |
+| `showControls` | `boolean` | 是否显示增减按钮 |
+
+### 事件
+
+| 事件名 | 类型 | 说明 |
+|--------|------|------|
+| `onInput` | `(value: string, e: InputEvent) => void` | 输入回调 |
+| `onChange` | `(value: string, e: Event) => void` | 变化回调 |
+| `onClear` | `() => void` | 清空回调 |
+| `onFocus` | `(e: FocusEvent) => void` | 聚焦回调 |
+| `onBlur` | `(e: FocusEvent) => void` | 失焦回调 |
+| `onKeyDown` | `(e: KeyboardEvent) => void` | 按键回调 |
+| `onPressEnter` | `(e: KeyboardEvent) => void` | 回车回调 |
+
+## 键盘交互
+
+- `Tab`：在输入框之间切换焦点
+- `Enter`：触发 `onPressEnter` 事件
+- `Escape`：如果设置了 `allowClear`，可清除内容（需自行实现或依赖原生行为）
+- 数字模式下 `Up/Down`：增加/减少数值
+
+## 无障碍
+
+- 使用 `<label>` 元素关联输入框
+- 错误状态时应包含 `aria-invalid` (组件内部自动处理状态样式)
+- 对应的 `aria-label` 或 `title`
+

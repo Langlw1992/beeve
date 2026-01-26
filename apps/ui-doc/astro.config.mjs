@@ -23,6 +23,7 @@ export default defineConfig({
           label: '组件',
           items: [
             { label: 'Button 按钮', slug: 'components/button' },
+            { label: 'Input 输入框', slug: 'components/input' },
           ],
         },
       ],
