@@ -11,7 +11,7 @@
 | 功能代码 | ✅ | 组件/API/功能实现 |
 | 类型定义 | ✅ | Props、接口、导出 |
 | Stories/示例 | ✅ | Storybook 展示 |
-| 文档 | ✅ | apps/docs 中的 mdx |
+| 文档 | ✅ | apps/ui-doc 中的 mdx |
 | 测试 | ⚡ | 基础测试（复杂逻辑必须） |
 | PROGRESS.md | ✅ | 更新进度记录 |
 
@@ -34,7 +34,7 @@
   □ 包含：默认、所有变体、所有尺寸、禁用状态、交互示例
 
 □ 3. 文档页面
-  □ apps/docs/src/content/docs/components/{name}.mdx
+  □ apps/ui-doc/src/content/docs/components/{name}.mdx
   □ 包含：描述、安装、基础用法、Props 表格、所有变体示例
 
 □ 4. 验证通过
@@ -66,7 +66,7 @@
   │       └─► {Name}.stories.tsx（全部变体）
   │
   ├─4─► 创建文档
-  │       └─► apps/docs/.../components/{name}.mdx
+  │       └─► apps/ui-doc/.../components/{name}.mdx
   │
   ├─5─► 验证
   │       └─► lint + typecheck + Storybook 检查

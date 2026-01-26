@@ -21,7 +21,8 @@
 - [x] `@beeve/ui` - 组件库基础
 - [x] `@beeve/db` - 数据库层 (Drizzle + PostgreSQL)
 - [x] `apps/server` - API 服务器骨架 (Hono)
-- [x] `apps/docs` - 文档站点（Astro + Starlight）
+- [x] `apps/ui-doc` - 组件文档站点（Astro + Starlight）
+- [x] `apps/storybook` - 组件演示（Storybook）
 
 ### Phase 2: 基础设施完善 🔄 进行中
 
@@ -115,7 +116,7 @@
 - ✅ 验证构建流程（typecheck + lint 全部通过）
 
 ### 2025-12-25
-- ✅ 创建 `apps/docs` 文档站点（Astro v5 + Starlight）
+- ✅ 创建 `apps/ui-doc` 文档站点（Astro v5 + Starlight）
 - ✅ 配置 SolidJS 集成（@astrojs/solid-js）
 - ✅ 配置 TailwindCSS v4（@tailwindcss/vite）
 - ✅ 编写 Button 组件文档（API、变体、示例）

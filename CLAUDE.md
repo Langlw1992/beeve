@@ -40,7 +40,7 @@
 | 组件代码 | `packages/ui/src/components/{Name}/{Name}.tsx` |
 | 导出文件 | `packages/ui/src/components/{Name}/index.ts` |
 | Stories | `packages/ui/src/components/{Name}/{Name}.stories.tsx` |
-| 文档 | `apps/docs/src/content/docs/components/{name}.mdx` |
+| 文档 | `apps/ui-doc/src/content/docs/components/{name}.mdx` |
 | 全局导出 | `packages/ui/src/index.ts` 添加导出 |
 | 进度更新 | `PROGRESS.md` 勾选并添加日志 |
 
@@ -61,7 +61,8 @@ Beeve 是一个基于 SolidJS 的全栈低代码平台，包含：
 - **@beeve/shared** - 共享类型和工具
 - **apps/web** - 低代码平台前端
 - **apps/server** - API 服务 (Hono)
-- **apps/docs** - 文档站点
+- **apps/ui-doc** - 组件文档站点 (Starlight)
+- **apps/storybook** - 组件演示 (Storybook)
 
 ## 技术栈速查
 

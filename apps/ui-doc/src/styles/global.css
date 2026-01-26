@@ -11,6 +11,36 @@
 /* 扫描组件目录 */
 @source '../components';
 
+/* Dark mode colors. */
+:root {
+  --sl-color-accent-low: #162b00;
+  --sl-color-accent: #487a00;
+  --sl-color-accent-high: #b3d599;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #edeeed;
+  --sl-color-gray-2: #c8c8c8;
+  --sl-color-gray-3: #a3a4a3;
+  --sl-color-gray-4: #585857;
+  --sl-color-gray-5: #383837;
+  --sl-color-gray-6: #262726;
+  --sl-color-black: #181818;
+}
+/* Light mode colors. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #c7e1b4;
+  --sl-color-accent: #325600;
+  --sl-color-accent-high: #203b00;
+  --sl-color-white: #181818;
+  --sl-color-gray-1: #262726;
+  --sl-color-gray-2: #383837;
+  --sl-color-gray-3: #585857;
+  --sl-color-gray-4: #8b8c8a;
+  --sl-color-gray-5: #c2c2c1;
+  --sl-color-gray-6: #edeeed;
+  --sl-color-gray-7: #f6f6f6;
+  --sl-color-black: #ffffff;
+}
+
 /* 按 Starlight 文档：补充 button 重置 */
 @layer base {
   button {

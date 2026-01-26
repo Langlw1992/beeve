@@ -31,7 +31,8 @@ Beeve is a full-stack low-code platform built with SolidJS, featuring:
 - `@beeve/shared` - Shared types and utilities
 - `apps/web` - Low-code platform frontend
 - `apps/server` - API server (Hono)
-- `apps/docs` - Documentation site (Astro + Starlight)
+- `apps/ui-doc` - Documentation site (Astro + Starlight)
+- `apps/storybook` - Component demos (Storybook)
 
 ## Tech Stack
 
