@@ -9,7 +9,7 @@ Radio 组件用于在一组选项中进行单项选择。
 
 ## 基础用法
 
-<RadioBasic client:load />
+<RadioBasic client:only="solid-js" />
 
 ```tsx
 import { Radio, Label } from '@beeve/ui'
@@ -43,7 +43,7 @@ const [value, setValue] = createSignal('option1')
 
 ## 单选框尺寸
 
-<RadioSizes client:load />
+<RadioSizes client:only="solid-js" />
 
 ```tsx
 <Radio size="sm" />
@@ -53,7 +53,7 @@ const [value, setValue] = createSignal('option1')
 
 ## 禁用状态
 
-<RadioDisabled client:load />
+<RadioDisabled client:only="solid-js" />
 
 ```tsx
 <Radio disabled />                    {/* 禁用未选中 */}

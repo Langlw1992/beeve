@@ -9,7 +9,7 @@ Slider 组件用于在给定范围内选择一个值或范围，基于 Zag.js �
 
 ## 基础用法
 
-<SliderBasic client:load />
+<SliderBasic client:only="solid-js" />
 
 ```tsx
 import { Slider } from '@beeve/ui'
@@ -27,7 +27,7 @@ const [value, setValue] = createSignal([50])
 
 ## 范围滑块
 
-<SliderRange client:load />
+<SliderRange client:only="solid-js" />
 
 ```tsx
 const [value, setValue] = createSignal([20, 80])
@@ -42,7 +42,7 @@ const [value, setValue] = createSignal([20, 80])
 
 ## 滑块尺寸
 
-<SliderSizes client:load />
+<SliderSizes client:only="solid-js" />
 
 ```tsx
 <Slider size="sm" defaultValue={[30]} />
@@ -52,7 +52,7 @@ const [value, setValue] = createSignal([20, 80])
 
 ## 步进滑块
 
-<SliderWithSteps client:load />
+<SliderWithSteps client:only="solid-js" />
 
 ```tsx
 <Slider
@@ -66,7 +66,7 @@ const [value, setValue] = createSignal([20, 80])
 
 ## 禁用状态
 
-<SliderDisabled client:load />
+<SliderDisabled client:only="solid-js" />
 
 ```tsx
 <Slider defaultValue={[40]} disabled />
@@ -74,7 +74,7 @@ const [value, setValue] = createSignal([20, 80])
 
 ## 带标签滑块
 
-<SliderWithLabel client:load />
+<SliderWithLabel client:only="solid-js" />
 
 ```tsx
 import { Label, Slider } from '@beeve/ui'

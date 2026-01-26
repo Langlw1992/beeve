@@ -9,7 +9,7 @@ Presence 组件用于处理元素的进入/退出动画，确保退出动画完�
 
 ## 基础用法
 
-<PresenceBasic client:load />
+<PresenceBasic client:only="solid-js" />
 
 ```tsx
 import { Presence, Button } from '@beeve/ui'
@@ -29,7 +29,7 @@ const [present, setPresent] = createSignal(true)
 
 配合 Tailwind CSS 的动画类实现进入/退出效果。使用 `data-[state=open]` 和 `data-[state=closed]` 选择器。
 
-<PresenceWithAnimation client:load />
+<PresenceWithAnimation client:only="solid-js" />
 
 ```tsx
 <Presence present={present()} unmountOnExit>
@@ -45,7 +45,7 @@ const [present, setPresent] = createSignal(true)
 
 设置 `lazyMount` 后，元素只有在首次 `present=true` 时才会被挂载到 DOM。
 
-<PresenceLazyMount client:load />
+<PresenceLazyMount client:only="solid-js" />
 
 ```tsx
 <Presence present={present()} lazyMount>
@@ -57,7 +57,7 @@ const [present, setPresent] = createSignal(true)
 
 设置 `unmountOnExit` 后，元素在退出动画完成后会从 DOM 中移除。
 
-<PresenceUnmountOnExit client:load />
+<PresenceUnmountOnExit client:only="solid-js" />
 
 ```tsx
 <Presence present={present()} unmountOnExit>
@@ -69,7 +69,7 @@ const [present, setPresent] = createSignal(true)
 
 通过 `onExitComplete` 监听退出动画完成事件。
 
-<PresenceOnExitComplete client:load />
+<PresenceOnExitComplete client:only="solid-js" />
 
 ```tsx
 <Presence
@@ -87,7 +87,7 @@ const [present, setPresent] = createSignal(true)
 
 通过函数形式的 children 可以获取当前的 presence 状态。
 
-<PresenceRenderProps client:load />
+<PresenceRenderProps client:only="solid-js" />
 
 ```tsx
 <Presence present={present()}>

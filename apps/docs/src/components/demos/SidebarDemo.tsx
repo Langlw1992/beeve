@@ -15,7 +15,7 @@ export function SidebarBasic() {
   const [active, setActive] = createSignal('home')
 
   return (
-    <DemoBox title="基础侧边栏" class="h-80 p-0">
+    <DemoBox title="基础侧边栏" layout="block" class="h-80">
       <Sidebar.Provider defaultOpen collapsible="icon">
         <Sidebar>
           <Sidebar.Header class="border-b border-border p-4">
@@ -45,7 +45,7 @@ export function SidebarCollapsibleIcon() {
   const [active, setActive] = createSignal('home')
 
   return (
-    <DemoBox title="图标折叠模式" class="h-80 p-0">
+    <DemoBox title="图标折叠模式" layout="block" class="h-80">
       <Sidebar.Provider defaultOpen={false} collapsible="icon">
         <Sidebar>
           <Sidebar.Header class="flex items-center justify-center border-b border-border p-4">
@@ -76,7 +76,7 @@ export function SidebarOffcanvas() {
   const [active, setActive] = createSignal('home')
 
   return (
-    <DemoBox title="抽屉模式" class="h-80 p-0">
+    <DemoBox title="抽屉模式" layout="block" class="h-80">
       <Sidebar.Provider defaultOpen={false} collapsible="offcanvas">
         <Sidebar>
           <Sidebar.Header class="border-b border-border p-4">
@@ -114,7 +114,7 @@ export function SidebarControlled() {
   const [active, setActive] = createSignal('home')
 
   return (
-    <DemoBox title="受控模式" class="h-80 p-0">
+    <DemoBox title="受控模式" layout="block" class="h-80">
       <Sidebar.Provider open={open()} onOpenChange={setOpen} collapsible="icon">
         <Sidebar>
           <Sidebar.Header class="border-b border-border p-4">
@@ -162,7 +162,7 @@ export function SidebarNone() {
   const [active, setActive] = createSignal('home')
 
   return (
-    <DemoBox title="不可折叠" class="h-80 p-0">
+    <DemoBox title="不可折叠" layout="block" class="h-80">
       <Sidebar.Provider collapsible="none">
         <Sidebar>
           <Sidebar.Header class="border-b border-border p-4">

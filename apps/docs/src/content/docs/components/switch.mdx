@@ -9,7 +9,7 @@ Switch 组件用于表示两种相互对立的状态间的切换。
 
 ## 基础用法
 
-<SwitchBasic client:load />
+<SwitchBasic client:only="solid-js" />
 
 ```tsx
 import { Switch, Label } from '@beeve/ui'
@@ -29,7 +29,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 开关尺寸
 
-<SwitchSizes client:load />
+<SwitchSizes client:only="solid-js" />
 
 ```tsx
 <Switch size="sm" />
@@ -39,7 +39,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 开关状态
 
-<SwitchStates client:load />
+<SwitchStates client:only="solid-js" />
 
 ```tsx
 <Switch />                          {/* 关闭 */}
@@ -50,7 +50,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 带描述开关
 
-<SwitchWithDescription client:load />
+<SwitchWithDescription client:only="solid-js" />
 
 ```tsx
 <div class="flex items-center justify-between">

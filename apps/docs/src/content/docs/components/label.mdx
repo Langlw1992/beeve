@@ -9,7 +9,7 @@ Label 组件用于为表单控件提供标签文本。
 
 ## 基础用法
 
-<LabelBasic client:load />
+<LabelBasic client:only="solid-js" />
 
 ```tsx
 import { Label, Input } from '@beeve/ui'
@@ -22,7 +22,7 @@ import { Label, Input } from '@beeve/ui'
 
 ## 必填标记
 
-<LabelRequired client:load />
+<LabelRequired client:only="solid-js" />
 
 ```tsx
 <Label for="username" required>用户名</Label>
@@ -31,7 +31,7 @@ import { Label, Input } from '@beeve/ui'
 
 ## 禁用状态
 
-<LabelDisabled client:load />
+<LabelDisabled client:only="solid-js" />
 
 ```tsx
 <Label for="disabled" disabled>禁用输入框</Label>
@@ -40,7 +40,7 @@ import { Label, Input } from '@beeve/ui'
 
 ## 与表单控件配合
 
-<LabelWithControls client:load />
+<LabelWithControls client:only="solid-js" />
 
 ```tsx
 import { Label, Input, Checkbox, Switch } from '@beeve/ui'

@@ -9,7 +9,7 @@ NavMenu 组件用于应用程序的导航，支持垂直（侧边栏）和水平
 
 ## 基础用法
 
-<NavMenuBasic client:load />
+<NavMenuBasic client:only="solid-js" />
 
 ```tsx
 import { NavMenu } from '@beeve/ui'
@@ -33,7 +33,7 @@ const [active, setActive] = createSignal('home')
 
 ## 分组导航
 
-<NavMenuWithGroups client:load />
+<NavMenuWithGroups client:only="solid-js" />
 
 ```tsx
 const items = [
@@ -53,7 +53,7 @@ const items = [
 
 ## 嵌套菜单
 
-<NavMenuNested client:load />
+<NavMenuNested client:only="solid-js" />
 
 ```tsx
 const items = [
@@ -87,7 +87,7 @@ const items = [
 
 ## 带徽标
 
-<NavMenuWithBadge client:load />
+<NavMenuWithBadge client:only="solid-js" />
 
 ```tsx
 const items = [
@@ -99,7 +99,7 @@ const items = [
 
 ## 折叠模式
 
-<NavMenuCollapsed client:load />
+<NavMenuCollapsed client:only="solid-js" />
 
 与 Sidebar 配合使用时，可以折叠为仅显示图标：
 
@@ -116,7 +116,7 @@ const [collapsed, setCollapsed] = createSignal(false)
 
 ## 水平导航
 
-<NavMenuHorizontal client:load />
+<NavMenuHorizontal client:only="solid-js" />
 
 ```tsx
 <NavMenu

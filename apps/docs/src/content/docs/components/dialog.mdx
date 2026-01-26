@@ -9,7 +9,7 @@ Dialog 组件用于显示模态对话框，基于 Zag.js 实现。
 
 ## 基础用法
 
-<DialogBasic client:load />
+<DialogBasic client:only="solid-js" />
 
 ```tsx
 import { Dialog, Button } from '@beeve/ui'
@@ -31,7 +31,7 @@ const [open, setOpen] = createSignal(false)
 
 ## 确认对话框
 
-<DialogConfirm client:load />
+<DialogConfirm client:only="solid-js" />
 
 ```tsx
 <Dialog
@@ -48,7 +48,7 @@ const [open, setOpen] = createSignal(false)
 
 ## 异步操作
 
-<DialogAsync client:load />
+<DialogAsync client:only="solid-js" />
 
 当 `onOk` 返回 Promise 时，会自动显示加载状态：
 
@@ -68,7 +68,7 @@ const [open, setOpen] = createSignal(false)
 
 ## 对话框尺寸
 
-<DialogSizes client:load />
+<DialogSizes client:only="solid-js" />
 
 ```tsx
 <Dialog width="sm" title="小">内容</Dialog>
@@ -79,7 +79,7 @@ const [open, setOpen] = createSignal(false)
 
 ## 自定义底部
 
-<DialogCustomFooter client:load />
+<DialogCustomFooter client:only="solid-js" />
 
 ```tsx
 <Dialog
@@ -100,7 +100,7 @@ const [open, setOpen] = createSignal(false)
 
 ## 无底部对话框
 
-<DialogNoFooter client:load />
+<DialogNoFooter client:only="solid-js" />
 
 ```tsx
 <Dialog

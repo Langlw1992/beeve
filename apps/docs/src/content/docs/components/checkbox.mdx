@@ -9,7 +9,7 @@ Checkbox 组件用于在一组选项中进行多项选择。
 
 ## 基础用法
 
-<CheckboxBasic client:load />
+<CheckboxBasic client:only="solid-js" />
 
 ```tsx
 import { Checkbox, Label } from '@beeve/ui'
@@ -29,7 +29,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 复选框尺寸
 
-<CheckboxSizes client:load />
+<CheckboxSizes client:only="solid-js" />
 
 ```tsx
 <Checkbox size="sm" />
@@ -39,7 +39,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 复选框状态
 
-<CheckboxStates client:load />
+<CheckboxStates client:only="solid-js" />
 
 ```tsx
 <Checkbox />                      {/* 未选中 */}
@@ -50,7 +50,7 @@ const [checked, setChecked] = createSignal(false)
 
 ## 复选框组
 
-<CheckboxGroup client:load />
+<CheckboxGroup client:only="solid-js" />
 
 ```tsx
 const [selected, setSelected] = createSignal(['apple'])

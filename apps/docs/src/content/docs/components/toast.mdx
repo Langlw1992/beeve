@@ -28,7 +28,7 @@ function App() {
 
 通过 `toast` 对象的方法创建不同类型的消息：
 
-<ToastBasic client:load />
+<ToastBasic client:only="solid-js" />
 
 ```tsx
 import { toast } from '@beeve/ui'
@@ -44,7 +44,7 @@ toast.error('操作失败，请重试')
 
 可以同时显示标题和描述内容：
 
-<ToastWithTitle client:load />
+<ToastWithTitle client:only="solid-js" />
 
 ```tsx
 toast.success('您的更改已保存', {
@@ -60,7 +60,7 @@ toast.error('服务器返回 500 错误，请稍后重试', {
 
 `toast.loading` 创建加载中状态的 Toast，默认不会自动关闭。通过传入相同的 `id` 可以更新 Toast 状态：
 
-<ToastLoading client:load />
+<ToastLoading client:only="solid-js" />
 
 ```tsx
 // 创建 loading toast 并获取 id
@@ -79,7 +79,7 @@ try {
 
 `toast.promise` 可以自动处理 Promise 的三种状态：
 
-<ToastPromise client:load />
+<ToastPromise client:only="solid-js" />
 
 ```tsx
 toast.promise(fetchData(), {
@@ -93,7 +93,7 @@ toast.promise(fetchData(), {
 
 Toast 支持 JSX 作为标题和描述内容：
 
-<ToastRichContent client:load />
+<ToastRichContent client:only="solid-js" />
 
 ```tsx
 toast.create({
@@ -113,7 +113,7 @@ toast.create({
 
 可以手动控制 Toast 的关闭：
 
-<ToastManualDismiss client:load />
+<ToastManualDismiss client:only="solid-js" />
 
 ```tsx
 // 创建不会自动关闭的 Toast
@@ -136,7 +136,7 @@ toast.remove() // 移除所有
 
 多个 Toast 会自动堆叠显示：
 
-<ToastStacking client:load />
+<ToastStacking client:only="solid-js" />
 
 ```tsx
 toast.info('第一条消息')

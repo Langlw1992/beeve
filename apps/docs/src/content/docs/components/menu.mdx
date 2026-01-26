@@ -9,7 +9,7 @@ Menu 组件用于显示下拉菜单和右键菜单，基于 Zag.js 实现。
 
 ## 下拉菜单
 
-<MenuDropdown client:load />
+<MenuDropdown client:only="solid-js" />
 
 ```tsx
 import { Dropdown } from '@beeve/ui'
@@ -29,7 +29,7 @@ const items = [
 
 ## 右键菜单
 
-<MenuContextMenu client:load />
+<MenuContextMenu client:only="solid-js" />
 
 ```tsx
 import { ContextMenu } from '@beeve/ui'
@@ -43,7 +43,7 @@ import { ContextMenu } from '@beeve/ui'
 
 ## 嵌套菜单
 
-<MenuNested client:load />
+<MenuNested client:only="solid-js" />
 
 ```tsx
 const nestedItems = [
@@ -66,7 +66,7 @@ const nestedItems = [
 
 ## 分组菜单
 
-<MenuGroups client:load />
+<MenuGroups client:only="solid-js" />
 
 ```tsx
 const groupedItems = [
@@ -91,7 +91,7 @@ const groupedItems = [
 
 ## 带快捷键
 
-<MenuWithShortcuts client:load />
+<MenuWithShortcuts client:only="solid-js" />
 
 ```tsx
 const items = [
@@ -103,7 +103,7 @@ const items = [
 
 ## 菜单尺寸
 
-<MenuSizes client:load />
+<MenuSizes client:only="solid-js" />
 
 ```tsx
 <Dropdown items={items} size="sm">小</Dropdown>

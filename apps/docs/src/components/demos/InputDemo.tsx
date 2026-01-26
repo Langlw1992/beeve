@@ -1,6 +1,5 @@
 import { Input, Label } from '@beeve/ui'
-import { Search, Mail, Eye, EyeOff } from 'lucide-solid'
-import { createSignal } from 'solid-js'
+import { Mail, Search } from 'lucide-solid'
 import { DemoBox } from '../DemoBox'
 
 export function InputBasic() {
@@ -24,37 +23,16 @@ export function InputSizes() {
 export function InputWithIcon() {
   return (
     <DemoBox title="带图标输入框" class="flex-col items-stretch gap-3">
-      <div class="relative">
-        <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input class="pl-10" placeholder="搜索..." />
-      </div>
-      <div class="relative">
-        <Mail class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input class="pl-10" type="email" placeholder="邮箱地址" />
-      </div>
+      <Input prefix={<Search class="size-4" />} placeholder="搜索..." />
+      <Input prefix={<Mail class="size-4" />} type="email" placeholder="邮箱地址" />
     </DemoBox>
   )
 }
 
 export function InputPassword() {
-  const [show, setShow] = createSignal(false)
-
   return (
     <DemoBox title="密码输入框" class="flex-col items-stretch">
-      <div class="relative">
-        <Input
-          type={show() ? 'text' : 'password'}
-          placeholder="请输入密码"
-          class="pr-10"
-        />
-        <button
-          type="button"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          onClick={() => setShow(!show())}
-        >
-          {show() ? <EyeOff class="size-4" /> : <Eye class="size-4" />}
-        </button>
-      </div>
+      <Input type="password" placeholder="请输入密码" />
     </DemoBox>
   )
 }
@@ -74,7 +52,9 @@ export function InputWithLabel() {
   return (
     <DemoBox title="带标签输入框" class="flex-col items-stretch gap-4">
       <div class="space-y-2">
-        <Label for="username" required>用户名</Label>
+        <Label for="username" required>
+          用户名
+        </Label>
         <Input id="username" placeholder="请输入用户名" />
       </div>
       <div class="space-y-2">

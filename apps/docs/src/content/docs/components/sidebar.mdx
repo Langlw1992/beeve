@@ -9,7 +9,7 @@ Sidebar 组件用于构建应用程序的侧边栏导航区域，支持多种折
 
 ## 基础用法
 
-<SidebarBasic client:load />
+<SidebarBasic client:only="solid-js" />
 
 ```tsx
 import { Sidebar, NavMenu } from '@beeve/ui'
@@ -32,7 +32,7 @@ import { Sidebar, NavMenu } from '@beeve/ui'
 
 ## 图标折叠模式
 
-<SidebarCollapsibleIcon client:load />
+<SidebarCollapsibleIcon client:only="solid-js" />
 
 `collapsible="icon"` 模式下，折叠时仅显示图标：
 
@@ -46,7 +46,7 @@ import { Sidebar, NavMenu } from '@beeve/ui'
 
 ## 抽屉模式
 
-<SidebarOffcanvas client:load />
+<SidebarOffcanvas client:only="solid-js" />
 
 `collapsible="offcanvas"` 模式下，折叠时完全隐藏：
 
@@ -65,7 +65,7 @@ import { Sidebar, NavMenu } from '@beeve/ui'
 
 ## 受控模式
 
-<SidebarControlled client:load />
+<SidebarControlled client:only="solid-js" />
 
 ```tsx
 import { createSignal } from 'solid-js'
@@ -88,7 +88,7 @@ const [open, setOpen] = createSignal(true)
 
 ## 不可折叠
 
-<SidebarNone client:load />
+<SidebarNone client:only="solid-js" />
 
 `collapsible="none"` 模式下，侧边栏始终展开：
 

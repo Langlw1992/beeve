@@ -9,7 +9,7 @@ Badge 组件用于显示消息数量、状态指示等信息。
 
 ## 基础徽标
 
-<BadgeBasic client:load />
+<BadgeBasic client:only="solid-js" />
 
 ```tsx
 import { Badge } from '@beeve/ui'
@@ -29,7 +29,7 @@ import { Badge } from '@beeve/ui'
 
 ## 小红点
 
-<BadgeDot client:load />
+<BadgeDot client:only="solid-js" />
 
 ```tsx
 <Badge dot>
@@ -43,7 +43,7 @@ import { Badge } from '@beeve/ui'
 
 ## 徽标颜色
 
-<BadgeColors client:load />
+<BadgeColors client:only="solid-js" />
 
 ```tsx
 <Badge count={5} color="default">...</Badge>
@@ -55,7 +55,7 @@ import { Badge } from '@beeve/ui'
 
 ## 状态徽标
 
-<BadgeStatus client:load />
+<BadgeStatus client:only="solid-js" />
 
 ```tsx
 <Badge status="default" text="默认" />

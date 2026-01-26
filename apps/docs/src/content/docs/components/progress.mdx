@@ -9,7 +9,7 @@ Progress 组件用于展示当前任务的进度。
 
 ## 基础用法
 
-<ProgressBasic client:load />
+<ProgressBasic client:only="solid-js" />
 
 ```tsx
 import { Progress } from '@beeve/ui'
@@ -19,7 +19,7 @@ import { Progress } from '@beeve/ui'
 
 ## 进度条变体
 
-<ProgressVariants client:load />
+<ProgressVariants client:only="solid-js" />
 
 ```tsx
 <Progress percent={60} />                    {/* 默认 */}
@@ -30,7 +30,7 @@ import { Progress } from '@beeve/ui'
 
 ## 进度条尺寸
 
-<ProgressSizes client:load />
+<ProgressSizes client:only="solid-js" />
 
 ```tsx
 <Progress percent={60} size="sm" />
@@ -40,7 +40,7 @@ import { Progress } from '@beeve/ui'
 
 ## 动画进度条
 
-<ProgressAnimated client:load />
+<ProgressAnimated client:only="solid-js" />
 
 ```tsx
 import { createSignal, onCleanup } from 'solid-js'
@@ -58,7 +58,7 @@ onCleanup(() => clearInterval(interval))
 
 ## 不确定进度
 
-<ProgressIndeterminate client:load />
+<ProgressIndeterminate client:only="solid-js" />
 
 ```tsx
 <Progress indeterminate />
@@ -66,7 +66,7 @@ onCleanup(() => clearInterval(interval))
 
 ## 带标签进度条
 
-<ProgressWithLabel client:load />
+<ProgressWithLabel client:only="solid-js" />
 
 ```tsx
 <div class="space-y-2">

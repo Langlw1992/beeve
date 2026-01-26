@@ -9,7 +9,7 @@ Select 组件用于从一组选项中选择一个值，基于 Zag.js 实现。
 
 ## 基础用法
 
-<SelectBasic client:load />
+<SelectBasic client:only="solid-js" />
 
 ```tsx
 import { Select } from '@beeve/ui'
@@ -31,7 +31,7 @@ const [value, setValue] = createSignal('')
 
 ## 选择器尺寸
 
-<SelectSizes client:load />
+<SelectSizes client:only="solid-js" />
 
 ```tsx
 <Select size="sm" placeholder="小尺寸" options={options} />
@@ -41,7 +41,7 @@ const [value, setValue] = createSignal('')
 
 ## 分组选项
 
-<SelectWithGroups client:load />
+<SelectWithGroups client:only="solid-js" />
 
 ```tsx
 <Select
@@ -67,7 +67,7 @@ const [value, setValue] = createSignal('')
 
 ## 禁用状态
 
-<SelectDisabled client:load />
+<SelectDisabled client:only="solid-js" />
 
 ```tsx
 <Select placeholder="禁用选择器" disabled options={options} />
@@ -83,7 +83,7 @@ const [value, setValue] = createSignal('')
 
 ## 带标签选择器
 
-<SelectWithLabel client:load />
+<SelectWithLabel client:only="solid-js" />
 
 ```tsx
 import { Label, Select } from '@beeve/ui'

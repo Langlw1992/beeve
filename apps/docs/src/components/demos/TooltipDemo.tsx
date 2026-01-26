@@ -77,3 +77,25 @@ export function TooltipRichContent() {
     </DemoBox>
   )
 }
+
+export function TooltipWithArrow() {
+  return (
+    <DemoBox title="带箭头提示">
+      <Tooltip content="带箭头的提示" arrow>
+        <Button variant="outline">默认箭头</Button>
+      </Tooltip>
+      <Tooltip content="顶部箭头" arrow positioning={{ placement: 'top' }}>
+        <Button variant="outline" size="sm">上</Button>
+      </Tooltip>
+      <Tooltip content="右侧箭头" arrow positioning={{ placement: 'right' }}>
+        <Button variant="outline" size="sm">右</Button>
+      </Tooltip>
+      <Tooltip content="底部箭头" arrow positioning={{ placement: 'bottom' }}>
+        <Button variant="outline" size="sm">下</Button>
+      </Tooltip>
+      <Tooltip content="左侧箭头" arrow positioning={{ placement: 'left' }}>
+        <Button variant="outline" size="sm">左</Button>
+      </Tooltip>
+    </DemoBox>
+  )
+}
