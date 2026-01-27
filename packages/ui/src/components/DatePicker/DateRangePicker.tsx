@@ -1,6 +1,7 @@
 import * as datePicker from '@zag-js/date-picker'
 import { normalizeProps, useMachine } from '@zag-js/solid'
 import {
+  For,
   Show,
   createMemo,
   createUniqueId,
@@ -9,10 +10,10 @@ import {
   type Component,
 } from 'solid-js'
 import { Portal } from 'solid-js/web'
-// @ts-ignore
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-solid'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { DatePickerCalendar } from './DatePickerCalendar'
+import { DateFormatter } from '@internationalized/date'
 
 const dateRangePickerStyles = tv({
   slots: {
@@ -34,7 +35,11 @@ const dateRangePickerStyles = tv({
     columnHeader: 'rounded-md text-[0.8rem] font-normal text-muted-foreground w-8 h-8',
     row: 'flex w-full mt-2',
     cell: [
-      'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md',
+      'relative p-0 text-center text-sm focus-within:relative focus-within:z-20',
+      '[&:has([data-range-start])]:rounded-l-md [&:has([data-range-end])]:rounded-r-md',
+      '[&:has([data-in-range])]:bg-primary/20',
+      '[&:has([data-range-start])]:bg-primary/20 [&:has([data-range-end])]:bg-primary/20', 
+       // Note: aria-selected might be present on start/end, so we might need to override default cell styles or ensure specificty
       'h-8 w-8',
     ],
     dayTrigger: [
@@ -44,9 +49,9 @@ const dateRangePickerStyles = tv({
       'aria-selected:bg-primary aria-selected:text-primary-foreground hover:aria-selected:bg-primary hover:aria-selected:text-primary-foreground',
       'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
       'data-[today]:bg-accent data-[today]:text-accent-foreground',
-      'data-[selected-range-start]:bg-primary data-[selected-range-start]:text-primary-foreground',
-      'data-[selected-range-end]:bg-primary data-[selected-range-end]:text-primary-foreground',
-      'data-[in-range]:bg-accent/50 data-[in-range]:rounded-none', // Range middle styles
+      'data-[range-start]:bg-primary data-[range-start]:text-primary-foreground',
+      'data-[range-end]:bg-primary data-[range-end]:text-primary-foreground',
+      'data-[in-range]:bg-primary/20 data-[in-range]:text-foreground data-[in-range]:rounded-none',
     ],
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
@@ -111,6 +116,11 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const service = useMachine(datePicker.machine as any, machineProps)
   const api = createMemo(() => datePicker.connect(service as any, normalizeProps))
 
+  const displayValue = createMemo(() => {
+    if (api().valueAsString.length === 0) return local.placeholder || 'Select date range'
+    return api().valueAsString.join(' - ')
+  })
+
   return (
     <div class={styles().root({ class: local.class })}>
       <Show when={local.label}>
@@ -121,9 +131,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
       <div {...api().getControlProps()} class={styles().control()}>
         <button {...api().getTriggerProps()} class={styles().trigger()}>
-          <span>
-             {api().valueAsString || local.placeholder || 'Select date range'}
-          </span>
+          <span>{displayValue()}</span>
           <Calendar class="size-4 opacity-50" />
         </button>
       </div>
@@ -131,67 +139,80 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       <Portal>
         <div {...api().getPositionerProps()}>
            {/* Width needs to be wider for 2 months */}
-          <div {...api().getContentProps()} class={styles().content({ class: 'w-[600px] max-w-[90vw]' })}> 
+          <div {...api().getContentProps()} class={styles().content({ class: 'w-auto max-w-[90vw]' })}> 
             
-            {/* Header */}
-            <div class={styles().header()}>
-              <button {...api().getPrevTriggerProps()} class={styles().navTrigger()}>
-                <ChevronLeft class="size-4" />
-              </button>
-              
-              <div class={styles().heading()}>
-                {/* Note: In multi-month view, we might want to interact differently, 
-                    but Zag handles view triggering fine usually */}
-                <button {...api().getViewTriggerProps()} class="hover:bg-accent rounded px-2 py-1">
-                    {/* Simplified for range */}
-                   {api().visibleRangeText?.start ?? ''}
-                </button>
-              </div>
+            <Show when={api().view === 'day'} fallback={<DatePickerCalendar api={api} styles={styles} />}>
+               <div class="flex gap-4 p-3">
+                  <For each={[0, 1]}>
+                    {(offset) => {
+                       const visibleRange = createMemo(() => {
+                           if (offset === 0) return { weeks: api().weeks, ...api().visibleRange }
+                           return api().getOffset({ months: offset })
+                       })
+                       
+                       const formatter = new DateFormatter(api().locale, { month: 'long', year: 'numeric' })
+                       
+                       return (
+                           <div class="space-y-4">
+                                <div class="flex items-center justify-between pt-1 relative">
+                                    <div class="w-7 h-7 flex items-center justify-center">
+                                       <Show when={offset === 0}>
+                                            <button {...api().getPrevTriggerProps()} class={styles().navTrigger()}>
+                                                <ChevronLeft class="size-4" />
+                                            </button>
+                                       </Show>
+                                    </div>
+                                    
+                                    <div class="text-sm font-medium">
+                                       {visibleRange()?.visibleRange?.start ? formatter.format(visibleRange()!.visibleRange.start.toDate(api().timeZone)) : ''}
+                                    </div>
 
-              <button {...api().getNextTriggerProps()} class={styles().navTrigger()}>
-                <ChevronRight class="size-4" />
-              </button>
-            </div>
+                                    <div class="w-7 h-7 flex items-center justify-center">
+                                       <Show when={offset === 1}>
+                                            <button {...api().getNextTriggerProps()} class={styles().navTrigger()}>
+                                                <ChevronRight class="size-4" />
+                                            </button>
+                                       </Show>
+                                    </div>
+                                </div>
 
-            {/* Grid - reused */}
-             {/* Note: DatePickerCalendar handles single month grid iteration. 
-                 Zag with numOfMonths > 1 returns multiple offsets? 
-                 Actually api.weeks is likely just for the first visible month if used naively?
-                 Zag's `api.getMonths()` is not standard.
-                 Actually Zag simplifies this by usually rendering one big grid OR 
-                 we need to iterate `api.offset`? 
-                 Wait, Zag solid adapter normalizeProps usually handles context.
-                 
-                 If we look at Zag docs for Multi Month:
-                 We need to likely control the offset or render multiple grids.
-                 Zag's default `api.weeks` is usually just the primary view.
-                 
-                 Let's stick to simple implementation (reusing single grid) for now 
-                 but pass numOfMonths=2 prop to machine so logic is correct, 
-                 even if we only render one month visually for MVP safety, 
-                 OR ideally we render 2 side-by-side.
-                 
-                 However, since I don't want to break the reused DatePickerCalendar 
-                 which expects standard api structure, let's keep it simple for now.
-                 Zag's structure for multi-month is to have `api.visibleRange` logic.
-                 
-                 Let's assume the DatePickerCalendar works for the current view.
-                 If we want 2 months side by side, we need to iterate offsets.
-                 Zag docs say: 
-                 <div {...api.getPositionerProps()}>
-                   <div {...api.getContentProps()}>
-                     <div style={{ display: "flex", gap: "24px" }}>
-                       // Iteration logic typically custom for multi-grid
-                     </div>
-                   </div>
-                 </div>
-                 
-                 For this scope, I'll stick to Single Month View for Range Picker 
-                 unless requested otherwise, as it simplifies the Calendar Component reuse.
-                 Zag supports range selection within 1 month fine.
-             */}
-            <DatePickerCalendar api={api} styles={styles} />
-            
+                                <div class={styles().grid()}>
+                                    <div {...api().getTableHeaderProps()} class="flex justify-between mb-2">
+                                      <For each={api().weekDays}>
+                                        {(day) => (
+                                          <div
+                                            class={styles().columnHeader()}
+                                            aria-label={day.long}
+                                          >
+                                            {day.short}
+                                          </div>
+                                        )}
+                                      </For>
+                                    </div>
+                                    <div {...api().getTableBodyProps()}>
+                                      <For each={visibleRange()?.weeks}>
+                                        {(week) => (
+                                          <div {...api().getTableRowProps()} class={styles().row()}>
+                                            <For each={week}>
+                                              {(value) => (
+                                                <div {...api().getDayTableCellProps({ value })} class={styles().cell()}>
+                                                  <button {...api().getDayTableCellTriggerProps({ value })} class={styles().dayTrigger()}>
+                                                    {value.day}
+                                                  </button>
+                                                </div>
+                                              )}
+                                            </For>
+                                          </div>
+                                        )}
+                                      </For>
+                                    </div>
+                               </div>
+                           </div>
+                       )
+                    }}
+                  </For>
+               </div>
+            </Show>
           </div>
         </div>
       </Portal>
