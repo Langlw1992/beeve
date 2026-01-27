@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs'
+import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { createSignal, createEffect } from 'solid-js'
-import { Select } from './Select'
+import {Select, type SelectValue} from './Select'
 
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
@@ -72,7 +72,7 @@ export const Default: Story = {
 
 export const Controlled: Story = {
   render: () => {
-    const [value, setValue] = createSignal<string | number | (string | number)[] | undefined>('solid')
+    const [value, setValue] = createSignal<SelectValue| undefined>('solid')
     return (
       <div class="flex flex-col gap-4 w-64">
         <Select

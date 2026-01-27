@@ -79,7 +79,7 @@
 
 ```typescript
 // packages/ui/src/components/{Name}/{Name}.stories.tsx
-import type { Meta, StoryObj } from 'storybook-solidjs'
+import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { {Name} } from './{Name}'
 
 const meta: Meta<typeof {Name}> = {

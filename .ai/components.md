@@ -316,7 +316,7 @@ export function useControllableState<T>(
 
 ```typescript
 // Button/Button.stories.tsx
-import type { Meta, StoryObj } from 'storybook-solidjs'
+import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { Button } from './Button'
 
 const meta = {

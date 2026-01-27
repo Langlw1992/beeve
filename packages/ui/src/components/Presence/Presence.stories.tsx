@@ -1,8 +1,9 @@
-import type { Meta, StoryObj } from 'storybook-solidjs'
+import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { createSignal } from 'solid-js'
 import { Presence } from './Presence'
 import { usePresence } from './use-presence'
 import { Button } from '../Button'
+
 
 const meta: Meta<typeof Presence> = {
   title: 'Components/Presence',

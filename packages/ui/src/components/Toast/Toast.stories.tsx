@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from 'storybook-solidjs'
+import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { toast, Toaster } from './Toast'
 import { Button } from '../Button'
 
