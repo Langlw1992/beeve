@@ -36,7 +36,7 @@ const sliderStyles = tv({
       'block rounded-full bg-background border-2 border-primary',
       'shadow-sm transition-shadow duration-150',
       'ring-offset-background',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
+      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20',
       'cursor-grab active:cursor-grabbing',
       'hover:shadow-md',
     ],

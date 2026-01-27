@@ -41,7 +41,7 @@ const selectStyles = tv({
       'group flex items-center justify-between w-full',
       'border bg-background text-foreground transition-colors',
       'cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary',
+      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 focus-visible:border-primary',
     ],
     
     // Value / Tags
