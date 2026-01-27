@@ -1,0 +1,115 @@
+---
+title: DatePicker 日期选择器
+description: 允许用户通过日历选择日期的组件
+---
+
+import { 
+  DatePickerBasic, 
+  DatePickerSizes, 
+  DatePickerStates,
+  DatePickerWithTime,
+  DateRangePickerDemo
+} from '../../../components/DatePickerDemo'
+import ComponentPreview from '../../../components/ComponentPreview.astro'
+
+DatePicker 组件提供了一个输入框和下拉日历，方便用户选择日期。
+
+## 基础用法
+
+最简单的日期选择器。
+
+<ComponentPreview>
+  <DatePickerBasic client:only="solid-js" />
+</ComponentPreview>
+
+## 尺寸
+
+提供三种尺寸：`sm`, `md`, `lg`。
+
+<ComponentPreview>
+  <DatePickerSizes client:only="solid-js" />
+</ComponentPreview>
+
+## 状态
+
+支持 `error` 和 `disabled` 状态。
+
+<ComponentPreview>
+  <DatePickerStates client:only="solid-js" />
+</ComponentPreview>
+
+## 时间选择
+
+通过 `showTime` 属性开启时间选择。
+
+<ComponentPreview>
+  <DatePickerWithTime client:only="solid-js" />
+</ComponentPreview>
+
+## 日期范围选择
+
+支持选择日期范围。
+
+<ComponentPreview>
+  <DateRangePickerDemo client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+import { DatePicker } from '@beeve/ui'
+
+<DatePicker placeholder="Pick a date" />
+```
+
+## 尺寸 (Sizing)
+
+提供三种尺寸：`sm`、`md` (默认)、`lg`。
+
+<ComponentPreview>
+  <DatePickerSizes client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<DatePicker size="sm" />
+<DatePicker size="md" />
+<DatePicker size="lg" />
+```
+
+## 状态 (States)
+
+支持 Label、Error 和 Disabled 状态。
+
+<ComponentPreview>
+  <DatePickerStates client:only="solid-js" />
+</ComponentPreview>
+
+```tsx
+<DatePicker label="With Label" />
+<DatePicker error />
+<DatePicker disabled />
+```
+
+## 键盘交互 (Keyboard Support)
+
+作为基于 Zag.js 的组件，DatePicker 提供完整的无障碍键盘支持：
+
+- <kbd>Enter</kbd> / <kbd>Space</kbd>: 打开日历
+- <kbd>Arrow Keys</kbd>: 在日历中导航
+- <kbd>PageUp</kbd> / <kbd>PageDown</kbd>: 切换月份
+- <kbd>Shift</kbd> + <kbd>PageUp</kbd> / <kbd>PageDown</kbd>: 切换年份
+- <kbd>Main</kbd>: 将焦点移动到当前选定日期
+- <kbd>Esc</kbd>: 关闭日历
+
+## API 参考
+
+### DatePicker
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `size` | `sm` \| `md` \| `lg` | `md` | 组件尺寸 |
+| `error` | `boolean` | `false` | 是否显示错误状态 |
+| `placeholder` | `string` | - | 占位文本 |
+| `label` | `string` | - | 标签文本 |
+| `class` | `string` | - | 自定义类名 |
+| `numOfMonths` | `number` | `1` | 显示的月份数量 |
+
+更多高级属性继承自 Zag.js DatePicker Context。

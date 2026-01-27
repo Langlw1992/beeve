@@ -58,6 +58,8 @@
 - [x] Presence - 存在动画
 - [x] Popover - 气泡卡片
 - [x] Toast - 消息提示
+- [x] DatePicker - 日期选择器
+
 
 **待开发组件：**
 - [ ] Tabs - 选项卡（设计器面板切换）
@@ -82,6 +84,11 @@
 ---
 
 ## 会话日志
+
+### 2026-01-27
+- ✅ 完成 DatePicker 组件基础开发（Input + Popover + Calendar）
+- ✅ 集成 @zag-js/date-picker 并解决类型兼容问题
+- ✅ 完成 DatePicker 文档和 Stories
 
 ### 2026-01-23
 - ✅ 完成 Popover 组件开发（含文档）

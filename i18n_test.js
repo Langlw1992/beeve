@@ -1,0 +1,1 @@
+console.log('Weekday:', new Intl.DateTimeFormat('zh-CN', { weekday: 'narrow' }).format(new Date())); console.log('Month:', new Intl.DateTimeFormat('zh-CN', { month: 'long', year: 'numeric' }).format(new Date()));
