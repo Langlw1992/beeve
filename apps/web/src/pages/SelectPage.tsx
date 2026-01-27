@@ -1,116 +1,90 @@
-/**
- * Select Component Showcase Page
- */
-
-import { type Component } from 'solid-js'
 import { Select } from '@beeve/ui'
-import { ShowcaseGrid, ShowcaseSection } from '../components/ShowcaseGrid'
+import { createSignal } from 'solid-js'
+import { ShowcaseSection } from '../components/ShowcaseGrid'
 
-const fruitOptions = [
-  { value: 'apple', label: '🍎 Apple' },
-  { value: 'banana', label: '🍌 Banana' },
-  { value: 'cherry', label: '🍒 Cherry' },
-  { value: 'grape', label: '🍇 Grape' },
-  { value: 'orange', label: '🍊 Orange' },
-]
+export function SelectPage() {
+  const [value, setValue] = createSignal<string | number | undefined>('apple')
+  const [multiValue, setMultiValue] = createSignal<(string | number)[]>(['apple', 'banana'])
 
-const variants = [
-  { value: 'default' as const, label: 'Default' },
-  { value: 'filled' as const, label: 'Filled' },
-  { value: 'borderless' as const, label: 'Borderless' },
-]
+  const fruitOptions = [
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Blueberry', value: 'blueberry' },
+    { label: 'Grapes', value: 'grapes' },
+    { label: 'Pineapple', value: 'pineapple' },
+    { label: 'Strawberry', value: 'strawberry' },
+    { label: 'Watermelon', value: 'watermelon' },
+  ]
 
-const sizes = [
-  { value: 'sm' as const, label: 'Small' },
-  { value: 'md' as const, label: 'Medium' },
-  { value: 'lg' as const, label: 'Large' },
-]
-
-const statuses = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'error', label: 'Error' },
-  { value: 'warning', label: 'Warning' },
-]
-
-export const SelectPage: Component = () => {
   return (
-    <div class="space-y-12">
+    <div class="space-y-8">
       <div>
-        <h1 class="text-3xl font-bold">Select</h1>
+        <h1 class="text-3xl font-bold tracking-tight">Select</h1>
         <p class="text-muted-foreground mt-2">
-          选择器组件，支持搜索、清除和多种样式变体。
+          Displays a list of options for the user to pick from—triggered by a button.
         </p>
       </div>
 
-      {/* Variant x Size */}
-      <ShowcaseGrid
-        title="Variant × Size"
-        description="样式变体与尺寸的笛卡尔积组合"
-        variant1={{ name: 'Variant', values: variants }}
-        variant2={{ name: 'Size', values: sizes }}
-        renderCell={(variant, size) => (
+      <ShowcaseSection title="Basic">
+        <div class="w-[200px]">
           <Select
-            variant={variant}
-            size={size}
+            label="Favorite Fruit"
+            placeholder="Select a fruit"
             options={fruitOptions}
-            placeholder={`${variant} ${size}`}
-            class="w-48"
+            value={value()}
+            onChange={setValue}
           />
-        )}
-      />
-
-      {/* Variant x Status */}
-      <ShowcaseGrid
-        title="Variant × Status"
-        description="样式变体与状态的笛卡尔积组合"
-        variant1={{ name: 'Variant', values: variants }}
-        variant2={{ name: 'Status', values: statuses }}
-        renderCell={(variant, status) => (
-          <Select
-            variant={variant}
-            status={status === 'normal' ? undefined : (status as 'error' | 'warning')}
-            options={fruitOptions}
-            placeholder={`${variant}`}
-            class="w-48"
-          />
-        )}
-      />
-
-      {/* Features */}
-      <ShowcaseSection title="Features" description="选择器的各种功能">
-        <div class="flex flex-col gap-4 max-w-md">
-          <div class="flex flex-col gap-1">
-            <label class="text-xs text-muted-foreground">With Clear</label>
-            <Select
-              options={fruitOptions}
-              placeholder="Select with clear"
-              allowClear
-              defaultValue="apple"
-            />
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs text-muted-foreground">With Search</label>
-            <Select options={fruitOptions} placeholder="Search fruits..." />
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs text-muted-foreground">Loading State</label>
-            <Select options={[]} placeholder="Loading..." loading />
-          </div>
         </div>
       </ShowcaseSection>
 
-      {/* Disabled State */}
-      <ShowcaseSection title="Disabled State" description="禁用状态">
-        <div class="flex flex-col gap-4 max-w-md">
+       <ShowcaseSection title="Searchable & Clearable">
+        <div class="w-[200px]">
           <Select
+            label="Search Fruit"
+            placeholder="Search..."
             options={fruitOptions}
-            placeholder="Disabled select"
+            searchable
+            clearable
+            defaultValue="grapes"
+          />
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Multiple">
+        <div class="w-[300px]">
+          <Select
+             label="Multiple Fruits"
+             options={fruitOptions}
+             value={multiValue()}
+             onChange={setMultiValue}
+             multiple
+             maxCount={2}
+             placeholder="Select fruits..."
+          />
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Error State">
+        <div class="w-[200px]">
+          <Select
+            label="Error Example"
+            options={fruitOptions}
+            errorMessage="This field is required"
+            error
+          />
+        </div>
+      </ShowcaseSection>
+           
+      <ShowcaseSection title="Disabled">
+        <div class="w-[200px]">
+          <Select
+            label="Disabled"
+            options={fruitOptions}
             disabled
-            defaultValue="apple"
+            value="apple"
           />
         </div>
       </ShowcaseSection>
     </div>
   )
 }
-

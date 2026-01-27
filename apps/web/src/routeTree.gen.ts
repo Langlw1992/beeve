@@ -15,7 +15,6 @@ import { Route as SwitchRouteImport } from './routes/switch'
 import { Route as SliderRouteImport } from './routes/slider'
 import { Route as SkeletonRouteImport } from './routes/skeleton'
 import { Route as SidebarRouteImport } from './routes/sidebar'
-import { Route as SelectRouteImport } from './routes/select'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PresenceRouteImport } from './routes/presence'
@@ -59,11 +58,6 @@ const SkeletonRoute = SkeletonRouteImport.update({
 const SidebarRoute = SidebarRouteImport.update({
   id: '/sidebar',
   path: '/sidebar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SelectRoute = SelectRouteImport.update({
-  id: '/select',
-  path: '/select',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RadioRoute = RadioRouteImport.update({
@@ -152,7 +146,6 @@ export interface FileRoutesByFullPath {
   '/presence': typeof PresenceRoute
   '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
-  '/select': typeof SelectRoute
   '/sidebar': typeof SidebarRoute
   '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
@@ -175,7 +168,6 @@ export interface FileRoutesByTo {
   '/presence': typeof PresenceRoute
   '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
-  '/select': typeof SelectRoute
   '/sidebar': typeof SidebarRoute
   '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
@@ -199,7 +191,6 @@ export interface FileRoutesById {
   '/presence': typeof PresenceRoute
   '/progress': typeof ProgressRoute
   '/radio': typeof RadioRoute
-  '/select': typeof SelectRoute
   '/sidebar': typeof SidebarRoute
   '/skeleton': typeof SkeletonRoute
   '/slider': typeof SliderRoute
@@ -224,7 +215,6 @@ export interface FileRouteTypes {
     | '/presence'
     | '/progress'
     | '/radio'
-    | '/select'
     | '/sidebar'
     | '/skeleton'
     | '/slider'
@@ -247,7 +237,6 @@ export interface FileRouteTypes {
     | '/presence'
     | '/progress'
     | '/radio'
-    | '/select'
     | '/sidebar'
     | '/skeleton'
     | '/slider'
@@ -270,7 +259,6 @@ export interface FileRouteTypes {
     | '/presence'
     | '/progress'
     | '/radio'
-    | '/select'
     | '/sidebar'
     | '/skeleton'
     | '/slider'
@@ -294,7 +282,6 @@ export interface RootRouteChildren {
   PresenceRoute: typeof PresenceRoute
   ProgressRoute: typeof ProgressRoute
   RadioRoute: typeof RadioRoute
-  SelectRoute: typeof SelectRoute
   SidebarRoute: typeof SidebarRoute
   SkeletonRoute: typeof SkeletonRoute
   SliderRoute: typeof SliderRoute
@@ -345,13 +332,6 @@ declare module '@tanstack/solid-router' {
       path: '/sidebar'
       fullPath: '/sidebar'
       preLoaderRoute: typeof SidebarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/select': {
-      id: '/select'
-      path: '/select'
-      fullPath: '/select'
-      preLoaderRoute: typeof SelectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/radio': {
@@ -470,7 +450,6 @@ const rootRouteChildren: RootRouteChildren = {
   PresenceRoute: PresenceRoute,
   ProgressRoute: ProgressRoute,
   RadioRoute: RadioRoute,
-  SelectRoute: SelectRoute,
   SidebarRoute: SidebarRoute,
   SkeletonRoute: SkeletonRoute,
   SliderRoute: SliderRoute,

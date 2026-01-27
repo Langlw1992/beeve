@@ -38,6 +38,7 @@
     "@zag-js/navigation-menu": "^1.32.0",
     "@zag-js/popover": "^1.32.0",
     "@zag-js/presence": "^1.32.0",
+    "@zag-js/select": "^1.32.0",
     "@zag-js/slider": "^1.32.0",
     "@zag-js/solid": "^1.32.0",
     "@zag-js/toast": "^1.32.0",

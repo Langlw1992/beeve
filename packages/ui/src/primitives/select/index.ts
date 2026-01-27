@@ -1,3 +1,7 @@
+/**
+ * @beeve/ui - Select Primitives
+ * Select 类型导出
+ */
+
 export * from './types'
-export { useSelect, type SelectApi, type UseSelectReturn } from './use-select'
 

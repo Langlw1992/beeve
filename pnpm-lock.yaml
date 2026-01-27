@@ -283,6 +283,9 @@ importers:
       '@zag-js/presence':
         specifier: ^1.32.0
         version: 1.32.0
+      '@zag-js/select':
+        specifier: ^1.32.0
+        version: 1.32.0
       '@zag-js/slider':
         specifier: ^1.32.0
         version: 1.32.0
@@ -2070,6 +2073,9 @@ packages:
 
   '@zag-js/remove-scroll@1.32.0':
     resolution: {integrity: sha512-gWx8z/8ayNo624ibET4cNWbdVLc8A0Vyy9L9t67KT/slrBjcOA/zp9JL3Ngw/TZKgtR+wDh7P8ZoNAe0euaLSQ==}
+
+  '@zag-js/select@1.32.0':
+    resolution: {integrity: sha512-P8QiBTjwkfpBM76rTinnlGNkOXOfZkECujW30+JNSnJqCUzXhmYf2deyTTKpZS27OYR3y2hmc5v/qvnR4sGgmg==}
 
   '@zag-js/slider@1.32.0':
     resolution: {integrity: sha512-sbxQWp+/YxSvMDNkl5QDU7JyN6AGszASBZ1fT41Ctup17CQXnTwRK6CaAr00fgd4d21JlWd7T74/M393XgA6iQ==}
@@ -6404,6 +6410,17 @@ snapshots:
   '@zag-js/remove-scroll@1.32.0':
     dependencies:
       '@zag-js/dom-query': 1.32.0
+
+  '@zag-js/select@1.32.0':
+    dependencies:
+      '@zag-js/anatomy': 1.32.0
+      '@zag-js/collection': 1.32.0
+      '@zag-js/core': 1.32.0
+      '@zag-js/dismissable': 1.32.0
+      '@zag-js/dom-query': 1.32.0
+      '@zag-js/popper': 1.32.0
+      '@zag-js/types': 1.32.0
+      '@zag-js/utils': 1.32.0
 
   '@zag-js/slider@1.32.0':
     dependencies:

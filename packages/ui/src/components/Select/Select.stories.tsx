@@ -1,170 +1,198 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Select } from '@beeve/ui'
-import { action } from 'storybook/actions'
+import type { Meta, StoryObj } from 'storybook-solidjs'
+import { createSignal, createEffect } from 'solid-js'
+import { Select } from './Select'
 
-const fruitOptions = [
-  { label: '苹果', value: 'apple' },
-  { label: '香蕉', value: 'banana' },
-  { label: '橙子', value: 'orange' },
-  { label: '葡萄', value: 'grape', disabled: true },
-  { label: '西瓜', value: 'watermelon' },
-]
-
-/**
- * # Select 选择器
- *
- * 下拉选择器，支持单选、多选、搜索过滤等功能。
- *
- * ## 何时使用
- *
- * - 弹出一个下拉菜单给用户选择操作
- * - 用于代替原生的选择器
- * - 当选项少时（少于 5 项），建议直接将选项平铺
- */
-const meta = {
+const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,
   tags: ['autodocs'],
-  parameters: {
-    layout: 'centered',
-  },
   argTypes: {
-    placeholder: {
+    size: {
+      control: { type: 'select' },
+      options: ['sm', 'md', 'lg'],
+      description: 'The size of the select component',
+      table: { defaultValue: { summary: 'md' } },
+    },
+    error: {
+      control: 'boolean',
+      description: 'Whether the select is in an error state',
+    },
+    errorMessage: {
       control: 'text',
-      description: '占位文本',
-      table: { category: '基础' },
+      description: 'The error message to display',
     },
     disabled: {
       control: 'boolean',
-      description: '是否禁用',
-      table: { category: '状态' },
     },
-    loading: {
+    multiple: {
       control: 'boolean',
-      description: '加载状态',
-      table: { category: '状态' },
     },
-    showSearch: {
+    searchable: {
       control: 'boolean',
-      description: '是否支持搜索',
-      table: { category: '功能' },
     },
-    allowClear: {
+    clearable: {
       control: 'boolean',
-      description: '是否允许清空',
-      table: { category: '功能' },
     },
-    size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: '尺寸',
-      table: { category: '外观' },
-    },
-    variant: {
-      control: 'select',
-      options: ['default', 'borderless'],
-      description: '变体',
-      table: { category: '外观' },
-    },
-    status: {
-      control: 'select',
-      options: ['default', 'error', 'warning'],
-      description: '状态样式',
-      table: { category: '外观' },
-    },
+    onChange: { action: 'value changed' },
   },
-  args: {
-    options: fruitOptions,
-    placeholder: '请选择水果',
-    onChange: action('onChange'),
-    onSelect: action('onSelect'),
-    onClear: action('onClear'),
-    onSearch: action('onSearch'),
-    onOpenChange: action('onOpenChange'),
+  parameters: {
+    layout: 'centered',
   },
-  decorators: [
-    (Story) => (
-      <div class="w-64">
-        <Story />
-      </div>
-    ),
-  ],
-} satisfies Meta<typeof Select>
+}
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof Select>
 
-/** 基础用法 */
-export const Basic: Story = {}
+const fruitOptions = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Blueberry', value: 'blueberry' },
+  { label: 'Grapes', value: 'grapes' },
+  { label: 'Pineapple', value: 'pineapple' },
+  { label: 'Strawberry', value: 'strawberry' },
+  { label: 'Watermelon', value: 'watermelon' },
+]
 
-/** 带搜索 */
-export const WithSearch: Story = {
+const frameworkOptions = [
+  { label: 'SolidJS', value: 'solid' },
+  { label: 'React', value: 'react' },
+  { label: 'Vue', value: 'vue' },
+  { label: 'Svelte', value: 'svelte' },
+  { label: 'Angular', value: 'angular' },
+]
+
+export const Default: Story = {
   args: {
-    showSearch: true,
-    placeholder: '搜索并选择',
+    options: fruitOptions,
+    placeholder: 'Select a fruit',
+    label: 'Favorite Fruit',
   },
+  render: (args) => <div class="w-64"><Select {...args} /></div>,
 }
 
-/** 允许清空 */
-export const WithClear: Story = {
-  args: {
-    allowClear: true,
-    value: 'apple',
-  },
-}
-
-/** 禁用状态 */
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    value: 'apple',
-  },
-}
-
-/** 加载状态 */
-export const Loading: Story = {
-  args: {
-    loading: true,
-  },
-}
-
-/** 不同尺寸 */
-export const Sizes: Story = {
-  render: (args) => (
-    <div class="flex flex-col gap-4 w-64">
-      <Select {...args} size="sm" placeholder="小尺寸" />
-      <Select {...args} size="md" placeholder="中等尺寸（默认）" />
-      <Select {...args} size="lg" placeholder="大尺寸" />
-    </div>
-  ),
-}
-
-/** 状态样式 */
-export const Status: Story = {
-  render: (args) => (
-    <div class="flex flex-col gap-4 w-64">
-      <Select {...args} status="error" placeholder="错误状态" />
-      <Select {...args} status="warning" placeholder="警告状态" />
-    </div>
-  ),
-}
-
-/** 受控模式 */
 export const Controlled: Story = {
-  render: (args) => {
-    const [value, setValue] = createSignal<string | undefined>('banana')
+  render: () => {
+    const [value, setValue] = createSignal<string | number | (string | number)[] | undefined>('solid')
     return (
       <div class="flex flex-col gap-4 w-64">
         <Select
-          {...args}
+          label="Frontend Framework"
+          options={frameworkOptions}
           value={value()}
-          onChange={(v) => setValue(v as string)}
-          placeholder="受控选择"
+          onChange={setValue}
         />
-        <p class="text-sm text-muted-foreground">当前值: {value() || '无'}</p>
+        <div class="text-sm text-muted-foreground">
+          Selected value: <code class="bg-muted px-1 rounded">{String(value())}</code>
+        </div>
       </div>
     )
-  },
+  }
 }
 
+export const Searchable: Story = {
+  args: {
+    ...Default.args,
+    searchable: true,
+    placeholder: 'Search fruits...',
+  },
+  render: (args) => <div class="w-64"><Select {...args} /></div>,
+}
+
+export const Clearable: Story = {
+  args: {
+    ...Default.args,
+    clearable: true,
+    defaultValue: 'apple',
+    label: 'Clearable Selection',
+  },
+  render: (args) => <div class="w-64"><Select {...args} /></div>,
+}
+
+export const Multiple: Story = {
+  args: {
+    options: frameworkOptions,
+    multiple: true,
+    label: 'Tech Stack (Multi)',
+    placeholder: 'Pick multiple...',
+    defaultValue: ['solid', 'react'],
+  },
+  render: (args) => <div class="w-80"><Select {...args} /></div>,
+}
+
+export const MaxCount: Story = {
+  args: {
+    options: fruitOptions,
+    multiple: true,
+    maxCount: 2,
+    defaultValue: ['apple', 'banana', 'grapes', 'strawberry'],
+    label: 'Fruits (Max 2 visible)',
+  },
+  render: (args) => <div class="w-80"><Select {...args} /></div>,
+}
+
+export const SearchableMulti: Story = {
+  args: {
+    ...Multiple.args,
+    searchable: true,
+    label: 'Searchable Multi Select',
+    placeholder: 'Search stacks...',
+  },
+  render: (args) => <div class="w-80"><Select {...args} /></div>,
+}
+
+export const Sizes: Story = {
+  render: (args) => (
+    <div class="flex flex-col gap-8 w-64">
+      <Select {...args} size="sm" label="Small (sm)" options={fruitOptions} placeholder="Small select" />
+      <Select {...args} size="md" label="Default (md)" options={fruitOptions} placeholder="Default select" />
+      <Select {...args} size="lg" label="Large (lg)" options={fruitOptions} placeholder="Large select" />
+    </div>
+  ),
+}
+
+export const AsyncOptions: Story = {
+  render: () => {
+    const [options, setOptions] = createSignal<{label: string, value: string}[]>([])
+    const [loading, setLoading] = createSignal(true)
+
+    // Simulate fetch
+    createEffect(() => {
+      const t = setTimeout(() => {
+        setOptions(fruitOptions)
+        setLoading(false)
+      }, 1500)
+      return () => clearTimeout(t)
+    })
+
+    return (
+      <div class="w-64">
+        <Select 
+          options={options()} 
+          label="Async Data Fetch" 
+          placeholder={loading() ? "Loading data..." : "Select fruit"}
+          disabled={loading()} 
+        />
+      </div>
+    )
+  }
+}
+
+export const ErrorState: Story = {
+  args: {
+    ...Default.args,
+    label: 'Required Field',
+    errorMessage: 'Please select a valid option',
+    error: true,
+  },
+  render: (args) => <div class="w-64"><Select {...args} /></div>,
+}
+
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    label: 'Disabled Select',
+    disabled: true,
+    defaultValue: 'banana',
+  },
+  render: (args) => <div class="w-64"><Select {...args} /></div>,
+}
