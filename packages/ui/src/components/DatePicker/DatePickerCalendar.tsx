@@ -3,7 +3,7 @@
 // It is used by both DatePicker and DateRangePicker
 
 import { For, Show, type Accessor, type Component } from 'solid-js'
-import * as datePicker from '@zag-js/date-picker'
+import type * as datePicker from '@zag-js/date-picker'
 
 interface CalendarViewProps {
   api: Accessor<datePicker.Api>

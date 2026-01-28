@@ -10,7 +10,7 @@ import {
   type Component,
 } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-solid'
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-solid'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { DatePickerCalendar } from './DatePickerCalendar'
 import { DateFormatter } from '@internationalized/date'
@@ -43,10 +43,10 @@ const dateRangePickerStyles = tv({
       'h-8 w-8',
     ],
     dayTrigger: [
-      'h-8 w-8 p-0 font-normal aria-selected:opacity-100 rounded-md transition-colors',
+      'size-8 p-0 font-normal rounded-md transition-colors',
       'hover:bg-accent hover:text-accent-foreground',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground hover:aria-selected:bg-primary hover:aria-selected:text-primary-foreground',
+      'data-[selected]:bg-primary data-[selected]:text-primary-foreground hover:data-[selected]:bg-primary hover:data-[selected]:text-primary-foreground',
       'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
       'data-[today]:bg-accent data-[today]:text-accent-foreground',
       'data-[range-start]:bg-primary data-[range-start]:text-primary-foreground',
@@ -56,12 +56,12 @@ const dateRangePickerStyles = tv({
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
       'hover:bg-accent hover:text-accent-foreground',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground',
+      'data-[selected]:bg-primary data-[selected]:text-primary-foreground',
     ],
     yearTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
       'hover:bg-accent hover:text-accent-foreground',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground',
+      'data-[selected]:bg-primary data-[selected]:text-primary-foreground',
     ],
     navTrigger: [
       'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 border border-input rounded-md flex items-center justify-center transition-opacity hover:bg-accent hover:text-accent-foreground',
@@ -89,6 +89,7 @@ export interface DateRangePickerProps extends Partial<DatePickerContext>, Varian
   class?: string
   placeholder?: string
   label?: string
+  locale?: string
   // For range picker, value is string[]
   value?: string[]
 }
@@ -96,11 +97,14 @@ export interface DateRangePickerProps extends Partial<DatePickerContext>, Varian
 export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'placeholder', 'label'],
+    ['class', 'placeholder', 'label', 'locale'],
     ['size', 'error']
   )
 
   const styles = createMemo(() => dateRangePickerStyles({ size: variants.size, error: variants.error }))
+
+  // Store locale for use in formatter
+  const localeValue = () => local.locale || 'zh-CN'
 
   // Default props
   const machineProps = createMemo(() => mergeProps(
@@ -108,7 +112,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       id: createUniqueId(),
       numOfMonths: 2, // Range selection often shows 2 months
       selectionMode: 'range',
-      locale: 'zh-CN',
+      locale: localeValue(),
     },
     rest
   ))
@@ -117,7 +121,9 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const api = createMemo(() => datePicker.connect(service as any, normalizeProps))
 
   const displayValue = createMemo(() => {
-    if (api().valueAsString.length === 0) return local.placeholder || 'Select date range'
+    if (api().valueAsString.length === 0) {
+      return local.placeholder || 'Select date range'
+    }
     return api().valueAsString.join(' - ')
   })
 
@@ -145,29 +151,47 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                <div class="flex gap-4 p-3">
                   <For each={[0, 1]}>
                     {(offset) => {
-                       const visibleRange = createMemo(() => {
-                           if (offset === 0) return { weeks: api().weeks, ...api().visibleRange }
-                           return api().getOffset({ months: offset })
+                       // For offset 0, use api().weeks and api().visibleRange directly
+                       // For offset > 0, use api().getOffset() which returns DateValueOffset
+                       const offsetData = createMemo(() => {
+                         if (offset === 0) {
+                           return {
+                             weeks: api().weeks,
+                             visibleRange: api().visibleRange,
+                           }
+                         }
+                         return api().getOffset({ months: offset })
                        })
-                       
-                       const formatter = new DateFormatter(api().locale, { month: 'long', year: 'numeric' })
-                       
+
+                       const formatter = new DateFormatter(localeValue(), { month: 'long', year: 'numeric' })
+
+                       // Get the display date for the header
+                       const headerDate = createMemo(() => {
+                         const data = offsetData()
+                         if (data?.visibleRange?.start) {
+                           // DateValue has toDate() but we need to pass a timezone
+                           // Use 'UTC' as a safe default
+                           return formatter.format(data.visibleRange.start.toDate('UTC'))
+                         }
+                         return ''
+                       })
+
                        return (
                            <div class="space-y-4">
                                 <div class="flex items-center justify-between pt-1 relative">
-                                    <div class="w-7 h-7 flex items-center justify-center">
+                                    <div class="size-7 flex items-center justify-center">
                                        <Show when={offset === 0}>
                                             <button {...api().getPrevTriggerProps()} class={styles().navTrigger()}>
                                                 <ChevronLeft class="size-4" />
                                             </button>
                                        </Show>
                                     </div>
-                                    
+
                                     <div class="text-sm font-medium">
-                                       {visibleRange()?.visibleRange?.start ? formatter.format(visibleRange()!.visibleRange.start.toDate(api().timeZone)) : ''}
+                                       {headerDate()}
                                     </div>
 
-                                    <div class="w-7 h-7 flex items-center justify-center">
+                                    <div class="size-7 flex items-center justify-center">
                                        <Show when={offset === 1}>
                                             <button {...api().getNextTriggerProps()} class={styles().navTrigger()}>
                                                 <ChevronRight class="size-4" />
@@ -190,7 +214,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                                       </For>
                                     </div>
                                     <div {...api().getTableBodyProps()}>
-                                      <For each={visibleRange()?.weeks}>
+                                      <For each={offsetData()?.weeks}>
                                         {(week) => (
                                           <div {...api().getTableRowProps()} class={styles().row()}>
                                             <For each={week}>

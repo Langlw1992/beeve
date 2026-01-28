@@ -4,3 +4,9 @@
 /* 扫描 stories 文件中使用的 Tailwind 类 */
 @source "../../../packages/ui/src/**/*.stories.tsx";
 
+/* Storybook 预览区域背景色 */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+

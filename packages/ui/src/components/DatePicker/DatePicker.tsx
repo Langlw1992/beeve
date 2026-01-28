@@ -42,10 +42,10 @@ const datePickerStyles = tv({
       'h-8 w-8',
     ],
     dayTrigger: [
-      'h-8 w-8 p-0 font-normal aria-selected:opacity-100 rounded-md transition-colors',
+      'size-8 p-0 font-normal rounded-md transition-colors',
       'hover:bg-accent hover:text-accent-foreground',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground hover:aria-selected:bg-primary hover:aria-selected:text-primary-foreground',
+      'data-[selected]:bg-primary data-[selected]:text-primary-foreground hover:data-[selected]:bg-primary hover:data-[selected]:text-primary-foreground',
       'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
       'data-[today]:bg-accent data-[today]:text-accent-foreground',
     ],
@@ -152,10 +152,28 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
     rest
   ))
 
+  // Parse the value string into DateValue[] format required by zag-js
+  const parsedValue = createMemo(() => {
+    if (!local.value || typeof local.value !== 'string') {
+      return undefined
+    }
+    try {
+      // Extract date part (before T if datetime, or full string if date only)
+      const dateStr = local.value.split('T')[0]
+      if (!dateStr) {
+        return undefined
+      }
+      const parsed = datePicker.parse(dateStr)
+      return parsed ? [parsed] : undefined
+    } catch {
+      return undefined
+    }
+  })
+
   const extendedMachineProps = createMemo(() => ({
     ...machineProps(),
     closeOnSelect: !local.showTime, // Keep open if time selection is needed
-    value: local.value ? [local.value.split('T')[0]] : undefined
+    value: parsedValue(),
   }))
 
   const service = useMachine(datePicker.machine as any, extendedMachineProps)
@@ -175,7 +193,7 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
              timeObj.hour, timeObj.minute, timeObj.second
           )
           finalValue = dateTime.toString()
-       } catch(e) {
+       } catch {
           finalValue = `${currentDate.toString()}T${newTime}`
        }
        local.onChange?.(finalValue)
@@ -192,9 +210,11 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
 
       <div {...api().getControlProps()} class={styles().control()}>
         <button {...api().getTriggerProps()} class={styles().trigger()}>
-           <span>
-             {api().valueAsString || local.placeholder || 'Select date'}
-             {local.showTime && api().value.length > 0 ? ` ${timeValue()}` : ''}
+           <span class={api().value.length === 0 ? 'text-muted-foreground' : ''}>
+             {api().value.length > 0
+               ? (local.showTime ? `${api().valueAsString[0]} ${timeValue() || '00:00'}` : api().valueAsString[0])
+               : (local.placeholder || '选择日期')
+             }
            </span>
           <Calendar class="size-4 opacity-50" />
         </button>
