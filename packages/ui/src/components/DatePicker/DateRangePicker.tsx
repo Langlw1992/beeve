@@ -5,6 +5,7 @@ import {
   For,
   Show,
   createMemo,
+  createSignal,
   createUniqueId,
   mergeProps,
   splitProps,
@@ -38,7 +39,11 @@ const dateRangePickerStyles = tv({
     heading: 'text-sm font-medium',
     grid: 'w-full border-collapse',
     columnHeader: 'size-8 rounded-md text-[0.8rem] font-normal text-muted-foreground',
-    row: 'flex w-full mt-1',
+    row: [
+      'flex w-full mt-1',
+      // 周选择模式下，行可点击
+      'data-[week-mode]:cursor-pointer data-[week-mode]:rounded-md',
+    ],
     // Cell 样式：提供范围内的背景色（data 属性只在当前月内设置）
     cell: [
       'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
@@ -50,6 +55,12 @@ const dateRangePickerStyles = tv({
       'data-[range-end]:rounded-r-md data-[range-end]:bg-primary/10',
       // 同时是起始和结束（单天选择状态）
       'data-[range-start][data-range-end]:rounded-md',
+      // 周 hover 效果
+      'data-[week-hovered]:bg-accent/50',
+      // 周 hover 第一个单元格圆角
+      'first:data-[week-hovered]:rounded-l-md',
+      // 周 hover 最后一个单元格圆角
+      'last:data-[week-hovered]:rounded-r-md',
     ],
     // Day trigger 样式
     dayTrigger: [
@@ -74,6 +85,8 @@ const dateRangePickerStyles = tv({
       'data-[range-end]:rounded-md data-[range-end]:bg-primary data-[range-end]:text-primary-foreground',
       // 范围结束点 hover：保持圆角
       'data-[range-end]:hover:bg-primary/90 data-[range-end]:hover:rounded-md',
+      // 周 hover 效果：覆盖默认样式
+      'data-[week-hovered]:bg-transparent data-[week-hovered]:rounded-none',
     ],
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
@@ -144,6 +157,8 @@ export interface DateRangePickerProps extends VariantProps<typeof dateRangePicke
   max?: DateValue
   /** 一周开始于周几 (0=周日, 1=周一) */
   startOfWeek?: number
+  /** 选择粒度：day（默认）或 week（整周选择） */
+  granularity?: 'day' | 'week'
 }
 
 export interface DateRangePresetOption {
@@ -201,6 +216,10 @@ interface MonthGridProps {
   styles: Accessor<ReturnType<typeof dateRangePickerStyles>>
   offset: 0 | 1
   locale: string
+  granularity: 'day' | 'week'
+  hoveredWeek: Accessor<DateValue[] | null>
+  onWeekHover: (week: DateValue[] | null) => void
+  onWeekClick: (week: DateValue[]) => void
 }
 
 const MonthGrid: Component<MonthGridProps> = (props) => {
@@ -230,6 +249,33 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
   const isFirstMonth = () => props.offset === 0
   // 是否是最后一个月（显示右箭头）- 固定2个月
   const isLastMonth = () => props.offset === 1
+
+  // 检查某个日期是否在 hover 的周内
+  const isInHoveredWeek = (dayValue: DateValue) => {
+    const hovered = props.hoveredWeek()
+    if (!hovered || hovered.length === 0) { return false }
+    return hovered.some((d) => d.compare(dayValue) === 0)
+  }
+
+  // 处理行 hover（周选择模式）
+  const handleRowMouseEnter = (week: DateValue[]) => {
+    if (props.granularity === 'week') {
+      props.onWeekHover(week)
+    }
+  }
+
+  const handleRowMouseLeave = () => {
+    if (props.granularity === 'week') {
+      props.onWeekHover(null)
+    }
+  }
+
+  // 处理行点击（周选择模式）
+  const handleRowClick = (week: DateValue[]) => {
+    if (props.granularity === 'week') {
+      props.onWeekClick(week)
+    }
+  }
 
   return (
     <div class="space-y-4">
@@ -274,7 +320,14 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
         <div {...props.api().getTableBodyProps({ view: 'day' })}>
           <For each={offsetData().weeks}>
             {(week) => (
-              <div {...props.api().getTableRowProps({ view: 'day' })} class={props.styles().row()}>
+              <div
+                {...props.api().getTableRowProps({ view: 'day' })}
+                class={props.styles().row()}
+                data-week-mode={props.granularity === 'week' || undefined}
+                onMouseEnter={() => handleRowMouseEnter(week)}
+                onMouseLeave={handleRowMouseLeave}
+                onClick={() => handleRowClick(week)}
+              >
                 <For each={week}>
                   {(dayValue) => {
                     const cellState = createMemo(() =>
@@ -296,30 +349,47 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
                       if (state.inRange || state.firstInRange || state.lastInRange) { return undefined }
                       return state.today || undefined
                     }
+                    // 周选择模式下的 hover 状态
+                    const weekHoveredData = () => {
+                      if (props.granularity !== 'week') { return undefined }
+                      return isInHoveredWeek(dayValue) || undefined
+                    }
+
+                    // 周选择模式：禁止点击单日触发选择
+                    const cellProps = props.api().getDayTableCellProps({
+                      value: dayValue,
+                      visibleRange: offsetData().visibleRange,
+                    })
+
+                    const triggerProps = props.api().getDayTableCellTriggerProps({
+                      value: dayValue,
+                      visibleRange: offsetData().visibleRange,
+                    })
+
+                    // 周选择模式下移除 onClick
+                    const finalTriggerProps = props.granularity === 'week'
+                      ? { ...triggerProps, onClick: undefined }
+                      : triggerProps
 
                     return (
                       <div
-                        {...props.api().getDayTableCellProps({
-                          value: dayValue,
-                          visibleRange: offsetData().visibleRange,
-                        })}
+                        {...cellProps}
                         class={props.styles().cell()}
                         data-in-range={inRangeData()}
                         data-range-start={rangeStartData()}
                         data-range-end={rangeEndData()}
                         data-outside-range={isOutside() || undefined}
+                        data-week-hovered={weekHoveredData()}
                       >
                         <button
-                          {...props.api().getDayTableCellTriggerProps({
-                            value: dayValue,
-                            visibleRange: offsetData().visibleRange,
-                          })}
+                          {...finalTriggerProps}
                           class={props.styles().dayTrigger()}
                           data-in-range={inRangeData()}
                           data-range-start={rangeStartData()}
                           data-range-end={rangeEndData()}
                           data-outside-range={isOutside() || undefined}
                           data-today={todayData()}
+                          data-week-hovered={weekHoveredData()}
                         >
                           {dayValue.day}
                         </button>
@@ -424,6 +494,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       numOfMonths: 2,
       showPresets: false,
       placeholder: '选择日期范围',
+      granularity: 'day' as const,
     },
     props
   )
@@ -444,11 +515,15 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       'min',
       'max',
       'startOfWeek',
+      'granularity',
     ],
     ['size', 'error']
   )
 
   const styles = createMemo(() => dateRangePickerStyles({ size: variants.size, error: variants.error }))
+
+  // 周选择模式下的 hover 状态
+  const [hoveredWeek, setHoveredWeek] = createSignal<DateValue[] | null>(null)
 
   // 解析字符串值为 DateValue
   const parsedValue = createMemo(() => {
@@ -526,6 +601,16 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     api().clearValue()
   }
 
+  // 处理周点击（周选择模式）
+  const handleWeekClick = (week: DateValue[]) => {
+    const start = week[0]
+    const end = week[week.length - 1]
+    if (start && end) {
+      api().setValue([start, end])
+      api().setOpen(false)
+    }
+  }
+
   return (
     <div class={styles().root({ class: local.class })}>
       <Show when={local.label}>
@@ -579,7 +664,16 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                   <div class="flex gap-4">
                     <For each={monthOffsets}>
                       {(offset) => (
-                        <MonthGrid api={api} styles={styles} offset={offset} locale={local.locale} />
+                        <MonthGrid
+                          api={api}
+                          styles={styles}
+                          offset={offset}
+                          locale={local.locale}
+                          granularity={local.granularity}
+                          hoveredWeek={hoveredWeek}
+                          onWeekHover={setHoveredWeek}
+                          onWeekClick={handleWeekClick}
+                        />
                       )}
                     </For>
                   </div>

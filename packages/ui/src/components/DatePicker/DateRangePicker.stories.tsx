@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 import { createSignal } from 'solid-js'
 import { DateRangePicker } from './DateRangePicker'
-import { today, getLocalTimeZone, startOfWeek, endOfWeek } from '@internationalized/date'
+import { today, getLocalTimeZone } from '@internationalized/date'
 import type { DateValue } from '@internationalized/date'
 
 const meta: Meta<typeof DateRangePicker> = {
@@ -134,27 +134,6 @@ export const Disabled: Story = {
 export const WeekSelection: Story = {
   render: () => {
     const [value, setValue] = createSignal<string[]>([])
-    const tz = getLocalTimeZone()
-    const todayDate = today(tz)
-
-    // 周选择预设
-    const weekPresets = [
-      { label: '本周', value: [startOfWeek(todayDate, 'zh-CN'), endOfWeek(todayDate, 'zh-CN')] },
-      {
-        label: '上周',
-        value: [
-          startOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
-          endOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
-        ],
-      },
-      {
-        label: '下周',
-        value: [
-          startOfWeek(todayDate.add({ weeks: 1 }), 'zh-CN'),
-          endOfWeek(todayDate.add({ weeks: 1 }), 'zh-CN'),
-        ],
-      },
-    ]
 
     const handleChange = (details: { value: DateValue[]; valueAsString: string[] }) => {
       setValue(details.valueAsString)
@@ -167,12 +146,14 @@ export const WeekSelection: Story = {
           placeholder="选择一周"
           value={value()}
           onValueChange={handleChange}
-          showPresets
-          presets={weekPresets}
+          granularity="week"
         />
         <div class="text-sm text-muted-foreground">
           选中值: {value().length > 0 ? value().join(' - ') : '未选择'}
         </div>
+        <p class="text-xs text-muted-foreground">
+          Hover 一行高亮整周，点击选择整周
+        </p>
       </div>
     )
   },
