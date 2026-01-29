@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite'
+import { createSignal } from 'solid-js'
 import { DateRangePicker } from './DateRangePicker'
+import { today, getLocalTimeZone, startOfWeek, endOfWeek } from '@internationalized/date'
+import type { DateValue } from '@internationalized/date'
 
 const meta: Meta<typeof DateRangePicker> = {
   title: 'Components/DateRangePicker',
@@ -16,15 +19,15 @@ const meta: Meta<typeof DateRangePicker> = {
     disabled: {
       control: 'boolean',
     },
-    numOfMonths: {
-      control: { type: 'number' },
+    showPresets: {
+      control: 'boolean',
     },
     label: {
       control: 'text',
     },
     placeholder: {
       control: 'text',
-    }
+    },
   },
 }
 
@@ -32,52 +35,169 @@ export default meta
 type Story = StoryObj<typeof DateRangePicker>
 
 export const Basic: Story = {
-  render: (args) => <div class="w-[300px]"><DateRangePicker {...args} /></div>,
+  render: (args) => (
+    <div class="w-[300px]">
+      <DateRangePicker {...args} />
+    </div>
+  ),
   args: {
-    placeholder: 'Pick a date range',
+    placeholder: '选择日期范围',
   },
 }
 
 export const WithLabel: Story = {
-  render: (args) => <div class="w-[300px]"><DateRangePicker {...args} /></div>,
+  render: (args) => (
+    <div class="w-[300px]">
+      <DateRangePicker {...args} />
+    </div>
+  ),
   args: {
-    label: 'Travel Dates',
-    placeholder: 'Start date - End date',
+    label: '出行日期',
+    placeholder: '开始日期 - 结束日期',
   },
 }
 
-export const SingleMonth: Story = {
-  render: (args) => <div class="w-[300px]"><DateRangePicker {...args} /></div>,
+export const WithPresets: Story = {
+  render: (args) => (
+    <div class="w-[300px]">
+      <DateRangePicker {...args} />
+    </div>
+  ),
   args: {
-    numOfMonths: 1,
-    placeholder: 'Single month view',
+    label: '日期范围',
+    placeholder: '选择日期',
+    showPresets: true,
+  },
+}
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = createSignal<string[]>([])
+
+    const handleChange = (details: { value: DateValue[]; valueAsString: string[] }) => {
+      setValue(details.valueAsString)
+    }
+
+    return (
+      <div class="flex flex-col gap-4 w-[300px]">
+        <DateRangePicker
+          label="受控日期范围"
+          placeholder="选择日期"
+          value={value()}
+          onValueChange={handleChange}
+          showPresets
+        />
+        <div class="text-sm text-muted-foreground">
+          选中值: {value().length > 0 ? value().join(' - ') : '未选择'}
+        </div>
+      </div>
+    )
   },
 }
 
 export const Sizes: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-[300px]">
-      <DateRangePicker size="sm" placeholder="Small (sm)" />
-      <DateRangePicker size="md" placeholder="Default (md)" />
-      <DateRangePicker size="lg" placeholder="Large (lg)" />
+      <DateRangePicker size="sm" placeholder="Small (sm)" label="小尺寸" />
+      <DateRangePicker size="md" placeholder="Default (md)" label="默认尺寸" />
+      <DateRangePicker size="lg" placeholder="Large (lg)" label="大尺寸" />
     </div>
   ),
 }
 
 export const ErrorState: Story = {
-  render: (args) => <div class="w-[300px]"><DateRangePicker {...args} /></div>,
+  render: (args) => (
+    <div class="w-[300px]">
+      <DateRangePicker {...args} />
+    </div>
+  ),
   args: {
-    label: 'Date Range',
-    placeholder: 'Select dates',
+    label: '日期范围',
+    placeholder: '选择日期',
     error: true,
   },
 }
 
 export const Disabled: Story = {
-  render: (args) => <div class="w-[300px]"><DateRangePicker {...args} /></div>,
+  render: (args) => (
+    <div class="w-[300px]">
+      <DateRangePicker {...args} />
+    </div>
+  ),
   args: {
-    label: 'Date Range',
-    placeholder: 'Select dates',
+    label: '日期范围',
+    placeholder: '选择日期',
     disabled: true,
+  },
+}
+
+export const WeekSelection: Story = {
+  render: () => {
+    const [value, setValue] = createSignal<string[]>([])
+    const tz = getLocalTimeZone()
+    const todayDate = today(tz)
+
+    // 周选择预设
+    const weekPresets = [
+      { label: '本周', value: [startOfWeek(todayDate, 'zh-CN'), endOfWeek(todayDate, 'zh-CN')] },
+      {
+        label: '上周',
+        value: [
+          startOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
+          endOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
+        ],
+      },
+      {
+        label: '下周',
+        value: [
+          startOfWeek(todayDate.add({ weeks: 1 }), 'zh-CN'),
+          endOfWeek(todayDate.add({ weeks: 1 }), 'zh-CN'),
+        ],
+      },
+    ]
+
+    const handleChange = (details: { value: DateValue[]; valueAsString: string[] }) => {
+      setValue(details.valueAsString)
+    }
+
+    return (
+      <div class="flex flex-col gap-4 w-[300px]">
+        <DateRangePicker
+          label="周选择"
+          placeholder="选择一周"
+          value={value()}
+          onValueChange={handleChange}
+          showPresets
+          presets={weekPresets}
+        />
+        <div class="text-sm text-muted-foreground">
+          选中值: {value().length > 0 ? value().join(' - ') : '未选择'}
+        </div>
+      </div>
+    )
+  },
+}
+
+export const MinMaxDate: Story = {
+  render: () => {
+    const tz = getLocalTimeZone()
+    const todayDate = today(tz)
+    // 只能选择今天前后7天的范围
+    const minDate = todayDate.subtract({ days: 7 })
+    const maxDate = todayDate.add({ days: 7 })
+
+    return (
+      <div class="flex flex-col gap-4 w-[300px]">
+        <DateRangePicker
+          label="限制日期范围"
+          placeholder="只能选择前后7天"
+          min={minDate}
+          max={maxDate}
+        />
+        <div class="text-xs text-muted-foreground">
+          可选范围: {minDate.toString()} ~ {maxDate.toString()}
+        </div>
+      </div>
+    )
   },
 }
