@@ -58,3 +58,34 @@ export const Disabled: Story = {
     disabled: true,
   },
 }
+
+export const CustomFormat: Story = {
+  render: () => (
+    <div class="flex flex-col gap-4 w-64">
+      <DatePicker format="YYYY-MM-DD" placeholder="YYYY-MM-DD" label="ISO 格式" />
+      <DatePicker format="DD/MM/YYYY" placeholder="DD/MM/YYYY" label="欧洲格式" />
+      <DatePicker format="MM-DD-YYYY" placeholder="MM-DD-YYYY" label="美国格式" />
+      <DatePicker format="YYYY年MM月DD日" placeholder="选择日期" label="中文格式" />
+      <DatePicker format="DD.MM.YYYY" placeholder="DD.MM.YYYY" label="点分隔" />
+    </div>
+  ),
+}
+
+export const WithTimeFormat: Story = {
+  render: () => (
+    <div class="flex flex-col gap-4 w-64">
+      <DatePicker
+        showTime
+        format="YYYY-MM-DD HH:mm"
+        placeholder="选择日期时间"
+        label="24小时制"
+      />
+      <DatePicker
+        showTime
+        format="DD/MM/YYYY hh:mm A"
+        placeholder="选择日期时间"
+        label="12小时制"
+      />
+    </div>
+  ),
+}

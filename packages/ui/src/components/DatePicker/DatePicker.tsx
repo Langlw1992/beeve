@@ -17,6 +17,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { DatePickerCalendar } from './DatePickerCalendar'
 import { TimePicker } from './TimePickerInput'
 import { CalendarDateTime, parseTime } from '@internationalized/date'
+import { formatDate } from '../../utils/formatDate'
 
 const datePickerStyles = tv({
   slots: {
@@ -42,12 +43,18 @@ const datePickerStyles = tv({
       'h-8 w-8',
     ],
     dayTrigger: [
-      'size-8 p-0 font-normal rounded-md transition-colors',
+      'relative size-8 p-0 font-normal rounded-md transition-colors',
       'hover:bg-accent hover:text-accent-foreground',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
       'data-[selected]:bg-primary data-[selected]:text-primary-foreground hover:data-[selected]:bg-primary hover:data-[selected]:text-primary-foreground',
       'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
-      'data-[today]:bg-accent data-[today]:text-accent-foreground',
+      // 非当月日期样式
+      'data-[outside-range]:text-muted-foreground/50',
+      // 今日指示器：使用下方小点，非当月日期不显示
+      'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
+      'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
+      // 非当月的今日不显示指示器
+      'data-[today][data-outside-range]:after:content-none',
     ],
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
@@ -87,13 +94,15 @@ export interface DatePickerProps extends Partial<DatePickerContext>, VariantProp
   label?: string
   showTime?: boolean
   locale?: string
+  /** 日期格式化字符串，如 "YYYY-MM-DD", "DD/MM/YYYY" */
+  format?: string
   onChange?: (value: string | undefined) => void
 }
 
 export const DatePicker: Component<DatePickerProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'placeholder', 'label', 'showTime', 'locale', 'value', 'onChange'],
+    ['class', 'placeholder', 'label', 'showTime', 'locale', 'value', 'onChange', 'format'],
     ['size', 'error']
   )
 
@@ -179,6 +188,30 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
   const service = useMachine(datePicker.machine as any, extendedMachineProps)
   const api = createMemo(() => datePicker.connect(service as any, normalizeProps))
 
+  // 格式化显示值
+  const displayValue = createMemo(() => {
+    const dateValue = api().value[0]
+    if (!dateValue) {
+      return local.placeholder || 'Select date'
+    }
+
+    // 如果提供了自定义格式
+    if (local.format) {
+      const formatted = formatDate(dateValue, local.format)
+      if (local.showTime && timeValue()) {
+        return `${formatted} ${timeValue()}`
+      }
+      return formatted
+    }
+
+    // 默认使用 Zag.js 的格式
+    const defaultFormatted = api().valueAsString[0]
+    if (local.showTime && timeValue()) {
+      return `${defaultFormatted} ${timeValue()}`
+    }
+    return defaultFormatted
+  })
+
   // Handle Time Change from Input
   const handleTimeChange = (newTime: string) => {
     setTimeValue(newTime)
@@ -210,12 +243,9 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
 
       <div {...api().getControlProps()} class={styles().control()}>
         <button {...api().getTriggerProps()} class={styles().trigger()}>
-           <span class={api().value.length === 0 ? 'text-muted-foreground' : ''}>
-             {api().value.length > 0
-               ? (local.showTime ? `${api().valueAsString[0]} ${timeValue() || '00:00'}` : api().valueAsString[0])
-               : (local.placeholder || '选择日期')
-             }
-           </span>
+          <span class={api().value.length === 0 ? 'text-muted-foreground' : ''}>
+            {displayValue()}
+          </span>
           <Calendar class="size-4 opacity-50" />
         </button>
       </div>

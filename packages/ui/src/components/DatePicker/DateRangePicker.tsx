@@ -5,7 +5,6 @@ import {
   For,
   Show,
   createMemo,
-  createSignal,
   createUniqueId,
   mergeProps,
   splitProps,
@@ -16,6 +15,7 @@ import { Portal } from 'solid-js/web'
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-solid'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { DateFormatter, type DateValue, startOfWeek, endOfWeek, startOfMonth, endOfMonth, today, getLocalTimeZone } from '@internationalized/date'
+import { formatDate } from '../../utils/formatDate'
 
 // ============================================================================
 // Styles
@@ -39,54 +39,34 @@ const dateRangePickerStyles = tv({
     heading: 'text-sm font-medium',
     grid: 'w-full border-collapse',
     columnHeader: 'size-8 rounded-md text-[0.8rem] font-normal text-muted-foreground',
-    row: [
-      'flex w-full mt-1',
-      // 周选择模式下，行可点击
-      'data-[week-mode]:cursor-pointer data-[week-mode]:rounded-md',
-    ],
-    // Cell 样式：提供范围内的背景色（data 属性只在当前月内设置）
+    row: 'flex w-full mt-1',
     cell: [
       'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
-      // 范围内背景
-      'data-[in-range]:bg-primary/10',
-      // 范围起始：左侧有圆角
-      'data-[range-start]:rounded-l-md data-[range-start]:bg-primary/10',
-      // 范围结束：右侧有圆角
-      'data-[range-end]:rounded-r-md data-[range-end]:bg-primary/10',
-      // 同时是起始和结束（单天选择状态）
-      'data-[range-start][data-range-end]:rounded-md',
-      // 周 hover 效果
-      'data-[week-hovered]:bg-accent/50',
-      // 周 hover 第一个单元格圆角
-      'first:data-[week-hovered]:rounded-l-md',
-      // 周 hover 最后一个单元格圆角
-      'last:data-[week-hovered]:rounded-r-md',
+      // 范围内的背景色由 dayTrigger 控制
     ],
-    // Day trigger 样式
     dayTrigger: [
-      'size-8 p-0 font-normal transition-colors rounded-md',
-      'hover:bg-accent hover:text-accent-foreground hover:rounded-md',
+      'relative size-8 p-0 font-normal bg-transparent rounded-[var(--radius)] transition-colors',
+      'hover:bg-accent hover:text-accent-foreground',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
-      // 禁用状态
-      'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
-      // outside-range 样式（不在当前月）
-      'data-[outside-range]:text-muted-foreground/50',
-      // 今天（仅当不在范围内时显示）
-      'data-[today]:bg-accent data-[today]:text-accent-foreground',
-      // 范围内：无圆角，覆盖今天样式
-      'data-[in-range]:rounded-none data-[in-range]:bg-transparent data-[in-range]:text-foreground',
-      // 范围内 hover：保持无圆角
-      'data-[in-range]:hover:bg-primary/20 data-[in-range]:hover:rounded-none',
-      // 范围起始点：圆角 + 高亮，覆盖 in-range 样式
-      'data-[range-start]:rounded-md data-[range-start]:bg-primary data-[range-start]:text-primary-foreground',
-      // 范围起始点 hover：保持圆角
-      'data-[range-start]:hover:bg-primary/90 data-[range-start]:hover:rounded-md',
-      // 范围结束点：圆角 + 高亮，覆盖 in-range 样式
-      'data-[range-end]:rounded-md data-[range-end]:bg-primary data-[range-end]:text-primary-foreground',
-      // 范围结束点 hover：保持圆角
-      'data-[range-end]:hover:bg-primary/90 data-[range-end]:hover:rounded-md',
-      // 周 hover 效果：覆盖默认样式
-      'data-[week-hovered]:bg-transparent data-[week-hovered]:rounded-none',
+      // Today indicator
+      'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
+      'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
+      // Disabled state
+      'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:pointer-events-none',
+      // In range: 主题色半透明背景，无圆角
+      'data-[in-range]:bg-primary/10 data-[in-range]:rounded-none',
+      'data-[in-range]:hover:bg-primary/15',
+      // Range start: 完整圆角 + 高亮背景色 + 白色文字
+      'data-[range-start]:rounded-[var(--radius)] data-[range-start]:bg-primary data-[range-start]:text-primary-foreground',
+      'data-[range-start]:hover:bg-primary/90',
+      // Range end: 完整圆角 + 高亮背景色 + 白色文字
+      'data-[range-end]:rounded-[var(--radius)] data-[range-end]:bg-primary data-[range-end]:text-primary-foreground',
+      'data-[range-end]:hover:bg-primary/90',
+      // Outside range (non-current month): 强制覆盖所有范围样式，确保非当月日期无任何样式
+      'data-[outside-range]:!bg-transparent data-[outside-range]:!text-muted-foreground/50',
+      'data-[outside-range]:hover:!bg-transparent data-[outside-range]:hover:!text-muted-foreground/50',
+      // 隐藏范围边缘日期的今日指示器
+      'data-[range-start][data-today]:after:content-none data-[range-end][data-today]:after:content-none',
     ],
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
@@ -131,34 +111,34 @@ const dateRangePickerStyles = tv({
 // ============================================================================
 
 export interface DateRangePickerProps extends VariantProps<typeof dateRangePickerStyles> {
-  /** 自定义类名 */
+  /** Custom class name */
   class?: string
-  /** 占位文字 */
+  /** Placeholder text */
   placeholder?: string
-  /** 标签 */
+  /** Label */
   label?: string
-  /** 语言环境 */
+  /** Locale */
   locale?: string
-  /** 选中的日期范围（ISO 格式字符串数组 [start, end]） */
+  /** Selected date range (ISO format string array [start, end]) */
   value?: string[]
-  /** 是否禁用 */
+  /** Disabled state */
   disabled?: boolean
-  /** 是否只读 */
+  /** Readonly state */
   readOnly?: boolean
-  /** 是否显示快捷选择 */
+  /** Show preset shortcuts */
   showPresets?: boolean
-  /** 自定义预设 */
+  /** Custom presets */
   presets?: DateRangePresetOption[]
-  /** 值变化回调 */
+  /** Value change callback */
   onValueChange?: (details: { value: DateValue[]; valueAsString: string[] }) => void
-  /** 最小可选日期 */
+  /** Minimum selectable date */
   min?: DateValue
-  /** 最大可选日期 */
+  /** Maximum selectable date */
   max?: DateValue
-  /** 一周开始于周几 (0=周日, 1=周一) */
+  /** Start of week (0=Sunday, 1=Monday) */
   startOfWeek?: number
-  /** 选择粒度：day（默认）或 week（整周选择） */
-  granularity?: 'day' | 'week'
+  /** Date format string, e.g. "YYYY-MM-DD", "DD/MM/YYYY" */
+  format?: string
 }
 
 export interface DateRangePresetOption {
@@ -166,7 +146,7 @@ export interface DateRangePresetOption {
   value: DateRangePreset | readonly DateValue[]
 }
 
-// 类型守卫：检查是否为 DateRangePreset
+// Type guard: check if value is DateRangePreset
 const DATE_RANGE_PRESETS: readonly DateRangePreset[] = [
   'thisWeek',
   'lastWeek',
@@ -216,14 +196,9 @@ interface MonthGridProps {
   styles: Accessor<ReturnType<typeof dateRangePickerStyles>>
   offset: 0 | 1
   locale: string
-  granularity: 'day' | 'week'
-  hoveredWeek: Accessor<DateValue[] | null>
-  onWeekHover: (week: DateValue[] | null) => void
-  onWeekClick: (week: DateValue[]) => void
 }
 
 const MonthGrid: Component<MonthGridProps> = (props) => {
-  // 获取偏移月份的数据
   const offsetData = createMemo(() => {
     if (props.offset === 0) {
       return {
@@ -236,7 +211,6 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
 
   const formatter = new DateFormatter(props.locale, { month: 'long', year: 'numeric' })
 
-  // 获取标题日期
   const headerDate = createMemo(() => {
     const data = offsetData()
     if (data?.visibleRange?.start) {
@@ -245,41 +219,12 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
     return ''
   })
 
-  // 是否是第一个月（显示左箭头）- 固定2个月
   const isFirstMonth = () => props.offset === 0
-  // 是否是最后一个月（显示右箭头）- 固定2个月
   const isLastMonth = () => props.offset === 1
-
-  // 检查某个日期是否在 hover 的周内
-  const isInHoveredWeek = (dayValue: DateValue) => {
-    const hovered = props.hoveredWeek()
-    if (!hovered || hovered.length === 0) { return false }
-    return hovered.some((d) => d.compare(dayValue) === 0)
-  }
-
-  // 处理行 hover（周选择模式）
-  const handleRowMouseEnter = (week: DateValue[]) => {
-    if (props.granularity === 'week') {
-      props.onWeekHover(week)
-    }
-  }
-
-  const handleRowMouseLeave = () => {
-    if (props.granularity === 'week') {
-      props.onWeekHover(null)
-    }
-  }
-
-  // 处理行点击（周选择模式）
-  const handleRowClick = (week: DateValue[]) => {
-    if (props.granularity === 'week') {
-      props.onWeekClick(week)
-    }
-  }
 
   return (
     <div class="space-y-4">
-      {/* 月份导航头 */}
+      {/* Month navigation header */}
       <div class={props.styles().header()}>
         <div class="size-7 flex items-center justify-center">
           <Show when={isFirstMonth()}>
@@ -289,7 +234,6 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
           </Show>
         </div>
 
-        {/* 月份标题（不再是按钮，移除点击切换视图功能） */}
         <span class="text-sm font-medium">
           {headerDate()}
         </span>
@@ -303,9 +247,9 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
         </div>
       </div>
 
-      {/* 日历网格 */}
+      {/* Calendar grid */}
       <div {...props.api().getTableProps({ view: 'day' })} class={props.styles().grid()}>
-        {/* 星期标题 */}
+        {/* Week day headers */}
         <div {...props.api().getTableHeaderProps({ view: 'day' })} class="flex justify-between mb-1">
           <For each={props.api().weekDays}>
             {(day) => (
@@ -316,18 +260,11 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
           </For>
         </div>
 
-        {/* 日期单元格 */}
+        {/* Date cells */}
         <div {...props.api().getTableBodyProps({ view: 'day' })}>
           <For each={offsetData().weeks}>
             {(week) => (
-              <div
-                {...props.api().getTableRowProps({ view: 'day' })}
-                class={props.styles().row()}
-                data-week-mode={props.granularity === 'week' || undefined}
-                onMouseEnter={() => handleRowMouseEnter(week)}
-                onMouseLeave={handleRowMouseLeave}
-                onClick={() => handleRowClick(week)}
-              >
+              <div {...props.api().getTableRowProps({ view: 'day' })} class={props.styles().row()}>
                 <For each={week}>
                   {(dayValue) => {
                     const cellState = createMemo(() =>
@@ -337,59 +274,41 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
                       })
                     )
 
-                    // 只在当前月内（非 outsideRange）设置范围相关的 data 属性
-                    const isOutside = () => cellState().outsideRange
-                    const inRangeData = () => (!isOutside() && cellState().inRange) || undefined
-                    const rangeStartData = () => (!isOutside() && cellState().firstInRange) || undefined
-                    const rangeEndData = () => (!isOutside() && cellState().lastInRange) || undefined
-                    // 今天：只在非范围内时显示
-                    const todayData = () => {
-                      const state = cellState()
-                      if (isOutside()) { return undefined }
-                      if (state.inRange || state.firstInRange || state.lastInRange) { return undefined }
-                      return state.today || undefined
-                    }
-                    // 周选择模式下的 hover 状态
-                    const weekHoveredData = () => {
-                      if (props.granularity !== 'week') { return undefined }
-                      return isInHoveredWeek(dayValue) || undefined
-                    }
+                    // 直接使用 Zag.js 提供的状态，不做过滤
+                    const state = cellState()
+                    const isOutside = () => state.outsideRange
 
-                    // 周选择模式：禁止点击单日触发选择
-                    const cellProps = props.api().getDayTableCellProps({
-                      value: dayValue,
-                      visibleRange: offsetData().visibleRange,
-                    })
+                    // 范围内的日期
+                    const inRangeData = () => (!isOutside() && state.inRange) || undefined
 
-                    const triggerProps = props.api().getDayTableCellTriggerProps({
-                      value: dayValue,
-                      visibleRange: offsetData().visibleRange,
-                    })
+                    // 范围开始日期
+                    const isRangeStart = () => (!isOutside() && state.firstInRange) || undefined
 
-                    // 周选择模式下移除 onClick
-                    const finalTriggerProps = props.granularity === 'week'
-                      ? { ...triggerProps, onClick: undefined }
-                      : triggerProps
+                    // 范围结束日期（Zag.js 的 lastInRange 会同时处理预览和确认状态）
+                    const isRangeEnd = () => (!isOutside() && state.lastInRange) || undefined
+
+                    // 今日指示器（CSS 会处理范围边缘的隐藏）
+                    const todayData = () => (!isOutside() && state.today) || undefined
 
                     return (
                       <div
-                        {...cellProps}
+                        {...props.api().getDayTableCellProps({
+                          value: dayValue,
+                          visibleRange: offsetData().visibleRange,
+                        })}
                         class={props.styles().cell()}
-                        data-in-range={inRangeData()}
-                        data-range-start={rangeStartData()}
-                        data-range-end={rangeEndData()}
-                        data-outside-range={isOutside() || undefined}
-                        data-week-hovered={weekHoveredData()}
                       >
                         <button
-                          {...finalTriggerProps}
+                          {...props.api().getDayTableCellTriggerProps({
+                            value: dayValue,
+                            visibleRange: offsetData().visibleRange,
+                          })}
                           class={props.styles().dayTrigger()}
                           data-in-range={inRangeData()}
-                          data-range-start={rangeStartData()}
-                          data-range-end={rangeEndData()}
+                          data-range-start={isRangeStart()}
+                          data-range-end={isRangeEnd()}
                           data-outside-range={isOutside() || undefined}
                           data-today={todayData()}
-                          data-week-hovered={weekHoveredData()}
                         >
                           {dayValue.day}
                         </button>
@@ -414,7 +333,7 @@ interface YearMonthViewProps {
 const YearMonthView: Component<YearMonthViewProps> = (props) => {
   return (
     <div class="p-3">
-      {/* 月份视图 */}
+      {/* Month view */}
       <Show when={props.api().view === 'month'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
@@ -447,7 +366,7 @@ const YearMonthView: Component<YearMonthViewProps> = (props) => {
         </div>
       </Show>
 
-      {/* 年份视图 */}
+      {/* Year view */}
       <Show when={props.api().view === 'year'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
@@ -494,7 +413,6 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       numOfMonths: 2,
       showPresets: false,
       placeholder: '选择日期范围',
-      granularity: 'day' as const,
     },
     props
   )
@@ -515,17 +433,13 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       'min',
       'max',
       'startOfWeek',
-      'granularity',
+      'format',
     ],
     ['size', 'error']
   )
 
   const styles = createMemo(() => dateRangePickerStyles({ size: variants.size, error: variants.error }))
 
-  // 周选择模式下的 hover 状态
-  const [hoveredWeek, setHoveredWeek] = createSignal<DateValue[] | null>(null)
-
-  // 解析字符串值为 DateValue
   const parsedValue = createMemo(() => {
     if (!local.value || local.value.length === 0) {
       return undefined
@@ -538,7 +452,6 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     }
   })
 
-  // Machine 配置（固定显示2个月）
   const machineProps = createMemo(() => ({
     id: createUniqueId(),
     numOfMonths: 2,
@@ -550,7 +463,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     min: local.min,
     max: local.max,
     startOfWeek: local.startOfWeek,
-    closeOnSelect: true, // 范围选择完成后自动关闭
+    closeOnSelect: true,
     onValueChange: (details: datePicker.ValueChangeDetails) => {
       local.onValueChange?.({
         value: details.value,
@@ -562,53 +475,46 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const service = useMachine(datePicker.machine, machineProps)
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 
-  // 显示值
   const displayValue = createMemo(() => {
-    const strings = api().valueAsString
-    if (strings.length === 0) {
+    const values = api().value
+    if (values.length === 0) {
       return local.placeholder
     }
+
+    if (local.format && values[0]) {
+      if (values.length === 1) {
+        return formatDate(values[0], local.format)
+      }
+      if (values[1]) {
+        return `${formatDate(values[0], local.format)} - ${formatDate(values[1], local.format)}`
+      }
+    }
+
+    const strings = api().valueAsString
     if (strings.length === 1) {
       return strings[0]
     }
     return `${strings[0]} - ${strings[1]}`
   })
 
-  // 预设列表
   const presetList = createMemo(() => local.presets ?? getDefaultPresets())
 
-  // 固定显示2个月
   const monthOffsets = [0, 1] as const
 
-  // 处理预设点击
   const handlePresetClick = (preset: DateRangePresetOption) => {
     const presetValue = preset.value
     if (isDateRangePreset(presetValue)) {
-      // 是 DateRangePreset 字符串
       const rangeValues = api().getRangePresetValue(presetValue)
       api().setValue(rangeValues)
     } else {
-      // 是 DateValue[]
       api().setValue([...presetValue])
     }
-    // 选择预设后关闭弹出层
     api().setOpen(false)
   }
 
-  // 清除值
   const handleClear = (e: MouseEvent) => {
     e.stopPropagation()
     api().clearValue()
-  }
-
-  // 处理周点击（周选择模式）
-  const handleWeekClick = (week: DateValue[]) => {
-    const start = week[0]
-    const end = week[week.length - 1]
-    if (start && end) {
-      api().setValue([start, end])
-      api().setOpen(false)
-    }
   }
 
   return (
@@ -640,7 +546,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         <div {...api().getPositionerProps()}>
           <div {...api().getContentProps()} class={styles().content()}>
             <div class="flex">
-              {/* 快捷选择面板 */}
+              {/* Preset shortcuts panel */}
               <Show when={local.showPresets}>
                 <div class="border-r border-border py-2 px-1.5 w-[90px]">
                   <div class="text-xs font-medium text-muted-foreground px-2 py-1 mb-1">快捷选择</div>
@@ -658,7 +564,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                 </div>
               </Show>
 
-              {/* 日历主体 */}
+              {/* Calendar body */}
               <div class="p-3">
                 <Show when={api().view === 'day'} fallback={<YearMonthView api={api} styles={styles} />}>
                   <div class="flex gap-4">
@@ -669,10 +575,6 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                           styles={styles}
                           offset={offset}
                           locale={local.locale}
-                          granularity={local.granularity}
-                          hoveredWeek={hoveredWeek}
-                          onWeekHover={setHoveredWeek}
-                          onWeekClick={handleWeekClick}
                         />
                       )}
                     </For>

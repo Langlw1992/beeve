@@ -131,34 +131,6 @@ export const Disabled: Story = {
   },
 }
 
-export const WeekSelection: Story = {
-  render: () => {
-    const [value, setValue] = createSignal<string[]>([])
-
-    const handleChange = (details: { value: DateValue[]; valueAsString: string[] }) => {
-      setValue(details.valueAsString)
-    }
-
-    return (
-      <div class="flex flex-col gap-4 w-[300px]">
-        <DateRangePicker
-          label="周选择"
-          placeholder="选择一周"
-          value={value()}
-          onValueChange={handleChange}
-          granularity="week"
-        />
-        <div class="text-sm text-muted-foreground">
-          选中值: {value().length > 0 ? value().join(' - ') : '未选择'}
-        </div>
-        <p class="text-xs text-muted-foreground">
-          Hover 一行高亮整周，点击选择整周
-        </p>
-      </div>
-    )
-  },
-}
-
 export const MinMaxDate: Story = {
   render: () => {
     const tz = getLocalTimeZone()
@@ -181,4 +153,31 @@ export const MinMaxDate: Story = {
       </div>
     )
   },
+}
+
+export const CustomFormat: Story = {
+  render: () => (
+    <div class="flex flex-col gap-4 w-[350px]">
+      <DateRangePicker
+        format="YYYY-MM-DD"
+        placeholder="YYYY-MM-DD"
+        label="ISO 格式"
+      />
+      <DateRangePicker
+        format="DD/MM/YYYY"
+        placeholder="DD/MM/YYYY"
+        label="欧洲格式"
+      />
+      <DateRangePicker
+        format="MM-DD-YYYY"
+        placeholder="MM-DD-YYYY"
+        label="美国格式"
+      />
+      <DateRangePicker
+        format="YYYY年MM月DD日"
+        placeholder="选择日期范围"
+        label="中文格式"
+      />
+    </div>
+  ),
 }
