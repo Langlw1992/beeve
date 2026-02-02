@@ -35,9 +35,9 @@ export interface SliderProps {
   /** 文本方向：ltr | rtl */
   dir?: 'ltr' | 'rtl'
   /** 值变化时回调（拖拽中） */
-  onValueChange?: (details: { value: number[] }) => void
+  onChange?: (details: { value: number[] }) => void
   /** 值变化结束回调（拖拽结束） */
-  onValueChangeEnd?: (details: { value: number[] }) => void
+  onChangeEnd?: (details: { value: number[] }) => void
   /** 获取 aria-valuetext */
   getAriaValueText?: (details: { value: number; index: number }) => string
 }

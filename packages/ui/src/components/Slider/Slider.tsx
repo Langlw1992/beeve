@@ -166,8 +166,8 @@ export const Slider: Component<SliderProps> = (props) => {
     thumbSize: getThumbSize(),
     name: rest.name,
     dir: rest.dir,
-    onValueChange: rest.onValueChange,
-    onValueChangeEnd: rest.onValueChangeEnd,
+    onChange: rest.onChange,
+    onChangeEnd: rest.onChangeEnd,
     getAriaValueText: rest.getAriaValueText,
   }))
   const styles = createMemo(() =>

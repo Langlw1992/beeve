@@ -60,7 +60,7 @@ export interface NavMenuProps extends Omit<ComponentProps<'nav'>, 'onChange'> {
   /** 默认激活项的 key（非受控） */
   defaultValue?: string
   /** 激活项变化回调 */
-  onValueChange?: (key: string) => void
+  onChange?: (key: string) => void
   /** 默认展开的子菜单 keys */
   defaultExpandedKeys?: string[]
   /** 展开的子菜单 keys（受控） */

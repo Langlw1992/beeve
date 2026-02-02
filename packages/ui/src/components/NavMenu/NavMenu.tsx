@@ -30,7 +30,7 @@
  * <NavMenu
  *   items={items}
  *   value={activeKey()}
- *   onValueChange={setActiveKey}
+ *   onChange={setActiveKey}
  * />
  * ```
  */
@@ -428,7 +428,7 @@ const NavMenuItems: Component<{
 const HorizontalNavMenu: Component<{
   items: NavMenuItemType[]
   value?: string
-  onValueChange?: (key: string) => void
+  onChange?: (key: string) => void
   class?: string
 }> = (props) => {
   const styles = horizontalNavStyles()
@@ -493,7 +493,7 @@ const HorizontalNavMenu: Component<{
 
   const handleLinkClick = (key: string, onClick?: () => void) => {
     onClick?.()
-    props.onValueChange?.(key)
+    props.onChange?.(key)
   }
 
   return (
@@ -632,7 +632,7 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
     'items',
     'value',
     'defaultValue',
-    'onValueChange',
+    'onChange',
     'defaultExpandedKeys',
     'expandedKeys',
     'onExpandedKeysChange',
@@ -657,7 +657,7 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
 
   const handleValueChange = (key: string) => {
     setInternalValue(key)
-    local.onValueChange?.(key)
+    local.onChange?.(key)
   }
 
   const toggleExpanded = (key: string) => {
@@ -675,7 +675,7 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
       <HorizontalNavMenu
         items={local.items}
         value={currentValue()}
-        onValueChange={handleValueChange}
+        onChange={handleValueChange}
         class={local.class}
         {...rest}
       />

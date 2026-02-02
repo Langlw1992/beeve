@@ -84,7 +84,7 @@ export const Controlled: Story = {
           label="受控日期范围"
           placeholder="选择日期"
           value={value()}
-          onValueChange={handleChange}
+          onChange={handleChange}
           showPresets
         />
         <div class="text-sm text-muted-foreground">

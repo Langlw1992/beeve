@@ -49,7 +49,7 @@ export const Basic: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
       />
     )
   },
@@ -87,7 +87,7 @@ export const WithGroups: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
       />
     )
   },
@@ -127,7 +127,7 @@ export const WithSubMenu: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
         defaultExpandedKeys={['settings']}
       />
     )
@@ -150,7 +150,7 @@ export const WithBadges: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
       />
     )
   },
@@ -204,7 +204,7 @@ export const MultiLevel: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
         expandedKeys={expanded()}
         onExpandedKeysChange={setExpanded}
       />
@@ -235,7 +235,7 @@ export const Collapsed: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
         collapsed
       />
     )
@@ -259,7 +259,7 @@ export const WithDisabled: Story = {
       <NavMenu
         items={items}
         value={value()}
-        onValueChange={setValue}
+        onChange={setValue}
       />
     )
   },
@@ -308,7 +308,7 @@ export const Horizontal: Story = {
         <NavMenu
           items={items}
           value={value()}
-          onValueChange={setValue}
+          onChange={setValue}
           direction="horizontal"
         />
         <p class="text-sm text-muted-foreground">
@@ -362,7 +362,7 @@ export const HorizontalCentered: Story = {
           <NavMenu
             items={items}
             value={value()}
-            onValueChange={setValue}
+            onChange={setValue}
             direction="horizontal"
           />
         </div>
@@ -446,7 +446,7 @@ export const HorizontalWithCards: Story = {
         <NavMenu
           items={items}
           value={value()}
-          onValueChange={setValue}
+          onChange={setValue}
           direction="horizontal"
         />
         <p class="text-sm text-muted-foreground">

@@ -207,7 +207,7 @@ export const Controlled: Story = {
         <Slider
           label="受控滑块"
           value={value()}
-          onValueChange={(details) => setValue(details.value)}
+          onChange={(details) => setValue(details.value)}
           showInput
         />
         <p class="text-sm text-muted-foreground">当前值: {value().join(', ')}</p>

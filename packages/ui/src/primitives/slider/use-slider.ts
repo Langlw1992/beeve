@@ -6,7 +6,7 @@
  * ```tsx
  * const { api } = useSlider(() => ({
  *   value: props.value,
- *   onValueChange: props.onValueChange,
+ *   onChange: props.onChange,
  * }))
  * ```
  */
@@ -47,8 +47,8 @@ export function useSlider(getProps: UseSliderProps): UseSliderReturn {
       thumbSize: props.thumbSize,
       dir: props.dir ?? 'ltr',
       name: props.name,
-      onValueChange: props.onValueChange,
-      onValueChangeEnd: props.onValueChangeEnd,
+      onValueChange: props.onChange,
+      onValueChangeEnd: props.onChangeEnd,
       getAriaValueText: props.getAriaValueText,
     }
   })

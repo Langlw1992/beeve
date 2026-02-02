@@ -94,7 +94,7 @@ const SidebarDemo = () => {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={!open()}
             defaultExpandedKeys={['settings', 'security', 'sessions']}
           />
@@ -144,7 +144,7 @@ const SidebarOffcanvasDemo = () => {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={false}
             defaultExpandedKeys={['settings']}
           />
@@ -194,7 +194,7 @@ const SidebarNoneDemo = () => {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={false}
           />
         </Sidebar.Content>
@@ -245,7 +245,7 @@ const SidebarWithUserDemo = () => {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={!open()}
           />
         </Sidebar.Content>
@@ -310,7 +310,7 @@ const SidebarCollapsedDemo = () => {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={!open()}
           />
         </Sidebar.Content>

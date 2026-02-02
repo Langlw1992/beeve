@@ -1,13 +1,10 @@
-// DatePickerCalendar.tsx
-// This component renders the Zag Grid (Day/Month/Year views)
-// It is used by both DatePicker and DateRangePicker
-
 import { For, Show, type Accessor, type Component } from 'solid-js'
 import type * as datePicker from '@zag-js/date-picker'
+import type { DatePickerStylesReturn } from './DatePicker'
 
 interface CalendarViewProps {
   api: Accessor<datePicker.Api>
-  styles: Accessor<any> // Using any for the tv slot function for now to simplify type passing
+  styles: Accessor<DatePickerStylesReturn>
 }
 
 export const DatePickerCalendar: Component<CalendarViewProps> = (props) => {
@@ -17,11 +14,7 @@ export const DatePickerCalendar: Component<CalendarViewProps> = (props) => {
         <div {...props.api().getTableHeaderProps()} class="flex justify-between mb-2">
           <For each={props.api().weekDays}>
             {(day) => (
-              <div
-                class={props.styles().columnHeader()}
-                // Optional: add aria-label for full weekday name
-                aria-label={day.long}
-              >
+              <div class={props.styles().columnHeader()} aria-label={day.long}>
                 {day.short}
               </div>
             )}
@@ -34,7 +27,10 @@ export const DatePickerCalendar: Component<CalendarViewProps> = (props) => {
                 <For each={week}>
                   {(value) => (
                     <div {...props.api().getDayTableCellProps({ value })} class={props.styles().cell()}>
-                      <button {...props.api().getDayTableCellTriggerProps({ value })} class={props.styles().dayTrigger()}>
+                      <button
+                        {...props.api().getDayTableCellTriggerProps({ value })}
+                        class={props.styles().dayTrigger()}
+                      >
                         {value.day}
                       </button>
                     </div>

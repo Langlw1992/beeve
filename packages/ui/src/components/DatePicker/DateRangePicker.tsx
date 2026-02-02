@@ -5,6 +5,7 @@ import {
   For,
   Show,
   createMemo,
+  createSignal,
   createUniqueId,
   mergeProps,
   splitProps,
@@ -13,131 +14,54 @@ import {
 } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-solid'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { DateFormatter, type DateValue, startOfWeek, endOfWeek, startOfMonth, endOfMonth, today, getLocalTimeZone } from '@internationalized/date'
+import type { VariantProps } from 'tailwind-variants'
+import {
+  DateFormatter,
+  type DateValue,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  today,
+  getLocalTimeZone,
+} from '@internationalized/date'
 import { formatDate } from '../../utils/formatDate'
-
-// ============================================================================
-// Styles
-// ============================================================================
-
-const dateRangePickerStyles = tv({
-  slots: {
-    root: 'group flex flex-col gap-1.5',
-    label: 'text-sm font-medium text-foreground',
-    control: 'flex items-center gap-2',
-    trigger: [
-      'flex w-full items-center justify-between rounded-md border bg-transparent text-left font-normal transition-colors',
-      'border-input hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary',
-      'placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-    ],
-    content: [
-      'z-50 rounded-md border bg-popover text-popover-foreground shadow-md outline-none',
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-    ],
-    header: 'flex items-center justify-between',
-    heading: 'text-sm font-medium',
-    grid: 'w-full border-collapse',
-    columnHeader: 'size-8 rounded-md text-[0.8rem] font-normal text-muted-foreground',
-    row: 'flex w-full mt-1',
-    cell: [
-      'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
-      // 范围内的背景色由 dayTrigger 控制
-    ],
-    dayTrigger: [
-      'relative size-8 p-0 font-normal bg-transparent rounded-[var(--radius)] transition-colors',
-      'hover:bg-accent hover:text-accent-foreground',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
-      // Today indicator
-      'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
-      'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
-      // Disabled state
-      'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:pointer-events-none',
-      // In range: 主题色半透明背景，无圆角
-      'data-[in-range]:bg-primary/10 data-[in-range]:rounded-none',
-      'data-[in-range]:hover:bg-primary/15',
-      // Range start: 完整圆角 + 高亮背景色 + 白色文字
-      'data-[range-start]:rounded-[var(--radius)] data-[range-start]:bg-primary data-[range-start]:text-primary-foreground',
-      'data-[range-start]:hover:bg-primary/90',
-      // Range end: 完整圆角 + 高亮背景色 + 白色文字
-      'data-[range-end]:rounded-[var(--radius)] data-[range-end]:bg-primary data-[range-end]:text-primary-foreground',
-      'data-[range-end]:hover:bg-primary/90',
-      // Outside range (non-current month): 强制覆盖所有范围样式，确保非当月日期无任何样式
-      'data-[outside-range]:!bg-transparent data-[outside-range]:!text-muted-foreground/50',
-      'data-[outside-range]:hover:!bg-transparent data-[outside-range]:hover:!text-muted-foreground/50',
-      // 隐藏范围边缘日期的今日指示器
-      'data-[range-start][data-today]:after:content-none data-[range-end][data-today]:after:content-none',
-    ],
-    monthTrigger: [
-      'h-8 w-full p-2 font-normal rounded-md transition-colors',
-      'hover:bg-accent hover:text-accent-foreground',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground',
-    ],
-    yearTrigger: [
-      'h-8 w-full p-2 font-normal rounded-md transition-colors',
-      'hover:bg-accent hover:text-accent-foreground',
-      'aria-selected:bg-primary aria-selected:text-primary-foreground',
-    ],
-    navTrigger: [
-      'size-7 bg-transparent p-0 opacity-50 hover:opacity-100 border border-input rounded-md flex items-center justify-center transition-opacity hover:bg-accent hover:text-accent-foreground',
-    ],
-    presetButton: [
-      'w-full justify-start text-left font-normal px-2 py-1.5 text-xs rounded-md transition-colors',
-      'hover:bg-accent hover:text-accent-foreground',
-      'data-[selected]:bg-primary/10 data-[selected]:text-primary',
-    ],
-    clearButton: [
-      'size-6 p-0 rounded-full flex items-center justify-center transition-colors',
-      'hover:bg-accent text-muted-foreground hover:text-foreground',
-    ],
-  },
-  variants: {
-    size: {
-      sm: { trigger: 'h-7 text-xs px-2' },
-      md: { trigger: 'h-8 text-sm px-3' },
-      lg: { trigger: 'h-9 text-sm px-4' },
-    },
-    error: {
-      true: { trigger: 'border-destructive focus-visible:ring-destructive/20' },
-    },
-  },
-  defaultVariants: {
-    size: 'md',
-  },
-})
+import { dateRangePickerStyles, type DateRangePickerStylesReturn } from './date-picker-styles'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface DateRangePickerProps extends VariantProps<typeof dateRangePickerStyles> {
-  /** Custom class name */
+  /** 自定义类名 */
   class?: string
-  /** Placeholder text */
+  /** 占位文字 */
   placeholder?: string
-  /** Label */
+  /** 标签 */
   label?: string
-  /** Locale */
+  /** 语言环境 */
   locale?: string
-  /** Selected date range (ISO format string array [start, end]) */
+  /** 选中的日期范围（ISO 格式字符串数组 [start, end]） */
   value?: string[]
-  /** Disabled state */
+  /** 是否禁用 */
   disabled?: boolean
-  /** Readonly state */
+  /** 是否只读 */
   readOnly?: boolean
-  /** Show preset shortcuts */
+  /** 是否显示快捷选择 */
   showPresets?: boolean
-  /** Custom presets */
+  /** 自定义预设 */
   presets?: DateRangePresetOption[]
-  /** Value change callback */
-  onValueChange?: (details: { value: DateValue[]; valueAsString: string[] }) => void
-  /** Minimum selectable date */
+  /** 值变化回调 */
+  onChange?: (details: { value: DateValue[]; valueAsString: string[] }) => void
+  /** 最小可选日期 */
   min?: DateValue
-  /** Maximum selectable date */
+  /** 最大可选日期 */
   max?: DateValue
-  /** Start of week (0=Sunday, 1=Monday) */
+  /** 一周开始于周几 (0=周日, 1=周一) */
   startOfWeek?: number
-  /** Date format string, e.g. "YYYY-MM-DD", "DD/MM/YYYY" */
+  /** 选择粒度：day（默认）或 week（整周选择） */
+  granularity?: 'day' | 'week'
+  /** 日期格式化字符串，如 \"YYYY-MM-DD\", \"DD/MM/YYYY\" */
   format?: string
 }
 
@@ -146,25 +70,12 @@ export interface DateRangePresetOption {
   value: DateRangePreset | readonly DateValue[]
 }
 
-// Type guard: check if value is DateRangePreset
-const DATE_RANGE_PRESETS: readonly DateRangePreset[] = [
-  'thisWeek',
-  'lastWeek',
-  'thisMonth',
-  'lastMonth',
-  'thisQuarter',
-  'lastQuarter',
-  'thisYear',
-  'lastYear',
-  'last3Days',
-  'last7Days',
-  'last14Days',
-  'last30Days',
-  'last90Days',
-] satisfies DateRangePreset[]
-
+/**
+ * 类型守卫：检查是否为 DateRangePreset 字符串
+ * 简化版本：直接判断是否为字符串即可，zag.js 会处理无效值
+ */
 function isDateRangePreset(value: unknown): value is DateRangePreset {
-  return typeof value === 'string' && DATE_RANGE_PRESETS.includes(value as DateRangePreset)
+  return typeof value === 'string'
 }
 
 // ============================================================================
@@ -179,9 +90,21 @@ function getDefaultPresets(): DateRangePresetOption[] {
     { label: '今天', value: [todayDate, todayDate] },
     { label: '昨天', value: [todayDate.subtract({ days: 1 }), todayDate.subtract({ days: 1 })] },
     { label: '本周', value: [startOfWeek(todayDate, 'zh-CN'), endOfWeek(todayDate, 'zh-CN')] },
-    { label: '上周', value: [startOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'), endOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN')] },
+    {
+      label: '上周',
+      value: [
+        startOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
+        endOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
+      ],
+    },
     { label: '本月', value: [startOfMonth(todayDate), endOfMonth(todayDate)] },
-    { label: '上月', value: [startOfMonth(todayDate.subtract({ months: 1 })), endOfMonth(todayDate.subtract({ months: 1 }))] },
+    {
+      label: '上月',
+      value: [
+        startOfMonth(todayDate.subtract({ months: 1 })),
+        endOfMonth(todayDate.subtract({ months: 1 })),
+      ],
+    },
     { label: '最近 7 天', value: 'last7Days' },
     { label: '最近 30 天', value: 'last30Days' },
   ]
@@ -193,12 +116,17 @@ function getDefaultPresets(): DateRangePresetOption[] {
 
 interface MonthGridProps {
   api: Accessor<datePicker.Api>
-  styles: Accessor<ReturnType<typeof dateRangePickerStyles>>
+  styles: Accessor<DateRangePickerStylesReturn>
   offset: 0 | 1
   locale: string
+  granularity: 'day' | 'week'
+  hoveredWeek: Accessor<DateValue[] | null>
+  onWeekHover: (week: DateValue[] | null) => void
+  onWeekClick: (week: DateValue[]) => void
 }
 
 const MonthGrid: Component<MonthGridProps> = (props) => {
+  // 获取偏移月份的数据
   const offsetData = createMemo(() => {
     if (props.offset === 0) {
       return {
@@ -211,6 +139,7 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
 
   const formatter = new DateFormatter(props.locale, { month: 'long', year: 'numeric' })
 
+  // 获取标题日期
   const headerDate = createMemo(() => {
     const data = offsetData()
     if (data?.visibleRange?.start) {
@@ -219,12 +148,43 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
     return ''
   })
 
+  // 是否是第一个月（显示左箭头）- 固定2个月
   const isFirstMonth = () => props.offset === 0
+  // 是否是最后一个月（显示右箭头）- 固定2个月
   const isLastMonth = () => props.offset === 1
+
+  // 检查某个日期是否在 hover 的周内
+  const isInHoveredWeek = (dayValue: DateValue) => {
+    const hovered = props.hoveredWeek()
+    if (!hovered || hovered.length === 0) {
+      return false
+    }
+    return hovered.some((d) => d.compare(dayValue) === 0)
+  }
+
+  // 处理行 hover（周选择模式）
+  const handleRowMouseEnter = (week: DateValue[]) => {
+    if (props.granularity === 'week') {
+      props.onWeekHover(week)
+    }
+  }
+
+  const handleRowMouseLeave = () => {
+    if (props.granularity === 'week') {
+      props.onWeekHover(null)
+    }
+  }
+
+  // 处理行点击（周选择模式）
+  const handleRowClick = (week: DateValue[]) => {
+    if (props.granularity === 'week') {
+      props.onWeekClick(week)
+    }
+  }
 
   return (
     <div class="space-y-4">
-      {/* Month navigation header */}
+      {/* 月份导航头 */}
       <div class={props.styles().header()}>
         <div class="size-7 flex items-center justify-center">
           <Show when={isFirstMonth()}>
@@ -234,9 +194,8 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
           </Show>
         </div>
 
-        <span class="text-sm font-medium">
-          {headerDate()}
-        </span>
+        {/* 月份标题（不再是按钮，移除点击切换视图功能） */}
+        <span class="text-sm font-medium">{headerDate()}</span>
 
         <div class="size-7 flex items-center justify-center">
           <Show when={isLastMonth()}>
@@ -247,9 +206,9 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
         </div>
       </div>
 
-      {/* Calendar grid */}
+      {/* 日历网格 */}
       <div {...props.api().getTableProps({ view: 'day' })} class={props.styles().grid()}>
-        {/* Week day headers */}
+        {/* 星期标题 */}
         <div {...props.api().getTableHeaderProps({ view: 'day' })} class="flex justify-between mb-1">
           <For each={props.api().weekDays}>
             {(day) => (
@@ -260,11 +219,18 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
           </For>
         </div>
 
-        {/* Date cells */}
+        {/* 日期单元格 */}
         <div {...props.api().getTableBodyProps({ view: 'day' })}>
           <For each={offsetData().weeks}>
             {(week) => (
-              <div {...props.api().getTableRowProps({ view: 'day' })} class={props.styles().row()}>
+              <div
+                {...props.api().getTableRowProps({ view: 'day' })}
+                class={props.styles().row()}
+                data-week-mode={props.granularity === 'week' || undefined}
+                onMouseEnter={() => handleRowMouseEnter(week)}
+                onMouseLeave={handleRowMouseLeave}
+                onClick={() => handleRowClick(week)}
+              >
                 <For each={week}>
                   {(dayValue) => {
                     const cellState = createMemo(() =>
@@ -274,41 +240,64 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
                       })
                     )
 
-                    // 直接使用 Zag.js 提供的状态，不做过滤
-                    const state = cellState()
-                    const isOutside = () => state.outsideRange
+                    // 只在当前月内（非 outsideRange）设置范围相关的 data 属性
+                    const isOutside = () => cellState().outsideRange
+                    const inRangeData = () => (!isOutside() && cellState().inRange) || undefined
+                    const rangeStartData = () => (!isOutside() && cellState().firstInRange) || undefined
+                    const rangeEndData = () => (!isOutside() && cellState().lastInRange) || undefined
+                    // 今天：只在非范围内时显示
+                    const todayData = () => {
+                      const state = cellState()
+                      if (isOutside()) {
+                        return undefined
+                      }
+                      if (state.inRange || state.firstInRange || state.lastInRange) {
+                        return undefined
+                      }
+                      return state.today || undefined
+                    }
+                    // 周选择模式下的 hover 状态
+                    const weekHoveredData = () => {
+                      if (props.granularity !== 'week') {
+                        return undefined
+                      }
+                      return isInHoveredWeek(dayValue) || undefined
+                    }
 
-                    // 范围内的日期
-                    const inRangeData = () => (!isOutside() && state.inRange) || undefined
+                    // 周选择模式：禁止点击单日触发选择
+                    const cellProps = props.api().getDayTableCellProps({
+                      value: dayValue,
+                      visibleRange: offsetData().visibleRange,
+                    })
 
-                    // 范围开始日期
-                    const isRangeStart = () => (!isOutside() && state.firstInRange) || undefined
+                    const triggerProps = props.api().getDayTableCellTriggerProps({
+                      value: dayValue,
+                      visibleRange: offsetData().visibleRange,
+                    })
 
-                    // 范围结束日期（Zag.js 的 lastInRange 会同时处理预览和确认状态）
-                    const isRangeEnd = () => (!isOutside() && state.lastInRange) || undefined
-
-                    // 今日指示器（CSS 会处理范围边缘的隐藏）
-                    const todayData = () => (!isOutside() && state.today) || undefined
+                    // 周选择模式下移除 onClick
+                    const finalTriggerProps =
+                      props.granularity === 'week' ? { ...triggerProps, onClick: undefined } : triggerProps
 
                     return (
                       <div
-                        {...props.api().getDayTableCellProps({
-                          value: dayValue,
-                          visibleRange: offsetData().visibleRange,
-                        })}
+                        {...cellProps}
                         class={props.styles().cell()}
+                        data-in-range={inRangeData()}
+                        data-range-start={rangeStartData()}
+                        data-range-end={rangeEndData()}
+                        data-outside-range={isOutside() || undefined}
+                        data-week-hovered={weekHoveredData()}
                       >
                         <button
-                          {...props.api().getDayTableCellTriggerProps({
-                            value: dayValue,
-                            visibleRange: offsetData().visibleRange,
-                          })}
+                          {...finalTriggerProps}
                           class={props.styles().dayTrigger()}
                           data-in-range={inRangeData()}
-                          data-range-start={isRangeStart()}
-                          data-range-end={isRangeEnd()}
+                          data-range-start={rangeStartData()}
+                          data-range-end={rangeEndData()}
                           data-outside-range={isOutside() || undefined}
                           data-today={todayData()}
+                          data-week-hovered={weekHoveredData()}
                         >
                           {dayValue.day}
                         </button>
@@ -327,20 +316,23 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
 
 interface YearMonthViewProps {
   api: Accessor<datePicker.Api>
-  styles: Accessor<ReturnType<typeof dateRangePickerStyles>>
+  styles: Accessor<DateRangePickerStylesReturn>
 }
 
 const YearMonthView: Component<YearMonthViewProps> = (props) => {
   return (
     <div class="p-3">
-      {/* Month view */}
+      {/* 月份视图 */}
       <Show when={props.api().view === 'month'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
             <button {...props.api().getPrevTriggerProps({ view: 'month' })} class={props.styles().navTrigger()}>
               <ChevronLeft class="size-4" />
             </button>
-            <button {...props.api().getViewTriggerProps({ view: 'month' })} class="text-sm font-medium hover:bg-accent rounded px-2 py-1">
+            <button
+              {...props.api().getViewTriggerProps({ view: 'month' })}
+              class="text-sm font-medium hover:bg-accent rounded px-2 py-1"
+            >
               {props.api().visibleRange.start.year}
             </button>
             <button {...props.api().getNextTriggerProps({ view: 'month' })} class={props.styles().navTrigger()}>
@@ -366,7 +358,7 @@ const YearMonthView: Component<YearMonthViewProps> = (props) => {
         </div>
       </Show>
 
-      {/* Year view */}
+      {/* 年份视图 */}
       <Show when={props.api().view === 'year'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
@@ -413,6 +405,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       numOfMonths: 2,
       showPresets: false,
       placeholder: '选择日期范围',
+      granularity: 'day' as const,
     },
     props
   )
@@ -429,10 +422,11 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       'readOnly',
       'showPresets',
       'presets',
-      'onValueChange',
+      'onChange',
       'min',
       'max',
       'startOfWeek',
+      'granularity',
       'format',
     ],
     ['size', 'error']
@@ -440,6 +434,10 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
   const styles = createMemo(() => dateRangePickerStyles({ size: variants.size, error: variants.error }))
 
+  // 周选择模式下的 hover 状态
+  const [hoveredWeek, setHoveredWeek] = createSignal<DateValue[] | null>(null)
+
+  // 解析字符串值为 DateValue - 使用 zag.js 内置 parse
   const parsedValue = createMemo(() => {
     if (!local.value || local.value.length === 0) {
       return undefined
@@ -452,6 +450,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     }
   })
 
+  // Machine 配置（固定显示2个月）
   const machineProps = createMemo(() => ({
     id: createUniqueId(),
     numOfMonths: 2,
@@ -463,9 +462,9 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     min: local.min,
     max: local.max,
     startOfWeek: local.startOfWeek,
-    closeOnSelect: true,
+    closeOnSelect: true, // 范围选择完成后自动关闭
     onValueChange: (details: datePicker.ValueChangeDetails) => {
-      local.onValueChange?.({
+      local.onChange?.({
         value: details.value,
         valueAsString: details.valueAsString,
       })
@@ -475,12 +474,14 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const service = useMachine(datePicker.machine, machineProps)
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
 
+  // 显示值
   const displayValue = createMemo(() => {
     const values = api().value
     if (values.length === 0) {
       return local.placeholder
     }
 
+    // 如果提供了自定义格式
     if (local.format && values[0]) {
       if (values.length === 1) {
         return formatDate(values[0], local.format)
@@ -490,6 +491,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       }
     }
 
+    // 默认使用 Zag.js 的格式
     const strings = api().valueAsString
     if (strings.length === 1) {
       return strings[0]
@@ -497,24 +499,41 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     return `${strings[0]} - ${strings[1]}`
   })
 
+  // 预设列表
   const presetList = createMemo(() => local.presets ?? getDefaultPresets())
 
+  // 固定显示2个月
   const monthOffsets = [0, 1] as const
 
+  // 处理预设点击
   const handlePresetClick = (preset: DateRangePresetOption) => {
     const presetValue = preset.value
     if (isDateRangePreset(presetValue)) {
+      // 是 DateRangePreset 字符串 - zag.js 会处理
       const rangeValues = api().getRangePresetValue(presetValue)
       api().setValue(rangeValues)
     } else {
+      // 是 DateValue[]
       api().setValue([...presetValue])
     }
+    // 选择预设后关闭弹出层
     api().setOpen(false)
   }
 
+  // 清除值
   const handleClear = (e: MouseEvent) => {
     e.stopPropagation()
     api().clearValue()
+  }
+
+  // 处理周点击（周选择模式）
+  const handleWeekClick = (week: DateValue[]) => {
+    const start = week[0]
+    const end = week[week.length - 1]
+    if (start && end) {
+      api().setValue([start, end])
+      api().setOpen(false)
+    }
   }
 
   return (
@@ -528,9 +547,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
       <div {...api().getControlProps()} class={styles().control()}>
         <button {...api().getTriggerProps()} class={styles().trigger()}>
-          <span class={api().valueAsString.length === 0 ? 'text-muted-foreground' : ''}>
-            {displayValue()}
-          </span>
+          <span class={api().valueAsString.length === 0 ? 'text-muted-foreground' : ''}>{displayValue()}</span>
           <div class="flex items-center gap-1">
             <Show when={api().value.length > 0}>
               <button type="button" class={styles().clearButton()} onClick={handleClear}>
@@ -546,17 +563,13 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         <div {...api().getPositionerProps()}>
           <div {...api().getContentProps()} class={styles().content()}>
             <div class="flex">
-              {/* Preset shortcuts panel */}
+              {/* 快捷选择面板 */}
               <Show when={local.showPresets}>
                 <div class="border-r border-border py-2 px-1.5 w-[90px]">
                   <div class="text-xs font-medium text-muted-foreground px-2 py-1 mb-1">快捷选择</div>
                   <For each={presetList()}>
                     {(preset) => (
-                      <button
-                        type="button"
-                        class={styles().presetButton()}
-                        onClick={() => handlePresetClick(preset)}
-                      >
+                      <button type="button" class={styles().presetButton()} onClick={() => handlePresetClick(preset)}>
                         {preset.label}
                       </button>
                     )}
@@ -564,7 +577,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                 </div>
               </Show>
 
-              {/* Calendar body */}
+              {/* 日历主体 */}
               <div class="p-3">
                 <Show when={api().view === 'day'} fallback={<YearMonthView api={api} styles={styles} />}>
                   <div class="flex gap-4">
@@ -575,6 +588,10 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                           styles={styles}
                           offset={offset}
                           locale={local.locale}
+                          granularity={local.granularity}
+                          hoveredWeek={hoveredWeek}
+                          onWeekHover={setHoveredWeek}
+                          onWeekClick={handleWeekClick}
                         />
                       )}
                     </For>
