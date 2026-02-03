@@ -3,7 +3,7 @@
  * 复用 TanStack Table 原生类型
  */
 
-import type { JSX, Accessor } from 'solid-js'
+import type {JSX, Accessor} from 'solid-js'
 import type {
   ColumnDef,
   Row,
@@ -15,8 +15,8 @@ import type {
   ColumnPinningState,
   OnChangeFn,
 } from '@tanstack/solid-table'
-import type { VariantProps } from 'tailwind-variants'
-import type { tableVariants } from './styles'
+import type {VariantProps} from 'tailwind-variants'
+import type {tableVariants} from './styles'
 
 // ==================== 基础类型 ====================
 
@@ -105,7 +105,8 @@ export interface BaseTableProps<TData extends RowData> {
 
 // ==================== Table Props (客户端分页) ====================
 
-export interface TableProps<TData extends RowData> extends BaseTableProps<TData> {
+export interface TableProps<TData extends RowData>
+  extends BaseTableProps<TData> {
   /** 默认每页条数 */
   pageSize?: number
   /** 默认排序 */
@@ -118,7 +119,8 @@ export interface TableProps<TData extends RowData> extends BaseTableProps<TData>
 
 // ==================== DataTable Props (服务端分页) ====================
 
-export interface DataTableProps<TData extends RowData> extends BaseTableProps<TData> {
+export interface DataTableProps<TData extends RowData>
+  extends BaseTableProps<TData> {
   /** 数据总条数（必传，用于分页计算） */
   rowCount: number
 }

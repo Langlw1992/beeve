@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Slider } from './Slider'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Slider} from './Slider'
 
 const meta: Meta<typeof Slider> = {
   title: 'Components/Slider',
@@ -42,7 +42,7 @@ const meta: Meta<typeof Slider> = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '400px', padding: '40px 20px' }}>
+      <div style={{width: '400px', padding: '40px 20px'}}>
         <Story />
       </div>
     ),
@@ -74,15 +74,24 @@ export const Sizes: Story = {
     <div class="space-y-8">
       <div>
         <p class="text-sm text-muted-foreground mb-4">Small</p>
-        <Slider size="sm" defaultValue={[30]} />
+        <Slider
+          size="sm"
+          defaultValue={[30]}
+        />
       </div>
       <div>
         <p class="text-sm text-muted-foreground mb-4">Medium (default)</p>
-        <Slider size="md" defaultValue={[50]} />
+        <Slider
+          size="md"
+          defaultValue={[50]}
+        />
       </div>
       <div>
         <p class="text-sm text-muted-foreground mb-4">Large</p>
-        <Slider size="lg" defaultValue={[70]} />
+        <Slider
+          size="lg"
+          defaultValue={[70]}
+        />
       </div>
     </div>
   ),
@@ -124,11 +133,11 @@ export const WithMarks: Story = {
     max: 40,
     step: 5,
     marks: [
-      { value: 0, label: '0°C' },
-      { value: 10, label: '10°C' },
-      { value: 20, label: '20°C' },
-      { value: 30, label: '30°C' },
-      { value: 40, label: '40°C' },
+      {value: 0, label: '0°C'},
+      {value: 10, label: '10°C'},
+      {value: 20, label: '20°C'},
+      {value: 30, label: '30°C'},
+      {value: 40, label: '40°C'},
     ],
   },
 }
@@ -210,7 +219,9 @@ export const Controlled: Story = {
           onChange={(details) => setValue(details.value)}
           showInput
         />
-        <p class="text-sm text-muted-foreground">当前值: {value().join(', ')}</p>
+        <p class="text-sm text-muted-foreground">
+          当前值: {value().join(', ')}
+        </p>
         <div class="flex gap-2">
           <button
             type="button"
@@ -248,10 +259,10 @@ export const FullExample: Story = {
         showInput
         inputWidth="60px"
         marks={[
-          { value: 1, label: '1核' },
-          { value: 2, label: '2核' },
-          { value: 4, label: '4核' },
-          { value: 8, label: '8核' },
+          {value: 1, label: '1核'},
+          {value: 2, label: '2核'},
+          {value: 4, label: '4核'},
+          {value: 8, label: '8核'},
         ]}
         formatTooltip={(v) => `${v} 核心`}
       />
@@ -264,14 +275,13 @@ export const FullExample: Story = {
         showInput
         inputWidth="140px"
         marks={[
-          { value: 256, label: '256MB' },
-          { value: 1024, label: '1GB' },
-          { value: 2048, label: '2GB' },
-          { value: 4096, label: '4GB' },
+          {value: 256, label: '256MB'},
+          {value: 1024, label: '1GB'},
+          {value: 2048, label: '2GB'},
+          {value: 4096, label: '4GB'},
         ]}
         formatTooltip={(v) => (v >= 1024 ? `${v / 1024}GB` : `${v}MB`)}
       />
     </div>
   ),
 }
-

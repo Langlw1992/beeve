@@ -2,9 +2,9 @@
  * @beeve/ui - Skeleton Stories
  */
 
-import type { JSX } from 'solid-js'
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { Skeleton } from './Skeleton'
+import type {JSX} from 'solid-js'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {Skeleton} from './Skeleton'
 
 /**
  * # Skeleton 骨架屏
@@ -32,7 +32,11 @@ type Story = StoryObj<typeof meta>
 // ==================== 辅助组件 ====================
 
 /** Story 区块 */
-const Section = (props: { title: string; description?: string; children: JSX.Element }) => (
+const Section = (props: {
+  title: string
+  description?: string
+  children: JSX.Element
+}) => (
   <div class="space-y-4">
     <div>
       <h3 class="text-sm font-medium text-foreground">{props.title}</h3>
@@ -49,11 +53,23 @@ const Section = (props: { title: string; description?: string; children: JSX.Ele
 /** 基础骨架屏 */
 export const Basic: Story = {
   render: () => (
-    <Section title="基础用法" description="通过 width 和 height 自定义尺寸">
+    <Section
+      title="基础用法"
+      description="通过 width 和 height 自定义尺寸"
+    >
       <div class="w-[320px] space-y-3">
-        <Skeleton width="100%" height={16} />
-        <Skeleton width="85%" height={16} />
-        <Skeleton width="70%" height={16} />
+        <Skeleton
+          width="100%"
+          height={16}
+        />
+        <Skeleton
+          width="85%"
+          height={16}
+        />
+        <Skeleton
+          width="70%"
+          height={16}
+        />
       </div>
     </Section>
   ),
@@ -63,16 +79,37 @@ export const Basic: Story = {
 export const Animations: Story = {
   render: () => (
     <div class="w-[320px] space-y-8">
-      <Section title="Pulse 动画" description="默认脉冲动画效果">
-        <Skeleton width="100%" height={16} animation="pulse" />
+      <Section
+        title="Pulse 动画"
+        description="默认脉冲动画效果"
+      >
+        <Skeleton
+          width="100%"
+          height={16}
+          animation="pulse"
+        />
       </Section>
 
-      <Section title="Wave 动画" description="流光效果">
-        <Skeleton width="100%" height={16} animation="wave" />
+      <Section
+        title="Wave 动画"
+        description="流光效果"
+      >
+        <Skeleton
+          width="100%"
+          height={16}
+          animation="wave"
+        />
       </Section>
 
-      <Section title="无动画" description="静态占位">
-        <Skeleton width="100%" height={16} animation="none" />
+      <Section
+        title="无动画"
+        description="静态占位"
+      >
+        <Skeleton
+          width="100%"
+          height={16}
+          animation="none"
+        />
       </Section>
     </div>
   ),
@@ -83,16 +120,28 @@ export const TextSkeleton: Story = {
   name: 'Skeleton.Text',
   render: () => (
     <div class="w-[320px] space-y-8">
-      <Section title="默认样式" description="3 行文本，最后一行 60% 宽度">
+      <Section
+        title="默认样式"
+        description="3 行文本，最后一行 60% 宽度"
+      >
         <Skeleton.Text />
       </Section>
 
-      <Section title="自定义行数" description="5 行文本">
+      <Section
+        title="自定义行数"
+        description="5 行文本"
+      >
         <Skeleton.Text rows={5} />
       </Section>
 
-      <Section title="自定义末行宽度" description="最后一行 40% 宽度">
-        <Skeleton.Text rows={3} lastRowWidth="40%" />
+      <Section
+        title="自定义末行宽度"
+        description="最后一行 40% 宽度"
+      >
+        <Skeleton.Text
+          rows={3}
+          lastRowWidth="40%"
+        />
       </Section>
     </div>
   ),
@@ -103,7 +152,10 @@ export const AvatarSkeleton: Story = {
   name: 'Skeleton.Avatar',
   render: () => (
     <div class="space-y-8">
-      <Section title="尺寸" description="sm / md / lg / 自定义">
+      <Section
+        title="尺寸"
+        description="sm / md / lg / 自定义"
+      >
         <div class="flex items-end gap-6">
           <div class="text-center space-y-2">
             <Skeleton.Avatar size="sm" />
@@ -124,14 +176,23 @@ export const AvatarSkeleton: Story = {
         </div>
       </Section>
 
-      <Section title="形状" description="圆形 / 方形">
+      <Section
+        title="形状"
+        description="圆形 / 方形"
+      >
         <div class="flex items-center gap-6">
           <div class="text-center space-y-2">
-            <Skeleton.Avatar shape="circle" size="lg" />
+            <Skeleton.Avatar
+              shape="circle"
+              size="lg"
+            />
             <p class="text-xs text-muted-foreground">circle</p>
           </div>
           <div class="text-center space-y-2">
-            <Skeleton.Avatar shape="square" size="lg" />
+            <Skeleton.Avatar
+              shape="square"
+              size="lg"
+            />
             <p class="text-xs text-muted-foreground">square</p>
           </div>
         </div>
@@ -144,7 +205,10 @@ export const AvatarSkeleton: Story = {
 export const ButtonSkeleton: Story = {
   name: 'Skeleton.Button',
   render: () => (
-    <Section title="按钮尺寸" description="sm / md / lg">
+    <Section
+      title="按钮尺寸"
+      description="sm / md / lg"
+    >
       <div class="flex items-center gap-4">
         <div class="text-center space-y-2">
           <Skeleton.Button size="sm" />
@@ -167,7 +231,10 @@ export const ButtonSkeleton: Story = {
 export const ImageSkeleton: Story = {
   name: 'Skeleton.Image',
   render: () => (
-    <Section title="宽高比" description="常见图片比例">
+    <Section
+      title="宽高比"
+      description="常见图片比例"
+    >
       <div class="grid grid-cols-3 gap-4 w-[480px]">
         <div class="space-y-2">
           <Skeleton.Image aspectRatio="16:9" />
@@ -191,12 +258,24 @@ export const ParagraphSkeleton: Story = {
   name: 'Skeleton.Paragraph',
   render: () => (
     <div class="w-[320px] space-y-8">
-      <Section title="带标题" description="标题 + 段落">
-        <Skeleton.Paragraph title rows={3} />
+      <Section
+        title="带标题"
+        description="标题 + 段落"
+      >
+        <Skeleton.Paragraph
+          title
+          rows={3}
+        />
       </Section>
 
-      <Section title="仅段落" description="无标题">
-        <Skeleton.Paragraph title={false} rows={4} />
+      <Section
+        title="仅段落"
+        description="无标题"
+      >
+        <Skeleton.Paragraph
+          title={false}
+          rows={4}
+        />
       </Section>
     </div>
   ),
@@ -205,13 +284,22 @@ export const ParagraphSkeleton: Story = {
 /** 卡片组合示例 */
 export const CardExample: Story = {
   render: () => (
-    <Section title="卡片加载" description="社交卡片骨架屏">
+    <Section
+      title="卡片加载"
+      description="社交卡片骨架屏"
+    >
       <div class="w-[320px] rounded-xl border border-border p-5 space-y-4 bg-card">
         <div class="flex items-center gap-3">
           <Skeleton.Avatar size="md" />
           <div class="flex-1 space-y-2">
-            <Skeleton width="50%" height={14} />
-            <Skeleton width="30%" height={12} />
+            <Skeleton
+              width="50%"
+              height={14}
+            />
+            <Skeleton
+              width="30%"
+              height={12}
+            />
           </div>
         </div>
         <Skeleton.Image aspectRatio="16:9" />
@@ -228,15 +316,30 @@ export const CardExample: Story = {
 /** 列表组合示例 */
 export const ListExample: Story = {
   render: () => (
-    <Section title="列表加载" description="列表项骨架屏">
+    <Section
+      title="列表加载"
+      description="列表项骨架屏"
+    >
       <div class="w-[400px] space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} class="flex items-start gap-4 p-4 rounded-xl border border-border bg-card">
+          <div
+            key={i}
+            class="flex items-start gap-4 p-4 rounded-xl border border-border bg-card"
+          >
             <Skeleton.Avatar size="lg" />
             <div class="flex-1 space-y-2 pt-1">
-              <Skeleton width="60%" height={16} />
-              <Skeleton width="100%" height={14} />
-              <Skeleton width="75%" height={14} />
+              <Skeleton
+                width="60%"
+                height={16}
+              />
+              <Skeleton
+                width="100%"
+                height={14}
+              />
+              <Skeleton
+                width="75%"
+                height={14}
+              />
             </div>
           </div>
         ))}
@@ -248,16 +351,34 @@ export const ListExample: Story = {
 /** Wave 动画组合 */
 export const WaveAnimation: Story = {
   render: () => (
-    <Section title="Wave 动画" description="流光效果组合">
+    <Section
+      title="Wave 动画"
+      description="流光效果组合"
+    >
       <div class="w-[320px] rounded-xl border border-border p-5 space-y-4 bg-card">
         <div class="flex items-center gap-3">
-          <Skeleton.Avatar size="md" animation="wave" />
+          <Skeleton.Avatar
+            size="md"
+            animation="wave"
+          />
           <div class="flex-1 space-y-2">
-            <Skeleton width="50%" height={14} animation="wave" />
-            <Skeleton width="30%" height={12} animation="wave" />
+            <Skeleton
+              width="50%"
+              height={14}
+              animation="wave"
+            />
+            <Skeleton
+              width="30%"
+              height={12}
+              animation="wave"
+            />
           </div>
         </div>
-        <Skeleton.Paragraph title rows={3} animation="wave" />
+        <Skeleton.Paragraph
+          title
+          rows={3}
+          animation="wave"
+        />
       </div>
     </Section>
   ),

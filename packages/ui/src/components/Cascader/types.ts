@@ -2,9 +2,9 @@
  * Cascader 组件类型定义
  */
 
-import type { JSX } from 'solid-js'
-import type { VariantProps } from 'tailwind-variants'
-import type { cascaderStyles } from './styles'
+import type {JSX} from 'solid-js'
+import type {VariantProps} from 'tailwind-variants'
+import type {cascaderStyles} from './styles'
 
 /** 级联选择器选项 */
 export interface CascaderOption<T = unknown> {
@@ -45,7 +45,8 @@ export type CascaderShowPath = 'full' | 'last'
 export type CascaderCheckStrategy = 'all' | 'parent' | 'child'
 
 /** 级联选择器基础 Props */
-interface CascaderBaseProps<T = unknown> extends VariantProps<typeof cascaderStyles> {
+interface CascaderBaseProps<T = unknown>
+  extends VariantProps<typeof cascaderStyles> {
   /** 选项数据 */
   options: CascaderOption<T>[]
 
@@ -101,11 +102,15 @@ export interface CascaderSingleProps<T = unknown> extends CascaderBaseProps<T> {
   /** 值变化回调 */
   onChange?: (details: CascaderValueChangeDetails<T>) => void
   /** 自定义显示渲染 */
-  displayRender?: (labels: string[], selectedOptions: CascaderOption<T>[]) => JSX.Element | string
+  displayRender?: (
+    labels: string[],
+    selectedOptions: CascaderOption<T>[],
+  ) => JSX.Element | string
 }
 
 /** 多选模式 Props */
-export interface CascaderMultipleProps<T = unknown> extends CascaderBaseProps<T> {
+export interface CascaderMultipleProps<T = unknown>
+  extends CascaderBaseProps<T> {
   /** 是否多选 */
   multiple: true
   /** 当前选中值（路径数组的数组） */
@@ -115,11 +120,15 @@ export interface CascaderMultipleProps<T = unknown> extends CascaderBaseProps<T>
   /** 值变化回调 */
   onChange?: (details: CascaderMultipleValueChangeDetails<T>) => void
   /** 自定义显示渲染 */
-  displayRender?: (labels: string[][], selectedOptions: CascaderOption<T>[][]) => JSX.Element | string
+  displayRender?: (
+    labels: string[][],
+    selectedOptions: CascaderOption<T>[][],
+  ) => JSX.Element | string
   /** 多选时最多显示的标签数量，超出部分显示 +N */
   maxTagCount?: number
 }
 
 /** 级联选择器 Props（联合类型） */
-export type CascaderProps<T = unknown> = CascaderSingleProps<T> | CascaderMultipleProps<T>
-
+export type CascaderProps<T = unknown> =
+  | CascaderSingleProps<T>
+  | CascaderMultipleProps<T>

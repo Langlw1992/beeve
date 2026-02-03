@@ -4,7 +4,7 @@
  */
 
 import type * as select from '@zag-js/select'
-import type { PropTypes } from '@zag-js/solid'
+import type {PropTypes} from '@zag-js/solid'
 
 // ==================== 基础类型 ====================
 
@@ -12,7 +12,10 @@ import type { PropTypes } from '@zag-js/solid'
 export type SelectValue = string | number
 
 /** 选项数据 */
-export interface SelectOption<Data = unknown, Value extends SelectValue = SelectValue> {
+export interface SelectOption<
+  Data = unknown,
+  Value extends SelectValue = SelectValue,
+> {
   /** 显示文本 */
   label: string
   /** 选项值 */
@@ -23,8 +26,10 @@ export interface SelectOption<Data = unknown, Value extends SelectValue = Select
   data?: Data
 }
 
-export type SelectOnChangeValue<Value extends SelectValue, Multiple extends boolean | undefined> = 
-  Multiple extends true ? Value[] : Value | undefined
+export type SelectOnChangeValue<
+  Value extends SelectValue,
+  Multiple extends boolean | undefined,
+> = Multiple extends true ? Value[] : Value | undefined
 
 // ==================== API 类型 ====================
 
@@ -34,7 +39,11 @@ export type SelectApi = select.Api<PropTypes, SelectOption>
 // ==================== Props 类型 ====================
 
 /** Select 组件 Props */
-export interface SelectProps<Value extends SelectValue = SelectValue, Data = unknown, Multiple extends boolean | undefined = undefined> {
+export interface SelectProps<
+  Value extends SelectValue = SelectValue,
+  Data = unknown,
+  Multiple extends boolean | undefined = undefined,
+> {
   // ==================== 数据 ====================
   /** 选项列表 */
   options: SelectOption<Data, Value>[]
@@ -89,4 +98,3 @@ export interface UseSelectReturn<T = unknown> {
   /** 获取选中的 option */
   selectedOption: () => SelectOption<T> | undefined
 }
-

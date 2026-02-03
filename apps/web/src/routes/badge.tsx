@@ -2,24 +2,27 @@
  * Badge Component Showcase Page
  */
 
-import { For } from 'solid-js'
-import { createFileRoute } from '@tanstack/solid-router'
-import { Badge, type BadgeVariants } from '@beeve/ui'
-import { ShowcaseGrid, ShowcaseSection } from '../components/ShowcaseGrid'
+import {For} from 'solid-js'
+import {createFileRoute} from '@tanstack/solid-router'
+import {Badge, type BadgeVariants} from '@beeve/ui'
+import {ShowcaseGrid, ShowcaseSection} from '../components/ShowcaseGrid'
 
-const variants: { value: NonNullable<BadgeVariants['variant']>; label: string }[] = [
-  { value: 'default', label: 'Default' },
-  { value: 'secondary', label: 'Secondary' },
-  { value: 'outline', label: 'Outline' },
-  { value: 'success', label: 'Success' },
-  { value: 'warning', label: 'Warning' },
-  { value: 'error', label: 'Error' },
+const variants: {
+  value: NonNullable<BadgeVariants['variant']>
+  label: string
+}[] = [
+  {value: 'default', label: 'Default'},
+  {value: 'secondary', label: 'Secondary'},
+  {value: 'outline', label: 'Outline'},
+  {value: 'success', label: 'Success'},
+  {value: 'warning', label: 'Warning'},
+  {value: 'error', label: 'Error'},
 ]
 
-const sizes: { value: NonNullable<BadgeVariants['size']>; label: string }[] = [
-  { value: 'sm', label: 'Small (20px)' },
-  { value: 'md', label: 'Medium (24px)' },
-  { value: 'lg', label: 'Large (28px)' },
+const sizes: {value: NonNullable<BadgeVariants['size']>; label: string}[] = [
+  {value: 'sm', label: 'Small (20px)'},
+  {value: 'md', label: 'Medium (24px)'},
+  {value: 'lg', label: 'Large (28px)'},
 ]
 
 function BadgePage() {
@@ -36,17 +39,23 @@ function BadgePage() {
       <ShowcaseGrid
         title="Variant × Size"
         description="所有样式变体与尺寸的笛卡尔积组合"
-        variant1={{ name: 'Variant', values: variants }}
-        variant2={{ name: 'Size', values: sizes }}
+        variant1={{name: 'Variant', values: variants}}
+        variant2={{name: 'Size', values: sizes}}
         renderCell={(variant, size) => (
-          <Badge variant={variant} size={size}>
+          <Badge
+            variant={variant}
+            size={size}
+          >
             {variant}
           </Badge>
         )}
       />
 
       {/* Usage Examples */}
-      <ShowcaseSection title="使用场景" description="常见的徽标使用场景">
+      <ShowcaseSection
+        title="使用场景"
+        description="常见的徽标使用场景"
+      >
         <div class="flex flex-wrap items-center gap-4">
           <Badge>新功能</Badge>
           <Badge variant="success">已完成</Badge>
@@ -57,7 +66,10 @@ function BadgePage() {
       </ShowcaseSection>
 
       {/* With Icons */}
-      <ShowcaseSection title="带图标" description="徽标可以包含图标">
+      <ShowcaseSection
+        title="带图标"
+        description="徽标可以包含图标"
+      >
         <div class="flex flex-wrap items-center gap-4">
           <Badge variant="success">
             <span>✓</span> 成功

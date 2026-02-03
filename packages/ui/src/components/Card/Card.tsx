@@ -17,19 +17,15 @@
  * ```
  */
 
-import { splitProps, Show, createMemo, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { Skeleton } from '../Skeleton'
+import {splitProps, Show, createMemo, type Component, type JSX} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
+import {Skeleton} from '../Skeleton'
 
 // ==================== 样式定义 ====================
 
 const cardVariants = tv({
   slots: {
-    root: [
-      'bg-card text-card-foreground',
-      'rounded-lg',
-      'overflow-hidden',
-    ],
+    root: ['bg-card text-card-foreground', 'rounded-lg', 'overflow-hidden'],
     header: 'flex items-center justify-between gap-4',
     title: 'font-semibold leading-none tracking-tight',
     description: 'text-sm text-muted-foreground mt-1',
@@ -42,9 +38,9 @@ const cardVariants = tv({
   },
   variants: {
     variant: {
-      elevated: { root: 'shadow-md' },
-      outlined: { root: 'border border-border' },
-      filled: { root: 'bg-muted' },
+      elevated: {root: 'shadow-md'},
+      outlined: {root: 'border border-border'},
+      filled: {root: 'bg-muted'},
     },
     size: {
       sm: {
@@ -70,10 +66,12 @@ const cardVariants = tv({
       },
     },
     hoverable: {
-      true: { root: 'cursor-pointer transition-shadow duration-200 hover:shadow-lg' },
+      true: {
+        root: 'cursor-pointer transition-shadow duration-200 hover:shadow-lg',
+      },
     },
     loading: {
-      true: { root: 'pointer-events-none' },
+      true: {root: 'pointer-events-none'},
     },
   },
   defaultVariants: {
@@ -142,14 +140,14 @@ export const Card: Component<CardProps> = (props) => {
       'loadingConfig',
       'onClick',
     ],
-    ['variant', 'size', 'hoverable']
+    ['variant', 'size', 'hoverable'],
   )
 
   const styles = createMemo(() =>
     cardVariants({
       ...variants,
       loading: local.loading,
-    })
+    }),
   )
 
   const hasHeader = () => local.title || local.description || local.extra
@@ -157,7 +155,7 @@ export const Card: Component<CardProps> = (props) => {
 
   // 渲染加载骨架
   const renderLoading = () => {
-    const config = local.loadingConfig ?? { title: true, rows: 3 }
+    const config = local.loadingConfig ?? {title: true, rows: 3}
 
     return (
       <div class={styles().body()}>
@@ -166,13 +164,22 @@ export const Card: Component<CardProps> = (props) => {
             <div class="flex items-center gap-3">
               <Skeleton.Avatar size="md" />
               <div class="flex-1 space-y-2">
-                <Skeleton width="60%" height={16} />
-                <Skeleton width="40%" height={12} />
+                <Skeleton
+                  width="60%"
+                  height={16}
+                />
+                <Skeleton
+                  width="40%"
+                  height={12}
+                />
               </div>
             </div>
           </Show>
           <Show when={!config.avatar && config.title}>
-            <Skeleton width="50%" height={20} />
+            <Skeleton
+              width="50%"
+              height={20}
+            />
           </Show>
           <Skeleton.Text rows={config.rows ?? 3} />
         </div>
@@ -233,20 +240,23 @@ export const Card: Component<CardProps> = (props) => {
 
   return (
     <div
-      class={styles().root({ class: local.class })}
+      class={styles().root({class: local.class})}
       style={local.style}
       onClick={local.onClick}
       {...rest}
     >
-      <Show when={local.loading} fallback={
-        <>
-          <Show when={coverPosition() === 'top'}>{renderCover()}</Show>
-          {renderHeader()}
-          {renderBody()}
-          <Show when={coverPosition() === 'bottom'}>{renderCover()}</Show>
-          {renderFooter()}
-        </>
-      }>
+      <Show
+        when={local.loading}
+        fallback={
+          <>
+            <Show when={coverPosition() === 'top'}>{renderCover()}</Show>
+            {renderHeader()}
+            {renderBody()}
+            <Show when={coverPosition() === 'bottom'}>{renderCover()}</Show>
+            {renderFooter()}
+          </>
+        }
+      >
         {renderLoading()}
       </Show>
     </div>

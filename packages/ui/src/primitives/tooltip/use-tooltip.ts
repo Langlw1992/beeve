@@ -2,11 +2,11 @@
  * useTooltip hook - 基于 @zag-js/tooltip 实现
  */
 
-import { createMemo, createUniqueId } from 'solid-js'
+import {createMemo, createUniqueId} from 'solid-js'
 import * as tooltip from '@zag-js/tooltip'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import type { PropTypes } from '@zag-js/solid'
-import type { TooltipProps } from './types'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import type {PropTypes} from '@zag-js/solid'
+import type {TooltipProps} from './types'
 
 export type UseTooltipProps = TooltipProps
 
@@ -30,13 +30,12 @@ export function useTooltip(props: UseTooltipProps): UseTooltipReturn {
     closeOnEscape: props.closeOnEscape ?? true,
     interactive: props.interactive ?? false,
     // 定位
-    positioning: props.positioning ?? { placement: 'top' as const },
+    positioning: props.positioning ?? {placement: 'top' as const},
     // 回调
     onOpenChange: props.onOpenChange,
   }))
 
   const api = createMemo(() => tooltip.connect(service, normalizeProps))
 
-  return { api }
+  return {api}
 }
-

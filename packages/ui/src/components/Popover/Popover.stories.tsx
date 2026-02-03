@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Popover, PopoverTitle, PopoverDescription } from './Popover'
-import { Button } from '../Button'
-import { Input } from '../Input'
-import { Label } from '../Label'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Popover, PopoverTitle, PopoverDescription} from './Popover'
+import {Button} from '../Button'
+import {Input} from '../Input'
+import {Label} from '../Label'
 
 const meta: Meta<typeof Popover> = {
   title: 'Components/Popover',
@@ -30,10 +30,10 @@ const meta: Meta<typeof Popover> = {
       control: 'boolean',
     },
     openDelay: {
-      control: { type: 'number', min: 0, max: 2000, step: 100 },
+      control: {type: 'number', min: 0, max: 2000, step: 100},
     },
     closeDelay: {
-      control: { type: 'number', min: 0, max: 1000, step: 50 },
+      control: {type: 'number', min: 0, max: 1000, step: 50},
     },
   },
 }
@@ -82,31 +82,51 @@ export const Placements: Story = {
     <div class="flex flex-wrap gap-4 p-8">
       <Popover
         content={<PopoverDescription>顶部弹出</PopoverDescription>}
-        positioning={{ placement: 'top' }}
+        positioning={{placement: 'top'}}
         arrow
       >
-        <Button variant="outline" size="sm">Top</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Top
+        </Button>
       </Popover>
       <Popover
         content={<PopoverDescription>底部弹出</PopoverDescription>}
-        positioning={{ placement: 'bottom' }}
+        positioning={{placement: 'bottom'}}
         arrow
       >
-        <Button variant="outline" size="sm">Bottom</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Bottom
+        </Button>
       </Popover>
       <Popover
         content={<PopoverDescription>左侧弹出</PopoverDescription>}
-        positioning={{ placement: 'left' }}
+        positioning={{placement: 'left'}}
         arrow
       >
-        <Button variant="outline" size="sm">Left</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Left
+        </Button>
       </Popover>
       <Popover
         content={<PopoverDescription>右侧弹出</PopoverDescription>}
-        positioning={{ placement: 'right' }}
+        positioning={{placement: 'right'}}
         arrow
       >
-        <Button variant="outline" size="sm">Right</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Right
+        </Button>
       </Popover>
     </div>
   ),
@@ -123,14 +143,26 @@ export const WithForm: Story = {
           <PopoverTitle>编辑信息</PopoverTitle>
           <div class="space-y-2">
             <Label for="name">名称</Label>
-            <Input id="name" placeholder="请输入名称" />
+            <Input
+              id="name"
+              placeholder="请输入名称"
+            />
           </div>
           <div class="space-y-2">
             <Label for="email">邮箱</Label>
-            <Input id="email" type="email" placeholder="请输入邮箱" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="请输入邮箱"
+            />
           </div>
           <div class="flex justify-end gap-2">
-            <Button size="sm" variant="outline">取消</Button>
+            <Button
+              size="sm"
+              variant="outline"
+            >
+              取消
+            </Button>
             <Button size="sm">保存</Button>
           </div>
         </div>
@@ -150,14 +182,27 @@ export const Controlled: Story = {
     return (
       <div class="flex flex-col gap-4">
         <div class="flex gap-2">
-          <Button size="sm" onClick={() => setOpen(true)}>打开</Button>
-          <Button size="sm" variant="outline" onClick={() => setOpen(false)}>关闭</Button>
+          <Button
+            size="sm"
+            onClick={() => setOpen(true)}
+          >
+            打开
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
+            关闭
+          </Button>
         </div>
         <Popover
           content={
             <div class="space-y-2">
               <PopoverTitle>受控模式</PopoverTitle>
-              <PopoverDescription>通过外部状态控制显示/隐藏。</PopoverDescription>
+              <PopoverDescription>
+                通过外部状态控制显示/隐藏。
+              </PopoverDescription>
             </div>
           }
           open={open()}
@@ -178,7 +223,9 @@ export const Modal: Story = {
     content: (
       <div class="space-y-2">
         <PopoverTitle>模态模式</PopoverTitle>
-        <PopoverDescription>模态模式下会阻止外部交互，必须先关闭 Popover。</PopoverDescription>
+        <PopoverDescription>
+          模态模式下会阻止外部交互，必须先关闭 Popover。
+        </PopoverDescription>
       </div>
     ),
     modal: true,

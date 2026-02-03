@@ -14,9 +14,13 @@ import {
   type Component,
   type JSX,
 } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { useSlider, type SliderProps as BaseProps, type SliderMark } from '../../primitives/slider'
-import { Input } from '../Input'
+import {tv, type VariantProps} from 'tailwind-variants'
+import {
+  useSlider,
+  type SliderProps as BaseProps,
+  type SliderMark,
+} from '../../primitives/slider'
+import {Input} from '../Input'
 
 // ==================== 样式定义 ====================
 
@@ -52,7 +56,8 @@ const sliderStyles = tv({
     markerGroup: 'relative w-full h-5 mt-1',
     marker: 'absolute top-0 flex flex-col items-center -translate-x-1/2',
     markerTick: 'w-px bg-border transition-colors duration-150',
-    markerLabel: 'text-xs text-muted-foreground mt-0.5 whitespace-nowrap transition-colors duration-150',
+    markerLabel:
+      'text-xs text-muted-foreground mt-0.5 whitespace-nowrap transition-colors duration-150',
     inputContainer: 'shrink-0',
   },
   variants: {
@@ -93,7 +98,8 @@ const sliderStyles = tv({
         range: 'w-full',
         tooltip:
           'left-full ml-2 top-1/2 -translate-y-1/2 translate-x-0 after:right-full after:top-1/2 after:-translate-y-1/2 after:border-r-foreground after:border-t-transparent',
-        markerGroup: 'absolute left-full ml-1 h-full flex flex-col justify-between mt-0',
+        markerGroup:
+          'absolute left-full ml-1 h-full flex flex-col justify-between mt-0',
         marker: 'flex-row translate-x-0 translate-y-1/2',
         markerTick: 'h-px w-1.5',
         markerLabel: 'mt-0 ml-1',
@@ -108,9 +114,11 @@ const sliderStyles = tv({
 
 // ==================== 类型定义 ====================
 
-export type { SliderMark }
+export type {SliderMark}
 
-export interface SliderProps extends BaseProps, VariantProps<typeof sliderStyles> {
+export interface SliderProps
+  extends BaseProps,
+    VariantProps<typeof sliderStyles> {
   /** 自定义类名 */
   class?: string
   /** 标签 */
@@ -133,24 +141,34 @@ export interface SliderProps extends BaseProps, VariantProps<typeof sliderStyles
 
 // Thumb 尺寸映射，用于 thumbAlignment: 'contain' 时避免布局闪动
 const THUMB_SIZES = {
-  sm: { width: 12, height: 12 }, // size-3 = 12px
-  md: { width: 16, height: 16 }, // size-4 = 16px
-  lg: { width: 20, height: 20 }, // size-5 = 20px
+  sm: {width: 12, height: 12}, // size-3 = 12px
+  md: {width: 16, height: 16}, // size-4 = 16px
+  lg: {width: 20, height: 20}, // size-5 = 20px
 } as const
 
 export const Slider: Component<SliderProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'label', 'marks', 'showTooltip', 'formatTooltip', 'showInput', 'inputWidth', 'ref'],
-    ['size', 'orientation']
+    [
+      'class',
+      'label',
+      'marks',
+      'showTooltip',
+      'formatTooltip',
+      'showInput',
+      'inputWidth',
+      'ref',
+    ],
+    ['size', 'orientation'],
   )
 
   // 获取 thumb 尺寸，避免 marker 位置闪动
-  const getThumbSize = () => rest.thumbSize ?? THUMB_SIZES[variants.size ?? 'md']
+  const getThumbSize = () =>
+    rest.thumbSize ?? THUMB_SIZES[variants.size ?? 'md']
 
   // 使用 useSlider hook
   // 传入函数以保持 SolidJS 响应性：函数内部读取 props 会建立追踪依赖
-  const { api } = useSlider(() => ({
+  const {api} = useSlider(() => ({
     id: rest.id,
     value: rest.value,
     defaultValue: rest.defaultValue,
@@ -171,7 +189,10 @@ export const Slider: Component<SliderProps> = (props) => {
     getAriaValueText: rest.getAriaValueText,
   }))
   const styles = createMemo(() =>
-    sliderStyles({ size: variants.size, orientation: variants.orientation ?? 'horizontal' })
+    sliderStyles({
+      size: variants.size,
+      orientation: variants.orientation ?? 'horizontal',
+    }),
   )
 
   // 是否为范围模式
@@ -186,11 +207,18 @@ export const Slider: Component<SliderProps> = (props) => {
   }
 
   return (
-    <div ref={local.ref} {...api().getRootProps()} class={styles().root({ class: local.class })}>
+    <div
+      ref={local.ref}
+      {...api().getRootProps()}
+      class={styles().root({class: local.class})}
+    >
       {/* Label */}
       <Show when={local.label}>
         {/* biome-ignore lint/a11y/noLabelWithoutControl: zag-js getLabelProps provides htmlFor */}
-        <label {...api().getLabelProps()} class={styles().label()}>
+        <label
+          {...api().getLabelProps()}
+          class={styles().label()}
+        >
           {local.label}
         </label>
       </Show>
@@ -200,9 +228,18 @@ export const Slider: Component<SliderProps> = (props) => {
         {/* Slider with markers */}
         <div class={styles().sliderWrapper()}>
           {/* Slider Control */}
-          <div {...api().getControlProps()} class={styles().control()}>
-            <div {...api().getTrackProps()} class={styles().track()}>
-              <div {...api().getRangeProps()} class={styles().range()} />
+          <div
+            {...api().getControlProps()}
+            class={styles().control()}
+          >
+            <div
+              {...api().getTrackProps()}
+              class={styles().track()}
+            >
+              <div
+                {...api().getRangeProps()}
+                class={styles().range()}
+              />
             </div>
 
             {/* Thumbs */}
@@ -221,10 +258,16 @@ export const Slider: Component<SliderProps> = (props) => {
 
           {/* Markers - 在 track 下方 */}
           <Show when={local.marks && local.marks.length > 0}>
-            <div {...api().getMarkerGroupProps()} class={styles().markerGroup()}>
+            <div
+              {...api().getMarkerGroupProps()}
+              class={styles().markerGroup()}
+            >
               <For each={local.marks}>
                 {(mark) => (
-                  <span {...api().getMarkerProps({ value: mark.value })} class={styles().marker()}>
+                  <span
+                    {...api().getMarkerProps({value: mark.value})}
+                    class={styles().marker()}
+                  >
                     <span class={styles().markerTick()} />
                     <Show when={mark.label}>
                       <span class={styles().markerLabel()}>{mark.label}</span>
@@ -238,7 +281,10 @@ export const Slider: Component<SliderProps> = (props) => {
 
         {/* Input(s) */}
         <Show when={local.showInput}>
-          <div class={styles().inputContainer()} style={{ width: local.inputWidth ?? '70px' }}>
+          <div
+            class={styles().inputContainer()}
+            style={{width: local.inputWidth ?? '70px'}}
+          >
             <Show
               when={!isRange()}
               fallback={
@@ -297,14 +343,14 @@ const SliderThumb: Component<SliderThumbProps> = (props) => {
 
   return (
     <div
-      {...props.api.getThumbProps({ index: props.index })}
+      {...props.api.getThumbProps({index: props.index})}
       class={props.styles.thumb()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
     >
-      <input {...props.api.getHiddenInputProps({ index: props.index })} />
+      <input {...props.api.getHiddenInputProps({index: props.index})} />
       <Show when={showTooltip()}>
         <div
           class={props.styles.tooltip()}
@@ -374,7 +420,7 @@ const SliderInput: Component<SliderInputProps> = (props) => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
-      (e.target as HTMLInputElement)?.blur()
+      ;(e.target as HTMLInputElement)?.blur()
     }
   }
 

@@ -15,8 +15,8 @@
  * ```
  */
 
-import { splitProps, For, Show, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {splitProps, For, Show, type Component, type JSX} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 // ==================== 样式定义 ====================
 
@@ -115,7 +115,7 @@ const SkeletonBase: Component<SkeletonProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'style', 'width', 'height', 'circle'],
-    ['animation']
+    ['animation'],
   )
 
   const style = (): JSX.CSSProperties => ({
@@ -128,7 +128,9 @@ const SkeletonBase: Component<SkeletonProps> = (props) => {
     <div
       class={skeletonVariants({
         ...variants,
-        class: [local.circle && 'rounded-full', local.class].filter(Boolean).join(' '),
+        class: [local.circle && 'rounded-full', local.class]
+          .filter(Boolean)
+          .join(' '),
       })}
       style={style()}
       {...rest}
@@ -142,7 +144,7 @@ const SkeletonText: Component<SkeletonTextProps> = (props) => {
   const [local, variants] = splitProps(
     props,
     ['class', 'rows', 'lastRowWidth'],
-    ['animation']
+    ['animation'],
   )
 
   const rows = () => local.rows ?? 3
@@ -152,7 +154,8 @@ const SkeletonText: Component<SkeletonTextProps> = (props) => {
       <For each={Array(rows()).fill(0)}>
         {(_, index) => {
           const isLast = () => index() === rows() - 1
-          const width = () => isLast() ? (local.lastRowWidth ?? '60%') : '100%'
+          const width = () =>
+            isLast() ? (local.lastRowWidth ?? '60%') : '100%'
 
           return (
             <SkeletonBase
@@ -179,7 +182,7 @@ const SkeletonAvatar: Component<SkeletonAvatarProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'size', 'shape'],
-    ['animation']
+    ['animation'],
   )
 
   const size = () => {
@@ -204,16 +207,16 @@ const SkeletonAvatar: Component<SkeletonAvatarProps> = (props) => {
 // ==================== Skeleton.Button ====================
 
 const buttonSizes = {
-  sm: { width: 64, height: 28 },
-  md: { width: 80, height: 32 },
-  lg: { width: 96, height: 36 },
+  sm: {width: 64, height: 28},
+  md: {width: 80, height: 32},
+  lg: {width: 96, height: 36},
 }
 
 const SkeletonButton: Component<SkeletonButtonProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'size'],
-    ['animation']
+    ['animation'],
   )
 
   const size = () => buttonSizes[local.size ?? 'md']
@@ -242,7 +245,7 @@ const SkeletonImage: Component<SkeletonImageProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'aspectRatio'],
-    ['animation']
+    ['animation'],
   )
 
   const aspectClass = () => aspectRatios[local.aspectRatio ?? '16:9']
@@ -262,7 +265,7 @@ const SkeletonParagraph: Component<SkeletonParagraphProps> = (props) => {
   const [local, variants] = splitProps(
     props,
     ['class', 'title', 'titleWidth', 'rows'],
-    ['animation']
+    ['animation'],
   )
 
   return (

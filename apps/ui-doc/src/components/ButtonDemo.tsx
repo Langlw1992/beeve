@@ -1,6 +1,6 @@
-import { Button } from '@beeve/ui'
-import { createSignal } from 'solid-js'
-import { PlusIcon, UploadIcon, ChevronRightIcon, TrashIcon } from 'lucide-solid'
+import {Button} from '@beeve/ui'
+import {createSignal} from 'solid-js'
+import {PlusIcon, UploadIcon, ChevronRightIcon, TrashIcon} from 'lucide-solid'
 
 export function ButtonVariants() {
   return (
@@ -32,9 +32,24 @@ export function ButtonDisabled() {
   return (
     <div class="flex flex-wrap gap-4">
       <Button disabled>Primary</Button>
-      <Button variant="secondary" disabled>Secondary</Button>
-      <Button variant="outline" disabled>Outline</Button>
-      <Button variant="destructive" disabled>Destructive</Button>
+      <Button
+        variant="secondary"
+        disabled
+      >
+        Secondary
+      </Button>
+      <Button
+        variant="outline"
+        disabled
+      >
+        Outline
+      </Button>
+      <Button
+        variant="destructive"
+        disabled
+      >
+        Destructive
+      </Button>
     </div>
   )
 }
@@ -52,8 +67,16 @@ export function ButtonLoading() {
   return (
     <div class="flex flex-wrap items-center gap-4">
       <Button loading>Loading</Button>
-      <Button loading variant="secondary">Loading</Button>
-      <Button loading={loading()} onClick={handleClick}>
+      <Button
+        loading
+        variant="secondary"
+      >
+        Loading
+      </Button>
+      <Button
+        loading={loading()}
+        onClick={handleClick}
+      >
         {loading() ? '提交中...' : '点击加载'}
       </Button>
     </div>

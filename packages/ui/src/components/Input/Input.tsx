@@ -3,9 +3,16 @@
  * 输入框组件，支持 text、textarea、number 等模式
  */
 
-import { splitProps, Show, createSignal, createMemo, type Component, type JSX } from 'solid-js'
-import { X, Eye, EyeOff, Plus, Minus } from 'lucide-solid'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {
+  splitProps,
+  Show,
+  createSignal,
+  createMemo,
+  type Component,
+  type JSX,
+} from 'solid-js'
+import {X, Eye, EyeOff, Plus, Minus} from 'lucide-solid'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 const inputVariants = tv({
   slots: {
@@ -71,16 +78,23 @@ const inputVariants = tv({
       },
     },
     variant: {
-      default: { wrapper: 'border-input hover:border-primary/50' },
-      filled: { wrapper: '!border-transparent bg-muted hover:bg-muted/80' },
-      borderless: { wrapper: '!border-transparent shadow-none hover:bg-accent/50' },
+      default: {wrapper: 'border-input hover:border-primary/50'},
+      filled: {wrapper: '!border-transparent bg-muted hover:bg-muted/80'},
+      borderless: {
+        wrapper: '!border-transparent shadow-none hover:bg-accent/50',
+      },
     },
     status: {
-      error: { wrapper: '!border-destructive text-destructive focus-within:ring-destructive/20' },
-      warning: { wrapper: '!border-warning text-warning focus-within:ring-warning/20' },
+      error: {
+        wrapper:
+          '!border-destructive text-destructive focus-within:ring-destructive/20',
+      },
+      warning: {
+        wrapper: '!border-warning text-warning focus-within:ring-warning/20',
+      },
     },
     disabled: {
-      true: { wrapper: 'opacity-50 cursor-not-allowed bg-muted' },
+      true: {wrapper: 'opacity-50 cursor-not-allowed bg-muted'},
     },
     inputType: {
       text: {
@@ -96,16 +110,28 @@ const inputVariants = tv({
   },
   compoundVariants: [
     // text/number 模式的尺寸
-    { inputType: 'text', size: 'sm', class: { wrapper: 'h-7 px-2' } },
-    { inputType: 'text', size: 'md', class: { wrapper: 'h-8 px-3' } },
-    { inputType: 'text', size: 'lg', class: { wrapper: 'h-9 px-4' } },
-    { inputType: 'number', size: 'sm', class: { wrapper: 'h-7 pl-2 pr-0' } },
-    { inputType: 'number', size: 'md', class: { wrapper: 'h-8 pl-3 pr-0' } },
-    { inputType: 'number', size: 'lg', class: { wrapper: 'h-9 pl-4 pr-0' } },
+    {inputType: 'text', size: 'sm', class: {wrapper: 'h-7 px-2'}},
+    {inputType: 'text', size: 'md', class: {wrapper: 'h-8 px-3'}},
+    {inputType: 'text', size: 'lg', class: {wrapper: 'h-9 px-4'}},
+    {inputType: 'number', size: 'sm', class: {wrapper: 'h-7 pl-2 pr-0'}},
+    {inputType: 'number', size: 'md', class: {wrapper: 'h-8 pl-3 pr-0'}},
+    {inputType: 'number', size: 'lg', class: {wrapper: 'h-9 pl-4 pr-0'}},
     // textarea 模式的尺寸
-    { inputType: 'textarea', size: 'sm', class: { textarea: 'px-2 py-1.5 min-h-[60px]' } },
-    { inputType: 'textarea', size: 'md', class: { textarea: 'px-3 py-2 min-h-[80px]' } },
-    { inputType: 'textarea', size: 'lg', class: { textarea: 'px-4 py-3 min-h-[100px]' } },
+    {
+      inputType: 'textarea',
+      size: 'sm',
+      class: {textarea: 'px-2 py-1.5 min-h-[60px]'},
+    },
+    {
+      inputType: 'textarea',
+      size: 'md',
+      class: {textarea: 'px-3 py-2 min-h-[80px]'},
+    },
+    {
+      inputType: 'textarea',
+      size: 'lg',
+      class: {textarea: 'px-4 py-3 min-h-[100px]'},
+    },
   ],
   defaultVariants: {
     size: 'md',
@@ -186,18 +212,36 @@ export const Input: Component<InputProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     [
-      'class', 'prefix', 'suffix', 'value', 'defaultValue', 'type', 'inputType',
-      'onInput', 'onChange', 'onKeyDown', 'onPressEnter', 'onClear',
-      'allowClear', 'showCount', 'maxLength',
-      'rows', 'min', 'max', 'step', 'showControls',
+      'class',
+      'prefix',
+      'suffix',
+      'value',
+      'defaultValue',
+      'type',
+      'inputType',
+      'onInput',
+      'onChange',
+      'onKeyDown',
+      'onPressEnter',
+      'onClear',
+      'allowClear',
+      'showCount',
+      'maxLength',
+      'rows',
+      'min',
+      'max',
+      'step',
+      'showControls',
     ],
-    ['size', 'variant', 'status', 'disabled']
+    ['size', 'variant', 'status', 'disabled'],
   )
 
   let inputRef: HTMLInputElement | HTMLTextAreaElement | undefined
 
   // 内部值状态
-  const [internalValue, setInternalValue] = createSignal(String(local.defaultValue ?? ''))
+  const [internalValue, setInternalValue] = createSignal(
+    String(local.defaultValue ?? ''),
+  )
 
   // 是否正在输入法组合中
   const [isComposing, setIsComposing] = createSignal(false)
@@ -209,12 +253,17 @@ export const Input: Component<InputProps> = (props) => {
   const mode = () => local.inputType ?? 'text'
   const isTextarea = () => mode() === 'textarea'
   const isNumber = () => mode() === 'number'
-  const isPassword = () => local.type === 'password' && !isTextarea() && !isNumber()
+  const isPassword = () =>
+    local.type === 'password' && !isTextarea() && !isNumber()
 
   // 实际的 input type
   const nativeType = createMemo(() => {
-    if (isNumber()) { return 'number' }
-    if (isPassword()) { return passwordVisible() ? 'text' : 'password' }
+    if (isNumber()) {
+      return 'number'
+    }
+    if (isPassword()) {
+      return passwordVisible() ? 'text' : 'password'
+    }
     return local.type ?? 'text'
   })
 
@@ -232,13 +281,15 @@ export const Input: Component<InputProps> = (props) => {
   })
 
   // 清空按钮是否可见
-  const clearButtonVisible = createMemo(() =>
-    currentValue().length > 0 && !variants.disabled
+  const clearButtonVisible = createMemo(
+    () => currentValue().length > 0 && !variants.disabled,
   )
 
   // 是否显示后缀区域
-  const showSuffix = createMemo(() =>
-    !isTextarea() && (local.allowClear || isPassword() || local.showCount || local.suffix)
+  const showSuffix = createMemo(
+    () =>
+      !isTextarea() &&
+      (local.allowClear || isPassword() || local.showCount || local.suffix),
   )
 
   // 字数统计文本
@@ -247,18 +298,22 @@ export const Input: Component<InputProps> = (props) => {
     return local.maxLength ? `${len}/${local.maxLength}` : `${len}`
   })
 
-  const styles = createMemo(() => inputVariants({
-    size: variants.size,
-    variant: variants.variant,
-    status: variants.status,
-    disabled: variants.disabled,
-    inputType: mode(),
-  }))
+  const styles = createMemo(() =>
+    inputVariants({
+      size: variants.size,
+      variant: variants.variant,
+      status: variants.status,
+      disabled: variants.disabled,
+      inputType: mode(),
+    }),
+  )
 
   const handleInput = (e: InputEvent) => {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement
     setInternalValue(target.value)
-    if (isComposing()) { return }
+    if (isComposing()) {
+      return
+    }
     local.onInput?.(target.value, e)
   }
 
@@ -298,21 +353,33 @@ export const Input: Component<InputProps> = (props) => {
   }
 
   // Number 模式的增减
-  const canIncrement = () => local.max === undefined || numericValue() < local.max
-  const canDecrement = () => local.min === undefined || numericValue() > local.min
+  const canIncrement = () =>
+    local.max === undefined || numericValue() < local.max
+  const canDecrement = () =>
+    local.min === undefined || numericValue() > local.min
 
   const handleIncrement = () => {
-    if (variants.disabled || !canIncrement()) { return }
+    if (variants.disabled || !canIncrement()) {
+      return
+    }
     const step = local.step ?? 1
-    const newVal = Math.min(numericValue() + step, local.max ?? Number.POSITIVE_INFINITY)
+    const newVal = Math.min(
+      numericValue() + step,
+      local.max ?? Number.POSITIVE_INFINITY,
+    )
     setInternalValue(String(newVal))
     local.onInput?.(String(newVal), new InputEvent('input'))
   }
 
   const handleDecrement = () => {
-    if (variants.disabled || !canDecrement()) { return }
+    if (variants.disabled || !canDecrement()) {
+      return
+    }
     const step = local.step ?? 1
-    const newVal = Math.max(numericValue() - step, local.min ?? Number.NEGATIVE_INFINITY)
+    const newVal = Math.max(
+      numericValue() - step,
+      local.min ?? Number.NEGATIVE_INFINITY,
+    )
     setInternalValue(String(newVal))
     local.onInput?.(String(newVal), new InputEvent('input'))
   }
@@ -331,7 +398,7 @@ export const Input: Component<InputProps> = (props) => {
 
   return (
     <div class={styles().root()}>
-      <div class={styles().wrapper({ class: local.class })}>
+      <div class={styles().wrapper({class: local.class})}>
         {/* Prefix - 仅非 textarea 模式 */}
         <Show when={!isTextarea() && local.prefix}>
           <span class={styles().prefix()}>{local.prefix}</span>
@@ -374,7 +441,7 @@ export const Input: Component<InputProps> = (props) => {
               <button
                 type="button"
                 class={styles().actionButton()}
-                classList={{ invisible: !clearButtonVisible() }}
+                classList={{invisible: !clearButtonVisible()}}
                 onClick={handleClear}
                 tabIndex={clearButtonVisible() ? -1 : undefined}
                 aria-label="清空"
@@ -391,7 +458,10 @@ export const Input: Component<InputProps> = (props) => {
                 tabIndex={-1}
                 aria-label={passwordVisible() ? '隐藏密码' : '显示密码'}
               >
-                <Show when={passwordVisible()} fallback={<Eye class="size-3.5" />}>
+                <Show
+                  when={passwordVisible()}
+                  fallback={<Eye class="size-3.5" />}
+                >
                   <EyeOff class="size-3.5" />
                 </Show>
               </button>

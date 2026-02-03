@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { For, createSignal, type JSX } from 'solid-js'
-import { Input, Label } from '@beeve/ui'
-import type { InputProps } from './Input'
-import { Search, Mail } from 'lucide-solid'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {For, createSignal, type JSX} from 'solid-js'
+import {Input, Label} from '@beeve/ui'
+import type {InputProps} from './Input'
+import {Search, Mail} from 'lucide-solid'
 
 // ============================================================
 // 变体定义
@@ -16,9 +16,11 @@ const STATUSES = [undefined, 'error', 'warning'] as const
 // ============================================================
 
 /** 矩阵单元格 */
-const Cell = (props: { label?: string; children: JSX.Element }) => (
+const Cell = (props: {label?: string; children: JSX.Element}) => (
   <div class="flex flex-col gap-1">
-    {props.label && <span class="text-xs text-muted-foreground">{props.label}</span>}
+    {props.label && (
+      <span class="text-xs text-muted-foreground">{props.label}</span>
+    )}
     {props.children}
   </div>
 )
@@ -33,7 +35,9 @@ const Matrix = <R, C>(props: {
 }) => (
   <div
     class="grid gap-4 items-center"
-    style={{ 'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(12rem, 1fr))` }}
+    style={{
+      'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(12rem, 1fr))`,
+    }}
   >
     {/* 左上角空白 */}
     <div />
@@ -49,7 +53,9 @@ const Matrix = <R, C>(props: {
     <For each={props.rows}>
       {(row) => (
         <>
-          <div class="text-xs text-muted-foreground font-medium">{props.rowLabel(row)}</div>
+          <div class="text-xs text-muted-foreground font-medium">
+            {props.rowLabel(row)}
+          </div>
           <For each={props.cols}>
             {(col) => <div>{props.renderCell(row, col)}</div>}
           </For>
@@ -99,7 +105,11 @@ export const SizeVariantMatrix: Story = {
       rowLabel={(size) => size}
       colLabel={(variant) => variant}
       renderCell={(size, variant) => (
-        <Input size={size} variant={variant} placeholder={`${size} / ${variant}`} />
+        <Input
+          size={size}
+          variant={variant}
+          placeholder={`${size} / ${variant}`}
+        />
       )}
     />
   ),
@@ -135,19 +145,35 @@ export const Features: Story = {
   render: () => (
     <div class="grid grid-cols-2 gap-6 w-[500px]">
       <Cell label="前缀图标">
-        <Input prefix={<Search class="size-3.5" />} placeholder="搜索..." />
+        <Input
+          prefix={<Search class="size-3.5" />}
+          placeholder="搜索..."
+        />
       </Cell>
       <Cell label="后缀文本">
-        <Input suffix={<span class="text-xs">.com</span>} placeholder="网站" />
+        <Input
+          suffix={<span class="text-xs">.com</span>}
+          placeholder="网站"
+        />
       </Cell>
       <Cell label="一键清空">
-        <Input allowClear defaultValue="可以清空" />
+        <Input
+          allowClear
+          defaultValue="可以清空"
+        />
       </Cell>
       <Cell label="密码切换">
-        <Input type="password" placeholder="密码" />
+        <Input
+          type="password"
+          placeholder="密码"
+        />
       </Cell>
       <Cell label="字数统计">
-        <Input showCount maxLength={20} placeholder="限制20字" />
+        <Input
+          showCount
+          maxLength={20}
+          placeholder="限制20字"
+        />
       </Cell>
       <Cell label="组合使用">
         <Input
@@ -172,7 +198,11 @@ export const Disabled: Story = {
       <For each={VARIANTS}>
         {(variant) => (
           <Cell label={variant}>
-            <Input variant={variant} disabled value="禁用状态" />
+            <Input
+              variant={variant}
+              disabled
+              value="禁用状态"
+            />
           </Cell>
         )}
       </For>
@@ -188,19 +218,46 @@ export const TextareaMode: Story = {
   render: () => (
     <div class="flex flex-col gap-6 w-80">
       <Cell label="基础 textarea">
-        <Input inputType="textarea" placeholder="请输入多行文本..." />
+        <Input
+          inputType="textarea"
+          placeholder="请输入多行文本..."
+        />
       </Cell>
       <Cell label="指定行数 (5行)">
-        <Input inputType="textarea" rows={5} placeholder="5 行高度" />
+        <Input
+          inputType="textarea"
+          rows={5}
+          placeholder="5 行高度"
+        />
       </Cell>
       <Cell label="字数统计">
-        <Input inputType="textarea" showCount maxLength={200} placeholder="限制 200 字" />
+        <Input
+          inputType="textarea"
+          showCount
+          maxLength={200}
+          placeholder="限制 200 字"
+        />
       </Cell>
       <Cell label="不同尺寸">
         <div class="flex flex-col gap-2">
-          <Input inputType="textarea" size="sm" placeholder="sm" rows={2} />
-          <Input inputType="textarea" size="md" placeholder="md" rows={2} />
-          <Input inputType="textarea" size="lg" placeholder="lg" rows={2} />
+          <Input
+            inputType="textarea"
+            size="sm"
+            placeholder="sm"
+            rows={2}
+          />
+          <Input
+            inputType="textarea"
+            size="md"
+            placeholder="md"
+            rows={2}
+          />
+          <Input
+            inputType="textarea"
+            size="lg"
+            placeholder="lg"
+            rows={2}
+          />
         </div>
       </Cell>
     </div>
@@ -217,16 +274,36 @@ export const NumberMode: Story = {
     return (
       <div class="flex flex-col gap-6 w-64">
         <Cell label="基础数字输入">
-          <Input inputType="number" placeholder="请输入数字" />
+          <Input
+            inputType="number"
+            placeholder="请输入数字"
+          />
         </Cell>
         <Cell label="带增减按钮">
-          <Input inputType="number" showControls defaultValue="5" />
+          <Input
+            inputType="number"
+            showControls
+            defaultValue="5"
+          />
         </Cell>
         <Cell label="设置范围 (0-100)">
-          <Input inputType="number" showControls min={0} max={100} defaultValue="50" />
+          <Input
+            inputType="number"
+            showControls
+            min={0}
+            max={100}
+            defaultValue="50"
+          />
         </Cell>
         <Cell label="设置步长 (step=5)">
-          <Input inputType="number" showControls step={5} min={0} max={100} defaultValue="25" />
+          <Input
+            inputType="number"
+            showControls
+            step={5}
+            min={0}
+            max={100}
+            defaultValue="25"
+          />
         </Cell>
         <Cell label="受控模式">
           <Input
@@ -237,7 +314,9 @@ export const NumberMode: Story = {
             min={0}
             max={99}
           />
-          <span class="text-xs text-muted-foreground mt-1">当前值: {value()}</span>
+          <span class="text-xs text-muted-foreground mt-1">
+            当前值: {value()}
+          </span>
         </Cell>
       </div>
     )
@@ -258,12 +337,17 @@ export const FormExample: Story = {
       age: '18',
     })
     const update = (field: keyof ReturnType<typeof form>) => (v: string) =>
-      setForm((prev) => ({ ...prev, [field]: v }))
+      setForm((prev) => ({...prev, [field]: v}))
 
     return (
       <div class="flex flex-col gap-4 w-72">
         <div class="flex flex-col gap-1.5">
-          <Label for="username" required>用户名</Label>
+          <Label
+            for="username"
+            required
+          >
+            用户名
+          </Label>
           <Input
             id="username"
             value={form().username}
@@ -272,7 +356,12 @@ export const FormExample: Story = {
           />
         </div>
         <div class="flex flex-col gap-1.5">
-          <Label for="email" required>邮箱</Label>
+          <Label
+            for="email"
+            required
+          >
+            邮箱
+          </Label>
           <Input
             id="email"
             type="email"
@@ -283,7 +372,12 @@ export const FormExample: Story = {
           />
         </div>
         <div class="flex flex-col gap-1.5">
-          <Label for="password" required>密码</Label>
+          <Label
+            for="password"
+            required
+          >
+            密码
+          </Label>
           <Input
             id="password"
             type="password"

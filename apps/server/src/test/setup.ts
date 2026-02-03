@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import {vi} from 'vitest'
 
 // Mock DATABASE_URL 环境变量
 process.env.DATABASE_URL = 'postgres://test:test@localhost:5432/test'

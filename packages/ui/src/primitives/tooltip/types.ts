@@ -2,9 +2,9 @@
  * Tooltip Primitive Types
  */
 
-import type { Placement, PositioningOptions } from '@zag-js/tooltip'
+import type {Placement, PositioningOptions} from '@zag-js/tooltip'
 
-export type { Placement, PositioningOptions }
+export type {Placement, PositioningOptions}
 
 /** Tooltip 组件 Props */
 export interface TooltipProps {
@@ -29,6 +29,5 @@ export interface TooltipProps {
   /** 定位配置 */
   positioning?: PositioningOptions
   /** 打开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 }
-

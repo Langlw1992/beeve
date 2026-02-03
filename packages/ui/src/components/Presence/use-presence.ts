@@ -7,8 +7,8 @@
  */
 
 import * as presence from '@zag-js/presence'
-import { normalizeProps, useMachine } from '@zag-js/solid'
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import {normalizeProps, useMachine} from '@zag-js/solid'
+import {createEffect, createMemo, createSignal} from 'solid-js'
 
 export interface UsePresenceProps {
   /**
@@ -53,7 +53,9 @@ export interface UsePresenceReturn {
   }
 }
 
-export function usePresence(props: () => UsePresenceProps): () => UsePresenceReturn {
+export function usePresence(
+  props: () => UsePresenceProps,
+): () => UsePresenceReturn {
   const [wasEverPresent, setWasEverPresent] = createSignal(false)
 
   // 使用 @zag-js/presence 状态机
@@ -73,8 +75,10 @@ export function usePresence(props: () => UsePresenceProps): () => UsePresenceRet
 
   // 设置节点引用
   const setRef = (node: HTMLElement | null) => {
-    if (!node) { return }
-    service.send({ type: 'NODE.SET', node })
+    if (!node) {
+      return
+    }
+    service.send({type: 'NODE.SET', node})
   }
 
   return createMemo(() => {
@@ -94,9 +98,10 @@ export function usePresence(props: () => UsePresenceProps): () => UsePresenceRet
       setRef,
       presenceProps: {
         hidden: !isPresent,
-        'data-state': (currentProps.present ? 'open' : 'closed') as 'open' | 'closed',
+        'data-state': (currentProps.present ? 'open' : 'closed') as
+          | 'open'
+          | 'closed',
       },
     }
   })
 }
-

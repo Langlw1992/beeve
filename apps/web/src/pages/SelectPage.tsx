@@ -1,19 +1,22 @@
-import { Select } from '@beeve/ui'
-import { createSignal } from 'solid-js'
-import { ShowcaseSection } from '../components/ShowcaseGrid'
+import {Select} from '@beeve/ui'
+import {createSignal} from 'solid-js'
+import {ShowcaseSection} from '../components/ShowcaseGrid'
 
 export function SelectPage() {
   const [value, setValue] = createSignal<string | number | undefined>('apple')
-  const [multiValue, setMultiValue] = createSignal<(string | number)[]>(['apple', 'banana'])
+  const [multiValue, setMultiValue] = createSignal<(string | number)[]>([
+    'apple',
+    'banana',
+  ])
 
   const fruitOptions = [
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Blueberry', value: 'blueberry' },
-    { label: 'Grapes', value: 'grapes' },
-    { label: 'Pineapple', value: 'pineapple' },
-    { label: 'Strawberry', value: 'strawberry' },
-    { label: 'Watermelon', value: 'watermelon' },
+    {label: 'Apple', value: 'apple'},
+    {label: 'Banana', value: 'banana'},
+    {label: 'Blueberry', value: 'blueberry'},
+    {label: 'Grapes', value: 'grapes'},
+    {label: 'Pineapple', value: 'pineapple'},
+    {label: 'Strawberry', value: 'strawberry'},
+    {label: 'Watermelon', value: 'watermelon'},
   ]
 
   return (
@@ -21,7 +24,8 @@ export function SelectPage() {
       <div>
         <h1 class="text-3xl font-bold tracking-tight">Select</h1>
         <p class="text-muted-foreground mt-2">
-          Displays a list of options for the user to pick from—triggered by a button.
+          Displays a list of options for the user to pick from—triggered by a
+          button.
         </p>
       </div>
 
@@ -37,7 +41,7 @@ export function SelectPage() {
         </div>
       </ShowcaseSection>
 
-       <ShowcaseSection title="Searchable & Clearable">
+      <ShowcaseSection title="Searchable & Clearable">
         <div class="w-[200px]">
           <Select
             label="Search Fruit"
@@ -53,13 +57,13 @@ export function SelectPage() {
       <ShowcaseSection title="Multiple">
         <div class="w-[300px]">
           <Select
-             label="Multiple Fruits"
-             options={fruitOptions}
-             value={multiValue()}
-             onChange={setMultiValue}
-             multiple
-             maxCount={2}
-             placeholder="Select fruits..."
+            label="Multiple Fruits"
+            options={fruitOptions}
+            value={multiValue()}
+            onChange={setMultiValue}
+            multiple
+            maxCount={2}
+            placeholder="Select fruits..."
           />
         </div>
       </ShowcaseSection>
@@ -74,7 +78,7 @@ export function SelectPage() {
           />
         </div>
       </ShowcaseSection>
-           
+
       <ShowcaseSection title="Disabled">
         <div class="w-[200px]">
           <Select

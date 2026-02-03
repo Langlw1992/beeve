@@ -2,7 +2,7 @@
  * @beeve/ui - Sidebar Component Exports
  */
 
-export { Sidebar, useSidebar } from './Sidebar'
+export {Sidebar, useSidebar} from './Sidebar'
 export type {
   SidebarProviderProps,
   SidebarProps,
@@ -11,4 +11,3 @@ export type {
   SidebarFooterProps,
   SidebarTriggerProps,
 } from './Sidebar'
-

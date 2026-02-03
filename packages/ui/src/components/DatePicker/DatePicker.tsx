@@ -1,6 +1,6 @@
 import * as datePicker from '@zag-js/date-picker'
-import { normalizeProps, useMachine } from '@zag-js/solid'
-import type { DateValue } from '@internationalized/date'
+import {normalizeProps, useMachine} from '@zag-js/solid'
+import type {DateValue} from '@internationalized/date'
 import {
   type Component,
   createMemo,
@@ -9,13 +9,16 @@ import {
   splitProps,
   mergeProps,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-solid'
-import type { VariantProps } from 'tailwind-variants'
-import { DatePickerCalendar } from './DatePickerCalendar'
-import { formatDate } from '../../utils/formatDate'
-import { datePickerStyles, type DatePickerStylesReturn } from './date-picker-styles'
-import { parseDateValue, dateValueToDate } from './date-utils'
+import {Portal} from 'solid-js/web'
+import {Calendar, ChevronLeft, ChevronRight} from 'lucide-solid'
+import type {VariantProps} from 'tailwind-variants'
+import {DatePickerCalendar} from './DatePickerCalendar'
+import {formatDate} from '../../utils/formatDate'
+import {
+  datePickerStyles,
+  type DatePickerStylesReturn,
+} from './date-picker-styles'
+import {parseDateValue, dateValueToDate} from './date-utils'
 
 export interface DatePickerProps extends VariantProps<typeof datePickerStyles> {
   // 基础属性
@@ -55,11 +58,23 @@ export interface DatePickerProps extends VariantProps<typeof datePickerStyles> {
 export const DatePicker: Component<DatePickerProps> = (props) => {
   const [local, variants, machineContext] = splitProps(
     props,
-    ['class', 'placeholder', 'label', 'format', 'value', 'defaultValue', 'onChange', 'min', 'max'],
-    ['size', 'error']
+    [
+      'class',
+      'placeholder',
+      'label',
+      'format',
+      'value',
+      'defaultValue',
+      'onChange',
+      'min',
+      'max',
+    ],
+    ['size', 'error'],
   )
 
-  const styles = createMemo(() => datePickerStyles({ size: variants.size, error: variants.error }))
+  const styles = createMemo(() =>
+    datePickerStyles({size: variants.size, error: variants.error}),
+  )
 
   // 解析 value
   const parsedValue = createMemo(() => {
@@ -101,9 +116,9 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
               valueAsDate: dateValueToDate(dateValue),
             })
           },
-        }
-      )
-    )
+        },
+      ),
+    ),
   )
 
   const api = createMemo(() => datePicker.connect(service, normalizeProps))
@@ -125,16 +140,25 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
   })
 
   return (
-    <div class={styles().root({ class: local.class })}>
+    <div class={styles().root({class: local.class})}>
       <Show when={local.label}>
         {/* biome-ignore lint/a11y/noLabelWithoutControl: Zag.js getLabelProps() handles ARIA associations */}
-        <label {...api().getLabelProps()} class={styles().label()}>
+        <label
+          {...api().getLabelProps()}
+          class={styles().label()}
+        >
           {local.label}
         </label>
       </Show>
 
-      <div {...api().getControlProps()} class={styles().control()}>
-        <button {...api().getTriggerProps()} class={styles().trigger()}>
+      <div
+        {...api().getControlProps()}
+        class={styles().control()}
+      >
+        <button
+          {...api().getTriggerProps()}
+          class={styles().trigger()}
+        >
           <span class={api().value.length === 0 ? 'text-muted-foreground' : ''}>
             {displayValue()}
           </span>
@@ -144,26 +168,41 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
 
       <Portal>
         <div {...api().getPositionerProps()}>
-          <div {...api().getContentProps()} class={styles().content()}>
+          <div
+            {...api().getContentProps()}
+            class={styles().content()}
+          >
             {/* Header */}
             <div class={styles().header()}>
-              <button {...api().getPrevTriggerProps()} class={styles().navTrigger()}>
+              <button
+                {...api().getPrevTriggerProps()}
+                class={styles().navTrigger()}
+              >
                 <ChevronLeft class="size-4" />
               </button>
 
               <div class={styles().heading()}>
-                <button {...api().getViewTriggerProps()} class="hover:bg-accent rounded px-2 py-1">
+                <button
+                  {...api().getViewTriggerProps()}
+                  class="hover:bg-accent rounded px-2 py-1"
+                >
                   {api().visibleRangeText.start}
                 </button>
               </div>
 
-              <button {...api().getNextTriggerProps()} class={styles().navTrigger()}>
+              <button
+                {...api().getNextTriggerProps()}
+                class={styles().navTrigger()}
+              >
                 <ChevronRight class="size-4" />
               </button>
             </div>
 
             {/* Calendar Grid */}
-            <DatePickerCalendar api={api} styles={styles} />
+            <DatePickerCalendar
+              api={api}
+              styles={styles}
+            />
           </div>
         </div>
       </Portal>
@@ -171,5 +210,5 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
   )
 }
 
-export type { DatePickerStylesReturn }
+export type {DatePickerStylesReturn}
 export default DatePicker

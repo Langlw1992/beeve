@@ -2,9 +2,9 @@
  * Toast Component Showcase Page
  */
 
-import { createFileRoute } from '@tanstack/solid-router'
-import { toast, Button } from '@beeve/ui'
-import { ShowcaseSection } from '../components/ShowcaseGrid'
+import {createFileRoute} from '@tanstack/solid-router'
+import {toast, Button} from '@beeve/ui'
+import {ShowcaseSection} from '../components/ShowcaseGrid'
 
 function ToastPage() {
   const showBasicToast = () => {
@@ -85,89 +85,157 @@ function ToastPage() {
     <div class="space-y-12">
       <div>
         <h1 class="text-3xl font-bold">Toast</h1>
-        <p class="text-muted-foreground mt-2">
-          消息提示组件，支持命令式调用。
-        </p>
+        <p class="text-muted-foreground mt-2">消息提示组件，支持命令式调用。</p>
       </div>
 
       {/* Basic Types */}
-      <ShowcaseSection title="消息类型" description="支持多种消息类型">
+      <ShowcaseSection
+        title="消息类型"
+        description="支持多种消息类型"
+      >
         <div class="flex flex-wrap gap-4">
-          <Button variant="outline" onClick={showBasicToast}>
+          <Button
+            variant="outline"
+            onClick={showBasicToast}
+          >
             Info
           </Button>
-          <Button variant="outline" onClick={showSuccessToast}>
+          <Button
+            variant="outline"
+            onClick={showSuccessToast}
+          >
             Success
           </Button>
-          <Button variant="outline" onClick={showWarningToast}>
+          <Button
+            variant="outline"
+            onClick={showWarningToast}
+          >
             Warning
           </Button>
-          <Button variant="outline" onClick={showErrorToast}>
+          <Button
+            variant="outline"
+            onClick={showErrorToast}
+          >
             Error
           </Button>
         </div>
       </ShowcaseSection>
 
       {/* Loading Toast */}
-      <ShowcaseSection title="加载状态" description="显示加载中的消息，完成后更新">
-        <Button onClick={showLoadingToast}>
-          显示加载消息
-        </Button>
+      <ShowcaseSection
+        title="加载状态"
+        description="显示加载中的消息，完成后更新"
+      >
+        <Button onClick={showLoadingToast}>显示加载消息</Button>
       </ShowcaseSection>
 
       {/* With Title */}
-      <ShowcaseSection title="带标题" description="消息可以包含标题">
-        <Button variant="outline" onClick={showWithTitle}>
+      <ShowcaseSection
+        title="带标题"
+        description="消息可以包含标题"
+      >
+        <Button
+          variant="outline"
+          onClick={showWithTitle}
+        >
           带标题的消息
         </Button>
       </ShowcaseSection>
 
       {/* Duration */}
-      <ShowcaseSection title="自定义时长" description="可以设置消息显示时长">
+      <ShowcaseSection
+        title="自定义时长"
+        description="可以设置消息显示时长"
+      >
         <div class="flex gap-4">
-          <Button variant="outline" onClick={showLongDuration}>
+          <Button
+            variant="outline"
+            onClick={showLongDuration}
+          >
             显示 10 秒
           </Button>
-          <Button variant="outline" onClick={showNonClosable}>
+          <Button
+            variant="outline"
+            onClick={showNonClosable}
+          >
             不可关闭
           </Button>
         </div>
       </ShowcaseSection>
 
       {/* Promise */}
-      <ShowcaseSection title="Promise 支持" description="自动处理异步操作的状态">
-        <Button onClick={showPromiseToast}>
-          模拟异步请求
-        </Button>
+      <ShowcaseSection
+        title="Promise 支持"
+        description="自动处理异步操作的状态"
+      >
+        <Button onClick={showPromiseToast}>模拟异步请求</Button>
       </ShowcaseSection>
 
       {/* Dismiss All */}
-      <ShowcaseSection title="关闭所有" description="一键关闭所有消息">
+      <ShowcaseSection
+        title="关闭所有"
+        description="一键关闭所有消息"
+      >
         <div class="flex gap-4">
-          <Button variant="outline" onClick={() => {
-            toast.info('消息 1')
-            toast.success('消息 2')
-            toast.warning('消息 3')
-          }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              toast.info('消息 1')
+              toast.success('消息 2')
+              toast.warning('消息 3')
+            }}
+          >
             显示多条消息
           </Button>
-          <Button variant="destructive" onClick={dismissAll}>
+          <Button
+            variant="destructive"
+            onClick={dismissAll}
+          >
             关闭所有
           </Button>
         </div>
       </ShowcaseSection>
 
       {/* API Reference */}
-      <ShowcaseSection title="API 参考" description="可用的 toast 方法">
+      <ShowcaseSection
+        title="API 参考"
+        description="可用的 toast 方法"
+      >
         <div class="text-sm space-y-2">
-          <p><code class="bg-muted px-1 rounded">toast.info(message)</code> - 显示信息消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.success(message)</code> - 显示成功消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.warning(message)</code> - 显示警告消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.error(message)</code> - 显示错误消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.loading(message)</code> - 显示加载消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.promise(promise, options)</code> - 处理 Promise</p>
-          <p><code class="bg-muted px-1 rounded">toast.dismiss(id?)</code> - 关闭消息</p>
-          <p><code class="bg-muted px-1 rounded">toast.update(id, options)</code> - 更新消息</p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.info(message)</code> -
+            显示信息消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.success(message)</code> -
+            显示成功消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.warning(message)</code> -
+            显示警告消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.error(message)</code> -
+            显示错误消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.loading(message)</code> -
+            显示加载消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">
+              toast.promise(promise, options)
+            </code>{' '}
+            - 处理 Promise
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.dismiss(id?)</code> -
+            关闭消息
+          </p>
+          <p>
+            <code class="bg-muted px-1 rounded">toast.update(id, options)</code>{' '}
+            - 更新消息
+          </p>
         </div>
       </ShowcaseSection>
     </div>

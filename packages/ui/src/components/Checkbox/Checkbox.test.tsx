@@ -2,10 +2,10 @@
  * Checkbox 组件测试
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@solidjs/testing-library'
-import { createSignal } from 'solid-js'
-import { Checkbox } from './Checkbox'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent, waitFor} from '@solidjs/testing-library'
+import {createSignal} from 'solid-js'
+import {Checkbox} from './Checkbox'
 
 describe('Checkbox', () => {
   // ==================== 渲染测试 ====================
@@ -103,7 +103,12 @@ describe('Checkbox', () => {
 
     it('disabled 时不应该响应点击', async () => {
       const handleChange = vi.fn()
-      render(() => <Checkbox disabled onChange={handleChange} />)
+      render(() => (
+        <Checkbox
+          disabled
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('checkbox'))
 
@@ -124,7 +129,12 @@ describe('Checkbox', () => {
 
     it('再次点击应该取消选中', async () => {
       const handleChange = vi.fn()
-      render(() => <Checkbox checked onChange={handleChange} />)
+      render(() => (
+        <Checkbox
+          checked
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('checkbox'))
 
@@ -147,7 +157,10 @@ describe('Checkbox', () => {
       const [checked, setChecked] = createSignal(false)
 
       render(() => (
-        <Checkbox checked={checked()} onChange={setChecked} />
+        <Checkbox
+          checked={checked()}
+          onChange={setChecked}
+        />
       ))
 
       const checkbox = screen.getByRole('checkbox')
@@ -189,4 +202,3 @@ describe('Checkbox', () => {
     })
   })
 })
-

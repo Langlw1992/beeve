@@ -2,11 +2,11 @@
  * @beeve/ui - Card Stories
  */
 
-import type { JSX } from 'solid-js'
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { Card } from './Card'
-import { Button } from '../Button'
-import { MoreHorizontal, Heart, MessageCircle, Share2 } from 'lucide-solid'
+import type {JSX} from 'solid-js'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {Card} from './Card'
+import {Button} from '../Button'
+import {MoreHorizontal, Heart, MessageCircle, Share2} from 'lucide-solid'
 
 /**
  * # Card 卡片
@@ -34,7 +34,11 @@ type Story = StoryObj<typeof meta>
 // ==================== 辅助组件 ====================
 
 /** Story 区块 */
-const Section = (props: { title: string; description?: string; children: JSX.Element }) => (
+const Section = (props: {
+  title: string
+  description?: string
+  children: JSX.Element
+}) => (
   <div class="space-y-4">
     <div>
       <h3 class="text-sm font-medium text-foreground">{props.title}</h3>
@@ -51,8 +55,14 @@ const Section = (props: { title: string; description?: string; children: JSX.Ele
 /** 基础卡片 */
 export const Basic: Story = {
   render: () => (
-    <Section title="基础用法" description="带标题的简单卡片">
-      <Card title="卡片标题" class="w-[320px]">
+    <Section
+      title="基础用法"
+      description="带标题的简单卡片"
+    >
+      <Card
+        title="卡片标题"
+        class="w-[320px]"
+      >
         <p class="text-muted-foreground text-sm">
           这是卡片的内容区域，可以放置任何内容。卡片提供了一个清晰的容器边界。
         </p>
@@ -64,15 +74,16 @@ export const Basic: Story = {
 /** 带描述的卡片 */
 export const WithDescription: Story = {
   render: () => (
-    <Section title="带描述" description="标题下方显示描述信息">
+    <Section
+      title="带描述"
+      description="标题下方显示描述信息"
+    >
       <Card
         title="卡片标题"
         description="这是卡片的描述信息，用于补充说明"
         class="w-[320px]"
       >
-        <p class="text-muted-foreground text-sm">
-          卡片内容区域。
-        </p>
+        <p class="text-muted-foreground text-sm">卡片内容区域。</p>
       </Card>
     </Section>
   ),
@@ -81,11 +92,17 @@ export const WithDescription: Story = {
 /** 带操作的卡片 */
 export const WithExtra: Story = {
   render: () => (
-    <Section title="带操作" description="标题栏右侧可放置操作按钮">
+    <Section
+      title="带操作"
+      description="标题栏右侧可放置操作按钮"
+    >
       <Card
         title="卡片标题"
         extra={
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+          >
             <MoreHorizontal class="size-4" />
           </Button>
         }
@@ -102,17 +119,32 @@ export const WithExtra: Story = {
 /** 变体 */
 export const Variants: Story = {
   render: () => (
-    <Section title="变体样式" description="outlined / elevated / filled">
+    <Section
+      title="变体样式"
+      description="outlined / elevated / filled"
+    >
       <div class="flex gap-5">
-        <Card variant="outlined" title="Outlined" class="w-[200px]">
+        <Card
+          variant="outlined"
+          title="Outlined"
+          class="w-[200px]"
+        >
           <p class="text-sm text-muted-foreground">带边框的卡片</p>
         </Card>
 
-        <Card variant="elevated" title="Elevated" class="w-[200px]">
+        <Card
+          variant="elevated"
+          title="Elevated"
+          class="w-[200px]"
+        >
           <p class="text-sm text-muted-foreground">带阴影的卡片</p>
         </Card>
 
-        <Card variant="filled" title="Filled" class="w-[200px]">
+        <Card
+          variant="filled"
+          title="Filled"
+          class="w-[200px]"
+        >
           <p class="text-sm text-muted-foreground">填充背景的卡片</p>
         </Card>
       </div>
@@ -123,17 +155,32 @@ export const Variants: Story = {
 /** 尺寸 */
 export const Sizes: Story = {
   render: () => (
-    <Section title="尺寸" description="sm / md / lg 不同内边距">
+    <Section
+      title="尺寸"
+      description="sm / md / lg 不同内边距"
+    >
       <div class="flex items-start gap-5">
-        <Card size="sm" title="Small" class="w-[180px]">
+        <Card
+          size="sm"
+          title="Small"
+          class="w-[180px]"
+        >
           <p class="text-sm text-muted-foreground">小尺寸</p>
         </Card>
 
-        <Card size="md" title="Medium" class="w-[200px]">
+        <Card
+          size="md"
+          title="Medium"
+          class="w-[200px]"
+        >
           <p class="text-sm text-muted-foreground">中尺寸</p>
         </Card>
 
-        <Card size="lg" title="Large" class="w-[220px]">
+        <Card
+          size="lg"
+          title="Large"
+          class="w-[220px]"
+        >
           <p class="text-sm text-muted-foreground">大尺寸</p>
         </Card>
       </div>
@@ -144,7 +191,10 @@ export const Sizes: Story = {
 /** 带封面的卡片 */
 export const WithCover: Story = {
   render: () => (
-    <Section title="封面图片" description="顶部或底部封面">
+    <Section
+      title="封面图片"
+      description="顶部或底部封面"
+    >
       <div class="flex gap-5">
         <Card
           cover="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop"
@@ -152,9 +202,7 @@ export const WithCover: Story = {
           title="顶部封面"
           class="w-[280px]"
         >
-          <p class="text-muted-foreground text-sm">
-            封面图片在标题上方显示。
-          </p>
+          <p class="text-muted-foreground text-sm">封面图片在标题上方显示。</p>
         </Card>
 
         <Card
@@ -164,9 +212,7 @@ export const WithCover: Story = {
           title="底部封面"
           class="w-[280px]"
         >
-          <p class="text-muted-foreground text-sm">
-            封面图片在内容下方显示。
-          </p>
+          <p class="text-muted-foreground text-sm">封面图片在内容下方显示。</p>
         </Card>
       </div>
     </Section>
@@ -176,13 +222,23 @@ export const WithCover: Story = {
 /** 带底部的卡片 */
 export const WithFooter: Story = {
   render: () => (
-    <Section title="底部区域" description="footer 和 actions">
+    <Section
+      title="底部区域"
+      description="footer 和 actions"
+    >
       <Card
         title="卡片标题"
-        footer={<span class="text-sm text-muted-foreground">更新于 2 小时前</span>}
+        footer={
+          <span class="text-sm text-muted-foreground">更新于 2 小时前</span>
+        }
         actions={
           <>
-            <Button variant="ghost" size="sm">取消</Button>
+            <Button
+              variant="ghost"
+              size="sm"
+            >
+              取消
+            </Button>
             <Button size="sm">确定</Button>
           </>
         }
@@ -199,13 +255,19 @@ export const WithFooter: Story = {
 /** 加载状态 */
 export const Loading: Story = {
   render: () => (
-    <Section title="加载状态" description="集成 Skeleton 骨架屏">
+    <Section
+      title="加载状态"
+      description="集成 Skeleton 骨架屏"
+    >
       <div class="flex gap-5">
-        <Card loading class="w-[280px]" />
+        <Card
+          loading
+          class="w-[280px]"
+        />
 
         <Card
           loading
-          loadingConfig={{ avatar: true, rows: 2 }}
+          loadingConfig={{avatar: true, rows: 2}}
           class="w-[280px]"
         />
       </div>
@@ -216,7 +278,10 @@ export const Loading: Story = {
 /** 可点击卡片 */
 export const Hoverable: Story = {
   render: () => (
-    <Section title="可点击" description="鼠标悬停显示阴影效果">
+    <Section
+      title="可点击"
+      description="鼠标悬停显示阴影效果"
+    >
       <Card
         hoverable
         title="可点击卡片"
@@ -234,7 +299,10 @@ export const Hoverable: Story = {
 /** 社交卡片示例 */
 export const SocialCard: Story = {
   render: () => (
-    <Section title="社交卡片" description="实际应用场景">
+    <Section
+      title="社交卡片"
+      description="实际应用场景"
+    >
       <Card
         cover="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=400&h=250&fit=crop"
         coverAlt="风景"
@@ -252,13 +320,22 @@ export const SocialCard: Story = {
             这是一张美丽的风景照片，记录了大自然的壮丽景色。
           </p>
           <div class="flex items-center gap-5 pt-1">
-            <button type="button" class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              type="button"
+              class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               <Heart class="size-[18px]" /> <span>128</span>
             </button>
-            <button type="button" class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              type="button"
+              class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               <MessageCircle class="size-[18px]" /> <span>24</span>
             </button>
-            <button type="button" class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              type="button"
+              class="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               <Share2 class="size-[18px]" />
             </button>
           </div>
@@ -271,7 +348,10 @@ export const SocialCard: Story = {
 /** 产品卡片示例 */
 export const ProductCard: Story = {
   render: () => (
-    <Section title="产品卡片" description="电商场景">
+    <Section
+      title="产品卡片"
+      description="电商场景"
+    >
       <Card
         cover="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop"
         coverAlt="产品图片"
@@ -297,7 +377,10 @@ export const ProductCard: Story = {
 /** 卡片列表 */
 export const CardList: Story = {
   render: () => (
-    <Section title="卡片列表" description="网格布局">
+    <Section
+      title="卡片列表"
+      description="网格布局"
+    >
       <div class="grid grid-cols-3 gap-5">
         {[1, 2, 3].map((i) => (
           <Card
@@ -307,9 +390,7 @@ export const CardList: Story = {
             description="卡片描述信息"
             class="w-[200px]"
           >
-            <p class="text-sm text-muted-foreground">
-              卡片内容
-            </p>
+            <p class="text-sm text-muted-foreground">卡片内容</p>
           </Card>
         ))}
       </div>

@@ -4,4 +4,9 @@
  */
 
 export * from './types'
-export { useMenu, type MenuApi, type MenuService, type UseMenuReturn } from './use-menu'
+export {
+  useMenu,
+  type MenuApi,
+  type MenuService,
+  type UseMenuReturn,
+} from './use-menu'

@@ -4,7 +4,7 @@
  * 采用 Ant Design 风格的数据驱动 API
  */
 
-import type { JSX } from 'solid-js'
+import type {JSX} from 'solid-js'
 import type * as menu from '@zag-js/menu'
 
 /** 定位选项（从 @zag-js/menu 导入） */
@@ -112,7 +112,7 @@ export interface UseMenuProps {
   defaultOpen?: boolean
 
   /** 打开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 
   /** 定位选项 */
   positioning?: PositioningOptions
@@ -152,7 +152,7 @@ export interface DropdownProps extends MenuProps {
   /** 定位选项 */
   positioning?: PositioningOptions
   /** 打开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 }
 
 /** ContextMenu 组件 Props */
@@ -160,7 +160,7 @@ export interface ContextMenuProps extends MenuProps {
   /** 触发区域内容 */
   children: JSX.Element
   /** 打开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 }
 
 // ==================== 内部组件 Props（用于渲染）====================
@@ -221,6 +221,10 @@ export function isMenuItem(item: MenuItemType): item is MenuItemData {
 }
 
 /** 判断是否有子菜单 */
-export function hasChildren(item: MenuItemType): item is MenuItemData & { children: MenuItemType[] } {
-  return isMenuItem(item) && Array.isArray(item.children) && item.children.length > 0
+export function hasChildren(
+  item: MenuItemType,
+): item is MenuItemData & {children: MenuItemType[]} {
+  return (
+    isMenuItem(item) && Array.isArray(item.children) && item.children.length > 0
+  )
 }

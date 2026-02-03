@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { DateRangePicker } from './DateRangePicker'
-import { today, getLocalTimeZone } from '@internationalized/date'
-import type { DateValue } from '@internationalized/date'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {DateRangePicker} from './DateRangePicker'
+import {today, getLocalTimeZone} from '@internationalized/date'
+import type {DateValue} from '@internationalized/date'
 
 const meta: Meta<typeof DateRangePicker> = {
   title: 'Components/DateRangePicker',
@@ -10,7 +10,7 @@ const meta: Meta<typeof DateRangePicker> = {
   tags: ['autodocs'],
   argTypes: {
     size: {
-      control: { type: 'select' },
+      control: {type: 'select'},
       options: ['sm', 'md', 'lg'],
     },
     error: {
@@ -74,7 +74,10 @@ export const Controlled: Story = {
   render: () => {
     const [value, setValue] = createSignal<string[]>([])
 
-    const handleChange = (details: { value: DateValue[]; valueAsString: string[] }) => {
+    const handleChange = (details: {
+      value: DateValue[]
+      valueAsString: string[]
+    }) => {
       setValue(details.valueAsString)
     }
 
@@ -98,9 +101,21 @@ export const Controlled: Story = {
 export const Sizes: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-[300px]">
-      <DateRangePicker size="sm" placeholder="Small (sm)" label="小尺寸" />
-      <DateRangePicker size="md" placeholder="Default (md)" label="默认尺寸" />
-      <DateRangePicker size="lg" placeholder="Large (lg)" label="大尺寸" />
+      <DateRangePicker
+        size="sm"
+        placeholder="Small (sm)"
+        label="小尺寸"
+      />
+      <DateRangePicker
+        size="md"
+        placeholder="Default (md)"
+        label="默认尺寸"
+      />
+      <DateRangePicker
+        size="lg"
+        placeholder="Large (lg)"
+        label="大尺寸"
+      />
     </div>
   ),
 }
@@ -136,8 +151,8 @@ export const MinMaxDate: Story = {
     const tz = getLocalTimeZone()
     const todayDate = today(tz)
     // 只能选择今天前后7天的范围
-    const minDate = todayDate.subtract({ days: 7 })
-    const maxDate = todayDate.add({ days: 7 })
+    const minDate = todayDate.subtract({days: 7})
+    const maxDate = todayDate.add({days: 7})
 
     return (
       <div class="flex flex-col gap-4 w-[300px]">

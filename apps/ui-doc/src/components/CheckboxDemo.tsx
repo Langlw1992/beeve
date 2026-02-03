@@ -1,5 +1,5 @@
-import { Checkbox } from '@beeve/ui'
-import { createSignal } from 'solid-js'
+import {Checkbox} from '@beeve/ui'
+import {createSignal} from 'solid-js'
 
 export function CheckboxBasic() {
   return <Checkbox>Accept terms and conditions</Checkbox>
@@ -28,10 +28,16 @@ export function CheckboxStates() {
       <Checkbox defaultChecked>Checked</Checkbox>
       <Checkbox indeterminate>Indeterminate</Checkbox>
       <Checkbox disabled>Disabled Unchecked</Checkbox>
-      <Checkbox disabled defaultChecked>
+      <Checkbox
+        disabled
+        defaultChecked
+      >
         Disabled Checked
       </Checkbox>
-      <Checkbox disabled indeterminate>
+      <Checkbox
+        disabled
+        indeterminate
+      >
         Disabled Indeterminate
       </Checkbox>
     </div>
@@ -43,7 +49,10 @@ export function CheckboxControlled() {
 
   return (
     <div class="flex flex-col gap-2">
-      <Checkbox checked={checked()} onChange={setChecked}>
+      <Checkbox
+        checked={checked()}
+        onChange={setChecked}
+      >
         {checked() ? 'Checked' : 'Unchecked'}
       </Checkbox>
       <div class="text-sm text-muted-foreground">

@@ -2,9 +2,9 @@
  * Popover Component Showcase Page
  */
 
-import { createFileRoute } from '@tanstack/solid-router'
-import { Popover, PopoverTitle, PopoverDescription, Button } from '@beeve/ui'
-import { ShowcaseSection } from '../components/ShowcaseGrid'
+import {createFileRoute} from '@tanstack/solid-router'
+import {Popover, PopoverTitle, PopoverDescription, Button} from '@beeve/ui'
+import {ShowcaseSection} from '../components/ShowcaseGrid'
 
 function PopoverPage() {
   return (
@@ -17,7 +17,10 @@ function PopoverPage() {
       </div>
 
       {/* Basic Popover */}
-      <ShowcaseSection title="基础用法" description="点击触发的气泡卡片">
+      <ShowcaseSection
+        title="基础用法"
+        description="点击触发的气泡卡片"
+      >
         <Popover
           content={
             <div>
@@ -31,7 +34,10 @@ function PopoverPage() {
       </ShowcaseSection>
 
       {/* Hover Trigger */}
-      <ShowcaseSection title="悬停触发" description="鼠标悬停触发的气泡卡片">
+      <ShowcaseSection
+        title="悬停触发"
+        description="鼠标悬停触发的气泡卡片"
+      >
         <Popover
           trigger="hover"
           content={
@@ -46,7 +52,10 @@ function PopoverPage() {
       </ShowcaseSection>
 
       {/* With Arrow */}
-      <ShowcaseSection title="带箭头" description="显示指向触发元素的箭头">
+      <ShowcaseSection
+        title="带箭头"
+        description="显示指向触发元素的箭头"
+      >
         <Popover
           arrow
           content={
@@ -61,7 +70,10 @@ function PopoverPage() {
       </ShowcaseSection>
 
       {/* Placement */}
-      <ShowcaseSection title="弹出位置" description="支持不同的弹出方向">
+      <ShowcaseSection
+        title="弹出位置"
+        description="支持不同的弹出方向"
+      >
         <div class="flex flex-wrap gap-4">
           <Popover
             placement="top"
@@ -91,7 +103,10 @@ function PopoverPage() {
       </ShowcaseSection>
 
       {/* Rich Content */}
-      <ShowcaseSection title="丰富内容" description="气泡卡片可以包含复杂内容">
+      <ShowcaseSection
+        title="丰富内容"
+        description="气泡卡片可以包含复杂内容"
+      >
         <Popover
           content={
             <div class="space-y-3">
@@ -102,11 +117,18 @@ function PopoverPage() {
                 </div>
                 <div>
                   <div class="font-medium">张三</div>
-                  <div class="text-sm text-muted-foreground">前端开发工程师</div>
+                  <div class="text-sm text-muted-foreground">
+                    前端开发工程师
+                  </div>
                 </div>
               </div>
               <div class="flex gap-2 pt-2">
-                <Button size="sm" variant="outline">查看资料</Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                >
+                  查看资料
+                </Button>
                 <Button size="sm">发送消息</Button>
               </div>
             </div>
@@ -117,13 +139,18 @@ function PopoverPage() {
       </ShowcaseSection>
 
       {/* Controlled */}
-      <ShowcaseSection title="受控模式" description="可以通过 open 属性控制显示状态">
+      <ShowcaseSection
+        title="受控模式"
+        description="可以通过 open 属性控制显示状态"
+      >
         <Popover
           defaultOpen
           content={
             <div>
               <PopoverTitle>默认打开</PopoverTitle>
-              <PopoverDescription>这个气泡卡片默认是打开的。</PopoverDescription>
+              <PopoverDescription>
+                这个气泡卡片默认是打开的。
+              </PopoverDescription>
             </div>
           }
         >

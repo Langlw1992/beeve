@@ -29,10 +29,15 @@ import {
   type Component,
   type JSX,
 } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-solid'
-import { Button } from '../Button'
-import { Input } from '../Input'
+import {tv, type VariantProps} from 'tailwind-variants'
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-solid'
+import {Button} from '../Button'
+import {Input} from '../Input'
 
 // ==================== 样式定义 ====================
 
@@ -48,7 +53,8 @@ const paginationVariants = tv({
       'disabled:pointer-events-none disabled:opacity-50',
     ],
     itemActive: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    ellipsis: 'min-w-8 h-8 inline-flex items-center justify-center text-muted-foreground',
+    ellipsis:
+      'min-w-8 h-8 inline-flex items-center justify-center text-muted-foreground',
     info: 'text-sm text-muted-foreground',
     jumper: 'flex items-center gap-2 text-sm',
     jumperInput: 'w-16',
@@ -103,7 +109,9 @@ export interface PaginationProps extends PaginationVariants {
   /** 简洁模式 */
   simple?: boolean
   /** 显示总数 */
-  showTotal?: boolean | ((total: number, range: [number, number]) => JSX.Element)
+  showTotal?:
+    | boolean
+    | ((total: number, range: [number, number]) => JSX.Element)
   /** 显示快速跳转 */
   showQuickJumper?: boolean
   /** 显示每页条数选择器 */
@@ -136,7 +144,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
       'pageSizeOptions',
       'maxPageButtons',
     ],
-    ['size']
+    ['size'],
   )
 
   const styles = createMemo(() => paginationVariants(variants))
@@ -164,7 +172,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
     const max = maxButtons()
 
     if (total <= max) {
-      return Array.from({ length: total }, (_, i) => i + 1)
+      return Array.from({length: total}, (_, i) => i + 1)
     }
 
     const pages: (number | 'ellipsis-start' | 'ellipsis-end')[] = []
@@ -202,7 +210,12 @@ export const Pagination: Component<PaginationProps> = (props) => {
 
   // 事件处理
   const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages() || page === currentPage() || local.disabled) {
+    if (
+      page < 1 ||
+      page > totalPages() ||
+      page === currentPage() ||
+      local.disabled
+    ) {
       return
     }
     local.onChange?.(page)
@@ -224,7 +237,11 @@ export const Pagination: Component<PaginationProps> = (props) => {
       return null
     }
     if (typeof local.showTotal === 'function') {
-      return <span class={styles().info()}>{local.showTotal(local.total, range())}</span>
+      return (
+        <span class={styles().info()}>
+          {local.showTotal(local.total, range())}
+        </span>
+      )
     }
     return <span class={styles().info()}>共 {local.total} 条</span>
   }
@@ -232,7 +249,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
   // 简洁模式
   if (local.simple) {
     return (
-      <div class={styles().root({ class: local.class })} {...rest}>
+      <div
+        class={styles().root({class: local.class})}
+        {...rest}
+      >
         <Button
           variant="ghost"
           size={variants.size ?? 'md'}
@@ -257,7 +277,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
   }
 
   return (
-    <div class={styles().root({ class: local.class })} {...rest}>
+    <div
+      class={styles().root({class: local.class})}
+      {...rest}
+    >
       {/* 总数信息 */}
       {renderTotal()}
 
@@ -327,4 +350,3 @@ export const Pagination: Component<PaginationProps> = (props) => {
     </div>
   )
 }
-

@@ -11,10 +11,10 @@ import {
   type JSX,
   type ComponentProps,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
+import {Portal} from 'solid-js/web'
 import * as toastMachine from '@zag-js/toast'
-import { useMachine, normalizeProps, Key } from '@zag-js/solid'
-import { tv } from 'tailwind-variants'
+import {useMachine, normalizeProps, Key} from '@zag-js/solid'
+import {tv} from 'tailwind-variants'
 import {
   X,
   CheckCircle2,
@@ -72,7 +72,8 @@ const toastStyles = tv({
     icon: 'mt-0.5 shrink-0',
     content: 'flex-1 min-w-0 pr-6',
     title: 'text-sm font-semibold text-foreground',
-    description: 'mt-1 text-sm text-muted-foreground [&_a]:text-primary [&_a]:underline',
+    description:
+      'mt-1 text-sm text-muted-foreground [&_a]:text-primary [&_a]:underline',
     close: [
       'absolute top-3 right-3',
       'inline-flex items-center justify-center',
@@ -84,11 +85,11 @@ const toastStyles = tv({
   },
   variants: {
     type: {
-      info: { icon: 'text-sky-500' },
-      success: { icon: 'text-emerald-500' },
-      warning: { icon: 'text-amber-500' },
-      error: { icon: 'text-rose-500' },
-      loading: { icon: 'text-muted-foreground' },
+      info: {icon: 'text-sky-500'},
+      success: {icon: 'text-emerald-500'},
+      warning: {icon: 'text-amber-500'},
+      error: {icon: 'text-rose-500'},
+      loading: {icon: 'text-muted-foreground'},
     },
   },
   defaultVariants: {
@@ -118,7 +119,7 @@ toaster.subscribe((state) => {
 // ==================== API Implementation ====================
 
 const createToast = (options: ToastOptions) => {
-  const { id, ...rest } = options
+  const {id, ...rest} = options
   if (id) {
     toaster.update(id, rest)
     return id
@@ -129,13 +130,13 @@ const createToast = (options: ToastOptions) => {
 export const toast = {
   create: createToast,
   info: (message: string, options?: Omit<ToastOptions, 'type'>) =>
-    createToast({ description: message, type: 'info', ...options }),
+    createToast({description: message, type: 'info', ...options}),
   success: (message: string, options?: Omit<ToastOptions, 'type'>) =>
-    createToast({ description: message, type: 'success', ...options }),
+    createToast({description: message, type: 'success', ...options}),
   warning: (message: string, options?: Omit<ToastOptions, 'type'>) =>
-    createToast({ description: message, type: 'warning', ...options }),
+    createToast({description: message, type: 'warning', ...options}),
   error: (message: string, options?: Omit<ToastOptions, 'type'>) =>
-    createToast({ description: message, type: 'error', ...options }),
+    createToast({description: message, type: 'error', ...options}),
   loading: (message: string, options?: Omit<ToastOptions, 'type'>) =>
     createToast({
       description: message,
@@ -172,17 +173,31 @@ export const toast = {
       loading: JSX.Element
       success: JSX.Element | ((data: T) => JSX.Element)
       error: JSX.Element | ((err: unknown) => JSX.Element)
-    }
+    },
   ): Promise<T> => {
     const id = toast.loading(options.loading as string)
     promise
       .then((data) => {
-        const message = typeof options.success === 'function' ? options.success(data) : options.success
-        toaster.update(id, { description: message, type: 'success', duration: 2000 })
+        const message =
+          typeof options.success === 'function'
+            ? options.success(data)
+            : options.success
+        toaster.update(id, {
+          description: message,
+          type: 'success',
+          duration: 2000,
+        })
       })
       .catch((err) => {
-        const message = typeof options.error === 'function' ? options.error(err) : options.error
-        toaster.update(id, { description: message, type: 'error', duration: 5000 })
+        const message =
+          typeof options.error === 'function'
+            ? options.error(err)
+            : options.error
+        toaster.update(id, {
+          description: message,
+          type: 'error',
+          duration: 5000,
+        })
       })
     return promise
   },
@@ -190,16 +205,24 @@ export const toast = {
 
 // ==================== Components ====================
 
-const ToastIcon: Component<{ type: ToastType }> = (props) => {
+const ToastIcon: Component<{type: ToastType}> = (props) => {
   return (
     <Show
       when={props.type !== 'loading'}
       fallback={<LoaderCircle class="size-5 animate-spin" />}
     >
-      <Show when={props.type === 'info'}><Info class="size-5" /></Show>
-      <Show when={props.type === 'success'}><CheckCircle2 class="size-5" /></Show>
-      <Show when={props.type === 'warning'}><AlertTriangle class="size-5" /></Show>
-      <Show when={props.type === 'error'}><XCircle class="size-5" /></Show>
+      <Show when={props.type === 'info'}>
+        <Info class="size-5" />
+      </Show>
+      <Show when={props.type === 'success'}>
+        <CheckCircle2 class="size-5" />
+      </Show>
+      <Show when={props.type === 'warning'}>
+        <AlertTriangle class="size-5" />
+      </Show>
+      <Show when={props.type === 'error'}>
+        <XCircle class="size-5" />
+      </Show>
     </Show>
   )
 }
@@ -220,7 +243,7 @@ const ToastItem: Component<ToastItemProps> = (props) => {
   const service = useMachine(toastMachine.machine, machineProps)
   const api = createMemo(() => toastMachine.connect(service, normalizeProps))
   const type = () => (api().type as ToastType) || 'info'
-  const variantStyles = () => toastStyles({ type: type() })
+  const variantStyles = () => toastStyles({type: type()})
 
   const rootProps = () => {
     const zagProps = api().getRootProps()
@@ -232,17 +255,33 @@ const ToastItem: Component<ToastItemProps> = (props) => {
 
   return (
     <div {...rootProps()}>
-      <span class={variantStyles().icon()}><ToastIcon type={type()} /></span>
+      <span class={variantStyles().icon()}>
+        <ToastIcon type={type()} />
+      </span>
       <div class={styles.content()}>
         <Show when={api().title}>
-          <div {...api().getTitleProps()} class={styles.title()}>{api().title}</div>
+          <div
+            {...api().getTitleProps()}
+            class={styles.title()}
+          >
+            {api().title}
+          </div>
         </Show>
         <Show when={api().description}>
-          <div {...api().getDescriptionProps()} class={styles.description()}>{api().description}</div>
+          <div
+            {...api().getDescriptionProps()}
+            class={styles.description()}
+          >
+            {api().description}
+          </div>
         </Show>
       </div>
       <Show when={api().closable !== false}>
-        <button {...api().getCloseTriggerProps()} class={styles.close()} aria-label="关闭">
+        <button
+          {...api().getCloseTriggerProps()}
+          class={styles.close()}
+          aria-label="关闭"
+        >
           <X class="size-4" />
         </button>
       </Show>
@@ -276,20 +315,35 @@ export const Toaster: Component<ToasterProps> = (props) => {
     max: local.max ?? 5,
   }))
 
-  const api = createMemo(() => toastMachine.group.connect(service, normalizeProps))
+  const api = createMemo(() =>
+    toastMachine.group.connect(service, normalizeProps),
+  )
   const groupProps = () => {
     const zagProps = api().getGroupProps()
     return {
       ...zagProps,
-      class: `${styles.group()} ${local.class || ''} ${zagProps.class || ''}`.trim(),
+      class:
+        `${styles.group()} ${local.class || ''} ${zagProps.class || ''}`.trim(),
     }
   }
 
   return (
     <Portal>
-      <div {...groupProps()} {...rest}>
-        <Key each={api().getToasts()} by={(t) => t.id}>
-          {(t, index) => <ToastItem toast={t} parent={service} index={index} />}
+      <div
+        {...groupProps()}
+        {...rest}
+      >
+        <Key
+          each={api().getToasts()}
+          by={(t) => t.id}
+        >
+          {(t, index) => (
+            <ToastItem
+              toast={t}
+              parent={service}
+              index={index}
+            />
+          )}
         </Key>
       </div>
     </Portal>

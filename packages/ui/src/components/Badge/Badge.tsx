@@ -19,8 +19,8 @@
  * ```
  */
 
-import { splitProps, Show, createMemo, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {splitProps, Show, createMemo, type Component, type JSX} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 // ==================== 样式定义 ====================
 
@@ -38,22 +38,50 @@ const badgeVariants = tv({
   },
   variants: {
     color: {
-      default: { badge: 'bg-destructive', dot: 'bg-destructive', statusDot: 'bg-muted-foreground' },
-      blue: { badge: 'bg-blue-500', dot: 'bg-blue-500', statusDot: 'bg-blue-500' },
-      green: { badge: 'bg-green-500', dot: 'bg-green-500', statusDot: 'bg-green-500' },
-      orange: { badge: 'bg-orange-500', dot: 'bg-orange-500', statusDot: 'bg-orange-500' },
-      red: { badge: 'bg-destructive', dot: 'bg-destructive', statusDot: 'bg-destructive' },
+      default: {
+        badge: 'bg-destructive',
+        dot: 'bg-destructive',
+        statusDot: 'bg-muted-foreground',
+      },
+      blue: {
+        badge: 'bg-blue-500',
+        dot: 'bg-blue-500',
+        statusDot: 'bg-blue-500',
+      },
+      green: {
+        badge: 'bg-green-500',
+        dot: 'bg-green-500',
+        statusDot: 'bg-green-500',
+      },
+      orange: {
+        badge: 'bg-orange-500',
+        dot: 'bg-orange-500',
+        statusDot: 'bg-orange-500',
+      },
+      red: {
+        badge: 'bg-destructive',
+        dot: 'bg-destructive',
+        statusDot: 'bg-destructive',
+      },
     },
     status: {
-      default: { statusDot: 'bg-muted-foreground' },
-      success: { statusDot: 'bg-green-500' },
-      processing: { statusDot: 'bg-blue-500 animate-pulse' },
-      error: { statusDot: 'bg-destructive' },
-      warning: { statusDot: 'bg-orange-500' },
+      default: {statusDot: 'bg-muted-foreground'},
+      success: {statusDot: 'bg-green-500'},
+      processing: {statusDot: 'bg-blue-500 animate-pulse'},
+      error: {statusDot: 'bg-destructive'},
+      warning: {statusDot: 'bg-orange-500'},
     },
     size: {
-      sm: { badge: 'min-w-[16px] h-4 text-[10px] px-1', dot: 'size-1.5', statusDot: 'size-1.5' },
-      md: { badge: 'min-w-[18px] h-[18px] text-[11px] px-1.5', dot: 'size-2', statusDot: 'size-2' },
+      sm: {
+        badge: 'min-w-[16px] h-4 text-[10px] px-1',
+        dot: 'size-1.5',
+        statusDot: 'size-1.5',
+      },
+      md: {
+        badge: 'min-w-[18px] h-[18px] text-[11px] px-1.5',
+        dot: 'size-2',
+        statusDot: 'size-2',
+      },
     },
     placement: {
       'top-right': {},
@@ -173,7 +201,7 @@ export const Badge: Component<BadgeProps> = (props) => {
       size: local.size,
       placement: local.placement,
       standalone: isStandalone(),
-    })
+    }),
   )
 
   // 计算显示的数字
@@ -217,7 +245,12 @@ export const Badge: Component<BadgeProps> = (props) => {
   // 状态徽标（独立使用，带文字）
   if (isStatusBadge()) {
     return (
-      <span class={['inline-flex items-center gap-2', local.class].filter(Boolean).join(' ')} {...rest}>
+      <span
+        class={['inline-flex items-center gap-2', local.class]
+          .filter(Boolean)
+          .join(' ')}
+        {...rest}
+      >
         <span class={styles().statusDot()} />
         <span class={styles().statusText()}>{local.text}</span>
       </span>
@@ -225,7 +258,10 @@ export const Badge: Component<BadgeProps> = (props) => {
   }
 
   return (
-    <span class={styles().root({ class: local.class })} {...rest}>
+    <span
+      class={styles().root({class: local.class})}
+      {...rest}
+    >
       {local.children}
 
       <Show when={shouldShow()}>

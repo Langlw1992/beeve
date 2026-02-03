@@ -6,7 +6,10 @@
 import {Show, splitProps, createMemo, type Component, type JSX} from 'solid-js'
 import {Portal} from 'solid-js/web'
 import {tv, type VariantProps} from 'tailwind-variants'
-import {usePopover, type PopoverProps as BaseProps} from '../../primitives/popover'
+import {
+  usePopover,
+  type PopoverProps as BaseProps,
+} from '../../primitives/popover'
 
 // ==================== 样式定义 ====================
 
@@ -18,12 +21,10 @@ const popoverStyles = tv({
       'animate-in fade-in-0 zoom-in-95',
       'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
     ],
-    arrow: [
-      '[--arrow-size:8px]',
-      '[--arrow-background:var(--color-popover)]',
-    ],
+    arrow: ['[--arrow-size:8px]', '[--arrow-background:var(--color-popover)]'],
     arrowTip: 'border-border',
-    trigger: 'inline-flex bg-transparent border-none p-0 font-inherit cursor-inherit',
+    trigger:
+      'inline-flex bg-transparent border-none p-0 font-inherit cursor-inherit',
     title: 'mb-1 text-sm font-medium leading-none',
     description: 'text-sm text-muted-foreground',
     closeTrigger: [
@@ -57,7 +58,9 @@ const styles = popoverStyles()
 
 // ==================== 类型定义 ====================
 
-export interface PopoverProps extends BaseProps, VariantProps<typeof popoverStyles> {
+export interface PopoverProps
+  extends BaseProps,
+    VariantProps<typeof popoverStyles> {
   /** 触发元素 */
   children: JSX.Element
   /** Popover 内容 */
@@ -84,7 +87,9 @@ export const PopoverTitle: Component<PopoverTitleProps> = (props) => (
   <div class={styles.title({class: props.class})}>{props.children}</div>
 )
 
-export const PopoverDescription: Component<PopoverDescriptionProps> = (props) => (
+export const PopoverDescription: Component<PopoverDescriptionProps> = (
+  props,
+) => (
   <div class={styles.description({class: props.class})}>{props.children}</div>
 )
 
@@ -110,11 +115,18 @@ export const Popover: Component<PopoverProps> = (props) => {
     <>
       {/* Trigger */}
       {isHover ? (
-        <span {...api().getTriggerProps()} class={styles.trigger()}>
+        <span
+          {...api().getTriggerProps()}
+          class={styles.trigger()}
+        >
           {local.children}
         </span>
       ) : (
-        <button {...api().getTriggerProps()} type="button" class={styles.trigger()}>
+        <button
+          {...api().getTriggerProps()}
+          type="button"
+          class={styles.trigger()}
+        >
           {local.children}
         </button>
       )}
@@ -122,10 +134,19 @@ export const Popover: Component<PopoverProps> = (props) => {
       {/* Content */}
       <Show when={api().open}>
         <Portal>
-          <div {...api().getPositionerProps()} class={styles.positioner()}>
+          <div
+            {...api().getPositionerProps()}
+            class={styles.positioner()}
+          >
             <Show when={local.arrow}>
-              <div {...api().getArrowProps()} class={styles.arrow()}>
-                <div {...api().getArrowTipProps()} class={arrowTipClass()}/>
+              <div
+                {...api().getArrowProps()}
+                class={styles.arrow()}
+              >
+                <div
+                  {...api().getArrowTipProps()}
+                  class={arrowTipClass()}
+                />
               </div>
             </Show>
             <div

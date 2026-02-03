@@ -2,11 +2,11 @@
  * Cartesian product grid for showcasing component variants
  */
 
-import { For, type Component, type JSX } from 'solid-js'
+import {For, type Component, type JSX} from 'solid-js'
 
 export interface VariantConfig<T extends string = string> {
   name: string
-  values: { value: T; label: string }[]
+  values: {value: T; label: string}[]
 }
 
 interface ShowcaseGridProps<V1 extends string, V2 extends string> {
@@ -18,7 +18,7 @@ interface ShowcaseGridProps<V1 extends string, V2 extends string> {
 }
 
 export function ShowcaseGrid<V1 extends string, V2 extends string>(
-  props: ShowcaseGridProps<V1, V2>
+  props: ShowcaseGridProps<V1, V2>,
 ): JSX.Element {
   return (
     <section class="space-y-4">
@@ -99,9 +99,10 @@ interface ShowcaseRowProps {
 export const ShowcaseRow: Component<ShowcaseRowProps> = (props) => {
   return (
     <div class="flex items-center gap-4">
-      <span class="text-xs text-muted-foreground w-24 shrink-0">{props.label}</span>
+      <span class="text-xs text-muted-foreground w-24 shrink-0">
+        {props.label}
+      </span>
       <div class="flex items-center gap-3 flex-wrap">{props.children}</div>
     </div>
   )
 }
-

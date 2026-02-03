@@ -1,8 +1,8 @@
-import type { DateValue } from '@internationalized/date'
+import type {DateValue} from '@internationalized/date'
 
 /**
  * 格式化日期值为指定格式的字符串
- * 
+ *
  * 支持的格式 token:
  * - YYYY: 4位年份 (2025)
  * - YY: 2位年份 (25)
@@ -15,11 +15,11 @@ import type { DateValue } from '@internationalized/date'
  * - mm: 分钟 (00-59)
  * - ss: 秒 (00-59)
  * - A: AM/PM
- * 
+ *
  * @param date - DateValue 对象
  * @param format - 格式字符串，如 "YYYY-MM-DD"
  * @returns 格式化后的日期字符串
- * 
+ *
  * @example
  * formatDate(date, "YYYY-MM-DD") // "2025-02-03"
  * formatDate(date, "DD/MM/YYYY") // "03/02/2025"
@@ -74,4 +74,3 @@ export function formatDate(date: DateValue, format: string): string {
 
   return result
 }
-

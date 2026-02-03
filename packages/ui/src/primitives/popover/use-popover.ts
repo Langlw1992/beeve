@@ -2,11 +2,11 @@
  * usePopover hook - 基于 @zag-js/popover 和 @zag-js/hover-card 实现
  */
 
-import { createMemo, createUniqueId } from 'solid-js'
+import {createMemo, createUniqueId} from 'solid-js'
 import * as popover from '@zag-js/popover'
 import * as hoverCard from '@zag-js/hover-card'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import type { PopoverProps } from './types'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import type {PopoverProps} from './types'
 
 export type UsePopoverProps = PopoverProps
 
@@ -38,7 +38,7 @@ export function usePopover(props: UsePopoverProps): UsePopoverReturn {
       defaultOpen: props.defaultOpen,
       openDelay: props.openDelay ?? 700,
       closeDelay: props.closeDelay ?? 300,
-      positioning: props.positioning ?? { placement: 'bottom' as const },
+      positioning: props.positioning ?? {placement: 'bottom' as const},
       onOpenChange: props.onOpenChange,
     }))
 
@@ -47,14 +47,16 @@ export function usePopover(props: UsePopoverProps): UsePopoverReturn {
       return {
         open: hc.open,
         getTriggerProps: () => hc.getTriggerProps() as Record<string, unknown>,
-        getPositionerProps: () => hc.getPositionerProps() as Record<string, unknown>,
+        getPositionerProps: () =>
+          hc.getPositionerProps() as Record<string, unknown>,
         getContentProps: () => hc.getContentProps() as Record<string, unknown>,
         getArrowProps: () => hc.getArrowProps() as Record<string, unknown>,
-        getArrowTipProps: () => hc.getArrowTipProps() as Record<string, unknown>,
+        getArrowTipProps: () =>
+          hc.getArrowTipProps() as Record<string, unknown>,
       } satisfies PopoverApi
     })
 
-    return { api, isHover: true }
+    return {api, isHover: true}
   }
 
   // 使用 popover (click 模式)
@@ -67,7 +69,7 @@ export function usePopover(props: UsePopoverProps): UsePopoverReturn {
     closeOnEscape: props.closeOnEscape ?? true,
     modal: props.modal ?? false,
     portalled: props.portalled ?? true,
-    positioning: props.positioning ?? { placement: 'bottom' as const },
+    positioning: props.positioning ?? {placement: 'bottom' as const},
     onOpenChange: props.onOpenChange,
   }))
 
@@ -76,12 +78,13 @@ export function usePopover(props: UsePopoverProps): UsePopoverReturn {
     return {
       open: p.open,
       getTriggerProps: () => p.getTriggerProps() as Record<string, unknown>,
-      getPositionerProps: () => p.getPositionerProps() as Record<string, unknown>,
+      getPositionerProps: () =>
+        p.getPositionerProps() as Record<string, unknown>,
       getContentProps: () => p.getContentProps() as Record<string, unknown>,
       getArrowProps: () => p.getArrowProps() as Record<string, unknown>,
       getArrowTipProps: () => p.getArrowTipProps() as Record<string, unknown>,
     } satisfies PopoverApi
   })
 
-  return { api, isHover: false }
+  return {api, isHover: false}
 }

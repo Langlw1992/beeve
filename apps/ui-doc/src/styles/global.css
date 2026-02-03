@@ -1,12 +1,12 @@
 /* 按 Starlight 官方文档配置 cascade layers */
 @layer base, starlight, theme, components, utilities;
 
-@import '@astrojs/starlight-tailwind';
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/utilities.css' layer(utilities);
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
 /* 导入 @beeve/ui 样式（已支持 data-theme="dark"） */
-@import '@beeve/ui/styles';
+@import "@beeve/ui/styles";
 
 /* 扫描组件目录 */
 @source '../components';

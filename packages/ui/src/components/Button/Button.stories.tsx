@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Button } from '@beeve/ui'
-import { action } from 'storybook/actions'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Button} from '@beeve/ui'
+import {action} from 'storybook/actions'
 
 /**
  * # Button 按钮
@@ -28,19 +28,29 @@ const meta = {
     // 文档页面配置
     docs: {
       description: {
-        component: '按钮是最基础的交互组件，用于触发操作或事件。支持多种变体和尺寸。',
+        component:
+          '按钮是最基础的交互组件，用于触发操作或事件。支持多种变体和尺寸。',
       },
     },
   },
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'outline', 'ghost', 'destructive', 'link'],
+      options: [
+        'primary',
+        'secondary',
+        'outline',
+        'ghost',
+        'destructive',
+        'link',
+      ],
       description: '按钮变体样式',
       table: {
         category: '外观',
-        defaultValue: { summary: 'primary' },
-        type: { summary: 'primary | secondary | outline | ghost | destructive | link' },
+        defaultValue: {summary: 'primary'},
+        type: {
+          summary: 'primary | secondary | outline | ghost | destructive | link',
+        },
       },
     },
     size: {
@@ -49,8 +59,8 @@ const meta = {
       description: '按钮尺寸',
       table: {
         category: '外观',
-        defaultValue: { summary: 'md' },
-        type: { summary: 'sm | md | lg | icon' },
+        defaultValue: {summary: 'md'},
+        type: {summary: 'sm | md | lg | icon'},
       },
     },
     disabled: {
@@ -58,7 +68,7 @@ const meta = {
       description: '是否禁用按钮',
       table: {
         category: '状态',
-        defaultValue: { summary: 'false' },
+        defaultValue: {summary: 'false'},
       },
     },
     loading: {
@@ -66,7 +76,7 @@ const meta = {
       description: '是否显示加载状态',
       table: {
         category: '状态',
-        defaultValue: { summary: 'false' },
+        defaultValue: {summary: 'false'},
       },
     },
     type: {
@@ -75,7 +85,7 @@ const meta = {
       description: '原生 button 类型',
       table: {
         category: 'HTML 属性',
-        defaultValue: { summary: 'button' },
+        defaultValue: {summary: 'button'},
       },
     },
     children: {
@@ -137,7 +147,7 @@ export const Variants: Story = {
     </div>
   ),
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '六种按钮变体，覆盖不同的使用场景。',
@@ -165,7 +175,7 @@ export const Sizes: Story = {
     </div>
   ),
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '四种尺寸适配不同的 UI 需求。',
@@ -183,13 +193,28 @@ export const Disabled: Story = {
   render: () => (
     <div class="flex flex-wrap items-center gap-4">
       <Button disabled>Primary Disabled</Button>
-      <Button variant="secondary" disabled>Secondary Disabled</Button>
-      <Button variant="outline" disabled>Outline Disabled</Button>
-      <Button variant="destructive" disabled>Destructive Disabled</Button>
+      <Button
+        variant="secondary"
+        disabled
+      >
+        Secondary Disabled
+      </Button>
+      <Button
+        variant="outline"
+        disabled
+      >
+        Outline Disabled
+      </Button>
+      <Button
+        variant="destructive"
+        disabled
+      >
+        Destructive Disabled
+      </Button>
     </div>
   ),
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '禁用状态下按钮不可交互，常用于表单验证未通过时。',
@@ -207,33 +232,77 @@ export const WithIcons: Story = {
   render: () => (
     <div class="flex flex-wrap items-center gap-4">
       <Button>
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        <svg
+          class="size-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
         </svg>
         新建
       </Button>
       <Button variant="outline">
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+        <svg
+          class="size-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+          />
         </svg>
         上传
       </Button>
       <Button variant="secondary">
         设置
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <svg
+          class="size-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
         </svg>
       </Button>
       <Button variant="destructive">
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <svg
+          class="size-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
         删除
       </Button>
     </div>
   ),
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '图标可以增强按钮的语义表达，让用户更快理解按钮功能。',
@@ -278,7 +347,7 @@ export const ButtonGroups: Story = {
     </div>
   ),
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '常见的按钮组合模式：确认/取消、表单提交、危险操作确认。',
@@ -309,16 +378,34 @@ export const Loading: Story = {
           <p class="text-sm text-muted-foreground">各变体加载状态</p>
           <div class="flex flex-wrap items-center gap-4">
             <Button loading>Loading</Button>
-            <Button variant="secondary" loading>Secondary</Button>
-            <Button variant="outline" loading>Outline</Button>
-            <Button variant="destructive" loading>Destructive</Button>
+            <Button
+              variant="secondary"
+              loading
+            >
+              Secondary
+            </Button>
+            <Button
+              variant="outline"
+              loading
+            >
+              Outline
+            </Button>
+            <Button
+              variant="destructive"
+              loading
+            >
+              Destructive
+            </Button>
           </div>
         </div>
         {/* 交互演示 */}
         <div class="space-y-2">
           <p class="text-sm text-muted-foreground">交互演示</p>
           <div class="flex items-center gap-4">
-            <Button loading={loading()} onClick={handleClick}>
+            <Button
+              loading={loading()}
+              onClick={handleClick}
+            >
               {loading() ? '提交中...' : '点击提交'}
             </Button>
             <span class="text-sm text-muted-foreground">
@@ -330,7 +417,7 @@ export const Loading: Story = {
     )
   },
   parameters: {
-    controls: { disable: true },
+    controls: {disable: true},
     docs: {
       description: {
         story: '加载状态会自动禁用按钮并显示旋转图标，适用于异步操作场景。',
@@ -338,4 +425,3 @@ export const Loading: Story = {
     },
   },
 }
-

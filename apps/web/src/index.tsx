@@ -1,14 +1,14 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
-import { RouterProvider, createRouter } from '@tanstack/solid-router'
-import { ThemeProvider, Toaster } from '@beeve/ui'
+import {render} from 'solid-js/web'
+import {RouterProvider, createRouter} from '@tanstack/solid-router'
+import {ThemeProvider, Toaster} from '@beeve/ui'
 import './index.css'
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
+import {routeTree} from './routeTree.gen'
 
 // Create a new router instance
-const router = createRouter({ routeTree })
+const router = createRouter({routeTree})
 
 // Register the router instance for type safety
 declare module '@tanstack/solid-router' {
@@ -26,5 +26,5 @@ render(
       <Toaster />
     </ThemeProvider>
   ),
-  root!
+  root!,
 )

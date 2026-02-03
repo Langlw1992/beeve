@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
 import DatePicker from './DatePicker'
 
 const meta: Meta<typeof DatePicker> = {
@@ -32,9 +32,18 @@ export const Default: Story = {
 export const Sizes: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-64">
-      <DatePicker size="sm" placeholder="Small" />
-      <DatePicker size="md" placeholder="Medium" />
-      <DatePicker size="lg" placeholder="Large" />
+      <DatePicker
+        size="sm"
+        placeholder="Small"
+      />
+      <DatePicker
+        size="md"
+        placeholder="Medium"
+      />
+      <DatePicker
+        size="lg"
+        placeholder="Large"
+      />
     </div>
   ),
 }
@@ -65,11 +74,31 @@ export const Disabled: Story = {
 export const CustomFormat: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-64">
-      <DatePicker format="YYYY-MM-DD" placeholder="YYYY-MM-DD" label="ISO 格式" />
-      <DatePicker format="DD/MM/YYYY" placeholder="DD/MM/YYYY" label="欧洲格式" />
-      <DatePicker format="MM-DD-YYYY" placeholder="MM-DD-YYYY" label="美国格式" />
-      <DatePicker format="YYYY年MM月DD日" placeholder="选择日期" label="中文格式" />
-      <DatePicker format="DD.MM.YYYY" placeholder="DD.MM.YYYY" label="点分隔" />
+      <DatePicker
+        format="YYYY-MM-DD"
+        placeholder="YYYY-MM-DD"
+        label="ISO 格式"
+      />
+      <DatePicker
+        format="DD/MM/YYYY"
+        placeholder="DD/MM/YYYY"
+        label="欧洲格式"
+      />
+      <DatePicker
+        format="MM-DD-YYYY"
+        placeholder="MM-DD-YYYY"
+        label="美国格式"
+      />
+      <DatePicker
+        format="YYYY年MM月DD日"
+        placeholder="选择日期"
+        label="中文格式"
+      />
+      <DatePicker
+        format="DD.MM.YYYY"
+        placeholder="DD.MM.YYYY"
+        label="点分隔"
+      />
     </div>
   ),
 }
@@ -98,8 +127,14 @@ export const Controlled: Story = {
 export const WithDefaultValue: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-64">
-      <DatePicker label="默认值（字符串）" defaultValue="2024-01-01" />
-      <DatePicker label="默认值（Date对象）" defaultValue={new Date(2024, 0, 15)} />
+      <DatePicker
+        label="默认值（字符串）"
+        defaultValue="2024-01-01"
+      />
+      <DatePicker
+        label="默认值（Date对象）"
+        defaultValue={new Date(2024, 0, 15)}
+      />
     </div>
   ),
 }
@@ -200,10 +235,26 @@ export const MultipleValues: Story = {
 export const DifferentLocales: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-64">
-      <DatePicker label="中文" locale="zh-CN" placeholder="选择日期" />
-      <DatePicker label="English" locale="en-US" placeholder="Pick a date" />
-      <DatePicker label="日本語" locale="ja-JP" placeholder="日付を選択" />
-      <DatePicker label="Français" locale="fr-FR" placeholder="Choisir une date" />
+      <DatePicker
+        label="中文"
+        locale="zh-CN"
+        placeholder="选择日期"
+      />
+      <DatePicker
+        label="English"
+        locale="en-US"
+        placeholder="Pick a date"
+      />
+      <DatePicker
+        label="日本語"
+        locale="ja-JP"
+        placeholder="日付を選択"
+      />
+      <DatePicker
+        label="Français"
+        locale="fr-FR"
+        placeholder="Choisir une date"
+      />
     </div>
   ),
 }

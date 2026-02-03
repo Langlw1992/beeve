@@ -15,9 +15,16 @@
  * ```
  */
 
-import { splitProps, Show, createMemo, For, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { Check, X } from 'lucide-solid'
+import {
+  splitProps,
+  Show,
+  createMemo,
+  For,
+  type Component,
+  type JSX,
+} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
+import {Check, X} from 'lucide-solid'
 
 // ==================== 样式定义 ====================
 
@@ -31,15 +38,15 @@ const progressVariants = tv({
   },
   variants: {
     status: {
-      normal: { indicator: 'bg-primary' },
-      success: { indicator: 'bg-green-500', info: 'text-green-500' },
-      exception: { indicator: 'bg-destructive', info: 'text-destructive' },
-      active: { indicator: 'bg-primary animate-progress-stripe' },
+      normal: {indicator: 'bg-primary'},
+      success: {indicator: 'bg-green-500', info: 'text-green-500'},
+      exception: {indicator: 'bg-destructive', info: 'text-destructive'},
+      active: {indicator: 'bg-primary animate-progress-stripe'},
     },
     size: {
-      sm: { track: 'h-1', info: 'text-xs' },
-      md: { track: 'h-2', info: 'text-sm' },
-      lg: { track: 'h-3', info: 'text-base' },
+      sm: {track: 'h-1', info: 'text-xs'},
+      md: {track: 'h-2', info: 'text-sm'},
+      lg: {track: 'h-3', info: 'text-base'},
     },
   },
   defaultVariants: {
@@ -59,15 +66,15 @@ const circleProgressVariants = tv({
   },
   variants: {
     status: {
-      normal: { indicator: 'stroke-primary', text: 'text-foreground' },
-      success: { indicator: 'stroke-green-500', text: 'text-green-500' },
-      exception: { indicator: 'stroke-destructive', text: 'text-destructive' },
-      active: { indicator: 'stroke-primary', text: 'text-foreground' },
+      normal: {indicator: 'stroke-primary', text: 'text-foreground'},
+      success: {indicator: 'stroke-green-500', text: 'text-green-500'},
+      exception: {indicator: 'stroke-destructive', text: 'text-destructive'},
+      active: {indicator: 'stroke-primary', text: 'text-foreground'},
     },
     size: {
-      sm: { root: 'size-16', text: 'text-xs' },
-      md: { root: 'size-24', text: 'text-sm' },
-      lg: { root: 'size-32', text: 'text-base' },
+      sm: {root: 'size-16', text: 'text-xs'},
+      md: {root: 'size-24', text: 'text-sm'},
+      lg: {root: 'size-32', text: 'text-base'},
     },
   },
   defaultVariants: {
@@ -88,9 +95,9 @@ const stepsProgressVariants = tv({
       exception: {},
     },
     size: {
-      sm: { step: 'h-1' },
-      md: { step: 'h-2' },
-      lg: { step: 'h-3' },
+      sm: {step: 'h-1'},
+      md: {step: 'h-2'},
+      lg: {step: 'h-3'},
     },
   },
   defaultVariants: {
@@ -151,7 +158,7 @@ const LineProgress: Component<ProgressProps> = (props) => {
   const [local, variants] = splitProps(
     props,
     ['class', 'percent', 'showInfo', 'format', 'strokeColor', 'trailColor'],
-    ['status', 'size']
+    ['status', 'size'],
   )
 
   const percent = () => clampPercent(local.percent ?? 0)
@@ -171,7 +178,7 @@ const LineProgress: Component<ProgressProps> = (props) => {
     progressVariants({
       status: status(),
       size: variants.size,
-    })
+    }),
   )
 
   const defaultFormat = (p: number): JSX.Element | string => {
@@ -187,11 +194,11 @@ const LineProgress: Component<ProgressProps> = (props) => {
   const formatFn = () => local.format ?? defaultFormat
 
   return (
-    <div class={styles().root({ class: local.class })}>
+    <div class={styles().root({class: local.class})}>
       <div class={styles().wrapper()}>
         <div
           class={styles().track()}
-          style={{ 'background-color': local.trailColor }}
+          style={{'background-color': local.trailColor}}
         >
           <div
             class={styles().indicator()}
@@ -212,16 +219,24 @@ const LineProgress: Component<ProgressProps> = (props) => {
 // ==================== 环形进度条 ====================
 
 const circleSizes = {
-  sm: { size: 64, strokeWidth: 4 },
-  md: { size: 96, strokeWidth: 6 },
-  lg: { size: 128, strokeWidth: 8 },
+  sm: {size: 64, strokeWidth: 4},
+  md: {size: 96, strokeWidth: 6},
+  lg: {size: 128, strokeWidth: 8},
 }
 
 const CircleProgress: Component<ProgressProps> = (props) => {
   const [local, variants] = splitProps(
     props,
-    ['class', 'percent', 'showInfo', 'format', 'strokeWidth', 'strokeColor', 'trailColor'],
-    ['status', 'size']
+    [
+      'class',
+      'percent',
+      'showInfo',
+      'format',
+      'strokeWidth',
+      'strokeColor',
+      'trailColor',
+    ],
+    ['status', 'size'],
   )
 
   const percent = () => clampPercent(local.percent ?? 0)
@@ -241,7 +256,7 @@ const CircleProgress: Component<ProgressProps> = (props) => {
     circleProgressVariants({
       status: status(),
       size: variants.size,
-    })
+    }),
   )
 
   const sizeConfig = () => circleSizes[variants.size ?? 'md']
@@ -264,8 +279,13 @@ const CircleProgress: Component<ProgressProps> = (props) => {
   const formatFn = () => local.format ?? defaultFormat
 
   return (
-    <div class={styles().root({ class: local.class })}>
-      <svg class={styles().svg()} width={size()} height={size()} aria-hidden="true">
+    <div class={styles().root({class: local.class})}>
+      <svg
+        class={styles().svg()}
+        width={size()}
+        height={size()}
+        aria-hidden="true"
+      >
         <circle
           class={styles().track()}
           cx={size() / 2}
@@ -273,7 +293,7 @@ const CircleProgress: Component<ProgressProps> = (props) => {
           r={radius()}
           fill="none"
           stroke-width={strokeWidth()}
-          style={{ stroke: local.trailColor }}
+          style={{stroke: local.trailColor}}
         />
         <circle
           class={styles().indicator()}
@@ -285,7 +305,7 @@ const CircleProgress: Component<ProgressProps> = (props) => {
           stroke-linecap="round"
           stroke-dasharray={String(circumference())}
           stroke-dashoffset={offset()}
-          style={{ stroke: local.strokeColor }}
+          style={{stroke: local.strokeColor}}
         />
       </svg>
       <Show when={local.showInfo !== false}>
@@ -317,10 +337,12 @@ const ProgressSteps: Component<ProgressStepsProps> = (props) => {
     stepsProgressVariants({
       status: local.status,
       size: local.size,
-    })
+    }),
   )
 
-  const getStepStatus = (index: number): 'completed' | 'current' | 'pending' => {
+  const getStepStatus = (
+    index: number,
+  ): 'completed' | 'current' | 'pending' => {
     if (index < current()) {
       return 'completed'
     }
@@ -330,7 +352,9 @@ const ProgressSteps: Component<ProgressStepsProps> = (props) => {
     return 'pending'
   }
 
-  const getStepColor = (status: 'completed' | 'current' | 'pending'): string => {
+  const getStepColor = (
+    status: 'completed' | 'current' | 'pending',
+  ): string => {
     if (status === 'completed') {
       if (local.status === 'success') {
         return 'bg-green-500'
@@ -348,8 +372,8 @@ const ProgressSteps: Component<ProgressStepsProps> = (props) => {
 
   return (
     <div
-      class={styles().root({ class: local.class })}
-      style={{ gap: local.gap ? `${local.gap}px` : undefined }}
+      class={styles().root({class: local.class})}
+      style={{gap: local.gap ? `${local.gap}px` : undefined}}
     >
       <For each={Array(steps()).fill(0)}>
         {(_, index) => {

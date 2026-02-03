@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants'
+import {tv} from 'tailwind-variants'
 
 /**
  * DatePicker 和 DateRangePicker 共享的基础样式
@@ -20,7 +20,8 @@ export const baseDatePickerStyles = {
     header: 'flex items-center justify-between pt-1 pb-4',
     heading: 'text-sm font-medium',
     grid: 'w-full border-collapse space-y-1',
-    columnHeader: 'rounded-md text-[0.8rem] font-normal text-muted-foreground w-8 h-8',
+    columnHeader:
+      'rounded-md text-[0.8rem] font-normal text-muted-foreground w-8 h-8',
     row: 'flex w-full mt-2',
     monthTrigger: [
       'h-8 w-full p-2 font-normal rounded-md transition-colors',
@@ -38,12 +39,12 @@ export const baseDatePickerStyles = {
   },
   variants: {
     size: {
-      sm: { trigger: 'h-7 text-xs px-2' },
-      md: { trigger: 'h-8 text-sm px-3' },
-      lg: { trigger: 'h-9 text-sm px-3' },
+      sm: {trigger: 'h-7 text-xs px-2'},
+      md: {trigger: 'h-8 text-sm px-3'},
+      lg: {trigger: 'h-9 text-sm px-3'},
     },
     error: {
-      true: { trigger: 'border-destructive focus-visible:ring-destructive/20' },
+      true: {trigger: 'border-destructive focus-visible:ring-destructive/20'},
     },
   },
   defaultVariants: {
@@ -85,10 +86,7 @@ export const dateRangePickerStyles = tv({
     ...baseDatePickerStyles.slots,
     header: 'flex items-center justify-between', // 去掉 padding
     grid: 'w-full border-collapse', // 去掉 space-y-1
-    row: [
-      'group flex w-full mt-1',
-      'data-[week-mode]:cursor-pointer',
-    ],
+    row: ['group flex w-full mt-1', 'data-[week-mode]:cursor-pointer'],
     cell: [
       'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
       'data-[in-range]:bg-primary/20',
@@ -123,4 +121,6 @@ export const dateRangePickerStyles = tv({
 })
 
 export type DatePickerStylesReturn = ReturnType<typeof datePickerStyles>
-export type DateRangePickerStylesReturn = ReturnType<typeof dateRangePickerStyles>
+export type DateRangePickerStylesReturn = ReturnType<
+  typeof dateRangePickerStyles
+>

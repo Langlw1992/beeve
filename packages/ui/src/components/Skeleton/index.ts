@@ -2,7 +2,7 @@
  * @beeve/ui - Skeleton Component Exports
  */
 
-export { Skeleton } from './Skeleton'
+export {Skeleton} from './Skeleton'
 export type {
   SkeletonProps,
   SkeletonVariants,

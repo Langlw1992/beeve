@@ -19,12 +19,7 @@
  * ```
  */
 
-import {
-  splitProps,
-  createSignal,
-  createMemo,
-  type JSX,
-} from 'solid-js'
+import {splitProps, createSignal, createMemo, type JSX} from 'solid-js'
 import {
   createSolidTable,
   getCoreRowModel,
@@ -38,14 +33,16 @@ import {
   type ExpandedState,
   type ColumnPinningState,
 } from '@tanstack/solid-table'
-import { TableCore } from './TableCore'
-import { Pagination } from '../Pagination'
-import type { TableProps } from './types'
-import { Show } from 'solid-js'
+import {TableCore} from './TableCore'
+import {Pagination} from '../Pagination'
+import type {TableProps} from './types'
+import {Show} from 'solid-js'
 
 // ==================== Table 组件 ====================
 
-export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Element {
+export function Table<TData extends RowData>(
+  props: TableProps<TData>,
+): JSX.Element {
   const [local, rest] = splitProps(props, [
     // 数据
     'data',
@@ -92,17 +89,17 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
 
   // ===== 内部状态 =====
   const [internalSorting, setInternalSorting] = createSignal<SortingState>(
-    local.defaultSorting ?? []
+    local.defaultSorting ?? [],
   )
-  const [internalPagination, setInternalPagination] = createSignal<PaginationState>({
-    pageIndex: 0,
-    pageSize: local.pageSize ?? 10,
-  })
-  const [internalSelection, setInternalSelection] = createSignal<RowSelectionState>(
-    local.defaultSelection ?? {}
-  )
+  const [internalPagination, setInternalPagination] =
+    createSignal<PaginationState>({
+      pageIndex: 0,
+      pageSize: local.pageSize ?? 10,
+    })
+  const [internalSelection, setInternalSelection] =
+    createSignal<RowSelectionState>(local.defaultSelection ?? {})
   const [internalExpanded, setInternalExpanded] = createSignal<ExpandedState>(
-    local.defaultExpanded ?? {}
+    local.defaultExpanded ?? {},
   )
 
   // ===== 状态访问器（支持受控和非受控）=====
@@ -112,32 +109,46 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
   const expanded = () => local.expanded ?? internalExpanded()
 
   // ===== 状态更新处理 =====
-  const handleSortingChange = (updater: SortingState | ((old: SortingState) => SortingState)) => {
-    const newValue = typeof updater === 'function' ? updater(sorting()) : updater
+  const handleSortingChange = (
+    updater: SortingState | ((old: SortingState) => SortingState),
+  ) => {
+    const newValue =
+      typeof updater === 'function' ? updater(sorting()) : updater
     if (local.sorting === undefined) {
       setInternalSorting(newValue)
     }
     local.onSort?.(newValue)
   }
 
-  const handlePaginationChange = (updater: PaginationState | ((old: PaginationState) => PaginationState)) => {
-    const newValue = typeof updater === 'function' ? updater(pagination()) : updater
+  const handlePaginationChange = (
+    updater: PaginationState | ((old: PaginationState) => PaginationState),
+  ) => {
+    const newValue =
+      typeof updater === 'function' ? updater(pagination()) : updater
     if (local.pagination === undefined) {
       setInternalPagination(newValue)
     }
     local.onPagination?.(newValue)
   }
 
-  const handleSelectionChange = (updater: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => {
-    const newValue = typeof updater === 'function' ? updater(selection()) : updater
+  const handleSelectionChange = (
+    updater:
+      | RowSelectionState
+      | ((old: RowSelectionState) => RowSelectionState),
+  ) => {
+    const newValue =
+      typeof updater === 'function' ? updater(selection()) : updater
     if (local.selection === undefined) {
       setInternalSelection(newValue)
     }
     local.onSelection?.(newValue)
   }
 
-  const handleExpandedChange = (updater: ExpandedState | ((old: ExpandedState) => ExpandedState)) => {
-    const newValue = typeof updater === 'function' ? updater(expanded()) : updater
+  const handleExpandedChange = (
+    updater: ExpandedState | ((old: ExpandedState) => ExpandedState),
+  ) => {
+    const newValue =
+      typeof updater === 'function' ? updater(expanded()) : updater
     if (local.expanded === undefined) {
       setInternalExpanded(newValue)
     }
@@ -153,14 +164,14 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
     const left: string[] = []
     const right: string[] = []
     for (const col of local.columns) {
-      const pin = (col.meta as { pin?: 'left' | 'right' } | undefined)?.pin
+      const pin = (col.meta as {pin?: 'left' | 'right'} | undefined)?.pin
       if (pin === 'left' && col.id) {
         left.push(col.id)
       } else if (pin === 'right' && col.id) {
         right.push(col.id)
       }
     }
-    return { left, right }
+    return {left, right}
   })
 
   // ===== 创建表格实例 =====
@@ -186,11 +197,21 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
     getRowCanExpand: local.getRowCanExpand ?? (() => !!local.renderExpanded),
     // 状态
     state: {
-      get sorting() { return sorting() },
-      get pagination() { return pagination() },
-      get rowSelection() { return selection() },
-      get expanded() { return expanded() },
-      get columnPinning() { return columnPinning() },
+      get sorting() {
+        return sorting()
+      },
+      get pagination() {
+        return pagination()
+      },
+      get rowSelection() {
+        return selection()
+      },
+      get expanded() {
+        return expanded()
+      },
+      get columnPinning() {
+        return columnPinning()
+      },
     },
     // 回调
     onSortingChange: handleSortingChange,
@@ -228,7 +249,10 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
         selectAllRows={true}
         expandable={local.expandable}
         renderExpanded={local.renderExpanded}
-        enablePinning={(columnPinning().left?.length ?? 0) > 0 || (columnPinning().right?.length ?? 0) > 0}
+        enablePinning={
+          (columnPinning().left?.length ?? 0) > 0 ||
+          (columnPinning().right?.length ?? 0) > 0
+        }
       />
       {/* 分页 */}
       <Show when={totalRows() > pagination().pageSize}>
@@ -247,4 +271,4 @@ export function Table<TData extends RowData>(props: TableProps<TData>): JSX.Elem
 }
 
 // 导出类型
-export type { TableProps } from './types'
+export type {TableProps} from './types'

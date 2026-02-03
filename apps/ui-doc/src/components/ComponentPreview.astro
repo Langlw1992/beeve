@@ -7,7 +7,7 @@ interface Props {
   class?: string
 }
 
-const { class: className } = Astro.props
+const {class: className} = Astro.props
 ---
 
 <div class:list={['not-content', 'sl-flex component-preview', className]}>

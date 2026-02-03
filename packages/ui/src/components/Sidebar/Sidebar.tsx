@@ -38,8 +38,8 @@ import {
   type Component,
   type ComponentProps,
 } from 'solid-js'
-import { tv } from 'tailwind-variants'
-import { PanelLeft, PanelLeftClose } from 'lucide-solid'
+import {tv} from 'tailwind-variants'
+import {PanelLeft, PanelLeftClose} from 'lucide-solid'
 
 // ==================== 常量 ====================
 
@@ -59,15 +59,9 @@ const sidebarStyles = tv({
       'border-r border-sidebar-border/60',
       'transition-[width] duration-200 ease-in-out',
     ],
-    header: [
-      'flex h-14 shrink-0 items-center gap-2 px-3',
-    ],
-    content: [
-      'flex-1 overflow-y-auto overflow-x-hidden',
-    ],
-    footer: [
-      'mt-auto shrink-0 p-3',
-    ],
+    header: ['flex h-14 shrink-0 items-center gap-2 px-3'],
+    content: ['flex-1 overflow-y-auto overflow-x-hidden'],
+    footer: ['mt-auto shrink-0 p-3'],
     trigger: [
       'inline-flex items-center justify-center size-8 rounded-md',
       'text-sidebar-foreground/50 hover:text-sidebar-foreground',
@@ -140,7 +134,8 @@ export interface SidebarProps extends ComponentProps<'aside'> {}
 export interface SidebarHeaderProps extends ComponentProps<'div'> {}
 export interface SidebarContentProps extends ComponentProps<'div'> {}
 export interface SidebarFooterProps extends ComponentProps<'div'> {}
-export interface SidebarTriggerProps extends Omit<ComponentProps<'button'>, 'children'> {}
+export interface SidebarTriggerProps
+  extends Omit<ComponentProps<'button'>, 'children'> {}
 
 // ==================== Provider ====================
 
@@ -156,7 +151,9 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
   ])
 
   // 内部状态
-  const [internalOpen, setInternalOpen] = createSignal(local.defaultOpen ?? true)
+  const [internalOpen, setInternalOpen] = createSignal(
+    local.defaultOpen ?? true,
+  )
 
   // 计算当前状态
   const open = () => local.open ?? internalOpen()
@@ -223,7 +220,7 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
           '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
           ...(typeof local.style === 'object' ? local.style : {}),
         }}
-        class={styles.wrapper({ class: local.class })}
+        class={styles.wrapper({class: local.class})}
         {...rest}
       >
         {local.children}
@@ -236,22 +233,22 @@ const SidebarProvider: Component<SidebarProviderProps> = (props) => {
 
 const SidebarRoot: Component<SidebarProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const { state, open, collapsible } = useSidebar()
+  const {state, open, collapsible} = useSidebar()
 
   const styles = createMemo(() => {
     const mode = collapsible()
     const isOpen = open()
 
     if (mode === 'none') {
-      return sidebarStyles({ collapsed: false, hidden: false })
+      return sidebarStyles({collapsed: false, hidden: false})
     }
 
     if (mode === 'offcanvas') {
-      return sidebarStyles({ collapsed: false, hidden: !isOpen })
+      return sidebarStyles({collapsed: false, hidden: !isOpen})
     }
 
     // icon mode
-    return sidebarStyles({ collapsed: !isOpen, hidden: false })
+    return sidebarStyles({collapsed: !isOpen, hidden: false})
   })
 
   return (
@@ -259,7 +256,7 @@ const SidebarRoot: Component<SidebarProps> = (props) => {
       data-slot="sidebar"
       data-state={state()}
       data-collapsible={collapsible()}
-      class={styles().sidebar({ class: local.class })}
+      class={styles().sidebar({class: local.class})}
       {...rest}
     >
       {local.children}
@@ -269,19 +266,23 @@ const SidebarRoot: Component<SidebarProps> = (props) => {
 
 const SidebarHeader: Component<SidebarHeaderProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const { open, collapsible } = useSidebar()
+  const {open, collapsible} = useSidebar()
 
   const styles = createMemo(() => {
     const mode = collapsible()
     const isOpen = open()
     if (mode === 'icon' && !isOpen) {
-      return sidebarStyles({ collapsed: true })
+      return sidebarStyles({collapsed: true})
     }
-    return sidebarStyles({ collapsed: false })
+    return sidebarStyles({collapsed: false})
   })
 
   return (
-    <div data-slot="sidebar-header" class={styles().header({ class: local.class })} {...rest}>
+    <div
+      data-slot="sidebar-header"
+      class={styles().header({class: local.class})}
+      {...rest}
+    >
       {local.children}
     </div>
   )
@@ -289,19 +290,23 @@ const SidebarHeader: Component<SidebarHeaderProps> = (props) => {
 
 const SidebarContent: Component<SidebarContentProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const { open, collapsible } = useSidebar()
+  const {open, collapsible} = useSidebar()
 
   const styles = createMemo(() => {
     const mode = collapsible()
     const isOpen = open()
     if (mode === 'icon' && !isOpen) {
-      return sidebarStyles({ collapsed: true })
+      return sidebarStyles({collapsed: true})
     }
-    return sidebarStyles({ collapsed: false })
+    return sidebarStyles({collapsed: false})
   })
 
   return (
-    <div data-slot="sidebar-content" class={styles().content({ class: local.class })} {...rest}>
+    <div
+      data-slot="sidebar-content"
+      class={styles().content({class: local.class})}
+      {...rest}
+    >
       {local.children}
     </div>
   )
@@ -309,19 +314,23 @@ const SidebarContent: Component<SidebarContentProps> = (props) => {
 
 const SidebarFooter: Component<SidebarFooterProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const { open, collapsible } = useSidebar()
+  const {open, collapsible} = useSidebar()
 
   const styles = createMemo(() => {
     const mode = collapsible()
     const isOpen = open()
     if (mode === 'icon' && !isOpen) {
-      return sidebarStyles({ collapsed: true })
+      return sidebarStyles({collapsed: true})
     }
-    return sidebarStyles({ collapsed: false })
+    return sidebarStyles({collapsed: false})
   })
 
   return (
-    <div data-slot="sidebar-footer" class={styles().footer({ class: local.class })} {...rest}>
+    <div
+      data-slot="sidebar-footer"
+      class={styles().footer({class: local.class})}
+      {...rest}
+    >
       {local.children}
     </div>
   )
@@ -329,7 +338,7 @@ const SidebarFooter: Component<SidebarFooterProps> = (props) => {
 
 const SidebarTrigger: Component<SidebarTriggerProps> = (props) => {
   const [local, rest] = splitProps(props, ['class'])
-  const { toggleSidebar, open, collapsible } = useSidebar()
+  const {toggleSidebar, open, collapsible} = useSidebar()
   const styles = sidebarStyles()
 
   // 不可折叠时不显示
@@ -341,12 +350,15 @@ const SidebarTrigger: Component<SidebarTriggerProps> = (props) => {
     <button
       type="button"
       data-slot="sidebar-trigger"
-      class={styles.trigger({ class: local.class })}
+      class={styles.trigger({class: local.class})}
       onClick={toggleSidebar}
       title={open() ? '收起侧边栏' : '展开侧边栏'}
       {...rest}
     >
-      <Show when={open()} fallback={<PanelLeft class="size-4" />}>
+      <Show
+        when={open()}
+        fallback={<PanelLeft class="size-4" />}
+      >
         <PanelLeftClose class="size-4" />
       </Show>
       <span class="sr-only">Toggle Sidebar</span>

@@ -2,7 +2,7 @@
  * @beeve/ui - NavMenu Component Exports
  */
 
-export { NavMenu } from './NavMenu'
+export {NavMenu} from './NavMenu'
 export type {
   NavMenuProps,
   NavMenuItemType,
@@ -17,4 +17,3 @@ export {
   isNavMenuItem,
   navMenuHasChildren,
 } from './types'
-

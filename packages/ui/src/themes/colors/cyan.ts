@@ -1,4 +1,4 @@
-import type { ThemeColorPreset } from '../types'
+import type {ThemeColorPreset} from '../types'
 
 export const cyan: ThemeColorPreset = {
   name: 'cyan',

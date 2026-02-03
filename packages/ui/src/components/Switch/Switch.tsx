@@ -3,8 +3,15 @@
  * 开关组件
  */
 
-import { splitProps, Show, createMemo, createSignal, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {
+  splitProps,
+  Show,
+  createMemo,
+  createSignal,
+  type Component,
+  type JSX,
+} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 const switchVariants = tv({
   slots: {
@@ -79,12 +86,23 @@ export interface SwitchProps extends SwitchVariants {
 export const Switch: Component<SwitchProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'children', 'checked', 'defaultChecked', 'onChange', 'id', 'name', 'value'],
-    ['size', 'disabled']
+    [
+      'class',
+      'children',
+      'checked',
+      'defaultChecked',
+      'onChange',
+      'id',
+      'name',
+      'value',
+    ],
+    ['size', 'disabled'],
   )
 
   // 内部状态用于非受控模式
-  const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false)
+  const [internalChecked, setInternalChecked] = createSignal(
+    local.defaultChecked ?? false,
+  )
 
   const isControlled = () => local.checked !== undefined
 
@@ -95,15 +113,19 @@ export const Switch: Component<SwitchProps> = (props) => {
     return internalChecked()
   })
 
-  const state = () => checked() ? 'checked' : 'unchecked'
+  const state = () => (checked() ? 'checked' : 'unchecked')
 
-  const styles = createMemo(() => switchVariants({
-    size: variants.size,
-    disabled: variants.disabled,
-  }))
+  const styles = createMemo(() =>
+    switchVariants({
+      size: variants.size,
+      disabled: variants.disabled,
+    }),
+  )
 
   const handleChange = (e: Event) => {
-    if (variants.disabled) { return }
+    if (variants.disabled) {
+      return
+    }
     const target = e.target as HTMLInputElement
     // 非受控模式下更新内部状态
     if (!isControlled()) {
@@ -113,7 +135,10 @@ export const Switch: Component<SwitchProps> = (props) => {
   }
 
   return (
-    <label class={styles().root({ class: local.class })} {...rest}>
+    <label
+      class={styles().root({class: local.class})}
+      {...rest}
+    >
       <input
         type="checkbox"
         role="switch"
@@ -126,8 +151,14 @@ export const Switch: Component<SwitchProps> = (props) => {
         onChange={handleChange}
         aria-checked={checked()}
       />
-      <span class={styles().track()} data-state={state()}>
-        <span class={styles().thumb()} data-state={state()} />
+      <span
+        class={styles().track()}
+        data-state={state()}
+      >
+        <span
+          class={styles().thumb()}
+          data-state={state()}
+        />
       </span>
       <Show when={local.children}>
         <span class={styles().label()}>{local.children}</span>
@@ -135,4 +166,3 @@ export const Switch: Component<SwitchProps> = (props) => {
     </label>
   )
 }
-

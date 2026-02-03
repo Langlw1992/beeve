@@ -6,4 +6,3 @@ export {
   type RadioGroupProps,
   type RadioVariants,
 } from './Radio'
-

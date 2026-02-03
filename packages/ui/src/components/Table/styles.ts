@@ -2,7 +2,7 @@
  * Table 组件共享样式定义
  */
 
-import { tv } from 'tailwind-variants'
+import {tv} from 'tailwind-variants'
 
 export const tableVariants = tv({
   slots: {
@@ -18,11 +18,15 @@ export const tableVariants = tv({
       '[&:has([role=checkbox])]:pr-0',
     ],
     thSortable: 'cursor-pointer select-none hover:bg-muted/50',
-    thPinnedLeft: 'sticky left-0 z-10 bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]',
-    thPinnedRight: 'sticky right-0 z-10 bg-background shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]',
+    thPinnedLeft:
+      'sticky left-0 z-10 bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]',
+    thPinnedRight:
+      'sticky right-0 z-10 bg-background shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]',
     td: 'align-middle [&:has([role=checkbox])]:pr-0',
-    tdPinnedLeft: 'sticky left-0 z-10 bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]',
-    tdPinnedRight: 'sticky right-0 z-10 bg-background shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]',
+    tdPinnedLeft:
+      'sticky left-0 z-10 bg-background shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]',
+    tdPinnedRight:
+      'sticky right-0 z-10 bg-background shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]',
     empty: 'text-center text-muted-foreground',
     expandedRow: 'bg-muted/50 border-b-0',
     expandedContent: 'p-4',
@@ -42,7 +46,8 @@ export const tableVariants = tv({
     ],
     expandIcon: 'size-4 shrink-0 transition-transform duration-200',
     expandIconExpanded: 'rotate-90',
-    loadingOverlay: 'absolute inset-0 bg-background/60 flex items-center justify-center z-20',
+    loadingOverlay:
+      'absolute inset-0 bg-background/60 flex items-center justify-center z-20',
     loadingSpinner: 'size-6 animate-spin text-primary',
   },
   variants: {

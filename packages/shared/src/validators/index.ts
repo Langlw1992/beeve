@@ -3,11 +3,14 @@
  * 共享 Zod 验证 Schema
  */
 
-import { z } from 'zod'
+import {z} from 'zod'
 
 // 基础验证器
 export const emailSchema = z.string().email('无效的邮箱地址')
-export const passwordSchema = z.string().min(8, '密码至少 8 位').max(100, '密码不能超过 100 位')
+export const passwordSchema = z
+  .string()
+  .min(8, '密码至少 8 位')
+  .max(100, '密码不能超过 100 位')
 export const uuidSchema = z.string().uuid('无效的 UUID')
 
 // 分页参数

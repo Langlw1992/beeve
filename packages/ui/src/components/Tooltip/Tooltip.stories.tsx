@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Tooltip } from './Tooltip'
-import { Button } from '../Button'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Tooltip} from './Tooltip'
+import {Button} from '../Button'
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',
@@ -15,10 +15,10 @@ const meta: Meta<typeof Tooltip> = {
       control: 'boolean',
     },
     openDelay: {
-      control: { type: 'number', min: 0, max: 2000, step: 100 },
+      control: {type: 'number', min: 0, max: 2000, step: 100},
     },
     closeDelay: {
-      control: { type: 'number', min: 0, max: 1000, step: 50 },
+      control: {type: 'number', min: 0, max: 1000, step: 50},
     },
     interactive: {
       control: 'boolean',
@@ -58,23 +58,77 @@ export const WithArrow: Story = {
 export const Placements: Story = {
   render: () => (
     <div class="flex flex-wrap gap-4 p-8">
-      <Tooltip content="Top" positioning={{ placement: 'top' }} arrow>
-        <Button variant="outline" size="sm">Top</Button>
+      <Tooltip
+        content="Top"
+        positioning={{placement: 'top'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Top
+        </Button>
       </Tooltip>
-      <Tooltip content="Bottom" positioning={{ placement: 'bottom' }} arrow>
-        <Button variant="outline" size="sm">Bottom</Button>
+      <Tooltip
+        content="Bottom"
+        positioning={{placement: 'bottom'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Bottom
+        </Button>
       </Tooltip>
-      <Tooltip content="Left" positioning={{ placement: 'left' }} arrow>
-        <Button variant="outline" size="sm">Left</Button>
+      <Tooltip
+        content="Left"
+        positioning={{placement: 'left'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Left
+        </Button>
       </Tooltip>
-      <Tooltip content="Right" positioning={{ placement: 'right' }} arrow>
-        <Button variant="outline" size="sm">Right</Button>
+      <Tooltip
+        content="Right"
+        positioning={{placement: 'right'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Right
+        </Button>
       </Tooltip>
-      <Tooltip content="Top Start" positioning={{ placement: 'top-start' }} arrow>
-        <Button variant="outline" size="sm">Top Start</Button>
+      <Tooltip
+        content="Top Start"
+        positioning={{placement: 'top-start'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Top Start
+        </Button>
       </Tooltip>
-      <Tooltip content="Top End" positioning={{ placement: 'top-end' }} arrow>
-        <Button variant="outline" size="sm">Top End</Button>
+      <Tooltip
+        content="Top End"
+        positioning={{placement: 'top-end'}}
+        arrow
+      >
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Top End
+        </Button>
       </Tooltip>
     </div>
   ),
@@ -88,7 +142,12 @@ export const Interactive: Story = {
     content: (
       <div class="flex flex-col gap-1">
         <span>可交互的提示</span>
-        <a href="#example" class="text-primary underline">点击链接</a>
+        <a
+          href="#example"
+          class="text-primary underline"
+        >
+          点击链接
+        </a>
       </div>
     ),
     interactive: true,
@@ -117,8 +176,19 @@ export const Controlled: Story = {
     return (
       <div class="flex flex-col gap-4">
         <div class="flex gap-2">
-          <Button size="sm" onClick={() => setOpen(true)}>显示</Button>
-          <Button size="sm" variant="outline" onClick={() => setOpen(false)}>隐藏</Button>
+          <Button
+            size="sm"
+            onClick={() => setOpen(true)}
+          >
+            显示
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
+            隐藏
+          </Button>
         </div>
         <Tooltip
           content="受控的 Tooltip"
@@ -142,4 +212,3 @@ export const Disabled: Story = {
     children: <Button variant="outline">禁用 Tooltip</Button>,
   },
 }
-

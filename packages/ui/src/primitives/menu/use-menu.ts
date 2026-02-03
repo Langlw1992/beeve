@@ -3,10 +3,10 @@
  * 基于 @zag-js/menu 实现
  */
 
-import { createMemo, createUniqueId, type Accessor } from 'solid-js'
+import {createMemo, createUniqueId, type Accessor} from 'solid-js'
 import * as menu from '@zag-js/menu'
-import { useMachine, normalizeProps, type PropTypes } from '@zag-js/solid'
-import type { UseMenuProps } from './types'
+import {useMachine, normalizeProps, type PropTypes} from '@zag-js/solid'
+import type {UseMenuProps} from './types'
 
 export type MenuApi = menu.Api<PropTypes>
 
@@ -48,5 +48,5 @@ export function useMenu(props: UseMenuProps = {}): UseMenuReturn {
 
   const api = createMemo(() => menu.connect(service, normalizeProps))
 
-  return { api, service }
+  return {api, service}
 }

@@ -2,9 +2,9 @@
  * Popover Primitive Types
  */
 
-import type { PositioningOptions } from '@zag-js/popover'
+import type {PositioningOptions} from '@zag-js/popover'
 
-export type { PositioningOptions }
+export type {PositioningOptions}
 
 /** 触发方式 */
 export type PopoverTrigger = 'click' | 'hover'
@@ -36,5 +36,5 @@ export interface PopoverProps {
   /** 关闭延迟 (ms)，仅 hover 模式有效，默认 300 */
   closeDelay?: number
   /** 打开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 }

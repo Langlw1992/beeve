@@ -2,10 +2,10 @@
  * Radio 组件测试
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@solidjs/testing-library'
-import { createSignal } from 'solid-js'
-import { Radio, RadioGroup } from './Radio'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent, waitFor} from '@solidjs/testing-library'
+import {createSignal} from 'solid-js'
+import {Radio, RadioGroup} from './Radio'
 
 describe('Radio', () => {
   // ==================== 渲染测试 ====================
@@ -37,13 +37,27 @@ describe('Radio', () => {
     })
 
     it('应该支持 sm 尺寸', () => {
-      render(() => <Radio size="sm" value="test">测试</Radio>)
+      render(() => (
+        <Radio
+          size="sm"
+          value="test"
+        >
+          测试
+        </Radio>
+      ))
       const control = document.querySelector('[data-state]')
       expect(control?.className).toContain('size-4')
     })
 
     it('应该支持 lg 尺寸', () => {
-      render(() => <Radio size="lg" value="test">测试</Radio>)
+      render(() => (
+        <Radio
+          size="lg"
+          value="test"
+        >
+          测试
+        </Radio>
+      ))
       const control = document.querySelector('[data-state]')
       expect(control?.className).toContain('size-6')
     })
@@ -58,13 +72,23 @@ describe('Radio', () => {
     })
 
     it('checked 为 true 时应该是选中状态', () => {
-      render(() => <Radio value="test" checked />)
+      render(() => (
+        <Radio
+          value="test"
+          checked
+        />
+      ))
       const radio = screen.getByRole('radio')
       expect(radio).toBeChecked()
     })
 
     it('选中状态应该有正确的 data-state', () => {
-      render(() => <Radio value="test" checked />)
+      render(() => (
+        <Radio
+          value="test"
+          checked
+        />
+      ))
       const control = document.querySelector('[data-state="checked"]')
       expect(control).toBeInTheDocument()
     })
@@ -73,19 +97,37 @@ describe('Radio', () => {
   // ==================== 禁用状态测试 ====================
   describe('禁用状态', () => {
     it('disabled 时 radio 应该被禁用', () => {
-      render(() => <Radio value="test" disabled />)
+      render(() => (
+        <Radio
+          value="test"
+          disabled
+        />
+      ))
       expect(screen.getByRole('radio')).toBeDisabled()
     })
 
     it('disabled 时应该有禁用样式', () => {
-      render(() => <Radio value="test" disabled>禁用</Radio>)
+      render(() => (
+        <Radio
+          value="test"
+          disabled
+        >
+          禁用
+        </Radio>
+      ))
       const label = document.querySelector('label')
       expect(label?.className).toContain('opacity-50')
     })
 
     it('disabled 时不应该响应点击', async () => {
       const handleChange = vi.fn()
-      render(() => <Radio value="test" disabled onChange={handleChange} />)
+      render(() => (
+        <Radio
+          value="test"
+          disabled
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('radio'))
 
@@ -97,7 +139,12 @@ describe('Radio', () => {
   describe('交互', () => {
     it('点击时应该触发 onChange 回调', async () => {
       const handleChange = vi.fn()
-      render(() => <Radio value="test" onChange={handleChange} />)
+      render(() => (
+        <Radio
+          value="test"
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('radio'))
 
@@ -106,7 +153,14 @@ describe('Radio', () => {
 
     it('点击标签也应该触发选中', async () => {
       const handleChange = vi.fn()
-      render(() => <Radio value="test" onChange={handleChange}>点击我</Radio>)
+      render(() => (
+        <Radio
+          value="test"
+          onChange={handleChange}
+        >
+          点击我
+        </Radio>
+      ))
 
       await fireEvent.click(screen.getByText('点击我'))
 
@@ -117,12 +171,22 @@ describe('Radio', () => {
   // ==================== 属性透传测试 ====================
   describe('属性透传', () => {
     it('应该支持 id 属性', () => {
-      render(() => <Radio value="test" id="my-radio" />)
+      render(() => (
+        <Radio
+          value="test"
+          id="my-radio"
+        />
+      ))
       expect(screen.getByRole('radio')).toHaveAttribute('id', 'my-radio')
     })
 
     it('应该支持 name 属性', () => {
-      render(() => <Radio value="test" name="options" />)
+      render(() => (
+        <Radio
+          value="test"
+          name="options"
+        />
+      ))
       expect(screen.getByRole('radio')).toHaveAttribute('name', 'options')
     })
 
@@ -135,7 +199,12 @@ describe('Radio', () => {
   // ==================== 样式定制测试 ====================
   describe('样式定制', () => {
     it('应该支持自定义 class', () => {
-      render(() => <Radio value="test" class="custom-radio" />)
+      render(() => (
+        <Radio
+          value="test"
+          class="custom-radio"
+        />
+      ))
       const label = document.querySelector('label')
       expect(label).toHaveClass('custom-radio')
     })
@@ -174,7 +243,10 @@ describe('RadioGroup', () => {
   describe('受控模式', () => {
     it('应该正确设置初始选中值', () => {
       render(() => (
-        <RadioGroup name="test" value="b">
+        <RadioGroup
+          name="test"
+          value="b"
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -187,7 +259,11 @@ describe('RadioGroup', () => {
     it('点击时应该触发 onChange', async () => {
       const handleChange = vi.fn()
       render(() => (
-        <RadioGroup name="test" value="a" onChange={handleChange}>
+        <RadioGroup
+          name="test"
+          value="a"
+          onChange={handleChange}
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -202,7 +278,11 @@ describe('RadioGroup', () => {
       const [value, setValue] = createSignal('a')
 
       render(() => (
-        <RadioGroup name="test" value={value()} onChange={setValue}>
+        <RadioGroup
+          name="test"
+          value={value()}
+          onChange={setValue}
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -223,7 +303,10 @@ describe('RadioGroup', () => {
   describe('非受控模式', () => {
     it('defaultValue 应该设置初始选中值', () => {
       render(() => (
-        <RadioGroup name="test" defaultValue="b">
+        <RadioGroup
+          name="test"
+          defaultValue="b"
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -238,7 +321,10 @@ describe('RadioGroup', () => {
   describe('禁用状态', () => {
     it('disabled 时所有 radio 应该被禁用', () => {
       render(() => (
-        <RadioGroup name="test" disabled>
+        <RadioGroup
+          name="test"
+          disabled
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -252,7 +338,11 @@ describe('RadioGroup', () => {
     it('disabled 时不应该响应点击', async () => {
       const handleChange = vi.fn()
       render(() => (
-        <RadioGroup name="test" disabled onChange={handleChange}>
+        <RadioGroup
+          name="test"
+          disabled
+          onChange={handleChange}
+        >
           <Radio value="a">A</Radio>
           <Radio value="b">B</Radio>
         </RadioGroup>
@@ -268,7 +358,10 @@ describe('RadioGroup', () => {
   describe('尺寸继承', () => {
     it('Radio 应该继承 RadioGroup 的尺寸', () => {
       render(() => (
-        <RadioGroup name="test" size="lg">
+        <RadioGroup
+          name="test"
+          size="lg"
+        >
           <Radio value="a">A</Radio>
         </RadioGroup>
       ))
@@ -278,8 +371,16 @@ describe('RadioGroup', () => {
 
     it('Radio 自身的尺寸应该覆盖 RadioGroup 的尺寸', () => {
       render(() => (
-        <RadioGroup name="test" size="lg">
-          <Radio value="a" size="sm">A</Radio>
+        <RadioGroup
+          name="test"
+          size="lg"
+        >
+          <Radio
+            value="a"
+            size="sm"
+          >
+            A
+          </Radio>
         </RadioGroup>
       ))
       const control = document.querySelector('[data-state]')
@@ -287,4 +388,3 @@ describe('RadioGroup', () => {
     })
   })
 })
-

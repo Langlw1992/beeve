@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { Label } from '@beeve/ui'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {Label} from '@beeve/ui'
 
 /**
  * # Label 标签
@@ -59,7 +59,12 @@ export const Disabled: Story = {
 export const WithInput: Story = {
   render: () => (
     <div class="flex flex-col gap-2">
-      <Label for="email" required>邮箱地址</Label>
+      <Label
+        for="email"
+        required
+      >
+        邮箱地址
+      </Label>
       <input
         id="email"
         type="email"
@@ -69,4 +74,3 @@ export const WithInput: Story = {
     </div>
   ),
 }
-

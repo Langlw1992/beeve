@@ -25,13 +25,13 @@ import {
   type Component,
   type JSX,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
+import {Portal} from 'solid-js/web'
 import * as dialog from '@zag-js/dialog'
 import * as presence from '@zag-js/presence'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import { X } from 'lucide-solid'
-import { tv } from 'tailwind-variants'
-import { Button } from '../Button'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import {X} from 'lucide-solid'
+import {tv} from 'tailwind-variants'
+import {Button} from '../Button'
 
 // ==================== 样式定义 ====================
 
@@ -61,35 +61,24 @@ const dialogStyles = tv({
       'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
       'duration-200',
     ],
-    header: [
-      'flex flex-col gap-2',
-      'text-center sm:text-left',
-    ],
-    body: [
-      'text-sm text-muted-foreground',
-    ],
+    header: ['flex flex-col gap-2', 'text-center sm:text-left'],
+    body: ['text-sm text-muted-foreground'],
     footer: [
       'flex flex-col-reverse gap-2',
       'sm:flex-row sm:justify-end sm:gap-2',
     ],
-    title: [
-      'text-lg font-semibold leading-none tracking-tight',
-    ],
-    description: [
-      'text-sm text-muted-foreground',
-    ],
-    close: [
-      'absolute top-4 right-4',
-    ],
+    title: ['text-lg font-semibold leading-none tracking-tight'],
+    description: ['text-sm text-muted-foreground'],
+    close: ['absolute top-4 right-4'],
   },
   variants: {
     width: {
-      sm: { content: 'max-w-sm' },
-      md: { content: 'max-w-md' },
-      lg: { content: 'max-w-lg' },
-      xl: { content: 'max-w-xl' },
-      '2xl': { content: 'max-w-2xl' },
-      full: { content: 'max-w-full' },
+      sm: {content: 'max-w-sm'},
+      md: {content: 'max-w-md'},
+      lg: {content: 'max-w-lg'},
+      xl: {content: 'max-w-xl'},
+      '2xl': {content: 'max-w-2xl'},
+      full: {content: 'max-w-full'},
     },
   },
   defaultVariants: {
@@ -173,17 +162,21 @@ export const Dialog: Component<DialogProps> = (props) => {
   ])
 
   // 内部 loading 状态（用于自动处理 Promise）
-  const [internalConfirmLoading, setInternalConfirmLoading] = createSignal(false)
+  const [internalConfirmLoading, setInternalConfirmLoading] =
+    createSignal(false)
   const [internalCancelLoading, setInternalCancelLoading] = createSignal(false)
 
   // 合并外部和内部 loading 状态
-  const isConfirmLoading = () => local.confirmLoading || internalConfirmLoading()
+  const isConfirmLoading = () =>
+    local.confirmLoading || internalConfirmLoading()
   const isCancelLoading = () => local.cancelLoading || internalCancelLoading()
   const isPending = createMemo(() => isConfirmLoading() || isCancelLoading())
 
   // 是否可关闭
   const canClose = createMemo(() => {
-    if (local.closable === false) { return false }
+    if (local.closable === false) {
+      return false
+    }
     return !isPending()
   })
 
@@ -210,7 +203,9 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   // 处理确定按钮点击
   const handleOk = async () => {
-    if (isPending()) { return }
+    if (isPending()) {
+      return
+    }
 
     if (!local.onOk) {
       api().setOpen(false)
@@ -236,7 +231,9 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   // 处理取消按钮点击
   const handleCancel = async () => {
-    if (isPending()) { return }
+    if (isPending()) {
+      return
+    }
 
     if (local.onCancel) {
       local.onCancel()
@@ -290,14 +287,16 @@ export const Dialog: Component<DialogProps> = (props) => {
     )
   }
 
-  const variantStyles = dialogStyles({ width: local.width })
+  const variantStyles = dialogStyles({width: local.width})
 
   // Presence 状态机 - 用于退出动画
   const [wasEverPresent, setWasEverPresent] = createSignal(false)
   const presenceService = useMachine(presence.machine, () => ({
     present: api().open,
   }))
-  const presenceApi = createMemo(() => presence.connect(presenceService, normalizeProps))
+  const presenceApi = createMemo(() =>
+    presence.connect(presenceService, normalizeProps),
+  )
 
   // 追踪是否曾经显示过
   createEffect(() => {
@@ -308,13 +307,15 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   // 设置 presence 节点引用（绑定到 backdrop 以监听动画事件）
   const setPresenceRef = (node: HTMLElement | null) => {
-    if (!node) { return }
-    presenceService.send({ type: 'NODE.SET', node })
+    if (!node) {
+      return
+    }
+    presenceService.send({type: 'NODE.SET', node})
   }
 
   // 计算是否应该卸载（退出动画完成后）
-  const shouldUnmount = createMemo(() =>
-    !presenceApi().present && wasEverPresent()
+  const shouldUnmount = createMemo(
+    () => !presenceApi().present && wasEverPresent(),
   )
 
   return (
@@ -327,23 +328,32 @@ export const Dialog: Component<DialogProps> = (props) => {
           data-state={api().open ? 'open' : 'closed'}
           class={styles.overlay()}
         />
-        <div {...api().getPositionerProps()} class={styles.positioner()}>
+        <div
+          {...api().getPositionerProps()}
+          class={styles.positioner()}
+        >
           <div
             {...api().getContentProps()}
             hidden={!presenceApi().present}
             data-state={api().open ? 'open' : 'closed'}
-            class={variantStyles.content({ class: local.class })}
+            class={variantStyles.content({class: local.class})}
           >
             {/* Header */}
             <Show when={local.title || local.description}>
               <div class={styles.header()}>
                 <Show when={local.title}>
-                  <h2 {...api().getTitleProps()} class={styles.title()}>
+                  <h2
+                    {...api().getTitleProps()}
+                    class={styles.title()}
+                  >
                     {local.title}
                   </h2>
                 </Show>
                 <Show when={local.description}>
-                  <p {...api().getDescriptionProps()} class={styles.description()}>
+                  <p
+                    {...api().getDescriptionProps()}
+                    class={styles.description()}
+                  >
                     {local.description}
                   </p>
                 </Show>

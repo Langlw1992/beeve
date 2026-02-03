@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Dialog } from './Dialog'
-import { Button } from '../Button'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Dialog} from './Dialog'
+import {Button} from '../Button'
 
 /**
  * # Dialog 对话框
@@ -100,7 +100,10 @@ export const Confirmation: Story = {
 
     return (
       <div>
-        <Button variant="destructive" onClick={() => setOpen(true)}>
+        <Button
+          variant="destructive"
+          onClick={() => setOpen(true)}
+        >
           删除账户
         </Button>
         <Dialog
@@ -140,7 +143,10 @@ export const WithForm: Story = {
         >
           <form class="space-y-4">
             <div class="grid gap-2">
-              <label for="name" class="text-sm font-medium leading-none">
+              <label
+                for="name"
+                class="text-sm font-medium leading-none"
+              >
                 姓名
               </label>
               <input
@@ -151,7 +157,10 @@ export const WithForm: Story = {
               />
             </div>
             <div class="grid gap-2">
-              <label for="email" class="text-sm font-medium leading-none">
+              <label
+                for="email"
+                class="text-sm font-medium leading-none"
+              >
                 邮箱
               </label>
               <input
@@ -207,7 +216,12 @@ export const AsyncOperation: Story = {
           onOk={() => mockApiCall(true)}
         />
 
-        <Button variant="destructive" onClick={() => setOpenFail(true)}>失败示例</Button>
+        <Button
+          variant="destructive"
+          onClick={() => setOpenFail(true)}
+        >
+          失败示例
+        </Button>
         <Dialog
           open={openFail()}
           onOpenChange={setOpenFail}
@@ -243,22 +257,31 @@ export const CustomFooter: Story = {
           description="这个对话框有自定义的底部按钮。"
           footer={
             <div class="flex justify-between w-full">
-              <Button variant="ghost" onClick={() => console.log('帮助')}>
+              <Button
+                variant="ghost"
+                onClick={() => console.log('帮助')}
+              >
                 帮助
               </Button>
               <div class="flex gap-2">
-                <Button variant="outline" onClick={() => setOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                >
                   稍后再说
                 </Button>
-                <Button onClick={() => setOpen(false)}>
-                  立即处理
-                </Button>
+                <Button onClick={() => setOpen(false)}>立即处理</Button>
               </div>
             </div>
           }
         />
 
-        <Button variant="outline" onClick={() => setOpenNoFooter(true)}>无 Footer</Button>
+        <Button
+          variant="outline"
+          onClick={() => setOpenNoFooter(true)}
+        >
+          无 Footer
+        </Button>
         <Dialog
           open={openNoFooter()}
           onOpenChange={setOpenNoFooter}

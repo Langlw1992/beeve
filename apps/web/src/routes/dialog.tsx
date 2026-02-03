@@ -2,14 +2,16 @@
  * Dialog Component Showcase Page
  */
 
-import { createSignal } from 'solid-js'
-import { createFileRoute } from '@tanstack/solid-router'
-import { Dialog, Button, Input } from '@beeve/ui'
-import { ShowcaseSection } from '../components/ShowcaseGrid'
+import {createSignal} from 'solid-js'
+import {createFileRoute} from '@tanstack/solid-router'
+import {Dialog, Button, Input} from '@beeve/ui'
+import {ShowcaseSection} from '../components/ShowcaseGrid'
 
 function DialogPage() {
   const [basicOpen, setBasicOpen] = createSignal(false)
-  const [widthOpen, setWidthOpen] = createSignal<false | 'sm' | 'md' | 'lg' | 'xl'>(false)
+  const [widthOpen, setWidthOpen] = createSignal<
+    false | 'sm' | 'md' | 'lg' | 'xl'
+  >(false)
   const [confirmOpen, setConfirmOpen] = createSignal(false)
   const [asyncOpen, setAsyncOpen] = createSignal(false)
   const [customOpen, setCustomOpen] = createSignal(false)
@@ -29,7 +31,10 @@ function DialogPage() {
       </div>
 
       {/* Basic */}
-      <ShowcaseSection title="Basic" description="基本对话框">
+      <ShowcaseSection
+        title="Basic"
+        description="基本对话框"
+      >
         <div class="flex gap-4">
           <Button onClick={() => setBasicOpen(true)}>Open Basic Dialog</Button>
           <Dialog
@@ -44,18 +49,33 @@ function DialogPage() {
       </ShowcaseSection>
 
       {/* Width Variants */}
-      <ShowcaseSection title="Width Variants" description="不同宽度">
+      <ShowcaseSection
+        title="Width Variants"
+        description="不同宽度"
+      >
         <div class="flex flex-wrap gap-4">
-          <Button variant="outline" onClick={() => setWidthOpen('sm')}>
+          <Button
+            variant="outline"
+            onClick={() => setWidthOpen('sm')}
+          >
             Small
           </Button>
-          <Button variant="outline" onClick={() => setWidthOpen('md')}>
+          <Button
+            variant="outline"
+            onClick={() => setWidthOpen('md')}
+          >
             Medium
           </Button>
-          <Button variant="outline" onClick={() => setWidthOpen('lg')}>
+          <Button
+            variant="outline"
+            onClick={() => setWidthOpen('lg')}
+          >
             Large
           </Button>
-          <Button variant="outline" onClick={() => setWidthOpen('xl')}>
+          <Button
+            variant="outline"
+            onClick={() => setWidthOpen('xl')}
+          >
             Extra Large
           </Button>
           <Dialog
@@ -71,9 +91,15 @@ function DialogPage() {
       </ShowcaseSection>
 
       {/* Confirm Dialog */}
-      <ShowcaseSection title="Confirm Dialog" description="确认对话框">
+      <ShowcaseSection
+        title="Confirm Dialog"
+        description="确认对话框"
+      >
         <div class="flex gap-4">
-          <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
+          <Button
+            variant="destructive"
+            onClick={() => setConfirmOpen(true)}
+          >
             Delete Item
           </Button>
           <Dialog
@@ -92,7 +118,10 @@ function DialogPage() {
       </ShowcaseSection>
 
       {/* Async Dialog */}
-      <ShowcaseSection title="Async Operations" description="异步操作自动显示 loading">
+      <ShowcaseSection
+        title="Async Operations"
+        description="异步操作自动显示 loading"
+      >
         <div class="flex gap-4">
           <Button onClick={() => setAsyncOpen(true)}>Open Async Dialog</Button>
           <Dialog
@@ -102,13 +131,18 @@ function DialogPage() {
             description="Click OK to simulate a 2 second async operation."
             onOk={simulateAsync}
           >
-            <p>The dialog will close automatically when the operation completes.</p>
+            <p>
+              The dialog will close automatically when the operation completes.
+            </p>
           </Dialog>
         </div>
       </ShowcaseSection>
 
       {/* Custom Footer */}
-      <ShowcaseSection title="Custom Content" description="自定义内容">
+      <ShowcaseSection
+        title="Custom Content"
+        description="自定义内容"
+      >
         <div class="flex gap-4">
           <Button onClick={() => setCustomOpen(true)}>Open Form Dialog</Button>
           <Dialog
@@ -124,13 +158,21 @@ function DialogPage() {
               </div>
               <div class="flex flex-col gap-2">
                 <span class="text-sm font-medium">Email</span>
-                <Input type="email" placeholder="your@email.com" />
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                />
               </div>
               <div class="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => setCustomOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setCustomOpen(false)}
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => setCustomOpen(false)}>Save Changes</Button>
+                <Button onClick={() => setCustomOpen(false)}>
+                  Save Changes
+                </Button>
               </div>
             </div>
           </Dialog>
@@ -143,4 +185,3 @@ function DialogPage() {
 export const Route = createFileRoute('/dialog')({
   component: DialogPage,
 })
-

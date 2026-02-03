@@ -6,17 +6,17 @@
  * 需要交互的测试已标记为 skip，应通过 Playwright e2e 测试覆盖
  */
 
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@solidjs/testing-library'
-import { Dropdown, ContextMenu } from './Menu'
-import type { MenuItemType } from '../../primitives/menu'
+import {describe, it, expect} from 'vitest'
+import {render, screen} from '@solidjs/testing-library'
+import {Dropdown, ContextMenu} from './Menu'
+import type {MenuItemType} from '../../primitives/menu'
 
 describe('Menu', () => {
   describe('Dropdown', () => {
     it('应该渲染 Dropdown 组件', () => {
       const items: MenuItemType[] = [
-        { key: 'edit', label: '编辑' },
-        { key: 'delete', label: '删除' },
+        {key: 'edit', label: '编辑'},
+        {key: 'delete', label: '删除'},
       ]
 
       render(() => (
@@ -30,8 +30,8 @@ describe('Menu', () => {
 
     it('应该支持禁用项', () => {
       const items: MenuItemType[] = [
-        { key: 'edit', label: '编辑' },
-        { key: 'delete', label: '删除', disabled: true },
+        {key: 'edit', label: '编辑'},
+        {key: 'delete', label: '删除', disabled: true},
       ]
 
       render(() => (
@@ -45,13 +45,13 @@ describe('Menu', () => {
 
     it('应该支持嵌套菜单项', () => {
       const items: MenuItemType[] = [
-        { key: 'new', label: '新建' },
+        {key: 'new', label: '新建'},
         {
           key: 'share',
           label: '分享到...',
           children: [
-            { key: 'wechat', label: '微信' },
-            { key: 'email', label: '邮件' },
+            {key: 'wechat', label: '微信'},
+            {key: 'email', label: '邮件'},
           ],
         },
       ]
@@ -67,9 +67,9 @@ describe('Menu', () => {
 
     it('应该支持分隔线', () => {
       const items: MenuItemType[] = [
-        { key: 'edit', label: '编辑' },
-        { type: 'divider' },
-        { key: 'delete', label: '删除' },
+        {key: 'edit', label: '编辑'},
+        {type: 'divider'},
+        {key: 'delete', label: '删除'},
       ]
 
       render(() => (
@@ -88,8 +88,8 @@ describe('Menu', () => {
           key: 'actions',
           label: '操作',
           children: [
-            { key: 'edit', label: '编辑' },
-            { key: 'delete', label: '删除' },
+            {key: 'edit', label: '编辑'},
+            {key: 'delete', label: '删除'},
           ],
         },
       ]
@@ -107,8 +107,8 @@ describe('Menu', () => {
   describe('ContextMenu', () => {
     it('应该渲染 ContextMenu 组件', () => {
       const items: MenuItemType[] = [
-        { key: 'copy', label: '复制' },
-        { key: 'paste', label: '粘贴' },
+        {key: 'copy', label: '复制'},
+        {key: 'paste', label: '粘贴'},
       ]
 
       render(() => (

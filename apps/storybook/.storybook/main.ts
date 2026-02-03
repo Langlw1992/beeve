@@ -1,4 +1,4 @@
-import type { StorybookConfig } from 'storybook-solidjs-vite'
+import type {StorybookConfig} from 'storybook-solidjs-vite'
 import tailwindcss from '@tailwindcss/vite'
 
 const config: StorybookConfig = {
@@ -9,7 +9,7 @@ const config: StorybookConfig = {
   addons: ['@storybook/addon-themes'],
   framework: 'storybook-solidjs-vite',
   async viteFinal(config) {
-    const { mergeConfig } = await import('vite')
+    const {mergeConfig} = await import('vite')
 
     return mergeConfig(config, {
       plugins: [tailwindcss()],
@@ -18,4 +18,3 @@ const config: StorybookConfig = {
 }
 
 export default config
-

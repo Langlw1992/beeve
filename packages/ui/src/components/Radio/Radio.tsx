@@ -3,8 +3,18 @@
  * 单选框组件
  */
 
-import { splitProps, Show, createMemo, createSignal, createContext, useContext, type Component, type JSX, type Accessor } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {
+  splitProps,
+  Show,
+  createMemo,
+  createSignal,
+  createContext,
+  useContext,
+  type Component,
+  type JSX,
+  type Accessor,
+} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 const radioVariants = tv({
   slots: {
@@ -90,7 +100,16 @@ export interface RadioGroupProps {
 }
 
 export const RadioGroup: Component<RadioGroupProps> = (props) => {
-  const [local, rest] = splitProps(props, ['value', 'defaultValue', 'name', 'disabled', 'size', 'children', 'class', 'onChange'])
+  const [local, rest] = splitProps(props, [
+    'value',
+    'defaultValue',
+    'name',
+    'disabled',
+    'size',
+    'children',
+    'class',
+    'onChange',
+  ])
 
   // 内部状态用于非受控模式
   const [internalValue, setInternalValue] = createSignal(local.defaultValue)
@@ -121,7 +140,11 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
         size: local.size,
       }}
     >
-      <div class={local.class} role="radiogroup" {...rest}>
+      <div
+        class={local.class}
+        role="radiogroup"
+        {...rest}
+      >
         {local.children}
       </div>
     </RadioGroupContext.Provider>
@@ -154,7 +177,7 @@ export const Radio: Component<RadioProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'children', 'checked', 'onChange', 'id', 'name', 'value'],
-    ['size', 'disabled']
+    ['size', 'disabled'],
   )
 
   const isDisabled = () => variants.disabled ?? group?.disabled
@@ -167,15 +190,19 @@ export const Radio: Component<RadioProps> = (props) => {
     return local.checked ?? false
   })
 
-  const state = () => isChecked() ? 'checked' : 'unchecked'
+  const state = () => (isChecked() ? 'checked' : 'unchecked')
 
-  const styles = createMemo(() => radioVariants({
-    size: size(),
-    disabled: isDisabled(),
-  }))
+  const styles = createMemo(() =>
+    radioVariants({
+      size: size(),
+      disabled: isDisabled(),
+    }),
+  )
 
   const handleChange = () => {
-    if (isDisabled()) { return }
+    if (isDisabled()) {
+      return
+    }
     if (group) {
       group.onChange(local.value)
     } else {
@@ -184,7 +211,10 @@ export const Radio: Component<RadioProps> = (props) => {
   }
 
   return (
-    <label class={styles().root({ class: local.class })} {...rest}>
+    <label
+      class={styles().root({class: local.class})}
+      {...rest}
+    >
       <input
         type="radio"
         class={styles().input()}
@@ -195,8 +225,14 @@ export const Radio: Component<RadioProps> = (props) => {
         id={local.id}
         onChange={handleChange}
       />
-      <span class={styles().control()} data-state={state()}>
-        <span class={styles().indicator()} data-state={state()} />
+      <span
+        class={styles().control()}
+        data-state={state()}
+      >
+        <span
+          class={styles().indicator()}
+          data-state={state()}
+        />
       </span>
       <Show when={local.children}>
         <span class={styles().label()}>{local.children}</span>
@@ -204,4 +240,3 @@ export const Radio: Component<RadioProps> = (props) => {
     </label>
   )
 }
-

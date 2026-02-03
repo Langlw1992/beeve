@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import {describe, expect, it} from 'vitest'
 import app from './app'
 
 describe('Server App', () => {
@@ -31,7 +31,7 @@ describe('Server App', () => {
         },
       })
       expect(res.headers.get('Access-Control-Allow-Origin')).toBe(
-        'http://localhost:3000'
+        'http://localhost:3000',
       )
     })
   })

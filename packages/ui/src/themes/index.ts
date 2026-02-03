@@ -10,8 +10,8 @@ import type {
   ThemeConfig,
   ResolvedTheme,
 } from './types'
-import { baseColors } from './base'
-import { themeColors } from './colors'
+import {baseColors} from './base'
+import {themeColors} from './colors'
 
 export * from './types'
 export * from './base'
@@ -27,12 +27,12 @@ export const defaultThemeConfig: ThemeConfig = {
 
 /** Radius presets */
 export const radiusPresets = [
-  { value: 0, label: 'None' },
-  { value: 0.3, label: 'Small' },
-  { value: 0.5, label: 'Medium' },
-  { value: 0.625, label: 'Default' },
-  { value: 0.75, label: 'Large' },
-  { value: 'full', label: 'Full' },
+  {value: 0, label: 'None'},
+  {value: 0.3, label: 'Small'},
+  {value: 0.5, label: 'Medium'},
+  {value: 0.625, label: 'Default'},
+  {value: 0.75, label: 'Large'},
+  {value: 'full', label: 'Full'},
 ] as const
 
 /**
@@ -41,7 +41,7 @@ export const radiusPresets = [
 export function getThemeVariables(
   baseColor: BaseColorName,
   themeColor: ThemeColorName,
-  mode: 'light' | 'dark'
+  mode: 'light' | 'dark',
 ): BaseColorVariables {
   const base = baseColors[baseColor][mode]
   const theme = themeColors[themeColor][mode]
@@ -58,7 +58,7 @@ export function getThemeVariables(
 export function generateThemeCSS(
   baseColor: BaseColorName,
   themeColor: ThemeColorName,
-  radius: number | 'full'
+  radius: number | 'full',
 ): string {
   const lightVars = getThemeVariables(baseColor, themeColor, 'light')
   const darkVars = getThemeVariables(baseColor, themeColor, 'dark')
@@ -93,7 +93,7 @@ export function applyThemeToDOM(
   baseColor: BaseColorName,
   themeColor: ThemeColorName,
   radius: number | 'full',
-  mode: 'light' | 'dark'
+  mode: 'light' | 'dark',
 ): void {
   const vars = getThemeVariables(baseColor, themeColor, mode)
   const root = document.documentElement
@@ -123,15 +123,20 @@ export function applyThemeToDOM(
  * Get system color mode preference
  */
 export function getSystemColorMode(): 'light' | 'dark' {
-  if (typeof window === 'undefined') { return 'light' }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  if (typeof window === 'undefined') {
+    return 'light'
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
 }
 
 /**
  * Resolve theme mode (handle 'system' mode)
  */
 export function resolveTheme(config: ThemeConfig): ResolvedTheme {
-  const resolvedMode = config.mode === 'system' ? getSystemColorMode() : config.mode
+  const resolvedMode =
+    config.mode === 'system' ? getSystemColorMode() : config.mode
 
   return {
     resolvedMode,

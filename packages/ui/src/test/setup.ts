@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom/vitest'
-import { afterEach, vi } from 'vitest'
+import {afterEach, vi} from 'vitest'
 
 // Mock ResizeObserver for zag-js
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
@@ -35,4 +35,3 @@ Element.prototype.scrollIntoView = vi.fn()
 afterEach(() => {
   document.body.innerHTML = ''
 })
-

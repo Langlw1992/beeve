@@ -3,12 +3,20 @@
  * 采用 Ant Design 风格的数据驱动 API
  */
 
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Dropdown, ContextMenu } from './Menu'
-import type { MenuItemType } from '../../primitives/menu'
-import { Button } from '../Button'
-import { Copy, Scissors, Clipboard, Trash2, SquarePen, Share2, Download } from 'lucide-solid'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Dropdown, ContextMenu} from './Menu'
+import type {MenuItemType} from '../../primitives/menu'
+import {Button} from '../Button'
+import {
+  Copy,
+  Scissors,
+  Clipboard,
+  Trash2,
+  SquarePen,
+  Share2,
+  Download,
+} from 'lucide-solid'
 
 /**
  * # Menu 菜单
@@ -62,14 +70,17 @@ type Story = StoryObj<typeof meta>
 export const Basic: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'edit', label: '编辑' },
-      { key: 'copy', label: '复制' },
-      { type: 'divider' },
-      { key: 'delete', label: '删除' },
+      {key: 'edit', label: '编辑'},
+      {key: 'copy', label: '复制'},
+      {type: 'divider'},
+      {key: 'delete', label: '删除'},
     ]
 
     return (
-      <Dropdown items={items} onClick={(key) => console.log('点击:', key)}>
+      <Dropdown
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <Button>操作</Button>
       </Dropdown>
     )
@@ -81,15 +92,23 @@ export const ContextMenuStory: Story = {
   name: 'Context Menu',
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'copy', label: '复制', icon: <Copy class="size-4" /> },
-      { key: 'cut', label: '剪切', icon: <Scissors class="size-4" /> },
-      { key: 'paste', label: '粘贴', icon: <Clipboard class="size-4" /> },
-      { type: 'divider' },
-      { key: 'delete', label: '删除', icon: <Trash2 class="size-4" />, danger: true },
+      {key: 'copy', label: '复制', icon: <Copy class="size-4" />},
+      {key: 'cut', label: '剪切', icon: <Scissors class="size-4" />},
+      {key: 'paste', label: '粘贴', icon: <Clipboard class="size-4" />},
+      {type: 'divider'},
+      {
+        key: 'delete',
+        label: '删除',
+        icon: <Trash2 class="size-4" />,
+        danger: true,
+      },
     ]
 
     return (
-      <ContextMenu items={items} onClick={(key) => console.log('点击:', key)}>
+      <ContextMenu
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <div class="flex size-64 items-center justify-center rounded-lg border-2 border-dashed border-border text-muted-foreground">
           右键点击此处
         </div>
@@ -102,17 +121,17 @@ export const ContextMenuStory: Story = {
 export const Nested: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'new', label: '新建' },
-      { key: 'open', label: '打开' },
-      { type: 'divider' },
+      {key: 'new', label: '新建'},
+      {key: 'open', label: '打开'},
+      {type: 'divider'},
       {
         key: 'share',
         label: '分享到...',
         icon: <Share2 class="size-4" />,
         children: [
-          { key: 'wechat', label: '微信' },
-          { key: 'email', label: '邮件' },
-          { key: 'link', label: '复制链接' },
+          {key: 'wechat', label: '微信'},
+          {key: 'email', label: '邮件'},
+          {key: 'link', label: '复制链接'},
         ],
       },
       {
@@ -120,17 +139,20 @@ export const Nested: Story = {
         label: '导出为...',
         icon: <Download class="size-4" />,
         children: [
-          { key: 'pdf', label: 'PDF' },
-          { key: 'word', label: 'Word' },
-          { key: 'excel', label: 'Excel' },
+          {key: 'pdf', label: 'PDF'},
+          {key: 'word', label: 'Word'},
+          {key: 'excel', label: 'Excel'},
         ],
       },
-      { type: 'divider' },
-      { key: 'print', label: '打印' },
+      {type: 'divider'},
+      {key: 'print', label: '打印'},
     ]
 
     return (
-      <Dropdown items={items} onClick={(key) => console.log('点击:', key)}>
+      <Dropdown
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <Button>文件</Button>
       </Dropdown>
     )
@@ -158,13 +180,13 @@ export const WithOptions: Story = {
             value: order(),
             onChange: setOrder,
             children: [
-              { key: 'asc', label: '升序' },
-              { key: 'desc', label: '降序' },
+              {key: 'asc', label: '升序'},
+              {key: 'desc', label: '降序'},
             ],
           },
         ],
       },
-      { type: 'divider' },
+      {type: 'divider'},
       {
         type: 'group',
         key: 'types',
@@ -223,22 +245,31 @@ export const WithOptions: Story = {
 export const Sizes: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: '1', label: '选项 1' },
-      { key: '2', label: '选项 2' },
-      { key: '3', label: '选项 3' },
+      {key: '1', label: '选项 1'},
+      {key: '2', label: '选项 2'},
+      {key: '3', label: '选项 3'},
     ]
 
     return (
       <div class="flex gap-4">
-        <Dropdown items={items} size="sm">
+        <Dropdown
+          items={items}
+          size="sm"
+        >
           <Button size="sm">小尺寸</Button>
         </Dropdown>
 
-        <Dropdown items={items} size="md">
+        <Dropdown
+          items={items}
+          size="md"
+        >
           <Button size="md">中尺寸</Button>
         </Dropdown>
 
-        <Dropdown items={items} size="lg">
+        <Dropdown
+          items={items}
+          size="lg"
+        >
           <Button size="lg">大尺寸</Button>
         </Dropdown>
       </div>
@@ -268,7 +299,7 @@ export const WithIconsAndShortcuts: Story = {
         icon: <Clipboard class="size-4" />,
         shortcut: '⌘V',
       },
-      { type: 'divider' },
+      {type: 'divider'},
       {
         key: 'delete',
         label: '删除',
@@ -279,7 +310,10 @@ export const WithIconsAndShortcuts: Story = {
     ]
 
     return (
-      <Dropdown items={items} onClick={(key) => console.log('点击:', key)}>
+      <Dropdown
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <Button>编辑</Button>
       </Dropdown>
     )
@@ -290,15 +324,18 @@ export const WithIconsAndShortcuts: Story = {
 export const Disabled: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'edit', label: '编辑' },
-      { key: 'duplicate', label: '复制（禁用）', disabled: true },
-      { key: 'archive', label: '归档（禁用）', disabled: true },
-      { type: 'divider' },
-      { key: 'delete', label: '删除（禁用）', disabled: true },
+      {key: 'edit', label: '编辑'},
+      {key: 'duplicate', label: '复制（禁用）', disabled: true},
+      {key: 'archive', label: '归档（禁用）', disabled: true},
+      {type: 'divider'},
+      {key: 'delete', label: '删除（禁用）', disabled: true},
     ]
 
     return (
-      <Dropdown items={items} onClick={(key) => console.log('点击:', key)}>
+      <Dropdown
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <Button>操作</Button>
       </Dropdown>
     )
@@ -309,9 +346,9 @@ export const Disabled: Story = {
 export const DangerItems: Story = {
   render: () => {
     const items: MenuItemType[] = [
-      { key: 'edit', label: '编辑', icon: <SquarePen class="size-4" /> },
-      { key: 'duplicate', label: '复制', icon: <Copy class="size-4" /> },
-      { type: 'divider' },
+      {key: 'edit', label: '编辑', icon: <SquarePen class="size-4" />},
+      {key: 'duplicate', label: '复制', icon: <Copy class="size-4" />},
+      {type: 'divider'},
       {
         key: 'delete',
         label: '删除',
@@ -321,7 +358,10 @@ export const DangerItems: Story = {
     ]
 
     return (
-      <Dropdown items={items} onClick={(key) => console.log('点击:', key)}>
+      <Dropdown
+        items={items}
+        onClick={(key) => console.log('点击:', key)}
+      >
         <Button>操作</Button>
       </Dropdown>
     )
@@ -349,7 +389,7 @@ export const Complex: Story = {
           },
         ],
       },
-      { type: 'divider' },
+      {type: 'divider'},
       {
         type: 'group',
         key: 'theme-group',
@@ -362,28 +402,31 @@ export const Complex: Story = {
             value: theme(),
             onChange: setTheme,
             children: [
-              { key: 'light', label: '亮色' },
-              { key: 'dark', label: '暗色' },
-              { key: 'auto', label: '自动' },
+              {key: 'light', label: '亮色'},
+              {key: 'dark', label: '暗色'},
+              {key: 'auto', label: '自动'},
             ],
           },
         ],
       },
-      { type: 'divider' },
+      {type: 'divider'},
       {
         key: 'advanced',
         label: '高级设置',
         children: [
-          { key: 'performance', label: '性能' },
-          { key: 'security', label: '安全' },
-          { key: 'privacy', label: '隐私' },
+          {key: 'performance', label: '性能'},
+          {key: 'security', label: '安全'},
+          {key: 'privacy', label: '隐私'},
         ],
       },
     ]
 
     return (
       <div class="flex flex-col gap-4">
-        <Dropdown items={items()} onClick={(key) => console.log('点击:', key)}>
+        <Dropdown
+          items={items()}
+          onClick={(key) => console.log('点击:', key)}
+        >
           <Button>视图</Button>
         </Dropdown>
 

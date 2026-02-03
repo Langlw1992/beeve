@@ -3,9 +3,9 @@
  * 提供简化的列定义 API，转换为 TanStack Table 的 ColumnDef
  */
 
-import type { JSX } from 'solid-js'
-import type { ColumnDef, RowData, CellContext } from '@tanstack/solid-table'
-import type { Column } from './types'
+import type {JSX} from 'solid-js'
+import type {ColumnDef, RowData, CellContext} from '@tanstack/solid-table'
+import type {Column} from './types'
 
 // ==================== 工具函数 ====================
 
@@ -35,7 +35,7 @@ function formatTitle(key: string): string {
  * ```
  */
 export function columns<TData extends RowData>(
-  defs: Column<TData>[]
+  defs: Column<TData>[],
 ): ColumnDef<TData, unknown>[] {
   return defs.map((col) => {
     const columnDef: ColumnDef<TData, unknown> = {
@@ -116,7 +116,7 @@ export function actionColumn<TData extends RowData>(options: {
     enableColumnFilter: false,
     ...(options.pin && {
       enablePinning: true,
-      meta: { pin: options.pin },
+      meta: {pin: options.pin},
     }),
     cell: (ctx: CellContext<TData, unknown>) =>
       options.render(ctx.row.original, ctx.row.index),

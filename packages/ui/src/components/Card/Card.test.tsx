@@ -2,9 +2,9 @@
  * @beeve/ui - Card Tests
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@solidjs/testing-library'
-import { Card } from './Card'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent} from '@solidjs/testing-library'
+import {Card} from './Card'
 
 describe('Card', () => {
   describe('基础渲染', () => {
@@ -19,13 +19,23 @@ describe('Card', () => {
     })
 
     it('应该渲染描述', () => {
-      render(() => <Card title="标题" description="卡片描述">内容</Card>)
+      render(() => (
+        <Card
+          title="标题"
+          description="卡片描述"
+        >
+          内容
+        </Card>
+      ))
       expect(screen.getByText('卡片描述')).toBeInTheDocument()
     })
 
     it('应该渲染额外内容', () => {
       render(() => (
-        <Card title="标题" extra={<button type="button">操作</button>}>
+        <Card
+          title="标题"
+          extra={<button type="button">操作</button>}
+        >
           内容
         </Card>
       ))
@@ -35,19 +45,19 @@ describe('Card', () => {
 
   describe('变体', () => {
     it('应该支持 elevated 变体', () => {
-      const { container } = render(() => <Card variant="elevated">内容</Card>)
+      const {container} = render(() => <Card variant="elevated">内容</Card>)
       const card = container.firstChild
       expect(card).toHaveClass('shadow-md')
     })
 
     it('应该支持 outlined 变体', () => {
-      const { container } = render(() => <Card variant="outlined">内容</Card>)
+      const {container} = render(() => <Card variant="outlined">内容</Card>)
       const card = container.firstChild
       expect(card).toHaveClass('border')
     })
 
     it('应该支持 filled 变体', () => {
-      const { container } = render(() => <Card variant="filled">内容</Card>)
+      const {container} = render(() => <Card variant="filled">内容</Card>)
       const card = container.firstChild
       expect(card).toHaveClass('bg-muted')
     })
@@ -55,15 +65,27 @@ describe('Card', () => {
 
   describe('封面图片', () => {
     it('应该渲染封面图片', () => {
-      render(() => <Card cover="/test.jpg" coverAlt="测试图片">内容</Card>)
+      render(() => (
+        <Card
+          cover="/test.jpg"
+          coverAlt="测试图片"
+        >
+          内容
+        </Card>
+      ))
       const img = screen.getByAltText('测试图片')
       expect(img).toBeInTheDocument()
       expect(img).toHaveAttribute('src', '/test.jpg')
     })
 
     it('应该支持底部封面位置', () => {
-      const { container } = render(() => (
-        <Card cover="/test.jpg" coverPosition="bottom">内容</Card>
+      const {container} = render(() => (
+        <Card
+          cover="/test.jpg"
+          coverPosition="bottom"
+        >
+          内容
+        </Card>
       ))
       const img = container.querySelector('img')
       expect(img).toBeInTheDocument()
@@ -86,7 +108,7 @@ describe('Card', () => {
 
   describe('加载状态', () => {
     it('应该显示加载骨架', () => {
-      const { container } = render(() => <Card loading>内容</Card>)
+      const {container} = render(() => <Card loading>内容</Card>)
       const skeleton = container.querySelector('.animate-pulse')
       expect(skeleton).toBeInTheDocument()
     })
@@ -97,8 +119,11 @@ describe('Card', () => {
     })
 
     it('应该支持自定义加载配置', () => {
-      const { container } = render(() => (
-        <Card loading loadingConfig={{ avatar: true, rows: 2 }}>
+      const {container} = render(() => (
+        <Card
+          loading
+          loadingConfig={{avatar: true, rows: 2}}
+        >
           内容
         </Card>
       ))
@@ -109,7 +134,7 @@ describe('Card', () => {
 
   describe('hoverable', () => {
     it('应该支持 hover 效果', () => {
-      const { container } = render(() => <Card hoverable>内容</Card>)
+      const {container} = render(() => <Card hoverable>内容</Card>)
       const card = container.firstChild
       expect(card).toHaveClass('cursor-pointer')
       expect(card).toHaveClass('hover:shadow-lg')
@@ -127,13 +152,27 @@ describe('Card', () => {
 
   describe('尺寸', () => {
     it('应该支持 sm 尺寸', () => {
-      const { container } = render(() => <Card size="sm" title="标题">内容</Card>)
+      const {container} = render(() => (
+        <Card
+          size="sm"
+          title="标题"
+        >
+          内容
+        </Card>
+      ))
       const title = container.querySelector('.text-base')
       expect(title).toBeInTheDocument()
     })
 
     it('应该支持 lg 尺寸', () => {
-      const { container } = render(() => <Card size="lg" title="标题">内容</Card>)
+      const {container} = render(() => (
+        <Card
+          size="lg"
+          title="标题"
+        >
+          内容
+        </Card>
+      ))
       const title = container.querySelector('.text-xl')
       expect(title).toBeInTheDocument()
     })

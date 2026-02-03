@@ -1,5 +1,5 @@
-import { index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
-import { users } from './users'
+import {index, pgTable, text, timestamp, uuid} from 'drizzle-orm/pg-core'
+import {users} from './users'
 
 /**
  * 会话表
@@ -10,7 +10,7 @@ export const sessions = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     userId: uuid('user_id')
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
+      .references(() => users.id, {onDelete: 'cascade'}),
     token: text('token').notNull().unique(),
     expiresAt: timestamp('expires_at').notNull(),
     ipAddress: text('ip_address'),
@@ -21,7 +21,7 @@ export const sessions = pgTable(
   (table) => [
     index('sessions_user_id_idx').on(table.userId),
     index('sessions_token_idx').on(table.token),
-  ]
+  ],
 )
 
 export type Session = typeof sessions.$inferSelect

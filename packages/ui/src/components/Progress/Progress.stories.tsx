@@ -2,10 +2,10 @@
  * @beeve/ui - Progress Stories
  */
 
-import type { JSX } from 'solid-js'
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal, onMount, onCleanup } from 'solid-js'
-import { Progress } from './Progress'
+import type {JSX} from 'solid-js'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal, onMount, onCleanup} from 'solid-js'
+import {Progress} from './Progress'
 
 /**
  * # Progress 进度条
@@ -33,7 +33,11 @@ type Story = StoryObj<typeof meta>
 // ==================== 辅助组件 ====================
 
 /** Story 区块 */
-const Section = (props: { title: string; description?: string; children: JSX.Element }) => (
+const Section = (props: {
+  title: string
+  description?: string
+  children: JSX.Element
+}) => (
   <div class="space-y-4">
     <div>
       <h3 class="text-sm font-medium text-foreground">{props.title}</h3>
@@ -50,7 +54,10 @@ const Section = (props: { title: string; description?: string; children: JSX.Ele
 /** 基础线性进度条 */
 export const Basic: Story = {
   render: () => (
-    <Section title="基础用法" description="不同百分比的进度显示">
+    <Section
+      title="基础用法"
+      description="不同百分比的进度显示"
+    >
       <div class="w-[360px] space-y-5">
         <Progress percent={30} />
         <Progress percent={50} />
@@ -64,11 +71,23 @@ export const Basic: Story = {
 /** 环形进度条 */
 export const Circle: Story = {
   render: () => (
-    <Section title="环形进度" description="圆环形式展示进度">
+    <Section
+      title="环形进度"
+      description="圆环形式展示进度"
+    >
       <div class="flex items-center gap-10">
-        <Progress type="circle" percent={30} />
-        <Progress type="circle" percent={70} />
-        <Progress type="circle" percent={100} />
+        <Progress
+          type="circle"
+          percent={30}
+        />
+        <Progress
+          type="circle"
+          percent={70}
+        />
+        <Progress
+          type="circle"
+          percent={100}
+        />
       </div>
     </Section>
   ),
@@ -78,39 +97,69 @@ export const Circle: Story = {
 export const Status: Story = {
   render: () => (
     <div class="space-y-10">
-      <Section title="线性进度条状态" description="normal / success / exception / active">
+      <Section
+        title="线性进度条状态"
+        description="normal / success / exception / active"
+      >
         <div class="w-[360px] space-y-5">
           <div class="space-y-1">
-            <Progress percent={50} status="normal" />
+            <Progress
+              percent={50}
+              status="normal"
+            />
             <p class="text-xs text-muted-foreground">normal</p>
           </div>
           <div class="space-y-1">
-            <Progress percent={100} status="success" />
+            <Progress
+              percent={100}
+              status="success"
+            />
             <p class="text-xs text-muted-foreground">success</p>
           </div>
           <div class="space-y-1">
-            <Progress percent={70} status="exception" />
+            <Progress
+              percent={70}
+              status="exception"
+            />
             <p class="text-xs text-muted-foreground">exception</p>
           </div>
           <div class="space-y-1">
-            <Progress percent={50} status="active" />
+            <Progress
+              percent={50}
+              status="active"
+            />
             <p class="text-xs text-muted-foreground">active（条纹动画）</p>
           </div>
         </div>
       </Section>
 
-      <Section title="环形进度条状态" description="不同状态的环形进度">
+      <Section
+        title="环形进度条状态"
+        description="不同状态的环形进度"
+      >
         <div class="flex items-center gap-8">
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={50} status="normal" />
+            <Progress
+              type="circle"
+              percent={50}
+              status="normal"
+            />
             <p class="text-xs text-muted-foreground">normal</p>
           </div>
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={100} status="success" />
+            <Progress
+              type="circle"
+              percent={100}
+              status="success"
+            />
             <p class="text-xs text-muted-foreground">success</p>
           </div>
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={70} status="exception" />
+            <Progress
+              type="circle"
+              percent={70}
+              status="exception"
+            />
             <p class="text-xs text-muted-foreground">exception</p>
           </div>
         </div>
@@ -123,35 +172,62 @@ export const Status: Story = {
 export const Sizes: Story = {
   render: () => (
     <div class="space-y-10">
-      <Section title="线性进度条尺寸" description="sm / md / lg">
+      <Section
+        title="线性进度条尺寸"
+        description="sm / md / lg"
+      >
         <div class="w-[360px] space-y-5">
           <div class="space-y-1">
-            <Progress percent={50} size="sm" />
+            <Progress
+              percent={50}
+              size="sm"
+            />
             <p class="text-xs text-muted-foreground">small</p>
           </div>
           <div class="space-y-1">
-            <Progress percent={50} size="md" />
+            <Progress
+              percent={50}
+              size="md"
+            />
             <p class="text-xs text-muted-foreground">medium（默认）</p>
           </div>
           <div class="space-y-1">
-            <Progress percent={50} size="lg" />
+            <Progress
+              percent={50}
+              size="lg"
+            />
             <p class="text-xs text-muted-foreground">large</p>
           </div>
         </div>
       </Section>
 
-      <Section title="环形进度条尺寸" description="不同尺寸的环形进度">
+      <Section
+        title="环形进度条尺寸"
+        description="不同尺寸的环形进度"
+      >
         <div class="flex items-end gap-8">
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={75} size="sm" />
+            <Progress
+              type="circle"
+              percent={75}
+              size="sm"
+            />
             <p class="text-xs text-muted-foreground">sm</p>
           </div>
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={75} size="md" />
+            <Progress
+              type="circle"
+              percent={75}
+              size="md"
+            />
             <p class="text-xs text-muted-foreground">md</p>
           </div>
           <div class="text-center space-y-2">
-            <Progress type="circle" percent={75} size="lg" />
+            <Progress
+              type="circle"
+              percent={75}
+              size="lg"
+            />
             <p class="text-xs text-muted-foreground">lg</p>
           </div>
         </div>
@@ -163,22 +239,39 @@ export const Sizes: Story = {
 /** 分段进度条 */
 export const Steps: Story = {
   render: () => (
-    <Section title="分段进度" description="步骤式进度展示">
+    <Section
+      title="分段进度"
+      description="步骤式进度展示"
+    >
       <div class="w-[360px] space-y-5">
         <div class="space-y-1">
-          <Progress.Steps steps={5} current={0} />
+          <Progress.Steps
+            steps={5}
+            current={0}
+          />
           <p class="text-xs text-muted-foreground">0 / 5</p>
         </div>
         <div class="space-y-1">
-          <Progress.Steps steps={5} current={2} />
+          <Progress.Steps
+            steps={5}
+            current={2}
+          />
           <p class="text-xs text-muted-foreground">2 / 5</p>
         </div>
         <div class="space-y-1">
-          <Progress.Steps steps={5} current={5} status="success" />
+          <Progress.Steps
+            steps={5}
+            current={5}
+            status="success"
+          />
           <p class="text-xs text-muted-foreground">完成</p>
         </div>
         <div class="space-y-1">
-          <Progress.Steps steps={5} current={3} status="exception" />
+          <Progress.Steps
+            steps={5}
+            current={3}
+            status="exception"
+          />
           <p class="text-xs text-muted-foreground">异常</p>
         </div>
       </div>
@@ -190,14 +283,26 @@ export const Steps: Story = {
 export const CustomFormat: Story = {
   render: () => (
     <div class="space-y-10">
-      <Section title="自定义文字" description="format 函数自定义显示内容">
+      <Section
+        title="自定义文字"
+        description="format 函数自定义显示内容"
+      >
         <div class="w-[360px] space-y-5">
-          <Progress percent={100} format={() => '完成'} />
-          <Progress percent={50} format={(p) => `${p}/100`} />
+          <Progress
+            percent={100}
+            format={() => '完成'}
+          />
+          <Progress
+            percent={50}
+            format={(p) => `${p}/100`}
+          />
         </div>
       </Section>
 
-      <Section title="环形自定义" description="支持 JSX 自定义内容">
+      <Section
+        title="环形自定义"
+        description="支持 JSX 自定义内容"
+      >
         <div class="flex items-center gap-8">
           <Progress
             type="circle"
@@ -226,17 +331,37 @@ export const CustomFormat: Story = {
 export const HideInfo: Story = {
   render: () => (
     <div class="space-y-10">
-      <Section title="隐藏信息" description="showInfo={false} 隐藏百分比文字">
+      <Section
+        title="隐藏信息"
+        description="showInfo={false} 隐藏百分比文字"
+      >
         <div class="w-[360px] space-y-5">
-          <Progress percent={50} showInfo={false} />
-          <Progress percent={75} showInfo={false} />
+          <Progress
+            percent={50}
+            showInfo={false}
+          />
+          <Progress
+            percent={75}
+            showInfo={false}
+          />
         </div>
       </Section>
 
-      <Section title="环形隐藏" description="只显示进度环">
+      <Section
+        title="环形隐藏"
+        description="只显示进度环"
+      >
         <div class="flex items-center gap-8">
-          <Progress type="circle" percent={50} showInfo={false} />
-          <Progress type="circle" percent={75} showInfo={false} />
+          <Progress
+            type="circle"
+            percent={50}
+            showInfo={false}
+          />
+          <Progress
+            type="circle"
+            percent={75}
+            showInfo={false}
+          />
         </div>
       </Section>
     </div>
@@ -247,19 +372,47 @@ export const HideInfo: Story = {
 export const CustomColors: Story = {
   render: () => (
     <div class="space-y-10">
-      <Section title="自定义颜色" description="strokeColor 和 trailColor">
+      <Section
+        title="自定义颜色"
+        description="strokeColor 和 trailColor"
+      >
         <div class="w-[360px] space-y-5">
-          <Progress percent={50} strokeColor="#8b5cf6" />
-          <Progress percent={75} strokeColor="#ec4899" />
-          <Progress percent={60} strokeColor="#f97316" trailColor="#fed7aa" />
+          <Progress
+            percent={50}
+            strokeColor="#8b5cf6"
+          />
+          <Progress
+            percent={75}
+            strokeColor="#ec4899"
+          />
+          <Progress
+            percent={60}
+            strokeColor="#f97316"
+            trailColor="#fed7aa"
+          />
         </div>
       </Section>
 
-      <Section title="环形自定义颜色" description="支持各种颜色">
+      <Section
+        title="环形自定义颜色"
+        description="支持各种颜色"
+      >
         <div class="flex items-center gap-8">
-          <Progress type="circle" percent={75} strokeColor="#8b5cf6" />
-          <Progress type="circle" percent={75} strokeColor="#ec4899" />
-          <Progress type="circle" percent={75} strokeColor="#10b981" />
+          <Progress
+            type="circle"
+            percent={75}
+            strokeColor="#8b5cf6"
+          />
+          <Progress
+            type="circle"
+            percent={75}
+            strokeColor="#ec4899"
+          />
+          <Progress
+            type="circle"
+            percent={75}
+            strokeColor="#10b981"
+          />
         </div>
       </Section>
     </div>
@@ -285,10 +438,16 @@ export const Dynamic: Story = {
     })
 
     return (
-      <Section title="动态进度" description="自动递增演示">
+      <Section
+        title="动态进度"
+        description="自动递增演示"
+      >
         <div class="space-y-8">
           <div class="w-[360px]">
-            <Progress percent={percent()} status={percent() >= 100 ? 'success' : 'active'} />
+            <Progress
+              percent={percent()}
+              status={percent() >= 100 ? 'success' : 'active'}
+            />
           </div>
 
           <div class="flex justify-center">
@@ -323,9 +482,15 @@ export const StepsExample: Story = {
     })
 
     return (
-      <Section title="步骤动画" description="自动步进演示">
+      <Section
+        title="步骤动画"
+        description="自动步进演示"
+      >
         <div class="w-[360px] space-y-3">
-          <Progress.Steps steps={5} current={current()} />
+          <Progress.Steps
+            steps={5}
+            current={current()}
+          />
           <p class="text-sm text-muted-foreground text-center">
             步骤 {current()} / 5
           </p>

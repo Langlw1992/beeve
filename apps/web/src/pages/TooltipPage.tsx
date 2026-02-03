@@ -2,9 +2,9 @@
  * Tooltip Component Showcase Page
  */
 
-import { type Component } from 'solid-js'
-import { Tooltip, Button } from '@beeve/ui'
-import { ShowcaseSection } from '../components/ShowcaseGrid'
+import {type Component} from 'solid-js'
+import {Tooltip, Button} from '@beeve/ui'
+import {ShowcaseSection} from '../components/ShowcaseGrid'
 
 export const TooltipPage: Component = () => {
   return (
@@ -17,7 +17,10 @@ export const TooltipPage: Component = () => {
       </div>
 
       {/* Basic */}
-      <ShowcaseSection title="Basic" description="基本用法">
+      <ShowcaseSection
+        title="Basic"
+        description="基本用法"
+      >
         <div class="flex gap-4">
           <Tooltip content="This is a tooltip">
             <Button variant="outline">Hover me</Button>
@@ -29,31 +32,58 @@ export const TooltipPage: Component = () => {
       </ShowcaseSection>
 
       {/* Placement */}
-      <ShowcaseSection title="Placement" description="不同位置">
+      <ShowcaseSection
+        title="Placement"
+        description="不同位置"
+      >
         <div class="grid grid-cols-3 gap-4 max-w-md mx-auto">
           <div />
-          <Tooltip content="Top" positioning={{ placement: 'top' }}>
-            <Button variant="outline" class="w-full">
+          <Tooltip
+            content="Top"
+            positioning={{placement: 'top'}}
+          >
+            <Button
+              variant="outline"
+              class="w-full"
+            >
               Top
             </Button>
           </Tooltip>
           <div />
 
-          <Tooltip content="Left" positioning={{ placement: 'left' }}>
-            <Button variant="outline" class="w-full">
+          <Tooltip
+            content="Left"
+            positioning={{placement: 'left'}}
+          >
+            <Button
+              variant="outline"
+              class="w-full"
+            >
               Left
             </Button>
           </Tooltip>
           <div />
-          <Tooltip content="Right" positioning={{ placement: 'right' }}>
-            <Button variant="outline" class="w-full">
+          <Tooltip
+            content="Right"
+            positioning={{placement: 'right'}}
+          >
+            <Button
+              variant="outline"
+              class="w-full"
+            >
               Right
             </Button>
           </Tooltip>
 
           <div />
-          <Tooltip content="Bottom" positioning={{ placement: 'bottom' }}>
-            <Button variant="outline" class="w-full">
+          <Tooltip
+            content="Bottom"
+            positioning={{placement: 'bottom'}}
+          >
+            <Button
+              variant="outline"
+              class="w-full"
+            >
               Bottom
             </Button>
           </Tooltip>
@@ -62,9 +92,15 @@ export const TooltipPage: Component = () => {
       </ShowcaseSection>
 
       {/* With Arrow */}
-      <ShowcaseSection title="With Arrow" description="带箭头">
+      <ShowcaseSection
+        title="With Arrow"
+        description="带箭头"
+      >
         <div class="flex gap-4">
-          <Tooltip content="Tooltip with arrow" arrow>
+          <Tooltip
+            content="Tooltip with arrow"
+            arrow
+          >
             <Button variant="outline">With Arrow</Button>
           </Tooltip>
           <Tooltip content="Without arrow">
@@ -74,29 +110,41 @@ export const TooltipPage: Component = () => {
       </ShowcaseSection>
 
       {/* Rich Content */}
-      <ShowcaseSection title="Rich Content" description="丰富内容">
+      <ShowcaseSection
+        title="Rich Content"
+        description="丰富内容"
+      >
         <div class="flex gap-4">
           <Tooltip
             content={
               <div class="flex flex-col gap-1">
                 <div class="font-semibold">Title</div>
-                <div class="text-xs opacity-80">Additional information here</div>
+                <div class="text-xs opacity-80">
+                  Additional information here
+                </div>
               </div>
             }
           >
             <Button variant="outline">Rich Content</Button>
           </Tooltip>
-          <Tooltip content={<span class="text-yellow-500">⚠️ Warning message</span>}>
+          <Tooltip
+            content={<span class="text-yellow-500">⚠️ Warning message</span>}
+          >
             <Button variant="outline">With Icon</Button>
           </Tooltip>
         </div>
       </ShowcaseSection>
 
       {/* On Different Elements */}
-      <ShowcaseSection title="On Different Elements" description="不同元素上使用">
+      <ShowcaseSection
+        title="On Different Elements"
+        description="不同元素上使用"
+      >
         <div class="flex items-center gap-6">
           <Tooltip content="Text tooltip">
-            <span class="underline decoration-dashed cursor-help">Hover this text</span>
+            <span class="underline decoration-dashed cursor-help">
+              Hover this text
+            </span>
           </Tooltip>
           <Tooltip content="Icon tooltip">
             <span class="text-2xl cursor-pointer">🎯</span>
@@ -111,4 +159,3 @@ export const TooltipPage: Component = () => {
     </div>
   )
 }
-

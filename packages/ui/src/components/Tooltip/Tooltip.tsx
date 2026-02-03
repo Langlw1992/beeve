@@ -3,10 +3,13 @@
  * 文字提示组件，基于 @zag-js/tooltip 实现
  */
 
-import { Show, splitProps, type Component, type JSX } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { tv, type VariantProps } from 'tailwind-variants'
-import { useTooltip, type TooltipProps as BaseProps } from '../../primitives/tooltip'
+import {Show, splitProps, type Component, type JSX} from 'solid-js'
+import {Portal} from 'solid-js/web'
+import {tv, type VariantProps} from 'tailwind-variants'
+import {
+  useTooltip,
+  type TooltipProps as BaseProps,
+} from '../../primitives/tooltip'
 
 // ==================== 样式定义 ====================
 
@@ -22,7 +25,8 @@ const tooltipStyles = tv({
     ],
     arrow: '[--arrow-size:8px] [--arrow-background:var(--color-foreground)]',
     arrowTip: '',
-    trigger: 'inline-flex bg-transparent border-none p-0 font-inherit cursor-inherit',
+    trigger:
+      'inline-flex bg-transparent border-none p-0 font-inherit cursor-inherit',
   },
 })
 
@@ -31,7 +35,9 @@ const styles = tooltipStyles()
 
 // ==================== 类型定义 ====================
 
-export interface TooltipProps extends BaseProps, VariantProps<typeof tooltipStyles> {
+export interface TooltipProps
+  extends BaseProps,
+    VariantProps<typeof tooltipStyles> {
   /** Tooltip 内容 */
   content: JSX.Element
   /** 触发元素 */
@@ -52,27 +58,40 @@ export const Tooltip: Component<TooltipProps> = (props) => {
     'contentClass',
   ])
 
-  const { api } = useTooltip(rest)
+  const {api} = useTooltip(rest)
 
   return (
     <>
       {/* Trigger */}
-      <button {...api().getTriggerProps()} type="button" class={styles.trigger()}>
+      <button
+        {...api().getTriggerProps()}
+        type="button"
+        class={styles.trigger()}
+      >
         {local.children}
       </button>
 
       {/* Content */}
       <Show when={api().open}>
         <Portal>
-          <div {...api().getPositionerProps()} class={styles.positioner()}>
+          <div
+            {...api().getPositionerProps()}
+            class={styles.positioner()}
+          >
             <Show when={local.arrow}>
-              <div {...api().getArrowProps()} class={styles.arrow()}>
-                <div {...api().getArrowTipProps()} class={styles.arrowTip()} />
+              <div
+                {...api().getArrowProps()}
+                class={styles.arrow()}
+              >
+                <div
+                  {...api().getArrowTipProps()}
+                  class={styles.arrowTip()}
+                />
               </div>
             </Show>
             <div
               {...api().getContentProps()}
-              class={styles.content({ class: local.contentClass })}
+              class={styles.content({class: local.contentClass})}
             >
               {local.content}
             </div>
@@ -82,4 +101,3 @@ export const Tooltip: Component<TooltipProps> = (props) => {
     </>
   )
 }
-

@@ -2,9 +2,9 @@
  * Label 组件测试
  */
 
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@solidjs/testing-library'
-import { Label } from './Label'
+import {describe, it, expect} from 'vitest'
+import {render, screen} from '@solidjs/testing-library'
+import {Label} from './Label'
 
 describe('Label', () => {
   // ==================== 渲染测试 ====================
@@ -33,7 +33,10 @@ describe('Label', () => {
       render(() => (
         <div>
           <Label for="test-input">测试</Label>
-          <input id="test-input" type="text" />
+          <input
+            id="test-input"
+            type="text"
+          />
         </div>
       ))
 
@@ -74,7 +77,9 @@ describe('Label', () => {
       const label = document.querySelector('label')
       // 非禁用时不应该有直接的 cursor-not-allowed 样式
       // 注意：peer-disabled:cursor-not-allowed 是条件样式，不是直接禁用样式
-      expect(label?.className).toMatch(/^(?!.*(?:^|\s)cursor-not-allowed(?:\s|$))/)
+      expect(label?.className).toMatch(
+        /^(?!.*(?:^|\s)cursor-not-allowed(?:\s|$))/,
+      )
     })
   })
 
@@ -97,11 +102,17 @@ describe('Label', () => {
   // ==================== 组合测试 ====================
   describe('组合属性', () => {
     it('同时设置 required 和 disabled', () => {
-      render(() => <Label required disabled>组合状态</Label>)
+      render(() => (
+        <Label
+          required
+          disabled
+        >
+          组合状态
+        </Label>
+      ))
       const label = document.querySelector('label')
       expect(label?.className).toContain("after:content-['*']")
       expect(label?.className).toContain('opacity-70')
     })
   })
 })
-

@@ -2,8 +2,8 @@
  * Home Page - Component Overview
  */
 
-import { For, type Component } from 'solid-js'
-import { navigate, type Route } from '../router'
+import {For, type Component} from 'solid-js'
+import {navigate, type Route} from '../router'
 
 interface HomePageProps {
   routes: Route[]
@@ -64,4 +64,3 @@ export const HomePage: Component<HomePageProps> = (props) => {
     </div>
   )
 }
-

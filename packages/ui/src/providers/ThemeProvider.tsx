@@ -13,7 +13,12 @@ import {
   type ParentComponent,
   type Accessor,
 } from 'solid-js'
-import type { BaseColorName, ThemeColorName, ColorMode, ThemeConfig } from '../themes'
+import type {
+  BaseColorName,
+  ThemeColorName,
+  ColorMode,
+  ThemeConfig,
+} from '../themes'
 import {
   defaultThemeConfig,
   getThemeVariables,
@@ -55,23 +60,29 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
   // Initialize config from storage or defaults
   const getInitialConfig = (): ThemeConfig => {
     if (typeof window === 'undefined') {
-      return { ...defaultThemeConfig, ...props.defaultConfig }
+      return {...defaultThemeConfig, ...props.defaultConfig}
     }
 
     try {
       const stored = localStorage.getItem(storageKey)
       if (stored) {
-        return { ...defaultThemeConfig, ...JSON.parse(stored), ...props.defaultConfig }
+        return {
+          ...defaultThemeConfig,
+          ...JSON.parse(stored),
+          ...props.defaultConfig,
+        }
       }
     } catch {
       // Ignore storage errors
     }
 
-    return { ...defaultThemeConfig, ...props.defaultConfig }
+    return {...defaultThemeConfig, ...props.defaultConfig}
   }
 
   const [config, setConfigState] = createSignal<ThemeConfig>(getInitialConfig())
-  const [systemMode, setSystemMode] = createSignal<'light' | 'dark'>(getSystemColorMode())
+  const [systemMode, setSystemMode] = createSignal<'light' | 'dark'>(
+    getSystemColorMode(),
+  )
 
   // Resolved mode (handles 'system')
   const resolvedMode = () => {
@@ -81,7 +92,9 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Listen for system color scheme changes
   onMount(() => {
-    if (typeof window === 'undefined') { return }
+    if (typeof window === 'undefined') {
+      return
+    }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handler = (e: MediaQueryListEvent) => {
@@ -94,9 +107,11 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Apply theme to document
   createEffect(() => {
-    if (!applyToDocument || typeof document === 'undefined') { return }
+    if (!applyToDocument || typeof document === 'undefined') {
+      return
+    }
 
-    const { baseColor, themeColor, radius } = config()
+    const {baseColor, themeColor, radius} = config()
     const mode = resolvedMode()
     const vars = getThemeVariables(baseColor, themeColor, mode)
     const root = document.documentElement
@@ -127,7 +142,9 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
   // Persist config to storage
   createEffect(() => {
-    if (typeof window === 'undefined') { return }
+    if (typeof window === 'undefined') {
+      return
+    }
 
     try {
       localStorage.setItem(storageKey, JSON.stringify(config()))
@@ -137,20 +154,24 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
   })
 
   const setConfig = (partial: Partial<ThemeConfig>) => {
-    setConfigState((prev) => ({ ...prev, ...partial }))
+    setConfigState((prev) => ({...prev, ...partial}))
   }
 
   const value: ThemeContextValue = {
     config,
     resolvedMode,
-    setMode: (mode) => setConfig({ mode }),
-    setBaseColor: (baseColor) => setConfig({ baseColor }),
-    setThemeColor: (themeColor) => setConfig({ themeColor }),
-    setRadius: (radius) => setConfig({ radius }),
+    setMode: (mode) => setConfig({mode}),
+    setBaseColor: (baseColor) => setConfig({baseColor}),
+    setThemeColor: (themeColor) => setConfig({themeColor}),
+    setRadius: (radius) => setConfig({radius}),
     setConfig,
   }
 
-  return <ThemeContext.Provider value={value}>{props.children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={value}>
+      {props.children}
+    </ThemeContext.Provider>
+  )
 }
 
 /**

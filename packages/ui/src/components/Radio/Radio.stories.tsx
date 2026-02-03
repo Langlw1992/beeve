@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { For, createSignal, type JSX } from 'solid-js'
-import { Radio, RadioGroup } from './Radio'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {For, createSignal, type JSX} from 'solid-js'
+import {Radio, RadioGroup} from './Radio'
 
 // ============================================================
 // 变体定义
@@ -22,7 +22,9 @@ const Matrix = <R, C>(props: {
 }) => (
   <div
     class="grid gap-4 items-center"
-    style={{ 'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))` }}
+    style={{
+      'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))`,
+    }}
   >
     <div />
     <For each={props.cols}>
@@ -35,9 +37,15 @@ const Matrix = <R, C>(props: {
     <For each={props.rows}>
       {(row) => (
         <>
-          <div class="text-xs text-muted-foreground font-medium">{props.rowLabel(row)}</div>
+          <div class="text-xs text-muted-foreground font-medium">
+            {props.rowLabel(row)}
+          </div>
           <For each={props.cols}>
-            {(col) => <div class="flex justify-center">{props.renderCell(row, col)}</div>}
+            {(col) => (
+              <div class="flex justify-center">
+                {props.renderCell(row, col)}
+              </div>
+            )}
           </For>
         </>
       )}
@@ -128,7 +136,11 @@ export const Group: Story = {
 
     return (
       <div class="flex flex-col gap-4">
-        <RadioGroup value={value()} onChange={setValue} name="fruit">
+        <RadioGroup
+          value={value()}
+          onChange={setValue}
+          name="fruit"
+        >
           <div class="flex flex-col gap-2">
             <Radio value="apple">苹果</Radio>
             <Radio value="banana">香蕉</Radio>
@@ -136,9 +148,7 @@ export const Group: Story = {
             <Radio value="grape">葡萄</Radio>
           </div>
         </RadioGroup>
-        <div class="text-xs text-muted-foreground">
-          当前选择: {value()}
-        </div>
+        <div class="text-xs text-muted-foreground">当前选择: {value()}</div>
       </div>
     )
   },
@@ -152,7 +162,11 @@ export const Horizontal: Story = {
     const [value, setValue] = createSignal('option1')
 
     return (
-      <RadioGroup value={value()} onChange={setValue} name="options">
+      <RadioGroup
+        value={value()}
+        onChange={setValue}
+        name="options"
+      >
         <div class="flex gap-4">
           <Radio value="option1">选项一</Radio>
           <Radio value="option2">选项二</Radio>
@@ -173,7 +187,11 @@ export const GroupSizes: Story = {
         {(size) => (
           <div class="flex flex-col gap-2">
             <div class="text-xs text-muted-foreground font-medium">{size}</div>
-            <RadioGroup size={size} defaultValue="a" name={`group-${size}`}>
+            <RadioGroup
+              size={size}
+              defaultValue="a"
+              name={`group-${size}`}
+            >
               <div class="flex gap-4">
                 <Radio value="a">选项 A</Radio>
                 <Radio value="b">选项 B</Radio>
@@ -192,7 +210,11 @@ export const GroupSizes: Story = {
  */
 export const DisabledGroup: Story = {
   render: () => (
-    <RadioGroup disabled defaultValue="option1" name="disabled-group">
+    <RadioGroup
+      disabled
+      defaultValue="option1"
+      name="disabled-group"
+    >
       <div class="flex gap-4">
         <Radio value="option1">选项一</Radio>
         <Radio value="option2">选项二</Radio>
@@ -201,4 +223,3 @@ export const DisabledGroup: Story = {
     </RadioGroup>
   ),
 }
-

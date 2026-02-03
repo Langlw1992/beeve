@@ -2,8 +2,8 @@
  * NavMenu Stories
  */
 
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
 import {
   Home,
   FileText,
@@ -15,7 +15,7 @@ import {
   Bell,
   HelpCircle,
 } from 'lucide-solid'
-import { NavMenu, type NavMenuItemType } from './index'
+import {NavMenu, type NavMenuItemType} from './index'
 
 const meta = {
   title: 'Components/NavMenu',
@@ -23,11 +23,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [
-    (Story) => (
-      <Story />
-    ),
-  ],
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof NavMenu>
 
 export default meta
@@ -39,10 +35,10 @@ export const Basic: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" /> },
-      { key: 'users', label: '用户', icon: <Users class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
+      {key: 'posts', label: '文章', icon: <SquarePen class="size-4" />},
+      {key: 'users', label: '用户', icon: <Users class="size-4" />},
     ]
 
     return (
@@ -61,15 +57,20 @@ export const WithGroups: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { type: 'divider' },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {type: 'divider'},
       {
         type: 'group',
         key: 'content',
         label: '内容管理',
         children: [
-          { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-          { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 12 },
+          {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
+          {
+            key: 'posts',
+            label: '文章',
+            icon: <SquarePen class="size-4" />,
+            badge: 12,
+          },
         ],
       },
       {
@@ -77,8 +78,8 @@ export const WithGroups: Story = {
         key: 'system',
         label: '系统管理',
         children: [
-          { key: 'users', label: '用户', icon: <Users class="size-4" /> },
-          { key: 'analytics', label: '统计', icon: <BarChart3 class="size-4" /> },
+          {key: 'users', label: '用户', icon: <Users class="size-4" />},
+          {key: 'analytics', label: '统计', icon: <BarChart3 class="size-4" />},
         ],
       },
     ]
@@ -99,16 +100,16 @@ export const WithSubMenu: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
       {
         key: 'settings',
         label: '设置',
         icon: <Settings class="size-4" />,
         children: [
-          { key: 'profile', label: '个人资料' },
-          { key: 'security', label: '安全设置' },
-          { key: 'notifications', label: '通知设置' },
+          {key: 'profile', label: '个人资料'},
+          {key: 'security', label: '安全设置'},
+          {key: 'notifications', label: '通知设置'},
         ],
       },
       {
@@ -116,9 +117,9 @@ export const WithSubMenu: Story = {
         label: '系统',
         icon: <Shield class="size-4" />,
         children: [
-          { key: 'users', label: '用户管理' },
-          { key: 'roles', label: '角色管理' },
-          { key: 'logs', label: '操作日志' },
+          {key: 'users', label: '用户管理'},
+          {key: 'roles', label: '角色管理'},
+          {key: 'logs', label: '操作日志'},
         ],
       },
     ]
@@ -140,10 +141,20 @@ export const WithBadges: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'notifications', label: '通知', icon: <Bell class="size-4" />, badge: 5 },
-      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 'New' },
-      { key: 'help', label: '帮助', icon: <HelpCircle class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {
+        key: 'notifications',
+        label: '通知',
+        icon: <Bell class="size-4" />,
+        badge: 5,
+      },
+      {
+        key: 'posts',
+        label: '文章',
+        icon: <SquarePen class="size-4" />,
+        badge: 'New',
+      },
+      {key: 'help', label: '帮助', icon: <HelpCircle class="size-4" />},
     ]
 
     return (
@@ -163,7 +174,7 @@ export const MultiLevel: Story = {
     const [expanded, setExpanded] = createSignal(['content', 'content-pages'])
 
     const items: NavMenuItemType[] = [
-      { key: 'dashboard', label: '仪表盘', icon: <Home class="size-4" /> },
+      {key: 'dashboard', label: '仪表盘', icon: <Home class="size-4" />},
       {
         key: 'content',
         label: '内容管理',
@@ -173,20 +184,20 @@ export const MultiLevel: Story = {
             key: 'content-pages',
             label: '页面',
             children: [
-              { key: 'page-home', label: '首页' },
-              { key: 'page-about', label: '关于我们' },
-              { key: 'page-contact', label: '联系方式' },
+              {key: 'page-home', label: '首页'},
+              {key: 'page-about', label: '关于我们'},
+              {key: 'page-contact', label: '联系方式'},
             ],
           },
           {
             key: 'content-posts',
             label: '文章',
             children: [
-              { key: 'post-list', label: '文章列表' },
-              { key: 'post-draft', label: '草稿箱', badge: 3 },
+              {key: 'post-list', label: '文章列表'},
+              {key: 'post-draft', label: '草稿箱', badge: 3},
             ],
           },
-          { key: 'content-media', label: '媒体库' },
+          {key: 'content-media', label: '媒体库'},
         ],
       },
       {
@@ -194,8 +205,8 @@ export const MultiLevel: Story = {
         label: '设置',
         icon: <Settings class="size-4" />,
         children: [
-          { key: 'settings-general', label: '通用设置' },
-          { key: 'settings-security', label: '安全设置' },
+          {key: 'settings-general', label: '通用设置'},
+          {key: 'settings-security', label: '安全设置'},
         ],
       },
     ]
@@ -225,10 +236,10 @@ export const Collapsed: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" /> },
-      { key: 'settings', label: '设置', icon: <Settings class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
+      {key: 'posts', label: '文章', icon: <SquarePen class="size-4" />},
+      {key: 'settings', label: '设置', icon: <Settings class="size-4" />},
     ]
 
     return (
@@ -248,11 +259,21 @@ export const WithDisabled: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, disabled: true },
-      { key: 'users', label: '用户', icon: <Users class="size-4" />, disabled: true },
-      { key: 'settings', label: '设置', icon: <Settings class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
+      {
+        key: 'posts',
+        label: '文章',
+        icon: <SquarePen class="size-4" />,
+        disabled: true,
+      },
+      {
+        key: 'users',
+        label: '用户',
+        icon: <Users class="size-4" />,
+        disabled: true,
+      },
+      {key: 'settings', label: '设置', icon: <Settings class="size-4" />},
     ]
 
     return (
@@ -278,16 +299,16 @@ export const Horizontal: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
       {
         key: 'products',
         label: '产品',
         icon: <BarChart3 class="size-4" />,
         children: [
-          { key: 'analytics', label: '数据分析' },
-          { key: 'marketing', label: '营销工具' },
-          { key: 'automation', label: '自动化' },
+          {key: 'analytics', label: '数据分析'},
+          {key: 'marketing', label: '营销工具'},
+          {key: 'automation', label: '自动化'},
         ],
       },
       {
@@ -295,12 +316,12 @@ export const Horizontal: Story = {
         label: '设置',
         icon: <Settings class="size-4" />,
         children: [
-          { key: 'profile', label: '个人资料' },
-          { key: 'security', label: '安全设置' },
-          { key: 'notifications', label: '通知设置' },
+          {key: 'profile', label: '个人资料'},
+          {key: 'security', label: '安全设置'},
+          {key: 'notifications', label: '通知设置'},
         ],
       },
-      { key: 'help', label: '帮助', icon: <HelpCircle class="size-4" /> },
+      {key: 'help', label: '帮助', icon: <HelpCircle class="size-4" />},
     ]
 
     return (
@@ -332,27 +353,39 @@ export const HorizontalCentered: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页' },
+      {key: 'home', label: '首页'},
       {
         key: 'products',
         label: '产品',
         children: [
-          { key: 'analytics', label: '数据分析', icon: <BarChart3 class="size-4" /> },
-          { key: 'marketing', label: '营销工具', icon: <SquarePen class="size-4" /> },
-          { key: 'automation', label: '自动化', icon: <Settings class="size-4" /> },
+          {
+            key: 'analytics',
+            label: '数据分析',
+            icon: <BarChart3 class="size-4" />,
+          },
+          {
+            key: 'marketing',
+            label: '营销工具',
+            icon: <SquarePen class="size-4" />,
+          },
+          {
+            key: 'automation',
+            label: '自动化',
+            icon: <Settings class="size-4" />,
+          },
         ],
       },
       {
         key: 'solutions',
         label: '解决方案',
         children: [
-          { key: 'enterprise', label: '企业版' },
-          { key: 'startup', label: '创业版' },
-          { key: 'personal', label: '个人版' },
+          {key: 'enterprise', label: '企业版'},
+          {key: 'startup', label: '创业版'},
+          {key: 'personal', label: '个人版'},
         ],
       },
-      { key: 'pricing', label: '定价' },
-      { key: 'docs', label: '文档' },
+      {key: 'pricing', label: '定价'},
+      {key: 'docs', label: '文档'},
     ]
 
     return (
@@ -367,10 +400,16 @@ export const HorizontalCentered: Story = {
           />
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" class="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">
+          <button
+            type="button"
+            class="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
             登录
           </button>
-          <button type="button" class="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+          <button
+            type="button"
+            class="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
             注册
           </button>
         </div>
@@ -392,7 +431,7 @@ export const HorizontalWithCards: Story = {
     const [value, setValue] = createSignal('home')
 
     const items: NavMenuItemType[] = [
-      { key: 'home', label: '首页', icon: <Home class="size-4" /> },
+      {key: 'home', label: '首页', icon: <Home class="size-4" />},
       {
         key: 'products',
         label: '产品',
@@ -437,8 +476,8 @@ export const HorizontalWithCards: Story = {
           },
         ],
       },
-      { key: 'pricing', label: '定价' },
-      { key: 'docs', label: '文档', icon: <FileText class="size-4" /> },
+      {key: 'pricing', label: '定价'},
+      {key: 'docs', label: '文档', icon: <FileText class="size-4" />},
     ]
 
     return (
@@ -459,4 +498,3 @@ export const HorizontalWithCards: Story = {
     )
   },
 }
-

@@ -48,11 +48,11 @@ import {
   type Accessor,
   type Component,
 } from 'solid-js'
-import { tv } from 'tailwind-variants'
-import { ChevronRight, ChevronDown } from 'lucide-solid'
+import {tv} from 'tailwind-variants'
+import {ChevronRight, ChevronDown} from 'lucide-solid'
 import * as navigationMenu from '@zag-js/navigation-menu'
-import { normalizeProps, useMachine } from '@zag-js/solid'
-import { useCollapsible } from '../../primitives/collapsible'
+import {normalizeProps, useMachine} from '@zag-js/solid'
+import {useCollapsible} from '../../primitives/collapsible'
 import type {
   NavMenuProps,
   NavMenuItemType,
@@ -86,7 +86,8 @@ const navMenuStyles = tv({
       '[&>svg]:size-[18px] [&>svg]:shrink-0 [&>svg]:text-sidebar-foreground/40',
     ],
     // active 状态：主题色文字 + 背景，hover 保持
-    itemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15 [&>svg]:text-sidebar-primary/70',
+    itemActive:
+      'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15 [&>svg]:text-sidebar-primary/70',
     // 父级菜单展开时的样式：无特殊高亮
     itemExpanded: '',
     // 子节点被选中时，父节点高亮
@@ -105,16 +106,13 @@ const navMenuStyles = tv({
     ],
     itemChevronOpen: 'rotate-90',
     // 子菜单容器
-    subMenuWrapper: [
-      'relative mt-1 overflow-hidden',
-    ],
-    subMenu: [
-      'flex min-w-0 flex-col gap-1',
-      'overflow-hidden',
-    ],
+    subMenuWrapper: ['relative mt-1 overflow-hidden'],
+    subMenu: ['flex min-w-0 flex-col gap-1', 'overflow-hidden'],
     // 子菜单项：简化为选中/未选中两种状态
-    subMenuItem: 'text-[13px] py-1.5 px-3 text-sidebar-foreground/60 hover:bg-sidebar-accent',
-    subMenuItemActive: 'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15',
+    subMenuItem:
+      'text-[13px] py-1.5 px-3 text-sidebar-foreground/60 hover:bg-sidebar-accent',
+    subMenuItemActive:
+      'text-sidebar-primary bg-sidebar-primary/10 hover:bg-sidebar-primary/15',
   },
   variants: {
     collapsed: {
@@ -201,9 +199,7 @@ const horizontalNavStyles = tv({
     contentLinkText: 'flex flex-col gap-0.5 items-start',
     contentLinkLabel: 'font-medium text-popover-foreground',
     contentLinkDescription: 'text-xs text-muted-foreground font-normal',
-    chevron: [
-      'size-3.5 text-foreground/40 transition-transform duration-200',
-    ],
+    chevron: ['size-3.5 text-foreground/40 transition-transform duration-200'],
     chevronOpen: 'rotate-180',
     // 指示器样式 - 使用 CSS 变量实现平滑移动
     // 注意: 位置和尺寸通过内联样式的 CSS 变量控制
@@ -243,7 +239,7 @@ const NavMenuItem: Component<{
   depth?: number
 }> = (props) => {
   const ctx = useNavMenuContext()
-  const styles = createMemo(() => navMenuStyles({ collapsed: ctx.collapsed() }))
+  const styles = createMemo(() => navMenuStyles({collapsed: ctx.collapsed()}))
   const isActive = () => ctx.value() === props.item.key
   const depth = () => props.depth ?? 0
 
@@ -257,7 +253,7 @@ const NavMenuItem: Component<{
 
   // 根据层级计算内容缩进（与 icon 宽度 18px + gap 8px 一致）
   const contentIndentStyle = () =>
-    depth() > 0 ? { 'padding-left': `${depth() * 26}px` } : {}
+    depth() > 0 ? {'padding-left': `${depth() * 26}px`} : {}
 
   return (
     <button
@@ -278,7 +274,11 @@ const NavMenuItem: Component<{
       <Show when={props.item.icon}>{props.item.icon}</Show>
       <span class={styles().itemLabel()}>{props.item.label}</span>
       <Show when={props.item.badge !== undefined}>
-        <span class={styles().itemBadge({ class: isActive() ? styles().itemBadgeActive() : '' })}>
+        <span
+          class={styles().itemBadge({
+            class: isActive() ? styles().itemBadgeActive() : '',
+          })}
+        >
           {props.item.badge}
         </span>
       </Show>
@@ -287,13 +287,24 @@ const NavMenuItem: Component<{
 }
 
 /** 递归检查子节点是否包含选中项 */
-function hasActiveChild(children: NavMenuItemData[], activeKey: string | undefined): boolean {
-  if (!activeKey) { return false }
+function hasActiveChild(
+  children: NavMenuItemData[],
+  activeKey: string | undefined,
+): boolean {
+  if (!activeKey) {
+    return false
+  }
   for (const child of children) {
-    if (child.key === activeKey) { return true }
+    if (child.key === activeKey) {
+      return true
+    }
     if (navMenuHasChildren(child)) {
-      const childWithChildren = child as NavMenuItemData & { children: NavMenuItemData[] }
-      if (hasActiveChild(childWithChildren.children, activeKey)) { return true }
+      const childWithChildren = child as NavMenuItemData & {
+        children: NavMenuItemData[]
+      }
+      if (hasActiveChild(childWithChildren.children, activeKey)) {
+        return true
+      }
     }
   }
   return false
@@ -301,17 +312,17 @@ function hasActiveChild(children: NavMenuItemData[], activeKey: string | undefin
 
 /** 渲染带子菜单的菜单项（支持多层级递归） */
 const NavMenuSubItem: Component<{
-  item: NavMenuItemData & { children: NavMenuItemData[] }
+  item: NavMenuItemData & {children: NavMenuItemData[]}
   depth?: number
 }> = (props) => {
   const ctx = useNavMenuContext()
-  const styles = createMemo(() => navMenuStyles({ collapsed: ctx.collapsed() }))
+  const styles = createMemo(() => navMenuStyles({collapsed: ctx.collapsed()}))
   const isExpanded = () => ctx.expandedKeys().includes(props.item.key)
   const depth = () => props.depth ?? 0
   const isChildActive = () => hasActiveChild(props.item.children, ctx.value())
 
   // 受控模式：open 和 onOpenChange 配合使用
-  const { api } = useCollapsible({
+  const {api} = useCollapsible({
     open: isExpanded,
     onOpenChange: () => {
       ctx.toggleExpanded(props.item.key)
@@ -320,7 +331,7 @@ const NavMenuSubItem: Component<{
 
   // 根据层级计算内容缩进（与 icon 宽度 18px + gap 8px 一致）
   const contentIndentStyle = () =>
-    depth() > 0 ? { 'padding-left': `${depth() * 26}px` } : {}
+    depth() > 0 ? {'padding-left': `${depth() * 26}px`} : {}
 
   return (
     <div {...api().getRootProps()}>
@@ -355,12 +366,19 @@ const NavMenuSubItem: Component<{
                 if (navMenuHasChildren(child)) {
                   return (
                     <NavMenuSubItem
-                      item={child as NavMenuItemData & { children: NavMenuItemData[] }}
+                      item={
+                        child as NavMenuItemData & {children: NavMenuItemData[]}
+                      }
                       depth={depth() + 1}
                     />
                   )
                 }
-                return <NavMenuItem item={child} depth={depth() + 1} />
+                return (
+                  <NavMenuItem
+                    item={child}
+                    depth={depth() + 1}
+                  />
+                )
               }}
             </For>
           </div>
@@ -375,7 +393,7 @@ const NavMenuGroup: Component<{
   group: NavMenuGroupData
 }> = (props) => {
   const ctx = useNavMenuContext()
-  const styles = createMemo(() => navMenuStyles({ collapsed: ctx.collapsed() }))
+  const styles = createMemo(() => navMenuStyles({collapsed: ctx.collapsed()}))
 
   return (
     <div class={styles().group()}>
@@ -392,7 +410,7 @@ const NavMenuItems: Component<{
   items: NavMenuItemType[]
 }> = (props) => {
   const ctx = useNavMenuContext()
-  const styles = createMemo(() => navMenuStyles({ collapsed: ctx.collapsed() }))
+  const styles = createMemo(() => navMenuStyles({collapsed: ctx.collapsed()}))
 
   return (
     <For each={props.items}>
@@ -409,7 +427,7 @@ const NavMenuItems: Component<{
           if (navMenuHasChildren(item)) {
             return (
               <NavMenuSubItem
-                item={item as NavMenuItemData & { children: NavMenuItemData[] }}
+                item={item as NavMenuItemData & {children: NavMenuItemData[]}}
               />
             )
           }
@@ -445,18 +463,20 @@ const HorizontalNavMenu: Component<{
     x: number
     width: number
     visible: boolean
-  }>({ x: 0, width: 0, visible: false })
+  }>({x: 0, width: 0, visible: false})
 
   // 当 api().value 变化时更新指示器位置
   createEffect(() => {
     const value = api().value
     if (!value || !listRef) {
-      setIndicatorStyle({ x: 0, width: 0, visible: false })
+      setIndicatorStyle({x: 0, width: 0, visible: false})
       return
     }
 
     // 查找当前激活的触发器元素
-    const trigger = listRef.querySelector(`[data-part="trigger"][data-value="${value}"]`)
+    const trigger = listRef.querySelector(
+      `[data-part="trigger"][data-value="${value}"]`,
+    )
     if (trigger instanceof HTMLElement) {
       const listRect = listRef.getBoundingClientRect()
       const triggerRect = trigger.getBoundingClientRect()
@@ -488,7 +508,7 @@ const HorizontalNavMenu: Component<{
 
   // 有子菜单的项
   const itemsWithChildren = createMemo(() =>
-    menuItems().filter((item) => navMenuHasChildren(item))
+    menuItems().filter((item) => navMenuHasChildren(item)),
   )
 
   const handleLinkClick = (key: string, onClick?: () => void) => {
@@ -497,7 +517,10 @@ const HorizontalNavMenu: Component<{
   }
 
   return (
-    <nav {...api().getRootProps()} class={styles.root({ class: props.class })}>
+    <nav
+      {...api().getRootProps()}
+      class={styles.root({class: props.class})}
+    >
       {/* 列表容器 - 需要 relative 定位来正确放置指示器 */}
       <ul
         ref={(el) => {
@@ -506,91 +529,101 @@ const HorizontalNavMenu: Component<{
         {...api().getListProps()}
         class={styles.list()}
       >
-          <For each={menuItems()}>
-            {(item) => {
-              const hasChildren = navMenuHasChildren(item)
-              const isActive = () => props.value === item.key
-              const isOpen = () => api().value === item.key
+        <For each={menuItems()}>
+          {(item) => {
+            const hasChildren = navMenuHasChildren(item)
+            const isActive = () => props.value === item.key
+            const isOpen = () => api().value === item.key
 
-              // 检查子项是否有激活的
-              const hasActiveChild = () => {
-                if (!item.children) {
-                  return false
-                }
-                return item.children.some((child) => props.value === child.key)
+            // 检查子项是否有激活的
+            const hasActiveChild = () => {
+              if (!item.children) {
+                return false
               }
+              return item.children.some((child) => props.value === child.key)
+            }
 
-              if (hasChildren) {
-                // 带下拉菜单的项
-                return (
-                  <li {...api().getItemProps({ value: item.key })} class={styles.item()}>
-                    <button
-                      {...api().getTriggerProps({ value: item.key })}
-                      class={styles.trigger({
-                        class: [
-                          (isActive() || hasActiveChild()) && styles.triggerActive(),
-                          isOpen() && styles.triggerOpen(),
-                        ],
-                      })}
-                    >
-                      <Show when={item.icon}>{item.icon}</Show>
-                      <span>{item.label}</span>
-                      <ChevronDown
-                        class={styles.chevron({
-                          class: isOpen() ? styles.chevronOpen() : '',
-                        })}
-                      />
-                    </button>
-                    {/* 焦点管理代理 */}
-                    <span {...api().getTriggerProxyProps({ value: item.key })} />
-                    <span {...api().getViewportProxyProps({ value: item.key })} />
-                  </li>
-                )
-              }
-
-              // 普通链接项
+            if (hasChildren) {
+              // 带下拉菜单的项
               return (
-                <li {...api().getItemProps({ value: item.key })} class={styles.item()}>
+                <li
+                  {...api().getItemProps({value: item.key})}
+                  class={styles.item()}
+                >
                   <button
-                    type="button"
-                    class={styles.link({
-                      class: isActive() ? styles.linkActive() : '',
+                    {...api().getTriggerProps({value: item.key})}
+                    class={styles.trigger({
+                      class: [
+                        (isActive() || hasActiveChild()) &&
+                          styles.triggerActive(),
+                        isOpen() && styles.triggerOpen(),
+                      ],
                     })}
-                    onClick={() => handleLinkClick(item.key, item.onClick)}
                   >
                     <Show when={item.icon}>{item.icon}</Show>
                     <span>{item.label}</span>
+                    <ChevronDown
+                      class={styles.chevron({
+                        class: isOpen() ? styles.chevronOpen() : '',
+                      })}
+                    />
                   </button>
+                  {/* 焦点管理代理 */}
+                  <span {...api().getTriggerProxyProps({value: item.key})} />
+                  <span {...api().getViewportProxyProps({value: item.key})} />
                 </li>
               )
+            }
+
+            // 普通链接项
+            return (
+              <li
+                {...api().getItemProps({value: item.key})}
+                class={styles.item()}
+              >
+                <button
+                  type="button"
+                  class={styles.link({
+                    class: isActive() ? styles.linkActive() : '',
+                  })}
+                  onClick={() => handleLinkClick(item.key, item.onClick)}
+                >
+                  <Show when={item.icon}>{item.icon}</Show>
+                  <span>{item.label}</span>
+                </button>
+              </li>
+            )
+          }}
+        </For>
+        {/* 指示器 - 手动计算位置（因为 zag-js 的 --trigger-x 有问题） */}
+        <Show when={indicatorStyle().visible}>
+          <div
+            class={styles.indicator()}
+            style={{
+              translate: `${indicatorStyle().x}px 0`,
+              width: `${indicatorStyle().width}px`,
             }}
-          </For>
-          {/* 指示器 - 手动计算位置（因为 zag-js 的 --trigger-x 有问题） */}
-          <Show when={indicatorStyle().visible}>
-            <div
-              class={styles.indicator()}
-              style={{
-                translate: `${indicatorStyle().x}px 0`,
-                width: `${indicatorStyle().width}px`,
-              }}
-            />
-          </Show>
+          />
+        </Show>
       </ul>
 
       {/* 共享 Viewport - 所有下拉内容都在这里渲染 */}
       <div
         {...api().getViewportPositionerProps()}
         class={styles.viewportPositioner()}
-        style={{ transform: 'translateX(var(--viewport-x, 0))' }}
+        style={{transform: 'translateX(var(--viewport-x, 0))'}}
       >
-        <div {...api().getViewportProps()} class={styles.viewport()}>
+        <div
+          {...api().getViewportProps()}
+          class={styles.viewport()}
+        >
           <For each={itemsWithChildren()}>
             {(item) => {
               const childActive = (childKey: string) => props.value === childKey
 
               return (
                 <div
-                  {...api().getContentProps({ value: item.key })}
+                  {...api().getContentProps({value: item.key})}
                   class={styles.content()}
                 >
                   <For each={item.children}>
@@ -598,9 +631,13 @@ const HorizontalNavMenu: Component<{
                       <button
                         type="button"
                         class={styles.contentLink({
-                          class: childActive(child.key) ? styles.contentLinkActive() : '',
+                          class: childActive(child.key)
+                            ? styles.contentLinkActive()
+                            : '',
                         })}
-                        onClick={() => handleLinkClick(child.key, child.onClick)}
+                        onClick={() =>
+                          handleLinkClick(child.key, child.onClick)
+                        }
                       >
                         <Show when={child.icon}>{child.icon}</Show>
                         <Show
@@ -608,8 +645,12 @@ const HorizontalNavMenu: Component<{
                           fallback={<span>{child.label}</span>}
                         >
                           <div class={styles.contentLinkText()}>
-                            <span class={styles.contentLinkLabel()}>{child.label}</span>
-                            <span class={styles.contentLinkDescription()}>{child.description}</span>
+                            <span class={styles.contentLinkLabel()}>
+                              {child.label}
+                            </span>
+                            <span class={styles.contentLinkDescription()}>
+                              {child.description}
+                            </span>
                           </div>
                         </Show>
                       </button>
@@ -646,9 +687,9 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
 
   // 内部状态
   const [internalValue, setInternalValue] = createSignal(local.defaultValue)
-  const [internalExpandedKeys, setInternalExpandedKeys] = createSignal<string[]>(
-    local.defaultExpandedKeys ?? []
-  )
+  const [internalExpandedKeys, setInternalExpandedKeys] = createSignal<
+    string[]
+  >(local.defaultExpandedKeys ?? [])
 
   // 计算当前值
   const currentValue = () => local.value ?? internalValue()
@@ -683,7 +724,7 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
   }
 
   // 垂直模式（默认）
-  const styles = createMemo(() => navMenuStyles({ collapsed: collapsed() }))
+  const styles = createMemo(() => navMenuStyles({collapsed: collapsed()}))
 
   return (
     <NavMenuContext.Provider
@@ -695,7 +736,10 @@ export const NavMenu: Component<NavMenuProps> = (props) => {
         collapsed,
       }}
     >
-      <nav class={styles().root({ class: local.class })} {...rest}>
+      <nav
+        class={styles().root({class: local.class})}
+        {...rest}
+      >
         <NavMenuItems items={local.items} />
       </nav>
     </NavMenuContext.Provider>

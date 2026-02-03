@@ -2,20 +2,20 @@
  * Home Page - Component Overview
  */
 
-import { For } from 'solid-js'
-import { createFileRoute, Link } from '@tanstack/solid-router'
+import {For} from 'solid-js'
+import {createFileRoute, Link} from '@tanstack/solid-router'
 
 const componentRoutes = [
-  { path: '/button', label: 'Button' },
-  { path: '/input', label: 'Input' },
-  { path: '/select', label: 'Select' },
-  { path: '/checkbox', label: 'Checkbox' },
-  { path: '/switch', label: 'Switch' },
-  { path: '/radio', label: 'Radio' },
-  { path: '/slider', label: 'Slider' },
-  { path: '/label', label: 'Label' },
-  { path: '/dialog', label: 'Dialog' },
-  { path: '/tooltip', label: 'Tooltip' },
+  {path: '/button', label: 'Button'},
+  {path: '/input', label: 'Input'},
+  {path: '/select', label: 'Select'},
+  {path: '/checkbox', label: 'Checkbox'},
+  {path: '/switch', label: 'Switch'},
+  {path: '/radio', label: 'Radio'},
+  {path: '/slider', label: 'Slider'},
+  {path: '/label', label: 'Label'},
+  {path: '/dialog', label: 'Dialog'},
+  {path: '/tooltip', label: 'Tooltip'},
 ] as const
 
 function HomeComponent() {
@@ -74,4 +74,3 @@ function HomeComponent() {
 export const Route = createFileRoute('/')({
   component: HomeComponent,
 })
-

@@ -1,5 +1,5 @@
-import { Switch } from '@beeve/ui'
-import { createSignal } from 'solid-js'
+import {Switch} from '@beeve/ui'
+import {createSignal} from 'solid-js'
 
 export function SwitchBasic() {
   return <Switch>飞行模式</Switch>
@@ -19,7 +19,12 @@ export function SwitchDisabled() {
   return (
     <div class="flex flex-wrap items-center gap-6">
       <Switch disabled>禁用</Switch>
-      <Switch disabled checked>禁用且选中</Switch>
+      <Switch
+        disabled
+        checked
+      >
+        禁用且选中
+      </Switch>
     </div>
   )
 }
@@ -30,7 +35,10 @@ export function SwitchControlled() {
   return (
     <div class="flex flex-col gap-4">
       <div class="flex items-center gap-2">
-        <Switch checked={checked()} onChange={setChecked}>
+        <Switch
+          checked={checked()}
+          onChange={setChecked}
+        >
           显示通知
         </Switch>
       </div>

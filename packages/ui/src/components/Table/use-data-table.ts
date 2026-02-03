@@ -34,13 +34,7 @@
  * ```
  */
 
-import {
-  createSignal,
-  createEffect,
-  on,
-  batch,
-  type Accessor,
-} from 'solid-js'
+import {createSignal, createEffect, on, batch, type Accessor} from 'solid-js'
 import type {
   SortingState,
   PaginationState,
@@ -48,11 +42,13 @@ import type {
   ExpandedState,
   OnChangeFn,
 } from '@tanstack/solid-table'
-import type { UseDataTableOptions, UseDataTableReturn } from './types'
+import type {UseDataTableOptions, UseDataTableReturn} from './types'
 
 // ==================== useDataTable Hook ====================
 
-export function useDataTable(options?: UseDataTableOptions): UseDataTableReturn {
+export function useDataTable(
+  options?: UseDataTableOptions,
+): UseDataTableReturn {
   const pageSize = options?.pageSize ?? 10
 
   // ===== 状态 =====
@@ -66,9 +62,13 @@ export function useDataTable(options?: UseDataTableOptions): UseDataTableReturn 
 
   // ===== 排序变化时重置分页 =====
   createEffect(
-    on(sorting, () => {
-      setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-    }, { defer: true })
+    on(
+      sorting,
+      () => {
+        setPagination((prev) => ({...prev, pageIndex: 0}))
+      },
+      {defer: true},
+    ),
   )
 
   // ===== deps 变化时重置分页和选中 =====
@@ -77,16 +77,19 @@ export function useDataTable(options?: UseDataTableOptions): UseDataTableReturn 
       () => options?.deps?.(),
       () => {
         batch(() => {
-          setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+          setPagination((prev) => ({...prev, pageIndex: 0}))
           setSelection({})
         })
       },
-      { defer: true }
-    )
+      {defer: true},
+    ),
   )
 
   // ===== 状态访问器（用于 Query Key）=====
-  const state: Accessor<{ pagination: PaginationState; sorting: SortingState }> = () => ({
+  const state: Accessor<{
+    pagination: PaginationState
+    sorting: SortingState
+  }> = () => ({
     pagination: pagination(),
     sorting: sorting(),
   })
@@ -94,7 +97,7 @@ export function useDataTable(options?: UseDataTableOptions): UseDataTableReturn 
   // ===== 重置方法 =====
   const reset = () => {
     batch(() => {
-      setPagination({ pageIndex: 0, pageSize })
+      setPagination({pageIndex: 0, pageSize})
       setSorting([])
       setSelection({})
       setExpanded({})
@@ -110,10 +113,18 @@ export function useDataTable(options?: UseDataTableOptions): UseDataTableReturn 
 
   // ===== 透传给 DataTable 的 props =====
   const tableProps = {
-    get pagination() { return pagination() },
-    get sorting() { return sorting() },
-    get selection() { return selection() },
-    get expanded() { return expanded() },
+    get pagination() {
+      return pagination()
+    },
+    get sorting() {
+      return sorting()
+    },
+    get selection() {
+      return selection()
+    },
+    get expanded() {
+      return expanded()
+    },
     onPagination: setPagination as OnChangeFn<PaginationState>,
     onSort: setSorting as OnChangeFn<SortingState>,
     onSelection: setSelection as OnChangeFn<RowSelectionState>,

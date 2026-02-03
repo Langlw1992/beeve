@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { For, createSignal, type JSX } from 'solid-js'
-import { Checkbox } from './Checkbox'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {For, createSignal, type JSX} from 'solid-js'
+import {Checkbox} from './Checkbox'
 
 // ============================================================
 // 变体定义
@@ -22,7 +22,9 @@ const Matrix = <R, C>(props: {
 }) => (
   <div
     class="grid gap-4 items-center"
-    style={{ 'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))` }}
+    style={{
+      'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))`,
+    }}
   >
     <div />
     <For each={props.cols}>
@@ -35,9 +37,15 @@ const Matrix = <R, C>(props: {
     <For each={props.rows}>
       {(row) => (
         <>
-          <div class="text-xs text-muted-foreground font-medium">{props.rowLabel(row)}</div>
+          <div class="text-xs text-muted-foreground font-medium">
+            {props.rowLabel(row)}
+          </div>
           <For each={props.cols}>
-            {(col) => <div class="flex justify-center">{props.renderCell(row, col)}</div>}
+            {(col) => (
+              <div class="flex justify-center">
+                {props.renderCell(row, col)}
+              </div>
+            )}
           </For>
         </>
       )}
@@ -126,7 +134,10 @@ export const Controlled: Story = {
     const [checked, setChecked] = createSignal(false)
     return (
       <div class="flex flex-col gap-4 items-start">
-        <Checkbox checked={checked()} onChange={setChecked}>
+        <Checkbox
+          checked={checked()}
+          onChange={setChecked}
+        >
           同意服务条款
         </Checkbox>
         <div class="text-xs text-muted-foreground">
@@ -156,12 +167,13 @@ export const Group: Story = {
       setSelected((prev) =>
         prev.includes(value)
           ? prev.filter((v) => v !== value)
-          : [...prev, value]
+          : [...prev, value],
       )
     }
 
     const allChecked = () => selected().length === options.length
-    const someChecked = () => selected().length > 0 && selected().length < options.length
+    const someChecked = () =>
+      selected().length > 0 && selected().length < options.length
 
     return (
       <div class="flex flex-col gap-3">
@@ -191,4 +203,3 @@ export const Group: Story = {
     )
   },
 }
-

@@ -2,10 +2,10 @@
  * Switch 组件测试
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@solidjs/testing-library'
-import { createSignal } from 'solid-js'
-import { Switch } from './Switch'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent, waitFor} from '@solidjs/testing-library'
+import {createSignal} from 'solid-js'
+import {Switch} from './Switch'
 
 describe('Switch', () => {
   // ==================== 渲染测试 ====================
@@ -97,7 +97,12 @@ describe('Switch', () => {
 
     it('disabled 时不应该响应点击', async () => {
       const handleChange = vi.fn()
-      render(() => <Switch disabled onChange={handleChange} />)
+      render(() => (
+        <Switch
+          disabled
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('switch'))
 
@@ -118,7 +123,12 @@ describe('Switch', () => {
 
     it('再次点击应该关闭', async () => {
       const handleChange = vi.fn()
-      render(() => <Switch checked onChange={handleChange} />)
+      render(() => (
+        <Switch
+          checked
+          onChange={handleChange}
+        />
+      ))
 
       await fireEvent.click(screen.getByRole('switch'))
 
@@ -141,7 +151,10 @@ describe('Switch', () => {
       const [checked, setChecked] = createSignal(false)
 
       render(() => (
-        <Switch checked={checked()} onChange={setChecked} />
+        <Switch
+          checked={checked()}
+          onChange={setChecked}
+        />
       ))
 
       const switchEl = screen.getByRole('switch')
@@ -165,7 +178,10 @@ describe('Switch', () => {
 
     it('应该支持 name 属性', () => {
       render(() => <Switch name="notifications" />)
-      expect(screen.getByRole('switch')).toHaveAttribute('name', 'notifications')
+      expect(screen.getByRole('switch')).toHaveAttribute(
+        'name',
+        'notifications',
+      )
     })
 
     it('应该支持 value 属性', () => {
@@ -192,8 +208,10 @@ describe('Switch', () => {
 
     it('关闭时 aria-checked 应该为 false', () => {
       render(() => <Switch />)
-      expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'false')
+      expect(screen.getByRole('switch')).toHaveAttribute(
+        'aria-checked',
+        'false',
+      )
     })
   })
 })
-

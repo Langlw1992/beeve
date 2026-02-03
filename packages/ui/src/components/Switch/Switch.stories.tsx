@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { For, createSignal, type JSX } from 'solid-js'
-import { Switch } from './Switch'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {For, createSignal, type JSX} from 'solid-js'
+import {Switch} from './Switch'
 
 // ============================================================
 // 变体定义
@@ -22,7 +22,9 @@ const Matrix = <R, C>(props: {
 }) => (
   <div
     class="grid gap-4 items-center"
-    style={{ 'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))` }}
+    style={{
+      'grid-template-columns': `5rem repeat(${props.cols.length}, minmax(8rem, 1fr))`,
+    }}
   >
     <div />
     <For each={props.cols}>
@@ -35,9 +37,15 @@ const Matrix = <R, C>(props: {
     <For each={props.rows}>
       {(row) => (
         <>
-          <div class="text-xs text-muted-foreground font-medium">{props.rowLabel(row)}</div>
+          <div class="text-xs text-muted-foreground font-medium">
+            {props.rowLabel(row)}
+          </div>
           <For each={props.cols}>
-            {(col) => <div class="flex justify-center">{props.renderCell(row, col)}</div>}
+            {(col) => (
+              <div class="flex justify-center">
+                {props.renderCell(row, col)}
+              </div>
+            )}
           </For>
         </>
       )}
@@ -123,7 +131,10 @@ export const Controlled: Story = {
     const [checked, setChecked] = createSignal(false)
     return (
       <div class="flex flex-col gap-4 items-start">
-        <Switch checked={checked()} onChange={setChecked}>
+        <Switch
+          checked={checked()}
+          onChange={setChecked}
+        >
           启用通知
         </Switch>
         <div class="text-xs text-muted-foreground">
@@ -153,30 +164,43 @@ export const SettingsPanel: Story = {
       analytics: false,
     })
 
-    const toggle = (key: keyof typeof settings extends () => infer T ? keyof T : never) => {
-      setSettings((prev) => ({ ...prev, [key]: !prev[key] }))
+    const toggle = (
+      key: keyof typeof settings extends () => infer T ? keyof T : never,
+    ) => {
+      setSettings((prev) => ({...prev, [key]: !prev[key]}))
     }
 
     return (
       <div class="flex flex-col gap-4 w-64">
         <div class="flex items-center justify-between">
           <span class="text-sm">通知</span>
-          <Switch checked={settings().notifications} onChange={() => toggle('notifications')} />
+          <Switch
+            checked={settings().notifications}
+            onChange={() => toggle('notifications')}
+          />
         </div>
         <div class="flex items-center justify-between">
           <span class="text-sm">深色模式</span>
-          <Switch checked={settings().darkMode} onChange={() => toggle('darkMode')} />
+          <Switch
+            checked={settings().darkMode}
+            onChange={() => toggle('darkMode')}
+          />
         </div>
         <div class="flex items-center justify-between">
           <span class="text-sm">自动保存</span>
-          <Switch checked={settings().autoSave} onChange={() => toggle('autoSave')} />
+          <Switch
+            checked={settings().autoSave}
+            onChange={() => toggle('autoSave')}
+          />
         </div>
         <div class="flex items-center justify-between">
           <span class="text-sm">数据分析</span>
-          <Switch checked={settings().analytics} onChange={() => toggle('analytics')} />
+          <Switch
+            checked={settings().analytics}
+            onChange={() => toggle('analytics')}
+          />
         </div>
       </div>
     )
   },
 }
-

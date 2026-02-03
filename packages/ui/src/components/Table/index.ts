@@ -3,14 +3,14 @@
  */
 
 // 组件
-export { Table } from './Table'
-export { DataTable } from './DataTable'
+export {Table} from './Table'
+export {DataTable} from './DataTable'
 
 // Hook
-export { useDataTable } from './use-data-table'
+export {useDataTable} from './use-data-table'
 
 // 列工具
-export { columns, actionColumn, indexColumn } from './columns'
+export {columns, actionColumn, indexColumn} from './columns'
 
 // 类型
 export type {
@@ -40,4 +40,3 @@ export type {
   CellContext,
   HeaderContext,
 } from './types'
-

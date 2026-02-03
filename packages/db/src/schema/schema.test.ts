@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import { users, type User, type NewUser } from './users'
-import { sessions, type Session } from './sessions'
-import { accounts, type Account } from './accounts'
-import { verifications, type Verification } from './verifications'
-import { getTableName, getTableColumns } from 'drizzle-orm'
+import {describe, expect, it} from 'vitest'
+import {users, type User, type NewUser} from './users'
+import {sessions, type Session} from './sessions'
+import {accounts, type Account} from './accounts'
+import {verifications, type Verification} from './verifications'
+import {getTableName, getTableColumns} from 'drizzle-orm'
 
 describe('Schema: users', () => {
   it('should have correct table name', () => {

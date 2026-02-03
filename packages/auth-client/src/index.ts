@@ -1,4 +1,4 @@
-import { createAuthClient } from 'better-auth/client'
+import {createAuthClient} from 'better-auth/client'
 
 /**
  * 创建认证客户端
@@ -17,19 +17,13 @@ export function createClient(baseURL: string) {
 export const authClient = createAuthClient({
   baseURL:
     typeof window !== 'undefined'
-      ? (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ||
+      ? (import.meta as {env?: {VITE_API_URL?: string}}).env?.VITE_API_URL ||
         'http://localhost:3001'
       : 'http://localhost:3001',
 })
 
 // 导出常用方法
-export const {
-  signIn,
-  signUp,
-  signOut,
-  getSession,
-  useSession,
-} = authClient
+export const {signIn, signUp, signOut, getSession, useSession} = authClient
 
 // 导出类型
 export type AuthClient = typeof authClient

@@ -1,9 +1,16 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Table, DataTable, useDataTable, columns, actionColumn, indexColumn } from './index'
-import type { ColumnDef, Row, RowSelectionState } from './types'
-import { Badge } from '../Badge'
-import { Button } from '../Button'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {
+  Table,
+  DataTable,
+  useDataTable,
+  columns,
+  actionColumn,
+  indexColumn,
+} from './index'
+import type {ColumnDef, Row, RowSelectionState} from './types'
+import {Badge} from '../Badge'
+import {Button} from '../Button'
 
 // ==================== 示例数据类型 ====================
 
@@ -19,15 +26,50 @@ interface Person {
 // ==================== 示例数据 ====================
 
 const defaultData: Person[] = [
-  { id: 1, firstName: '张', lastName: '三', age: 28, email: 'zhangsan@example.com', status: 'active' },
-  { id: 2, firstName: '李', lastName: '四', age: 32, email: 'lisi@example.com', status: 'inactive' },
-  { id: 3, firstName: '王', lastName: '五', age: 24, email: 'wangwu@example.com', status: 'pending' },
-  { id: 4, firstName: '赵', lastName: '六', age: 45, email: 'zhaoliu@example.com', status: 'active' },
-  { id: 5, firstName: '钱', lastName: '七', age: 36, email: 'qianqi@example.com', status: 'active' },
+  {
+    id: 1,
+    firstName: '张',
+    lastName: '三',
+    age: 28,
+    email: 'zhangsan@example.com',
+    status: 'active',
+  },
+  {
+    id: 2,
+    firstName: '李',
+    lastName: '四',
+    age: 32,
+    email: 'lisi@example.com',
+    status: 'inactive',
+  },
+  {
+    id: 3,
+    firstName: '王',
+    lastName: '五',
+    age: 24,
+    email: 'wangwu@example.com',
+    status: 'pending',
+  },
+  {
+    id: 4,
+    firstName: '赵',
+    lastName: '六',
+    age: 45,
+    email: 'zhaoliu@example.com',
+    status: 'active',
+  },
+  {
+    id: 5,
+    firstName: '钱',
+    lastName: '七',
+    age: 36,
+    email: 'qianqi@example.com',
+    status: 'active',
+  },
 ]
 
 const generateData = (count: number): Person[] =>
-  Array.from({ length: count }, (_, i) => ({
+  Array.from({length: count}, (_, i) => ({
     id: i + 1,
     firstName: ['张', '李', '王', '赵', '钱', '孙', '周', '吴'][i % 8],
     lastName: ['三', '四', '五', '六', '七', '八', '九', '十'][i % 8],
@@ -41,11 +83,11 @@ const largeData = generateData(50)
 // ==================== 列定义（使用简化 API）====================
 
 const simpleColumns = columns<Person>([
-  { key: 'id', title: 'ID', width: 60 },
-  { key: 'firstName', title: '姓' },
-  { key: 'lastName', title: '名' },
-  { key: 'age', title: '年龄', width: 80, sort: true },
-  { key: 'email', title: '邮箱' },
+  {key: 'id', title: 'ID', width: 60},
+  {key: 'firstName', title: '姓'},
+  {key: 'lastName', title: '名'},
+  {key: 'age', title: '年龄', width: 80, sort: true},
+  {key: 'email', title: '邮箱'},
   {
     key: 'status',
     title: '状态',
@@ -73,7 +115,11 @@ const columnsWithAction = [
     title: '操作',
     width: 120,
     render: (row) => (
-      <Button size="sm" variant="ghost" onClick={() => alert(`编辑: ${row.firstName}${row.lastName}`)}>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => alert(`编辑: ${row.firstName}${row.lastName}`)}
+      >
         编辑
       </Button>
     ),
@@ -81,10 +127,7 @@ const columnsWithAction = [
 ]
 
 // 带序号列
-const columnsWithIndex = [
-  indexColumn<Person>(),
-  ...simpleColumns,
-]
+const columnsWithIndex = [indexColumn<Person>(), ...simpleColumns]
 
 // ==================== 原生列定义 ====================
 
@@ -331,7 +374,10 @@ export const Expandable: Story = {
           <dt class="text-muted-foreground">ID:</dt>
           <dd>{row.original.id}</dd>
           <dt class="text-muted-foreground">姓名:</dt>
-          <dd>{row.original.firstName}{row.original.lastName}</dd>
+          <dd>
+            {row.original.firstName}
+            {row.original.lastName}
+          </dd>
           <dt class="text-muted-foreground">年龄:</dt>
           <dd>{row.original.age}</dd>
           <dt class="text-muted-foreground">邮箱:</dt>
@@ -357,7 +403,11 @@ export const FullFeatured: Story = {
     renderExpanded: (row: Row<Person>) => (
       <div class="p-4 bg-muted/30 rounded-md">
         <p class="text-sm">
-          <strong>{row.original.firstName}{row.original.lastName}</strong> 的详细信息 - 邮箱: {row.original.email}
+          <strong>
+            {row.original.firstName}
+            {row.original.lastName}
+          </strong>{' '}
+          的详细信息 - 邮箱: {row.original.email}
         </p>
       </div>
     ),
@@ -375,18 +425,20 @@ export const DataTableBasic: Story = {
     const total = largeData.length
 
     // 模拟分页数据
-    const pageData = () => largeData.slice(page() * pageSize, (page() + 1) * pageSize)
+    const pageData = () =>
+      largeData.slice(page() * pageSize, (page() + 1) * pageSize)
 
     return (
       <DataTable
         data={pageData()}
         columns={simpleColumns}
         rowCount={total}
-        pagination={{ pageIndex: page(), pageSize }}
+        pagination={{pageIndex: page(), pageSize}}
         onPagination={(updater) => {
-          const newValue = typeof updater === 'function'
-            ? updater({ pageIndex: page(), pageSize })
-            : updater
+          const newValue =
+            typeof updater === 'function'
+              ? updater({pageIndex: page(), pageSize})
+              : updater
           setPage(newValue.pageIndex)
         }}
       />
@@ -397,9 +449,9 @@ export const DataTableBasic: Story = {
 export const DataTableWithHook: Story = {
   name: 'DataTable + useDataTable Hook',
   render: () => {
-    const [filters, setFilters] = createSignal({ status: '' })
+    const [filters, setFilters] = createSignal({status: ''})
 
-    const { tableProps, state, reset, selectedRows } = useDataTable({
+    const {tableProps, state, reset, selectedRows} = useDataTable({
       pageSize: 5,
       deps: () => [filters()],
     })
@@ -407,13 +459,18 @@ export const DataTableWithHook: Story = {
     // 模拟服务端数据过滤和分页
     const filteredData = () => {
       const status = filters().status
-      if (!status) { return largeData }
+      if (!status) {
+        return largeData
+      }
       return largeData.filter((item) => item.status === status)
     }
 
     const pageData = () => {
-      const { pageIndex, pageSize } = state().pagination
-      return filteredData().slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
+      const {pageIndex, pageSize} = state().pagination
+      return filteredData().slice(
+        pageIndex * pageSize,
+        (pageIndex + 1) * pageSize,
+      )
     }
 
     return (
@@ -422,14 +479,18 @@ export const DataTableWithHook: Story = {
           <select
             class="border rounded px-2 py-1 text-sm"
             value={filters().status}
-            onChange={(e) => setFilters({ status: e.target.value })}
+            onChange={(e) => setFilters({status: e.target.value})}
           >
             <option value="">全部状态</option>
             <option value="active">活跃</option>
             <option value="inactive">未激活</option>
             <option value="pending">待审核</option>
           </select>
-          <Button size="sm" variant="outline" onClick={reset}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={reset}
+          >
             重置
           </Button>
           <span class="text-sm text-muted-foreground ml-auto">

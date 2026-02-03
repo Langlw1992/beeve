@@ -6,9 +6,9 @@
  * 需要交互的测试已标记为 skip，应通过 Playwright e2e 测试覆盖
  */
 
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@solidjs/testing-library'
-import { Dialog } from './Dialog'
+import {describe, it, expect} from 'vitest'
+import {render, screen} from '@solidjs/testing-library'
+import {Dialog} from './Dialog'
 
 describe('Dialog', () => {
   // ==================== 渲染测试 ====================
@@ -45,7 +45,9 @@ describe('Dialog', () => {
       ))
 
       // 由于 dialog 不显示，关闭按钮自然也不存在
-      expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', {name: 'Close'}),
+      ).not.toBeInTheDocument()
     })
   })
 

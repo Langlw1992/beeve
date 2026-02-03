@@ -1,6 +1,6 @@
 import * as datePicker from '@zag-js/date-picker'
-import type { DateRangePreset } from '@zag-js/date-picker'
-import { normalizeProps, useMachine } from '@zag-js/solid'
+import type {DateRangePreset} from '@zag-js/date-picker'
+import {normalizeProps, useMachine} from '@zag-js/solid'
 import {
   For,
   Show,
@@ -12,9 +12,9 @@ import {
   type Accessor,
   type Component,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-solid'
-import type { VariantProps } from 'tailwind-variants'
+import {Portal} from 'solid-js/web'
+import {Calendar, ChevronLeft, ChevronRight, X} from 'lucide-solid'
+import type {VariantProps} from 'tailwind-variants'
 import {
   DateFormatter,
   type DateValue,
@@ -25,14 +25,18 @@ import {
   today,
   getLocalTimeZone,
 } from '@internationalized/date'
-import { formatDate } from '../../utils/formatDate'
-import { dateRangePickerStyles, type DateRangePickerStylesReturn } from './date-picker-styles'
+import {formatDate} from '../../utils/formatDate'
+import {
+  dateRangePickerStyles,
+  type DateRangePickerStylesReturn,
+} from './date-picker-styles'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface DateRangePickerProps extends VariantProps<typeof dateRangePickerStyles> {
+export interface DateRangePickerProps
+  extends VariantProps<typeof dateRangePickerStyles> {
   /** 自定义类名 */
   class?: string
   /** 占位文字 */
@@ -52,7 +56,7 @@ export interface DateRangePickerProps extends VariantProps<typeof dateRangePicke
   /** 自定义预设 */
   presets?: DateRangePresetOption[]
   /** 值变化回调 */
-  onChange?: (details: { value: DateValue[]; valueAsString: string[] }) => void
+  onChange?: (details: {value: DateValue[]; valueAsString: string[]}) => void
   /** 最小可选日期 */
   min?: DateValue
   /** 最大可选日期 */
@@ -87,26 +91,32 @@ function getDefaultPresets(): DateRangePresetOption[] {
   const todayDate = today(tz)
 
   return [
-    { label: '今天', value: [todayDate, todayDate] },
-    { label: '昨天', value: [todayDate.subtract({ days: 1 }), todayDate.subtract({ days: 1 })] },
-    { label: '本周', value: [startOfWeek(todayDate, 'zh-CN'), endOfWeek(todayDate, 'zh-CN')] },
+    {label: '今天', value: [todayDate, todayDate]},
+    {
+      label: '昨天',
+      value: [todayDate.subtract({days: 1}), todayDate.subtract({days: 1})],
+    },
+    {
+      label: '本周',
+      value: [startOfWeek(todayDate, 'zh-CN'), endOfWeek(todayDate, 'zh-CN')],
+    },
     {
       label: '上周',
       value: [
-        startOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
-        endOfWeek(todayDate.subtract({ weeks: 1 }), 'zh-CN'),
+        startOfWeek(todayDate.subtract({weeks: 1}), 'zh-CN'),
+        endOfWeek(todayDate.subtract({weeks: 1}), 'zh-CN'),
       ],
     },
-    { label: '本月', value: [startOfMonth(todayDate), endOfMonth(todayDate)] },
+    {label: '本月', value: [startOfMonth(todayDate), endOfMonth(todayDate)]},
     {
       label: '上月',
       value: [
-        startOfMonth(todayDate.subtract({ months: 1 })),
-        endOfMonth(todayDate.subtract({ months: 1 })),
+        startOfMonth(todayDate.subtract({months: 1})),
+        endOfMonth(todayDate.subtract({months: 1})),
       ],
     },
-    { label: '最近 7 天', value: 'last7Days' },
-    { label: '最近 30 天', value: 'last30Days' },
+    {label: '最近 7 天', value: 'last7Days'},
+    {label: '最近 30 天', value: 'last30Days'},
   ]
 }
 
@@ -134,16 +144,21 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
         visibleRange: props.api().visibleRange,
       }
     }
-    return props.api().getOffset({ months: props.offset })
+    return props.api().getOffset({months: props.offset})
   })
 
-  const formatter = new DateFormatter(props.locale, { month: 'long', year: 'numeric' })
+  const formatter = new DateFormatter(props.locale, {
+    month: 'long',
+    year: 'numeric',
+  })
 
   // 获取标题日期
   const headerDate = createMemo(() => {
     const data = offsetData()
     if (data?.visibleRange?.start) {
-      return formatter.format(data.visibleRange.start.toDate(getLocalTimeZone()))
+      return formatter.format(
+        data.visibleRange.start.toDate(getLocalTimeZone()),
+      )
     }
     return ''
   })
@@ -188,7 +203,10 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
       <div class={props.styles().header()}>
         <div class="size-7 flex items-center justify-center">
           <Show when={isFirstMonth()}>
-            <button {...props.api().getPrevTriggerProps()} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getPrevTriggerProps()}
+              class={props.styles().navTrigger()}
+            >
               <ChevronLeft class="size-4" />
             </button>
           </Show>
@@ -199,7 +217,10 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
 
         <div class="size-7 flex items-center justify-center">
           <Show when={isLastMonth()}>
-            <button {...props.api().getNextTriggerProps()} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getNextTriggerProps()}
+              class={props.styles().navTrigger()}
+            >
               <ChevronRight class="size-4" />
             </button>
           </Show>
@@ -207,12 +228,21 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
       </div>
 
       {/* 日历网格 */}
-      <div {...props.api().getTableProps({ view: 'day' })} class={props.styles().grid()}>
+      <div
+        {...props.api().getTableProps({view: 'day'})}
+        class={props.styles().grid()}
+      >
         {/* 星期标题 */}
-        <div {...props.api().getTableHeaderProps({ view: 'day' })} class="flex justify-between mb-1">
+        <div
+          {...props.api().getTableHeaderProps({view: 'day'})}
+          class="flex justify-between mb-1"
+        >
           <For each={props.api().weekDays}>
             {(day) => (
-              <div class={props.styles().columnHeader()} aria-label={day.long}>
+              <div
+                class={props.styles().columnHeader()}
+                aria-label={day.long}
+              >
                 {day.short}
               </div>
             )}
@@ -220,11 +250,11 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
         </div>
 
         {/* 日期单元格 */}
-        <div {...props.api().getTableBodyProps({ view: 'day' })}>
+        <div {...props.api().getTableBodyProps({view: 'day'})}>
           <For each={offsetData().weeks}>
             {(week) => (
               <div
-                {...props.api().getTableRowProps({ view: 'day' })}
+                {...props.api().getTableRowProps({view: 'day'})}
                 class={props.styles().row()}
                 data-week-mode={props.granularity === 'week' || undefined}
                 onMouseEnter={() => handleRowMouseEnter(week)}
@@ -237,21 +267,28 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
                       props.api().getDayTableCellState({
                         value: dayValue,
                         visibleRange: offsetData().visibleRange,
-                      })
+                      }),
                     )
 
                     // 只在当前月内（非 outsideRange）设置范围相关的 data 属性
                     const isOutside = () => cellState().outsideRange
-                    const inRangeData = () => (!isOutside() && cellState().inRange) || undefined
-                    const rangeStartData = () => (!isOutside() && cellState().firstInRange) || undefined
-                    const rangeEndData = () => (!isOutside() && cellState().lastInRange) || undefined
+                    const inRangeData = () =>
+                      (!isOutside() && cellState().inRange) || undefined
+                    const rangeStartData = () =>
+                      (!isOutside() && cellState().firstInRange) || undefined
+                    const rangeEndData = () =>
+                      (!isOutside() && cellState().lastInRange) || undefined
                     // 今天：只在非范围内时显示
                     const todayData = () => {
                       const state = cellState()
                       if (isOutside()) {
                         return undefined
                       }
-                      if (state.inRange || state.firstInRange || state.lastInRange) {
+                      if (
+                        state.inRange ||
+                        state.firstInRange ||
+                        state.lastInRange
+                      ) {
                         return undefined
                       }
                       return state.today || undefined
@@ -270,14 +307,18 @@ const MonthGrid: Component<MonthGridProps> = (props) => {
                       visibleRange: offsetData().visibleRange,
                     })
 
-                    const triggerProps = props.api().getDayTableCellTriggerProps({
-                      value: dayValue,
-                      visibleRange: offsetData().visibleRange,
-                    })
+                    const triggerProps = props
+                      .api()
+                      .getDayTableCellTriggerProps({
+                        value: dayValue,
+                        visibleRange: offsetData().visibleRange,
+                      })
 
                     // 周选择模式下移除 onClick
                     const finalTriggerProps =
-                      props.granularity === 'week' ? { ...triggerProps, onClick: undefined } : triggerProps
+                      props.granularity === 'week'
+                        ? {...triggerProps, onClick: undefined}
+                        : triggerProps
 
                     return (
                       <div
@@ -326,26 +367,39 @@ const YearMonthView: Component<YearMonthViewProps> = (props) => {
       <Show when={props.api().view === 'month'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
-            <button {...props.api().getPrevTriggerProps({ view: 'month' })} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getPrevTriggerProps({view: 'month'})}
+              class={props.styles().navTrigger()}
+            >
               <ChevronLeft class="size-4" />
             </button>
             <button
-              {...props.api().getViewTriggerProps({ view: 'month' })}
+              {...props.api().getViewTriggerProps({view: 'month'})}
               class="text-sm font-medium hover:bg-accent rounded px-2 py-1"
             >
               {props.api().visibleRange.start.year}
             </button>
-            <button {...props.api().getNextTriggerProps({ view: 'month' })} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getNextTriggerProps({view: 'month'})}
+              class={props.styles().navTrigger()}
+            >
               <ChevronRight class="size-4" />
             </button>
           </div>
-          <div {...props.api().getTableBodyProps({ view: 'month' })} class="grid grid-cols-3 gap-2">
-            <For each={props.api().getMonthsGrid({ columns: 3, format: 'short' })}>
+          <div
+            {...props.api().getTableBodyProps({view: 'month'})}
+            class="grid grid-cols-3 gap-2"
+          >
+            <For
+              each={props.api().getMonthsGrid({columns: 3, format: 'short'})}
+            >
               {(months) => (
                 <For each={months}>
                   {(month) => (
                     <button
-                      {...props.api().getMonthTableCellTriggerProps({ ...month, columns: 3 })}
+                      {...props
+                        .api()
+                        .getMonthTableCellTriggerProps({...month, columns: 3})}
                       class={props.styles().monthTrigger()}
                     >
                       {month.label}
@@ -362,23 +416,34 @@ const YearMonthView: Component<YearMonthViewProps> = (props) => {
       <Show when={props.api().view === 'year'}>
         <div class="space-y-4">
           <div class={props.styles().header()}>
-            <button {...props.api().getPrevTriggerProps({ view: 'year' })} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getPrevTriggerProps({view: 'year'})}
+              class={props.styles().navTrigger()}
+            >
               <ChevronLeft class="size-4" />
             </button>
             <span class="text-sm font-medium">
               {props.api().getDecade().start} - {props.api().getDecade().end}
             </span>
-            <button {...props.api().getNextTriggerProps({ view: 'year' })} class={props.styles().navTrigger()}>
+            <button
+              {...props.api().getNextTriggerProps({view: 'year'})}
+              class={props.styles().navTrigger()}
+            >
               <ChevronRight class="size-4" />
             </button>
           </div>
-          <div {...props.api().getTableBodyProps({ view: 'year' })} class="grid grid-cols-4 gap-2">
-            <For each={props.api().getYearsGrid({ columns: 4 })}>
+          <div
+            {...props.api().getTableBodyProps({view: 'year'})}
+            class="grid grid-cols-4 gap-2"
+          >
+            <For each={props.api().getYearsGrid({columns: 4})}>
               {(years) => (
                 <For each={years}>
                   {(year) => (
                     <button
-                      {...props.api().getYearTableCellTriggerProps({ ...year, columns: 4 })}
+                      {...props
+                        .api()
+                        .getYearTableCellTriggerProps({...year, columns: 4})}
                       class={props.styles().yearTrigger()}
                     >
                       {year.label}
@@ -407,7 +472,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       placeholder: '选择日期范围',
       granularity: 'day' as const,
     },
-    props
+    props,
   )
 
   const [local, variants] = splitProps(
@@ -429,10 +494,12 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       'granularity',
       'format',
     ],
-    ['size', 'error']
+    ['size', 'error'],
   )
 
-  const styles = createMemo(() => dateRangePickerStyles({ size: variants.size, error: variants.error }))
+  const styles = createMemo(() =>
+    dateRangePickerStyles({size: variants.size, error: variants.error}),
+  )
 
   // 周选择模式下的 hover 状态
   const [hoveredWeek, setHoveredWeek] = createSignal<DateValue[] | null>(null)
@@ -537,20 +604,39 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   }
 
   return (
-    <div class={styles().root({ class: local.class })}>
+    <div class={styles().root({class: local.class})}>
       <Show when={local.label}>
         {/* biome-ignore lint/a11y/noLabelWithoutControl: zag-js getLabelProps provides htmlFor */}
-        <label {...api().getLabelProps()} class={styles().label()}>
+        <label
+          {...api().getLabelProps()}
+          class={styles().label()}
+        >
           {local.label}
         </label>
       </Show>
 
-      <div {...api().getControlProps()} class={styles().control()}>
-        <button {...api().getTriggerProps()} class={styles().trigger()}>
-          <span class={api().valueAsString.length === 0 ? 'text-muted-foreground' : ''}>{displayValue()}</span>
+      <div
+        {...api().getControlProps()}
+        class={styles().control()}
+      >
+        <button
+          {...api().getTriggerProps()}
+          class={styles().trigger()}
+        >
+          <span
+            class={
+              api().valueAsString.length === 0 ? 'text-muted-foreground' : ''
+            }
+          >
+            {displayValue()}
+          </span>
           <div class="flex items-center gap-1">
             <Show when={api().value.length > 0}>
-              <button type="button" class={styles().clearButton()} onClick={handleClear}>
+              <button
+                type="button"
+                class={styles().clearButton()}
+                onClick={handleClear}
+              >
                 <X class="size-3.5" />
               </button>
             </Show>
@@ -561,15 +647,24 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
       <Portal>
         <div {...api().getPositionerProps()}>
-          <div {...api().getContentProps()} class={styles().content()}>
+          <div
+            {...api().getContentProps()}
+            class={styles().content()}
+          >
             <div class="flex">
               {/* 快捷选择面板 */}
               <Show when={local.showPresets}>
                 <div class="border-r border-border py-2 px-1.5 w-[90px]">
-                  <div class="text-xs font-medium text-muted-foreground px-2 py-1 mb-1">快捷选择</div>
+                  <div class="text-xs font-medium text-muted-foreground px-2 py-1 mb-1">
+                    快捷选择
+                  </div>
                   <For each={presetList()}>
                     {(preset) => (
-                      <button type="button" class={styles().presetButton()} onClick={() => handlePresetClick(preset)}>
+                      <button
+                        type="button"
+                        class={styles().presetButton()}
+                        onClick={() => handlePresetClick(preset)}
+                      >
                         {preset.label}
                       </button>
                     )}
@@ -579,7 +674,15 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
               {/* 日历主体 */}
               <div class="p-3">
-                <Show when={api().view === 'day'} fallback={<YearMonthView api={api} styles={styles} />}>
+                <Show
+                  when={api().view === 'day'}
+                  fallback={
+                    <YearMonthView
+                      api={api}
+                      styles={styles}
+                    />
+                  }
+                >
                   <div class="flex gap-4">
                     <For each={monthOffsets}>
                       {(offset) => (

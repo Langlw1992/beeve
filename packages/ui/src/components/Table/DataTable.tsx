@@ -30,12 +30,7 @@
  * ```
  */
 
-import {
-  splitProps,
-  createMemo,
-  Show,
-  type JSX,
-} from 'solid-js'
+import {splitProps, createMemo, Show, type JSX} from 'solid-js'
 import {
   createSolidTable,
   getCoreRowModel,
@@ -43,13 +38,15 @@ import {
   type RowData,
   type ColumnPinningState,
 } from '@tanstack/solid-table'
-import { TableCore } from './TableCore'
-import { Pagination } from '../Pagination'
-import type { DataTableProps } from './types'
+import {TableCore} from './TableCore'
+import {Pagination} from '../Pagination'
+import type {DataTableProps} from './types'
 
 // ==================== DataTable 组件 ====================
 
-export function DataTable<TData extends RowData>(props: DataTableProps<TData>): JSX.Element {
+export function DataTable<TData extends RowData>(
+  props: DataTableProps<TData>,
+): JSX.Element {
   const [local, rest] = splitProps(props, [
     // 数据
     'data',
@@ -100,14 +97,14 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>): 
     const left: string[] = []
     const right: string[] = []
     for (const col of local.columns) {
-      const pin = (col.meta as { pin?: 'left' | 'right' } | undefined)?.pin
+      const pin = (col.meta as {pin?: 'left' | 'right'} | undefined)?.pin
       if (pin === 'left' && col.id) {
         left.push(col.id)
       } else if (pin === 'right' && col.id) {
         right.push(col.id)
       }
     }
-    return { left, right }
+    return {left, right}
   })
 
   // ===== 创建表格实例 =====
@@ -137,38 +134,52 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>): 
     getRowCanExpand: local.getRowCanExpand ?? (() => !!local.renderExpanded),
     // 状态
     state: {
-      get sorting() { return local.sorting ?? [] },
-      get pagination() { return local.pagination ?? { pageIndex: 0, pageSize: 10 } },
-      get rowSelection() { return local.selection ?? {} },
-      get expanded() { return local.expanded ?? {} },
-      get columnPinning() { return columnPinning() },
+      get sorting() {
+        return local.sorting ?? []
+      },
+      get pagination() {
+        return local.pagination ?? {pageIndex: 0, pageSize: 10}
+      },
+      get rowSelection() {
+        return local.selection ?? {}
+      },
+      get expanded() {
+        return local.expanded ?? {}
+      },
+      get columnPinning() {
+        return columnPinning()
+      },
     },
     // 回调
     onSortingChange: (updater) => {
       if (local.onSort) {
         const current = local.sorting ?? []
-        const newValue = typeof updater === 'function' ? updater(current) : updater
+        const newValue =
+          typeof updater === 'function' ? updater(current) : updater
         local.onSort(newValue)
       }
     },
     onPaginationChange: (updater) => {
       if (local.onPagination) {
-        const current = local.pagination ?? { pageIndex: 0, pageSize: 10 }
-        const newValue = typeof updater === 'function' ? updater(current) : updater
+        const current = local.pagination ?? {pageIndex: 0, pageSize: 10}
+        const newValue =
+          typeof updater === 'function' ? updater(current) : updater
         local.onPagination(newValue)
       }
     },
     onRowSelectionChange: (updater) => {
       if (local.onSelection) {
         const current = local.selection ?? {}
-        const newValue = typeof updater === 'function' ? updater(current) : updater
+        const newValue =
+          typeof updater === 'function' ? updater(current) : updater
         local.onSelection(newValue)
       }
     },
     onExpandedChange: (updater) => {
       if (local.onExpand) {
         const current = local.expanded ?? {}
-        const newValue = typeof updater === 'function' ? updater(current) : updater
+        const newValue =
+          typeof updater === 'function' ? updater(current) : updater
         local.onExpand(newValue)
       }
     },
@@ -203,7 +214,10 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>): 
         selectAllRows={false}
         expandable={local.expandable}
         renderExpanded={local.renderExpanded}
-        enablePinning={(columnPinning().left?.length ?? 0) > 0 || (columnPinning().right?.length ?? 0) > 0}
+        enablePinning={
+          (columnPinning().left?.length ?? 0) > 0 ||
+          (columnPinning().right?.length ?? 0) > 0
+        }
       />
       {/* 分页 */}
       <Show when={local.rowCount > pageSize()}>
@@ -222,4 +236,4 @@ export function DataTable<TData extends RowData>(props: DataTableProps<TData>): 
 }
 
 // 导出类型
-export type { DataTableProps } from './types'
+export type {DataTableProps} from './types'

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { toast, Toaster } from './Toast'
-import { Button } from '../Button'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {toast, Toaster} from './Toast'
+import {Button} from '../Button'
 
 const meta: Meta = {
   title: 'Components/Toast',
@@ -86,7 +86,7 @@ export const Loading: Story = {
           const id = toast.loading('正在提交...')
           // 模拟异步操作
           setTimeout(() => {
-            toast.success('提交成功', { id })
+            toast.success('提交成功', {id})
           }, 2000)
         }}
       >
@@ -97,7 +97,7 @@ export const Loading: Story = {
         onClick={() => {
           const id = toast.loading('正在加载数据...')
           setTimeout(() => {
-            toast.error('加载失败，请检查网络', { id })
+            toast.error('加载失败，请检查网络', {id})
           }, 2000)
         }}
       >
@@ -114,10 +114,10 @@ export const PromiseHelper: Story = {
     <Button
       onClick={() => {
         const mockFetch = () =>
-          new Promise<{ name: string }>((resolve, reject) => {
+          new Promise<{name: string}>((resolve, reject) => {
             setTimeout(() => {
               if (Math.random() > 0.5) {
-                resolve({ name: '用户数据' })
+                resolve({name: '用户数据'})
               } else {
                 reject(new Error('网络超时'))
               }
@@ -149,7 +149,10 @@ export const RichText: Story = {
             description: (
               <div>
                 您的订单已发货，点击{' '}
-                <a href="/orders" class="text-primary underline">
+                <a
+                  href="/orders"
+                  class="text-primary underline"
+                >
                   这里
                 </a>{' '}
                 查看物流详情
@@ -225,10 +228,16 @@ export const ManualDismiss: Story = {
         >
           显示持久 Toast
         </Button>
-        <Button variant="outline" onClick={() => toast.dismiss(toastId)}>
+        <Button
+          variant="outline"
+          onClick={() => toast.dismiss(toastId)}
+        >
           关闭 Toast
         </Button>
-        <Button variant="ghost" onClick={() => toast.dismiss()}>
+        <Button
+          variant="ghost"
+          onClick={() => toast.dismiss()}
+        >
           关闭全部
         </Button>
       </div>
@@ -254,4 +263,3 @@ export const Stacking: Story = {
     </div>
   ),
 }
-

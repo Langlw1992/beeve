@@ -3,7 +3,7 @@
  * 采用 Ant Design 风格的数据驱动 API
  */
 
-export { Dropdown, ContextMenu, Menu } from './Menu'
+export {Dropdown, ContextMenu, Menu} from './Menu'
 
 // 从 primitives 导出类型
 export type {

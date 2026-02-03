@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest'
-import { createClient, authClient, signIn, signUp, signOut, getSession } from './index'
+import {describe, expect, it} from 'vitest'
+import {
+  createClient,
+  authClient,
+  signIn,
+  signUp,
+  signOut,
+  getSession,
+} from './index'
 
 describe('Auth Client', () => {
   describe('createClient', () => {

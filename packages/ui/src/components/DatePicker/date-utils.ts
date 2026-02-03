@@ -1,15 +1,17 @@
 import * as datePicker from '@zag-js/date-picker'
-import type { DateValue } from '@internationalized/date'
-import { CalendarDate } from '@internationalized/date'
+import type {DateValue} from '@internationalized/date'
+import {CalendarDate} from '@internationalized/date'
 
 /**
  * 解析多种格式的日期值为 DateValue
  * 优先使用 zag.js 的内置 parse 函数
- * 
+ *
  * @param value - 字符串、Date 对象或 DateValue
  * @returns DateValue 或 undefined
  */
-export function parseDateValue(value: string | Date | DateValue | undefined): DateValue | undefined {
+export function parseDateValue(
+  value: string | Date | DateValue | undefined,
+): DateValue | undefined {
   if (!value) {
     return undefined
   }
@@ -41,11 +43,13 @@ export function parseDateValue(value: string | Date | DateValue | undefined): Da
 
 /**
  * DateValue 转 Date 对象
- * 
+ *
  * @param value - DateValue
  * @returns Date 对象或 undefined
  */
-export function dateValueToDate(value: DateValue | undefined): Date | undefined {
+export function dateValueToDate(
+  value: DateValue | undefined,
+): Date | undefined {
   if (!value) {
     return undefined
   }

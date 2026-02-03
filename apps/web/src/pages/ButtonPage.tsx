@@ -2,24 +2,31 @@
  * Button Component Showcase Page
  */
 
-import { For, type Component } from 'solid-js'
-import { Button, type ButtonVariants } from '@beeve/ui'
-import { ShowcaseGrid, ShowcaseSection, ShowcaseRow } from '../components/ShowcaseGrid'
+import {For, type Component} from 'solid-js'
+import {Button, type ButtonVariants} from '@beeve/ui'
+import {
+  ShowcaseGrid,
+  ShowcaseSection,
+  ShowcaseRow,
+} from '../components/ShowcaseGrid'
 
-const variants: { value: NonNullable<ButtonVariants['variant']>; label: string }[] = [
-  { value: 'primary', label: 'Primary' },
-  { value: 'secondary', label: 'Secondary' },
-  { value: 'outline', label: 'Outline' },
-  { value: 'ghost', label: 'Ghost' },
-  { value: 'destructive', label: 'Destructive' },
-  { value: 'link', label: 'Link' },
+const variants: {
+  value: NonNullable<ButtonVariants['variant']>
+  label: string
+}[] = [
+  {value: 'primary', label: 'Primary'},
+  {value: 'secondary', label: 'Secondary'},
+  {value: 'outline', label: 'Outline'},
+  {value: 'ghost', label: 'Ghost'},
+  {value: 'destructive', label: 'Destructive'},
+  {value: 'link', label: 'Link'},
 ]
 
-const sizes: { value: NonNullable<ButtonVariants['size']>; label: string }[] = [
-  { value: 'sm', label: 'Small (28px)' },
-  { value: 'md', label: 'Medium (32px)' },
-  { value: 'lg', label: 'Large (36px)' },
-  { value: 'icon', label: 'Icon (32px)' },
+const sizes: {value: NonNullable<ButtonVariants['size']>; label: string}[] = [
+  {value: 'sm', label: 'Small (28px)'},
+  {value: 'md', label: 'Medium (32px)'},
+  {value: 'lg', label: 'Large (36px)'},
+  {value: 'icon', label: 'Icon (32px)'},
 ]
 
 export const ButtonPage: Component = () => {
@@ -36,21 +43,30 @@ export const ButtonPage: Component = () => {
       <ShowcaseGrid
         title="Variant × Size"
         description="所有样式变体与尺寸的笛卡尔积组合"
-        variant1={{ name: 'Variant', values: variants }}
-        variant2={{ name: 'Size', values: sizes }}
+        variant1={{name: 'Variant', values: variants}}
+        variant2={{name: 'Size', values: sizes}}
         renderCell={(variant, size) => (
-          <Button variant={variant} size={size}>
+          <Button
+            variant={variant}
+            size={size}
+          >
             {size === 'icon' ? '🔔' : variant}
           </Button>
         )}
       />
 
       {/* Loading State */}
-      <ShowcaseSection title="Loading State" description="按钮加载状态">
+      <ShowcaseSection
+        title="Loading State"
+        description="按钮加载状态"
+      >
         <div class="flex flex-wrap gap-4">
           <For each={variants}>
             {(v) => (
-              <Button variant={v.value} loading>
+              <Button
+                variant={v.value}
+                loading
+              >
                 {v.label}
               </Button>
             )}
@@ -59,11 +75,17 @@ export const ButtonPage: Component = () => {
       </ShowcaseSection>
 
       {/* Disabled State */}
-      <ShowcaseSection title="Disabled State" description="按钮禁用状态">
+      <ShowcaseSection
+        title="Disabled State"
+        description="按钮禁用状态"
+      >
         <div class="flex flex-wrap gap-4">
           <For each={variants}>
             {(v) => (
-              <Button variant={v.value} disabled>
+              <Button
+                variant={v.value}
+                disabled
+              >
                 {v.label}
               </Button>
             )}
@@ -72,7 +94,10 @@ export const ButtonPage: Component = () => {
       </ShowcaseSection>
 
       {/* With Icons */}
-      <ShowcaseSection title="With Icons" description="带图标的按钮">
+      <ShowcaseSection
+        title="With Icons"
+        description="带图标的按钮"
+      >
         <div class="flex flex-wrap gap-4">
           <Button variant="primary">
             <span>🚀</span> Launch
@@ -94,4 +119,3 @@ export const ButtonPage: Component = () => {
     </div>
   )
 }
-

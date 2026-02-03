@@ -2,7 +2,7 @@
  * Root Layout Route - Layout with theme control panel
  */
 
-import { For } from 'solid-js'
+import {For} from 'solid-js'
 import {
   createRootRoute,
   Link,
@@ -23,38 +23,38 @@ import {
 
 const baseColorList = Object.keys(baseColors) as BaseColorName[]
 const themeColorList = Object.keys(themeColors) as ThemeColorName[]
-const modeOptions: { value: ColorMode; label: string }[] = [
-  { value: 'light', label: '☀️ Light' },
-  { value: 'dark', label: '🌙 Dark' },
-  { value: 'system', label: '💻 System' },
+const modeOptions: {value: ColorMode; label: string}[] = [
+  {value: 'light', label: '☀️ Light'},
+  {value: 'dark', label: '🌙 Dark'},
+  {value: 'system', label: '💻 System'},
 ]
 
 const routes = [
-  { path: '/', label: 'Home' },
-  { path: '/badge', label: 'Badge' },
-  { path: '/button', label: 'Button' },
-  { path: '/card', label: 'Card' },
-  { path: '/checkbox', label: 'Checkbox' },
-  { path: '/dialog', label: 'Dialog' },
-  { path: '/input', label: 'Input' },
-  { path: '/label', label: 'Label' },
-  { path: '/menu', label: 'Menu' },
-  { path: '/navmenu', label: 'NavMenu' },
-  { path: '/popover', label: 'Popover' },
-  { path: '/presence', label: 'Presence' },
-  { path: '/progress', label: 'Progress' },
-  { path: '/radio', label: 'Radio' },
-  { path: '/select', label: 'Select' },
-  { path: '/sidebar', label: 'Sidebar' },
-  { path: '/skeleton', label: 'Skeleton' },
-  { path: '/slider', label: 'Slider' },
-  { path: '/switch', label: 'Switch' },
-  { path: '/toast', label: 'Toast' },
-  { path: '/tooltip', label: 'Tooltip' },
+  {path: '/', label: 'Home'},
+  {path: '/badge', label: 'Badge'},
+  {path: '/button', label: 'Button'},
+  {path: '/card', label: 'Card'},
+  {path: '/checkbox', label: 'Checkbox'},
+  {path: '/dialog', label: 'Dialog'},
+  {path: '/input', label: 'Input'},
+  {path: '/label', label: 'Label'},
+  {path: '/menu', label: 'Menu'},
+  {path: '/navmenu', label: 'NavMenu'},
+  {path: '/popover', label: 'Popover'},
+  {path: '/presence', label: 'Presence'},
+  {path: '/progress', label: 'Progress'},
+  {path: '/radio', label: 'Radio'},
+  {path: '/select', label: 'Select'},
+  {path: '/sidebar', label: 'Sidebar'},
+  {path: '/skeleton', label: 'Skeleton'},
+  {path: '/slider', label: 'Slider'},
+  {path: '/switch', label: 'Switch'},
+  {path: '/toast', label: 'Toast'},
+  {path: '/tooltip', label: 'Tooltip'},
 ] as const
 
 function RootComponent() {
-  const { config, setMode, setBaseColor, setThemeColor, setRadius } = useTheme()
+  const {config, setMode, setBaseColor, setThemeColor, setRadius} = useTheme()
 
   return (
     <div class="min-h-screen bg-background text-foreground flex">
@@ -73,9 +73,11 @@ function RootComponent() {
               <Link
                 to={route.path}
                 class="text-left px-3 py-2 rounded-[var(--radius)] text-sm transition-colors"
-                activeProps={{ class: 'bg-primary text-primary-foreground' }}
-                inactiveProps={{ class: 'hover:bg-accent hover:text-accent-foreground' }}
-                activeOptions={{ exact: route.path === '/' }}
+                activeProps={{class: 'bg-primary text-primary-foreground'}}
+                inactiveProps={{
+                  class: 'hover:bg-accent hover:text-accent-foreground',
+                }}
+                activeOptions={{exact: route.path === '/'}}
               >
                 {route.label}
               </Link>
@@ -110,10 +112,14 @@ function RootComponent() {
                     type="button"
                     class="size-6 rounded-[var(--radius)] border-2 transition-all"
                     classList={{
-                      'border-ring ring-2 ring-ring ring-offset-1': config().themeColor === color,
-                      'border-transparent hover:scale-110': config().themeColor !== color,
+                      'border-ring ring-2 ring-ring ring-offset-1':
+                        config().themeColor === color,
+                      'border-transparent hover:scale-110':
+                        config().themeColor !== color,
                     }}
-                    style={{ 'background-color': themeColors[color].light.primary }}
+                    style={{
+                      'background-color': themeColors[color].light.primary,
+                    }}
                     onClick={() => setThemeColor(color)}
                     title={themeColors[color].label}
                   />
@@ -127,7 +133,10 @@ function RootComponent() {
             <label class="text-xs text-muted-foreground">Base Color</label>
             <Select
               size="sm"
-              options={baseColorList.map((c) => ({ value: c, label: baseColors[c].label }))}
+              options={baseColorList.map((c) => ({
+                value: c,
+                label: baseColors[c].label,
+              }))}
               value={config().baseColor}
               onChange={(v) => setBaseColor(v as BaseColorName)}
             />
@@ -141,14 +150,16 @@ function RootComponent() {
               min={0}
               max={radiusPresets.length - 1}
               step={1}
-              value={[radiusPresets.findIndex((p) => p.value === config().radius)]}
+              value={[
+                radiusPresets.findIndex((p) => p.value === config().radius),
+              ]}
               onValueChange={(v) => {
                 const preset = radiusPresets[v.value[0]]
                 if (preset) {
                   setRadius(preset.value)
                 }
               }}
-              marks={radiusPresets.map((p, i) => ({ value: i }))}
+              marks={radiusPresets.map((p, i) => ({value: i}))}
               showTooltip={false}
             />
           </div>
@@ -168,4 +179,3 @@ function RootComponent() {
 export const Route = createRootRoute({
   component: RootComponent,
 })
-

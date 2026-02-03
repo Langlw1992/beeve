@@ -53,11 +53,11 @@ import {
   type Component,
   type Accessor,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { tv } from 'tailwind-variants'
-import { ChevronRight, Check } from 'lucide-solid'
+import {Portal} from 'solid-js/web'
+import {tv} from 'tailwind-variants'
+import {ChevronRight, Check} from 'lucide-solid'
 import * as menu from '@zag-js/menu'
-import { useMachine, normalizeProps, type PropTypes } from '@zag-js/solid'
+import {useMachine, normalizeProps, type PropTypes} from '@zag-js/solid'
 import type {
   MenuItemType,
   MenuItemData,
@@ -200,7 +200,7 @@ const MenuItemRenderer: Component<{
   parentApi: Accessor<MenuApi>
 }> = (props) => {
   const ctx = useMenuContext()
-  const styles = createMemo(() => menuStyles({ size: ctx.size }))
+  const styles = createMemo(() => menuStyles({size: ctx.size}))
 
   const handleSelect = () => {
     props.item.onClick?.()
@@ -232,20 +232,21 @@ const MenuItemRenderer: Component<{
 
 /** 渲染带子菜单的菜单项 */
 const SubMenuRenderer: Component<{
-  item: MenuItemData & { children: MenuItemType[] }
+  item: MenuItemData & {children: MenuItemType[]}
   parentApi: Accessor<MenuApi>
   parentService: MenuService
 }> = (props) => {
   const ctx = useMenuContext()
-  const styles = createMemo(() => menuStyles({ size: ctx.size }))
+  const styles = createMemo(() => menuStyles({size: ctx.size}))
 
   // 创建子菜单的状态机
   const subService = useMachine(menu.machine, () => ({
     id: createUniqueId(),
-    'aria-label': typeof props.item.label === 'string' ? props.item.label : props.item.key,
+    'aria-label':
+      typeof props.item.label === 'string' ? props.item.label : props.item.key,
     closeOnSelect: ctx.closeOnSelect ?? true,
     loop: true,
-    positioning: { placement: 'right-start' as const, gutter: -4 },
+    positioning: {placement: 'right-start' as const, gutter: -4},
   }))
 
   const subApi = createMemo(() => menu.connect(subService, normalizeProps))
@@ -259,11 +260,16 @@ const SubMenuRenderer: Component<{
   })
 
   // 获取触发项的 props
-  const triggerProps = createMemo(() => props.parentApi().getTriggerItemProps(subApi()))
+  const triggerProps = createMemo(() =>
+    props.parentApi().getTriggerItemProps(subApi()),
+  )
 
   return (
     <>
-      <div {...triggerProps()} class={styles().triggerItem()}>
+      <div
+        {...triggerProps()}
+        class={styles().triggerItem()}
+      >
         <Show when={props.item.icon}>
           <span class="size-4">{props.item.icon}</span>
         </Show>
@@ -273,9 +279,19 @@ const SubMenuRenderer: Component<{
 
       <Show when={subApi().open}>
         <Portal>
-          <div {...subApi().getPositionerProps()} class={styles().positioner()}>
-            <div {...subApi().getContentProps()} class={styles().content()}>
-              <MenuItemsRenderer items={props.item.children} api={subApi} service={subService} />
+          <div
+            {...subApi().getPositionerProps()}
+            class={styles().positioner()}
+          >
+            <div
+              {...subApi().getContentProps()}
+              class={styles().content()}
+            >
+              <MenuItemsRenderer
+                items={props.item.children}
+                api={subApi}
+                service={subService}
+              />
             </div>
           </div>
         </Portal>
@@ -290,7 +306,7 @@ const CheckboxItemRenderer: Component<{
   parentApi: Accessor<MenuApi>
 }> = (props) => {
   const ctx = useMenuContext()
-  const styles = createMemo(() => menuStyles({ size: ctx.size }))
+  const styles = createMemo(() => menuStyles({size: ctx.size}))
 
   const itemProps = {
     type: 'checkbox' as const,
@@ -305,10 +321,16 @@ const CheckboxItemRenderer: Component<{
       {...props.parentApi().getOptionItemProps(itemProps)}
       class={styles().item()}
     >
-      <span {...props.parentApi().getItemIndicatorProps(itemProps)} class={styles().itemIndicator()}>
+      <span
+        {...props.parentApi().getItemIndicatorProps(itemProps)}
+        class={styles().itemIndicator()}
+      >
         <Check class="size-full" />
       </span>
-      <span {...props.parentApi().getItemTextProps(itemProps)} class="pl-6">
+      <span
+        {...props.parentApi().getItemTextProps(itemProps)}
+        class="pl-6"
+      >
         {props.item.label}
       </span>
     </div>
@@ -321,7 +343,7 @@ const RadioGroupRenderer: Component<{
   parentApi: Accessor<MenuApi>
 }> = (props) => {
   const ctx = useMenuContext()
-  const styles = createMemo(() => menuStyles({ size: ctx.size }))
+  const styles = createMemo(() => menuStyles({size: ctx.size}))
 
   return (
     <For each={props.group.children}>
@@ -344,10 +366,16 @@ const RadioGroupRenderer: Component<{
             {...props.parentApi().getOptionItemProps(itemProps)}
             class={styles().item()}
           >
-            <span {...props.parentApi().getItemIndicatorProps(itemProps)} class={styles().itemIndicator()}>
+            <span
+              {...props.parentApi().getItemIndicatorProps(itemProps)}
+              class={styles().itemIndicator()}
+            >
               <Check class="size-full" />
             </span>
-            <span {...props.parentApi().getItemTextProps(itemProps)} class="pl-6">
+            <span
+              {...props.parentApi().getItemTextProps(itemProps)}
+              class="pl-6"
+            >
               {radioItem.label}
             </span>
           </div>
@@ -364,14 +392,19 @@ const MenuItemsRenderer: Component<{
   service: MenuService
 }> = (props) => {
   const ctx = useMenuContext()
-  const styles = createMemo(() => menuStyles({ size: ctx.size }))
+  const styles = createMemo(() => menuStyles({size: ctx.size}))
 
   return (
     <For each={props.items}>
       {(item) => {
         // 分隔线
         if (isDivider(item)) {
-          return <hr {...props.api().getSeparatorProps()} class={styles().separator()} />
+          return (
+            <hr
+              {...props.api().getSeparatorProps()}
+              class={styles().separator()}
+            />
+          )
         }
 
         // 分组
@@ -381,19 +414,33 @@ const MenuItemsRenderer: Component<{
               <Show when={item.label}>
                 <div class={styles().itemGroupLabel()}>{item.label}</div>
               </Show>
-              <MenuItemsRenderer items={item.children} api={props.api} service={props.service} />
+              <MenuItemsRenderer
+                items={item.children}
+                api={props.api}
+                service={props.service}
+              />
             </div>
           )
         }
 
         // 单选组
         if (isRadioGroup(item)) {
-          return <RadioGroupRenderer group={item} parentApi={props.api} />
+          return (
+            <RadioGroupRenderer
+              group={item}
+              parentApi={props.api}
+            />
+          )
         }
 
         // 复选框
         if (isCheckbox(item)) {
-          return <CheckboxItemRenderer item={item} parentApi={props.api} />
+          return (
+            <CheckboxItemRenderer
+              item={item}
+              parentApi={props.api}
+            />
+          )
         }
 
         // 普通菜单项
@@ -402,7 +449,7 @@ const MenuItemsRenderer: Component<{
           if (hasChildren(item)) {
             return (
               <SubMenuRenderer
-                item={item as MenuItemData & { children: MenuItemType[] }}
+                item={item as MenuItemData & {children: MenuItemType[]}}
                 parentApi={props.api}
                 parentService={props.service}
               />
@@ -410,7 +457,12 @@ const MenuItemsRenderer: Component<{
           }
 
           // 普通项
-          return <MenuItemRenderer item={item} parentApi={props.api} />
+          return (
+            <MenuItemRenderer
+              item={item}
+              parentApi={props.api}
+            />
+          )
         }
 
         return null
@@ -454,13 +506,13 @@ export const Dropdown: Component<DropdownProps> = (props) => {
     id: local.id ?? createUniqueId(),
     closeOnSelect: local.closeOnSelect ?? true,
     loop: local.loop ?? true,
-    positioning: local.positioning ?? { placement: 'bottom-start' as const },
+    positioning: local.positioning ?? {placement: 'bottom-start' as const},
     onOpenChange: local.onOpenChange,
   }))
 
   const api = createMemo(() => menu.connect(service, normalizeProps))
   const size = () => local.size ?? 'md'
-  const styles = createMemo(() => menuStyles({ size: size() }))
+  const styles = createMemo(() => menuStyles({size: size()}))
 
   return (
     <MenuContext.Provider
@@ -483,9 +535,19 @@ export const Dropdown: Component<DropdownProps> = (props) => {
       {/* 菜单内容 */}
       <Show when={api().open}>
         <Portal>
-          <div {...api().getPositionerProps()} class={styles().positioner()}>
-            <div {...api().getContentProps()} class={styles().content({ class: local.class })}>
-              <MenuItemsRenderer items={local.items} api={api} service={service} />
+          <div
+            {...api().getPositionerProps()}
+            class={styles().positioner()}
+          >
+            <div
+              {...api().getContentProps()}
+              class={styles().content({class: local.class})}
+            >
+              <MenuItemsRenderer
+                items={local.items}
+                api={api}
+                service={service}
+              />
             </div>
           </div>
         </Portal>
@@ -533,7 +595,7 @@ export const ContextMenu: Component<ContextMenuProps> = (props) => {
 
   const api = createMemo(() => menu.connect(service, normalizeProps))
   const size = () => local.size ?? 'md'
-  const styles = createMemo(() => menuStyles({ size: size() }))
+  const styles = createMemo(() => menuStyles({size: size()}))
 
   return (
     <MenuContext.Provider
@@ -546,16 +608,24 @@ export const ContextMenu: Component<ContextMenuProps> = (props) => {
       }}
     >
       {/* 触发区域 */}
-      <div {...api().getContextTriggerProps()}>
-        {local.children}
-      </div>
+      <div {...api().getContextTriggerProps()}>{local.children}</div>
 
       {/* 菜单内容 */}
       <Show when={api().open}>
         <Portal>
-          <div {...api().getPositionerProps()} class={styles().positioner()}>
-            <div {...api().getContentProps()} class={styles().content({ class: local.class })}>
-              <MenuItemsRenderer items={local.items} api={api} service={service} />
+          <div
+            {...api().getPositionerProps()}
+            class={styles().positioner()}
+          >
+            <div
+              {...api().getContentProps()}
+              class={styles().content({class: local.class})}
+            >
+              <MenuItemsRenderer
+                items={local.items}
+                api={api}
+                service={service}
+              />
             </div>
           </div>
         </Portal>
@@ -566,4 +636,4 @@ export const ContextMenu: Component<ContextMenuProps> = (props) => {
 
 // ==================== 导出 ====================
 
-export { Dropdown as Menu }
+export {Dropdown as Menu}

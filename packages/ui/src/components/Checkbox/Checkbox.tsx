@@ -3,9 +3,16 @@
  * 复选框组件
  */
 
-import { splitProps, Show, createMemo, createSignal, type Component, type JSX } from 'solid-js'
-import { Check, Minus } from 'lucide-solid'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {
+  splitProps,
+  Show,
+  createMemo,
+  createSignal,
+  type Component,
+  type JSX,
+} from 'solid-js'
+import {Check, Minus} from 'lucide-solid'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 const checkboxVariants = tv({
   slots: {
@@ -76,12 +83,24 @@ export interface CheckboxProps extends CheckboxVariants {
 export const Checkbox: Component<CheckboxProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
-    ['class', 'children', 'checked', 'defaultChecked', 'indeterminate', 'onChange', 'id', 'name', 'value'],
-    ['size', 'disabled']
+    [
+      'class',
+      'children',
+      'checked',
+      'defaultChecked',
+      'indeterminate',
+      'onChange',
+      'id',
+      'name',
+      'value',
+    ],
+    ['size', 'disabled'],
   )
 
   // 内部状态用于非受控模式
-  const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false)
+  const [internalChecked, setInternalChecked] = createSignal(
+    local.defaultChecked ?? false,
+  )
 
   const isControlled = () => local.checked !== undefined
 
@@ -93,17 +112,23 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
   })
 
   const state = createMemo(() => {
-    if (local.indeterminate) { return 'indeterminate' }
+    if (local.indeterminate) {
+      return 'indeterminate'
+    }
     return checked() ? 'checked' : 'unchecked'
   })
 
-  const styles = createMemo(() => checkboxVariants({
-    size: variants.size,
-    disabled: variants.disabled,
-  }))
+  const styles = createMemo(() =>
+    checkboxVariants({
+      size: variants.size,
+      disabled: variants.disabled,
+    }),
+  )
 
   const handleChange = (e: Event) => {
-    if (variants.disabled) { return }
+    if (variants.disabled) {
+      return
+    }
     const target = e.target as HTMLInputElement
     // 非受控模式下更新内部状态
     if (!isControlled()) {
@@ -113,7 +138,10 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
   }
 
   return (
-    <label class={styles().root({ class: local.class })} {...rest}>
+    <label
+      class={styles().root({class: local.class})}
+      {...rest}
+    >
       <input
         type="checkbox"
         class={styles().input()}
@@ -125,12 +153,21 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         onChange={handleChange}
         aria-checked={local.indeterminate ? 'mixed' : checked()}
       />
-      <span class={styles().control()} data-state={state()}>
+      <span
+        class={styles().control()}
+        data-state={state()}
+      >
         <Show when={state() === 'checked'}>
-          <Check class="size-3.5" strokeWidth={3} />
+          <Check
+            class="size-3.5"
+            strokeWidth={3}
+          />
         </Show>
         <Show when={state() === 'indeterminate'}>
-          <Minus class="size-3.5" strokeWidth={3} />
+          <Minus
+            class="size-3.5"
+            strokeWidth={3}
+          />
         </Show>
       </span>
       <Show when={local.children}>
@@ -139,4 +176,3 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
     </label>
   )
 }
-

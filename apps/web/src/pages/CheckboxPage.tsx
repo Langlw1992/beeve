@@ -2,20 +2,20 @@
  * Checkbox Component Showcase Page
  */
 
-import { For, type Component } from 'solid-js'
-import { Checkbox } from '@beeve/ui'
-import { ShowcaseGrid, ShowcaseSection } from '../components/ShowcaseGrid'
+import {For, type Component} from 'solid-js'
+import {Checkbox} from '@beeve/ui'
+import {ShowcaseGrid, ShowcaseSection} from '../components/ShowcaseGrid'
 
 const sizes = [
-  { value: 'sm' as const, label: 'Small' },
-  { value: 'md' as const, label: 'Medium' },
-  { value: 'lg' as const, label: 'Large' },
+  {value: 'sm' as const, label: 'Small'},
+  {value: 'md' as const, label: 'Medium'},
+  {value: 'lg' as const, label: 'Large'},
 ]
 
 const states = [
-  { value: 'unchecked', label: 'Unchecked' },
-  { value: 'checked', label: 'Checked' },
-  { value: 'indeterminate', label: 'Indeterminate' },
+  {value: 'unchecked', label: 'Unchecked'},
+  {value: 'checked', label: 'Checked'},
+  {value: 'indeterminate', label: 'Indeterminate'},
 ]
 
 export const CheckboxPage: Component = () => {
@@ -32,8 +32,8 @@ export const CheckboxPage: Component = () => {
       <ShowcaseGrid
         title="Size × State"
         description="尺寸与状态的笛卡尔积组合"
-        variant1={{ name: 'Size', values: sizes }}
-        variant2={{ name: 'State', values: states }}
+        variant1={{name: 'Size', values: sizes}}
+        variant2={{name: 'State', values: states}}
         renderCell={(size, state) => (
           <Checkbox
             size={size}
@@ -46,35 +46,46 @@ export const CheckboxPage: Component = () => {
       />
 
       {/* With Labels */}
-      <ShowcaseSection title="With Labels" description="带标签的复选框">
+      <ShowcaseSection
+        title="With Labels"
+        description="带标签的复选框"
+      >
         <div class="flex flex-col gap-4">
           <For each={sizes}>
             {(s) => (
-              <Checkbox size={s.value}>
-                {s.label} checkbox with label
-              </Checkbox>
+              <Checkbox size={s.value}>{s.label} checkbox with label</Checkbox>
             )}
           </For>
         </div>
       </ShowcaseSection>
 
       {/* Without Labels */}
-      <ShowcaseSection title="Without Labels" description="不带标签的复选框">
+      <ShowcaseSection
+        title="Without Labels"
+        description="不带标签的复选框"
+      >
         <div class="flex items-center gap-4">
-          <For each={sizes}>
-            {(s) => <Checkbox size={s.value} />}
-          </For>
+          <For each={sizes}>{(s) => <Checkbox size={s.value} />}</For>
         </div>
       </ShowcaseSection>
 
       {/* Disabled State */}
-      <ShowcaseSection title="Disabled State" description="禁用状态">
+      <ShowcaseSection
+        title="Disabled State"
+        description="禁用状态"
+      >
         <div class="flex flex-col gap-4">
           <Checkbox disabled>Disabled unchecked</Checkbox>
-          <Checkbox disabled checked>
+          <Checkbox
+            disabled
+            checked
+          >
             Disabled checked
           </Checkbox>
-          <Checkbox disabled indeterminate>
+          <Checkbox
+            disabled
+            indeterminate
+          >
             Disabled indeterminate
           </Checkbox>
         </div>
@@ -82,4 +93,3 @@ export const CheckboxPage: Component = () => {
     </div>
   )
 }
-

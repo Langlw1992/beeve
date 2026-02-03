@@ -3,8 +3,8 @@
  * 表单标签组件
  */
 
-import { splitProps, type Component, type JSX } from 'solid-js'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {splitProps, type Component, type JSX} from 'solid-js'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 const labelVariants = tv({
   base: [
@@ -40,17 +40,16 @@ export const Label: Component<LabelProps> = (props) => {
   const [local, variants, rest] = splitProps(
     props,
     ['class', 'children', 'for'],
-    ['required', 'disabled']
+    ['required', 'disabled'],
   )
 
   return (
     <label
       for={local.for}
-      class={labelVariants({ ...variants, class: local.class })}
+      class={labelVariants({...variants, class: local.class})}
       {...rest}
     >
       {local.children}
     </label>
   )
 }
-

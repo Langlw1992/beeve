@@ -3,9 +3,9 @@
  * 遵循 TDD 原则，先编写测试用例
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@solidjs/testing-library'
-import { Button } from './Button'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent} from '@solidjs/testing-library'
+import {Button} from './Button'
 
 describe('Button', () => {
   // ==================== 渲染测试 ====================
@@ -97,18 +97,25 @@ describe('Button', () => {
     it('点击时应该触发 onClick 回调', async () => {
       const handleClick = vi.fn()
       render(() => <Button onClick={handleClick}>点击</Button>)
-      
+
       await fireEvent.click(screen.getByRole('button'))
-      
+
       expect(handleClick).toHaveBeenCalledTimes(1)
     })
 
     it('禁用状态下不应该触发 onClick', async () => {
       const handleClick = vi.fn()
-      render(() => <Button disabled onClick={handleClick}>禁用</Button>)
-      
+      render(() => (
+        <Button
+          disabled
+          onClick={handleClick}
+        >
+          禁用
+        </Button>
+      ))
+
       await fireEvent.click(screen.getByRole('button'))
-      
+
       expect(handleClick).not.toHaveBeenCalled()
     })
 
@@ -146,4 +153,3 @@ describe('Button', () => {
     })
   })
 })
-

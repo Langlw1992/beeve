@@ -11,11 +11,11 @@
  * ```
  */
 
-import { createMemo, createUniqueId, type Accessor } from 'solid-js'
+import {createMemo, createUniqueId, type Accessor} from 'solid-js'
 import * as slider from '@zag-js/slider'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import type { PropTypes } from '@zag-js/solid'
-import type { SliderProps } from './types'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import type {PropTypes} from '@zag-js/solid'
+import type {SliderProps} from './types'
 
 export type UseSliderProps = Accessor<SliderProps>
 
@@ -55,6 +55,5 @@ export function useSlider(getProps: UseSliderProps): UseSliderReturn {
 
   const api = createMemo(() => slider.connect(service, normalizeProps))
 
-  return { api }
+  return {api}
 }
-

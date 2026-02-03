@@ -1,4 +1,4 @@
-import type { BaseColorPreset } from '../types'
+import type {BaseColorPreset} from '../types'
 
 export const gray: BaseColorPreset = {
   name: 'gray',

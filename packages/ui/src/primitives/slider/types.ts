@@ -29,17 +29,17 @@ export interface SliderProps {
   /** thumb 对齐方式：contain | center */
   thumbAlignment?: 'contain' | 'center'
   /** thumb 尺寸（用于 contain 模式防止抖动）*/
-  thumbSize?: { width: number; height: number }
+  thumbSize?: {width: number; height: number}
   /** 表单名称 */
   name?: string
   /** 文本方向：ltr | rtl */
   dir?: 'ltr' | 'rtl'
   /** 值变化时回调（拖拽中） */
-  onChange?: (details: { value: number[] }) => void
+  onChange?: (details: {value: number[]}) => void
   /** 值变化结束回调（拖拽结束） */
-  onChangeEnd?: (details: { value: number[] }) => void
+  onChangeEnd?: (details: {value: number[]}) => void
   /** 获取 aria-valuetext */
-  getAriaValueText?: (details: { value: number; index: number }) => string
+  getAriaValueText?: (details: {value: number; index: number}) => string
 }
 
 /** Slider Mark 配置 */
@@ -47,4 +47,3 @@ export interface SliderMark {
   value: number
   label?: string
 }
-

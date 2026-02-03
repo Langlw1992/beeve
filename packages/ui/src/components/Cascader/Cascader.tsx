@@ -35,12 +35,12 @@ import {
   createEffect,
   on,
 } from 'solid-js'
-import { Portal } from 'solid-js/web'
+import {Portal} from 'solid-js/web'
 import * as popover from '@zag-js/popover'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import { ChevronDown, ChevronRight, X, Check } from 'lucide-solid'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import {ChevronDown, ChevronRight, X, Check} from 'lucide-solid'
 
-import { cascaderStyles } from './styles'
+import {cascaderStyles} from './styles'
 import type {
   CascaderProps,
   CascaderOption,
@@ -61,9 +61,13 @@ export type {
 
 // 辅助函数：比较两个路径是否相等
 function pathEquals(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) { return false }
+  if (a.length !== b.length) {
+    return false
+  }
   for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) { return false }
+    if (a[i] !== b[i]) {
+      return false
+    }
   }
   return true
 }
@@ -71,7 +75,9 @@ function pathEquals(a: string[], b: string[]): boolean {
 // 辅助函数：检查路径数组中是否包含某个路径
 function containsPath(paths: string[][], target: string[]): boolean {
   for (const path of paths) {
-    if (pathEquals(path, target)) { return true }
+    if (pathEquals(path, target)) {
+      return true
+    }
   }
   return false
 }
@@ -81,7 +87,9 @@ interface CascaderInternalProps<T = unknown> {
   options: CascaderOption<T>[]
   value?: string[] | string[][]
   defaultValue?: string[] | string[][]
-  onChange?: ((details: CascaderValueChangeDetails<T>) => void) | ((details: CascaderMultipleValueChangeDetails<T>) => void)
+  onChange?:
+    | ((details: CascaderValueChangeDetails<T>) => void)
+    | ((details: CascaderMultipleValueChangeDetails<T>) => void)
   placeholder?: string
   disabled?: boolean
   clearable?: boolean
@@ -123,46 +131,52 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
       'checkStrategy',
       'maxTagCount',
     ],
-    ['size', 'error']
+    ['size', 'error'],
   )
 
-  const styles = cascaderStyles({ ...styleProps })
+  const styles = cascaderStyles({...styleProps})
   const multiple = () => local.multiple === true
   const showPath = () => local.showPath ?? 'full'
   const checkStrategy = () => local.checkStrategy ?? 'child'
 
   // 单选内部值
   const [internalSingleValue, setInternalSingleValue] = createSignal<string[]>(
-    !multiple() ? (local.defaultValue as string[] | undefined) ?? [] : []
+    !multiple() ? ((local.defaultValue as string[] | undefined) ?? []) : [],
   )
 
   // 多选内部值
-  const [internalMultipleValue, setInternalMultipleValue] = createSignal<string[][]>(
-    multiple() ? (local.defaultValue as string[][] | undefined) ?? [] : []
-  )
+  const [internalMultipleValue, setInternalMultipleValue] = createSignal<
+    string[][]
+  >(multiple() ? ((local.defaultValue as string[][] | undefined) ?? []) : [])
 
   // 当前展开的路径（用于显示多列）
   const [expandedPath, setExpandedPath] = createSignal<string[]>([])
 
   // 加载中的选项
-  const [loadingOptions, setLoadingOptions] = createSignal<Set<string>>(new Set())
+  const [loadingOptions, setLoadingOptions] = createSignal<Set<string>>(
+    new Set(),
+  )
 
   // 受控/非受控值 - 单选
   const selectedSingleValue = createMemo(() => {
-    if (multiple()) { return [] }
+    if (multiple()) {
+      return []
+    }
     return (local.value as string[] | undefined) ?? internalSingleValue()
   })
 
   // 受控/非受控值 - 多选
   const selectedMultipleValue = createMemo(() => {
-    if (!multiple()) { return [] }
+    if (!multiple()) {
+      return []
+    }
     return (local.value as string[][] | undefined) ?? internalMultipleValue()
   })
 
   // Popover 状态机
   const popoverService = useMachine(popover.machine, () => ({
     id: createUniqueId(),
-    positioning: { placement: 'bottom-start' as const },
+    positioning: {placement: 'bottom-start' as const},
     onOpenChange: (details) => {
       local.onOpenChange?.(details.open)
       // 打开时，根据当前选中值设置展开路径
@@ -181,31 +195,31 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
   // 同步外部 value 变化 - 单选
   createEffect(
     on(
-      () => !multiple() ? local.value as string[] | undefined : undefined,
+      () => (!multiple() ? (local.value as string[] | undefined) : undefined),
       (newValue) => {
         if (newValue !== undefined && !multiple()) {
           setInternalSingleValue(newValue)
         }
-      }
-    )
+      },
+    ),
   )
 
   // 同步外部 value 变化 - 多选
   createEffect(
     on(
-      () => multiple() ? local.value as string[][] | undefined : undefined,
+      () => (multiple() ? (local.value as string[][] | undefined) : undefined),
       (newValue) => {
         if (newValue !== undefined && multiple()) {
           setInternalMultipleValue(newValue)
         }
-      }
-    )
+      },
+    ),
   )
 
   // 获取选项路径对应的选项对象数组
   const getSelectedOptions = (
     options: CascaderOption<T>[],
-    path: string[]
+    path: string[],
   ): CascaderOption<T>[] => {
     const result: CascaderOption<T>[] = []
     let currentOptions = options
@@ -223,9 +237,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
 
   // 计算要显示的列
   const columns = createMemo(() => {
-    const cols: { options: CascaderOption<T>[]; level: number }[] = []
+    const cols: {options: CascaderOption<T>[]; level: number}[] = []
     // 第一列始终显示
-    cols.push({ options: local.options, level: 0 })
+    cols.push({options: local.options, level: 0})
 
     // 根据展开路径添加后续列
     let currentOptions = local.options
@@ -234,7 +248,7 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
       const value = path[i]
       const found = currentOptions.find((opt) => opt.value === value)
       if (found?.children && found.children.length > 0) {
-        cols.push({ options: found.children, level: i + 1 })
+        cols.push({options: found.children, level: i + 1})
         currentOptions = found.children
       } else {
         break
@@ -245,17 +259,21 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
 
   // 单选 - 选中的选项对象
   const selectedSingleOptions = createMemo(() =>
-    getSelectedOptions(local.options, selectedSingleValue())
+    getSelectedOptions(local.options, selectedSingleValue()),
   )
 
   // 多选 - 选中的选项对象数组
   const selectedMultipleOptions = createMemo(() =>
-    selectedMultipleValue().map((path) => getSelectedOptions(local.options, path))
+    selectedMultipleValue().map((path) =>
+      getSelectedOptions(local.options, path),
+    ),
   )
 
   // 获取显示标签（根据 showPath 配置）
   const getDisplayLabel = (opts: CascaderOption<T>[]): string => {
-    if (opts.length === 0) { return '' }
+    if (opts.length === 0) {
+      return ''
+    }
     if (showPath() === 'last') {
       const lastOpt = opts[opts.length - 1]
       return lastOpt ? lastOpt.label : ''
@@ -266,11 +284,16 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
   // 单选 - 显示文本
   const singleDisplayText = createMemo(() => {
     const opts = selectedSingleOptions()
-    if (opts.length === 0) { return '' }
+    if (opts.length === 0) {
+      return ''
+    }
     if (local.displayRender && !multiple()) {
       const labels = opts.map((o) => o.label)
-      const render = local.displayRender as CascaderSingleProps<T>['displayRender']
-      if (render) { return render(labels, opts) }
+      const render =
+        local.displayRender as CascaderSingleProps<T>['displayRender']
+      if (render) {
+        return render(labels, opts)
+      }
     }
     return getDisplayLabel(opts)
   })
@@ -281,7 +304,7 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     const allOpts = selectedMultipleOptions()
     const maxCount = local.maxTagCount ?? Number.POSITIVE_INFINITY
 
-    const visibleTags: { path: string[]; label: string }[] = []
+    const visibleTags: {path: string[]; label: string}[] = []
     for (let i = 0; i < Math.min(allPaths.length, maxCount); i++) {
       const path = allPaths[i]
       const opts = allOpts[i]
@@ -294,7 +317,7 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     }
 
     const hiddenCount = allPaths.length - visibleTags.length
-    return { visibleTags, hiddenCount }
+    return {visibleTags, hiddenCount}
   })
 
   // 判断选项是否可选（根据 checkStrategy）
@@ -303,15 +326,26 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     const isLeaf = option.isLeaf || !hasChildren
 
     const strategy = checkStrategy()
-    if (strategy === 'all') { return true }
-    if (strategy === 'child') { return isLeaf }
-    if (strategy === 'parent') { return hasChildren }
+    if (strategy === 'all') {
+      return true
+    }
+    if (strategy === 'child') {
+      return isLeaf
+    }
+    if (strategy === 'parent') {
+      return hasChildren
+    }
     return true
   }
 
   // 处理单选选项点击
-  const handleSingleOptionClick = async (option: CascaderOption<T>, level: number) => {
-    if (option.disabled) { return }
+  const handleSingleOptionClick = async (
+    option: CascaderOption<T>,
+    level: number,
+  ) => {
+    if (option.disabled) {
+      return
+    }
 
     const newPath = [...expandedPath().slice(0, level), option.value]
 
@@ -342,7 +376,8 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     }
 
     // 判断是否应该触发 onChange
-    const isLeaf = option.isLeaf || (!option.children || option.children.length === 0)
+    const isLeaf =
+      option.isLeaf || !option.children || option.children.length === 0
     const shouldChange = local.changeOnSelect || isLeaf
 
     if (shouldChange) {
@@ -361,8 +396,13 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
   }
 
   // 处理多选选项点击
-  const handleMultipleOptionClick = async (option: CascaderOption<T>, level: number) => {
-    if (option.disabled) { return }
+  const handleMultipleOptionClick = async (
+    option: CascaderOption<T>,
+    level: number,
+  ) => {
+    if (option.disabled) {
+      return
+    }
 
     const newPath = [...expandedPath().slice(0, level), option.value]
 
@@ -390,7 +430,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     }
 
     // 检查是否可选
-    if (!isOptionSelectable(option)) { return }
+    if (!isOptionSelectable(option)) {
+      return
+    }
 
     // 切换选中状态
     const currentPaths = selectedMultipleValue()
@@ -399,7 +441,10 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     let newPaths: string[][]
     if (existingIndex >= 0) {
       // 已选中，移除
-      newPaths = [...currentPaths.slice(0, existingIndex), ...currentPaths.slice(existingIndex + 1)]
+      newPaths = [
+        ...currentPaths.slice(0, existingIndex),
+        ...currentPaths.slice(existingIndex + 1),
+      ]
     } else {
       // 未选中，添加
       newPaths = [...currentPaths, newPath]
@@ -409,7 +454,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     const onChange = local.onChange as CascaderMultipleProps<T>['onChange']
     onChange?.({
       value: newPaths,
-      selectedOptions: newPaths.map((p) => getSelectedOptions(local.options, p)),
+      selectedOptions: newPaths.map((p) =>
+        getSelectedOptions(local.options, p),
+      ),
     })
   }
 
@@ -441,11 +488,11 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     if (multiple()) {
       setInternalMultipleValue([])
       const onChange = local.onChange as CascaderMultipleProps<T>['onChange']
-      onChange?.({ value: [], selectedOptions: [] })
+      onChange?.({value: [], selectedOptions: []})
     } else {
       setInternalSingleValue([])
       const onChange = local.onChange as CascaderSingleProps<T>['onChange']
-      onChange?.({ value: [], selectedOptions: [] })
+      onChange?.({value: [], selectedOptions: []})
     }
   }
 
@@ -458,7 +505,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     const onChange = local.onChange as CascaderMultipleProps<T>['onChange']
     onChange?.({
       value: newPaths,
-      selectedOptions: newPaths.map((p) => getSelectedOptions(local.options, p)),
+      selectedOptions: newPaths.map((p) =>
+        getSelectedOptions(local.options, p),
+      ),
     })
   }
 
@@ -492,7 +541,7 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
       <button
         {...api().getTriggerProps()}
         disabled={local.disabled}
-        class={styles.trigger({ class: local.class })}
+        class={styles.trigger({class: local.class})}
       >
         {/* 单选模式显示 */}
         <Show when={!multiple()}>
@@ -558,7 +607,7 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
             </button>
           </Show>
           <ChevronDown
-            class={styles.indicator({ class: api().open ? 'rotate-180' : '' })}
+            class={styles.indicator({class: api().open ? 'rotate-180' : ''})}
             size={14}
           />
         </span>
@@ -567,10 +616,13 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
       {/* 弹出层 */}
       <Show when={api().open}>
         <Portal>
-          <div {...api().getPositionerProps()} class={styles.positioner()}>
+          <div
+            {...api().getPositionerProps()}
+            class={styles.positioner()}
+          >
             <div
               {...api().getContentProps()}
-              class={styles.content({ class: local.popupClass })}
+              class={styles.content({class: local.popupClass})}
             >
               {/* 多列面板 */}
               <For each={columns()}>
@@ -581,12 +633,15 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
                         const hasChildren = () =>
                           (option.children && option.children.length > 0) ||
                           (!option.isLeaf && local.loadData)
-                        const isLoading = () => loadingOptions().has(option.value)
-                        const isActive = () => isExpanded(option.value, col.level)
+                        const isLoading = () =>
+                          loadingOptions().has(option.value)
+                        const isActive = () =>
+                          isExpanded(option.value, col.level)
 
                         // 单选：是否在选中路径上
                         const isSingleSelected = () =>
-                          !multiple() && isInSelectedSinglePath(option.value, col.level)
+                          !multiple() &&
+                          isInSelectedSinglePath(option.value, col.level)
 
                         // 多选：是否被选中
                         const isMultipleChecked = () =>
@@ -612,7 +667,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
                                 handleOptionClick(option, col.level)
                               }
                             }}
-                            onMouseEnter={() => handleOptionHover(option, col.level)}
+                            onMouseEnter={() =>
+                              handleOptionHover(option, col.level)
+                            }
                           >
                             {/* 多选复选框 */}
                             <Show when={multiple() && canSelect()}>
@@ -626,7 +683,9 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
                               </span>
                             </Show>
 
-                            <span class={styles.itemLabel()}>{option.label}</span>
+                            <span class={styles.itemLabel()}>
+                              {option.label}
+                            </span>
 
                             <Show when={isLoading()}>
                               <span class={styles.itemIndicator()}>
@@ -637,7 +696,14 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
                               <ChevronRight class={styles.itemIndicator()} />
                             </Show>
                             {/* 单选勾选图标 */}
-                            <Show when={!multiple() && !isLoading() && !hasChildren() && isSingleSelected()}>
+                            <Show
+                              when={
+                                !multiple() &&
+                                !isLoading() &&
+                                !hasChildren() &&
+                                isSingleSelected()
+                              }
+                            >
                               <Check class={styles.itemIndicator()} />
                             </Show>
                           </div>
@@ -654,4 +720,3 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
     </div>
   )
 }
-

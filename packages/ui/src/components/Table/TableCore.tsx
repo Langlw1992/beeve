@@ -3,22 +3,23 @@
  * 接收 TanStack Table instance，负责纯渲染逻辑
  */
 
-import {
-  createMemo,
-  For,
-  Show,
-  type JSX,
-} from 'solid-js'
+import {createMemo, For, Show, type JSX} from 'solid-js'
 import {
   flexRender,
   type Table as TableInstance,
   type RowData,
   type Row,
 } from '@tanstack/solid-table'
-import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight, Loader2 } from 'lucide-solid'
-import { tableVariants } from './styles'
-import { Checkbox } from '../Checkbox'
-import type { TableSize, TableVariant } from './types'
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+  ChevronRight,
+  Loader2,
+} from 'lucide-solid'
+import {tableVariants} from './styles'
+import {Checkbox} from '../Checkbox'
+import type {TableSize, TableVariant} from './types'
 
 // ==================== Props ====================
 
@@ -73,27 +74,40 @@ export interface TableCoreProps<TData extends RowData> {
 
 // ==================== TableCore 组件 ====================
 
-export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): JSX.Element {
-  const styles = createMemo(() => tableVariants({
-    variant: props.variant,
-    size: props.size,
-    striped: props.striped,
-    hoverable: props.hoverable,
-  }))
+export function TableCore<TData extends RowData>(
+  props: TableCoreProps<TData>,
+): JSX.Element {
+  const styles = createMemo(() =>
+    tableVariants({
+      variant: props.variant,
+      size: props.size,
+      striped: props.striped,
+      hoverable: props.hoverable,
+    }),
+  )
 
   const showHeader = () => props.showHeader !== false
   const showFooter = () => props.showFooter === true
   const isEmpty = () => props.table.getRowModel().rows.length === 0
   const columnCount = () => {
     let count = props.table.getAllColumns().length
-    if (props.selectable) { count++ }
-    if (props.expandable) { count++ }
+    if (props.selectable) {
+      count++
+    }
+    if (props.expandable) {
+      count++
+    }
     return count
   }
 
   // 获取列固定样式类
-  const getPinningClass = (isPinned: false | 'left' | 'right', isHeader = false) => {
-    if (!isPinned || !props.enablePinning) { return '' }
+  const getPinningClass = (
+    isPinned: false | 'left' | 'right',
+    isHeader = false,
+  ) => {
+    if (!isPinned || !props.enablePinning) {
+      return ''
+    }
     if (isPinned === 'left') {
       return isHeader ? styles().thPinnedLeft() : styles().tdPinnedLeft()
     }
@@ -101,13 +115,15 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
   }
 
   // 获取列固定偏移样式
-  const getPinningStyle = <T extends { column: { getSize: () => number } }>(
+  const getPinningStyle = <T extends {column: {getSize: () => number}}>(
     isPinned: false | 'left' | 'right',
     index: number,
     items: T[],
-    extraOffset = 0
+    extraOffset = 0,
   ): Record<string, string> => {
-    if (!isPinned || !props.enablePinning) { return {} }
+    if (!isPinned || !props.enablePinning) {
+      return {}
+    }
 
     let offset = extraOffset
     if (isPinned === 'left') {
@@ -117,7 +133,7 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
           offset += item.column.getSize()
         }
       }
-      return { left: `${offset}px` }
+      return {left: `${offset}px`}
     }
 
     for (let i = items.length - 1; i > index; i--) {
@@ -126,7 +142,7 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
         offset += item.column.getSize()
       }
     }
-    return { right: `${offset}px` }
+    return {right: `${offset}px`}
   }
 
   // 渲染选中列表头
@@ -195,7 +211,7 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
   }
 
   return (
-    <div class={styles().root({ class: props.class })}>
+    <div class={styles().root({class: props.class})}>
       {/* Loading 覆盖层 */}
       <Show when={props.loading}>
         <div class={styles().loadingOverlay()}>
@@ -232,22 +248,40 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
                           class={`${styles().th()} ${canSort() ? styles().thSortable() : ''} ${getPinningClass(isPinned(), true)}`}
                           colSpan={header.colSpan}
                           style={{
-                            width: header.getSize() !== 150 ? `${header.getSize()}px` : undefined,
-                            ...getPinningStyle(isPinned(), index(), headerGroup.headers),
+                            width:
+                              header.getSize() !== 150
+                                ? `${header.getSize()}px`
+                                : undefined,
+                            ...getPinningStyle(
+                              isPinned(),
+                              index(),
+                              headerGroup.headers,
+                            ),
                           }}
-                          onClick={canSort() ? header.column.getToggleSortingHandler() : undefined}
-                          onKeyDown={canSort() ? (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault()
-                              header.column.getToggleSortingHandler()?.(e)
-                            }
-                          } : undefined}
+                          onClick={
+                            canSort()
+                              ? header.column.getToggleSortingHandler()
+                              : undefined
+                          }
+                          onKeyDown={
+                            canSort()
+                              ? (e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    header.column.getToggleSortingHandler()?.(e)
+                                  }
+                                }
+                              : undefined
+                          }
                           tabIndex={canSort() ? 0 : undefined}
                           role={canSort() ? 'button' : undefined}
                         >
                           <Show when={!header.isPlaceholder}>
                             <div class="flex items-center gap-1">
-                              {flexRender(header.column.columnDef.header, header.getContext())}
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
                               <Show when={canSort()}>
                                 <span class="inline-flex size-4 flex-shrink-0">
                                   <Show when={sortDirection() === 'asc'}>
@@ -279,7 +313,10 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
             when={!isEmpty()}
             fallback={
               <tr>
-                <td colSpan={columnCount()} class={styles().empty()}>
+                <td
+                  colSpan={columnCount()}
+                  class={styles().empty()}
+                >
                   {props.emptyContent ?? props.emptyText ?? '暂无数据'}
                 </td>
               </tr>
@@ -325,18 +362,35 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
                           return (
                             <td
                               class={`${styles().td()} ${getPinningClass(isPinned())}`}
-                              style={getPinningStyle(isPinned(), cellIndex(), visibleCells())}
+                              style={getPinningStyle(
+                                isPinned(),
+                                cellIndex(),
+                                visibleCells(),
+                              )}
                             >
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
                             </td>
                           )
                         }}
                       </For>
                     </tr>
                     {/* 展开行 */}
-                    <Show when={props.expandable && isExpanded() && props.renderExpanded}>
-                      <tr class={styles().expandedRow()} data-state="expanded">
-                        <td colSpan={columnCount()} class={styles().expandedContent()}>
+                    <Show
+                      when={
+                        props.expandable && isExpanded() && props.renderExpanded
+                      }
+                    >
+                      <tr
+                        class={styles().expandedRow()}
+                        data-state="expanded"
+                      >
+                        <td
+                          colSpan={columnCount()}
+                          class={styles().expandedContent()}
+                        >
                           {props.renderExpanded?.(row)}
                         </td>
                       </tr>
@@ -362,9 +416,15 @@ export function TableCore<TData extends RowData>(props: TableCoreProps<TData>): 
                   </Show>
                   <For each={footerGroup.headers}>
                     {(header) => (
-                      <th class={styles().th()} colSpan={header.colSpan}>
+                      <th
+                        class={styles().th()}
+                        colSpan={header.colSpan}
+                      >
                         <Show when={!header.isPlaceholder}>
-                          {flexRender(header.column.columnDef.footer, header.getContext())}
+                          {flexRender(
+                            header.column.columnDef.footer,
+                            header.getContext(),
+                          )}
                         </Show>
                       </th>
                     )}

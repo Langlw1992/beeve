@@ -3,7 +3,7 @@
  * 导航菜单组件类型定义
  */
 
-import type { JSX, ComponentProps } from 'solid-js'
+import type {JSX, ComponentProps} from 'solid-js'
 
 /** 导航菜单项 */
 export interface NavMenuItemData {
@@ -46,7 +46,10 @@ export interface NavMenuDividerData {
 }
 
 /** 菜单项类型联合 */
-export type NavMenuItemType = NavMenuItemData | NavMenuGroupData | NavMenuDividerData
+export type NavMenuItemType =
+  | NavMenuItemData
+  | NavMenuGroupData
+  | NavMenuDividerData
 
 /** 导航菜单方向 */
 export type NavMenuDirection = 'vertical' | 'horizontal'
@@ -76,12 +79,16 @@ export interface NavMenuProps extends Omit<ComponentProps<'nav'>, 'onChange'> {
 // ==================== 类型守卫 ====================
 
 /** 判断是否为分隔线 */
-export function isNavMenuDivider(item: NavMenuItemType): item is NavMenuDividerData {
+export function isNavMenuDivider(
+  item: NavMenuItemType,
+): item is NavMenuDividerData {
   return 'type' in item && item.type === 'divider'
 }
 
 /** 判断是否为分组 */
-export function isNavMenuGroup(item: NavMenuItemType): item is NavMenuGroupData {
+export function isNavMenuGroup(
+  item: NavMenuItemType,
+): item is NavMenuGroupData {
   return 'type' in item && item.type === 'group'
 }
 
@@ -94,4 +101,3 @@ export function isNavMenuItem(item: NavMenuItemType): item is NavMenuItemData {
 export function navMenuHasChildren(item: NavMenuItemData): boolean {
   return Array.isArray(item.children) && item.children.length > 0
 }
-

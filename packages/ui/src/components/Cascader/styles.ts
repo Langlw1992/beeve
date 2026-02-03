@@ -3,7 +3,7 @@
  * 与 Menu 组件保持一致的样式风格
  */
 
-import { tv } from 'tailwind-variants'
+import {tv} from 'tailwind-variants'
 
 export const cascaderStyles = tv({
   slots: {
@@ -22,7 +22,8 @@ export const cascaderStyles = tv({
       'rounded-full p-0.5 hover:bg-accent transition-colors',
       'mr-1 cursor-pointer flex items-center justify-center',
     ],
-    indicator: 'text-muted-foreground shrink-0 transition-transform duration-200',
+    indicator:
+      'text-muted-foreground shrink-0 transition-transform duration-200',
 
     // 多选标签容器
     tagsContainer: 'flex flex-wrap gap-1 flex-1 min-w-0',
@@ -62,11 +63,7 @@ export const cascaderStyles = tv({
     ],
 
     // 列面板（高度由内容决定）
-    column: [
-      'min-w-[8rem]',
-      'border-r border-border last:border-r-0',
-      'p-1',
-    ],
+    column: ['min-w-[8rem]', 'border-r border-border last:border-r-0', 'p-1'],
 
     // 选项
     item: [
@@ -132,7 +129,8 @@ export const cascaderStyles = tv({
     },
     error: {
       true: {
-        trigger: '!border-destructive text-destructive focus-visible:ring-destructive/20',
+        trigger:
+          '!border-destructive text-destructive focus-visible:ring-destructive/20',
         indicator: 'text-destructive/80',
       },
     },
@@ -141,4 +139,3 @@ export const cascaderStyles = tv({
     size: 'md',
   },
 })
-

@@ -4,8 +4,8 @@
  */
 
 import type * as collapsible from '@zag-js/collapsible'
-import type { PropTypes } from '@zag-js/solid'
-import type { Accessor } from 'solid-js'
+import type {PropTypes} from '@zag-js/solid'
+import type {Accessor} from 'solid-js'
 
 export type CollapsibleApi = collapsible.Api<PropTypes>
 export type CollapsibleService = collapsible.Service
@@ -23,11 +23,10 @@ export interface UseCollapsibleProps {
   /** 是否禁用 */
   disabled?: MaybeAccessor<boolean>
   /** 展开状态变化回调 */
-  onOpenChange?: (details: { open: boolean }) => void
+  onOpenChange?: (details: {open: boolean}) => void
 }
 
 export interface UseCollapsibleReturn {
   api: () => CollapsibleApi
   service: CollapsibleService
 }
-

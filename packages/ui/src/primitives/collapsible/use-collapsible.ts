@@ -3,10 +3,14 @@
  * 封装 @zag-js/collapsible 的状态机逻辑
  */
 
-import { createMemo, createUniqueId } from 'solid-js'
+import {createMemo, createUniqueId} from 'solid-js'
 import * as collapsible from '@zag-js/collapsible'
-import { useMachine, normalizeProps } from '@zag-js/solid'
-import type { UseCollapsibleProps, UseCollapsibleReturn, MaybeAccessor } from './types'
+import {useMachine, normalizeProps} from '@zag-js/solid'
+import type {
+  UseCollapsibleProps,
+  UseCollapsibleReturn,
+  MaybeAccessor,
+} from './types'
 
 /** 解析 MaybeAccessor 为实际值 */
 function access<T>(value: MaybeAccessor<T>): T {
@@ -30,7 +34,9 @@ function access<T>(value: MaybeAccessor<T>): T {
  * )
  * ```
  */
-export function useCollapsible(props: UseCollapsibleProps = {}): UseCollapsibleReturn {
+export function useCollapsible(
+  props: UseCollapsibleProps = {},
+): UseCollapsibleReturn {
   const service = useMachine(collapsible.machine, () => ({
     id: props.id ?? createUniqueId(),
     open: props.open !== undefined ? access(props.open) : undefined,
@@ -41,6 +47,5 @@ export function useCollapsible(props: UseCollapsibleProps = {}): UseCollapsibleR
 
   const api = createMemo(() => collapsible.connect(service, normalizeProps))
 
-  return { api, service }
+  return {api, service}
 }
-

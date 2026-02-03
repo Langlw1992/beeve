@@ -34,4 +34,4 @@ export * from './themes'
 
 // Providers
 export * from './providers'
-export { tv, type VariantProps } from 'tailwind-variants'
+export {tv, type VariantProps} from 'tailwind-variants'

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Pagination } from './Pagination'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Pagination} from './Pagination'
 
 const meta = {
   title: 'Components/Pagination',
@@ -108,7 +108,9 @@ export const CustomTotal: Story = {
         current={page()}
         onChange={setPage}
         showTotal={(total, range) => (
-          <span>显示 {range[0]}-{range[1]} 条，共 {total} 条</span>
+          <span>
+            显示 {range[0]}-{range[1]} 条，共 {total} 条
+          </span>
         )}
       />
     )
@@ -184,4 +186,3 @@ export const Disabled: Story = {
     disabled: true,
   },
 }
-

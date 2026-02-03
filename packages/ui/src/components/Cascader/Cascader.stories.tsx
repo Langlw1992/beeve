@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs-vite'
-import { createSignal } from 'solid-js'
-import { Cascader, type CascaderOption } from './Cascader'
+import type {Meta, StoryObj} from 'storybook-solidjs-vite'
+import {createSignal} from 'solid-js'
+import {Cascader, type CascaderOption} from './Cascader'
 
 const meta: Meta<typeof Cascader> = {
   title: 'Components/Cascader',
@@ -31,17 +31,17 @@ const locationOptions: CascaderOption[] = [
         value: 'hangzhou',
         label: '杭州',
         children: [
-          { value: 'xihu', label: '西湖区' },
-          { value: 'yuhang', label: '余杭区' },
-          { value: 'binjiang', label: '滨江区' },
+          {value: 'xihu', label: '西湖区'},
+          {value: 'yuhang', label: '余杭区'},
+          {value: 'binjiang', label: '滨江区'},
         ],
       },
       {
         value: 'ningbo',
         label: '宁波',
         children: [
-          { value: 'haishu', label: '海曙区' },
-          { value: 'jiangbei', label: '江北区' },
+          {value: 'haishu', label: '海曙区'},
+          {value: 'jiangbei', label: '江北区'},
         ],
       },
     ],
@@ -54,16 +54,16 @@ const locationOptions: CascaderOption[] = [
         value: 'nanjing',
         label: '南京',
         children: [
-          { value: 'xuanwu', label: '玄武区' },
-          { value: 'qinhuai', label: '秦淮区' },
+          {value: 'xuanwu', label: '玄武区'},
+          {value: 'qinhuai', label: '秦淮区'},
         ],
       },
       {
         value: 'suzhou',
         label: '苏州',
         children: [
-          { value: 'gusu', label: '姑苏区' },
-          { value: 'wuzhong', label: '吴中区' },
+          {value: 'gusu', label: '姑苏区'},
+          {value: 'wuzhong', label: '吴中区'},
         ],
       },
     ],
@@ -129,9 +129,21 @@ export const Disabled: Story = {
 export const Sizes: Story = {
   render: () => (
     <div class="flex flex-col gap-4 w-64">
-      <Cascader options={locationOptions} size="sm" placeholder="小尺寸" />
-      <Cascader options={locationOptions} size="md" placeholder="中尺寸（默认）" />
-      <Cascader options={locationOptions} size="lg" placeholder="大尺寸" />
+      <Cascader
+        options={locationOptions}
+        size="sm"
+        placeholder="小尺寸"
+      />
+      <Cascader
+        options={locationOptions}
+        size="md"
+        placeholder="中尺寸（默认）"
+      />
+      <Cascader
+        options={locationOptions}
+        size="lg"
+        placeholder="大尺寸"
+      />
     </div>
   ),
 }
@@ -208,7 +220,10 @@ export const MultipleShowLast: Story = {
           clearable
         />
         <div class="text-sm text-muted-foreground">
-          已选: {value().map((v) => v[v.length - 1]).join(', ')}
+          已选:{' '}
+          {value()
+            .map((v) => v[v.length - 1])
+            .join(', ')}
         </div>
       </div>
     )
@@ -290,4 +305,3 @@ export const MultipleParentSelectable: Story = {
     )
   },
 }
-

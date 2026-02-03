@@ -2,8 +2,8 @@
  * NavMenu component showcase
  */
 
-import { createFileRoute } from '@tanstack/solid-router'
-import { createSignal, Show } from 'solid-js'
+import {createFileRoute} from '@tanstack/solid-router'
+import {createSignal, Show} from 'solid-js'
 import {
   Home,
   FileText,
@@ -14,22 +14,27 @@ import {
   HelpCircle,
   LogOut,
 } from 'lucide-solid'
-import { NavMenu, Sidebar, useSidebar, type NavMenuItemType } from '@beeve/ui'
+import {NavMenu, Sidebar, useSidebar, type NavMenuItemType} from '@beeve/ui'
 
 export const Route = createFileRoute('/navmenu')({
   component: NavMenuPage,
 })
 
 const menuItems: NavMenuItemType[] = [
-  { key: 'home', label: '首页', icon: <Home class="size-4" /> },
-  { type: 'divider' },
+  {key: 'home', label: '首页', icon: <Home class="size-4" />},
+  {type: 'divider'},
   {
     type: 'group',
     key: 'content',
     label: '内容管理',
     children: [
-      { key: 'pages', label: '页面', icon: <FileText class="size-4" /> },
-      { key: 'posts', label: '文章', icon: <SquarePen class="size-4" />, badge: 12 },
+      {key: 'pages', label: '页面', icon: <FileText class="size-4" />},
+      {
+        key: 'posts',
+        label: '文章',
+        icon: <SquarePen class="size-4" />,
+        badge: 12,
+      },
     ],
   },
   {
@@ -37,8 +42,8 @@ const menuItems: NavMenuItemType[] = [
     key: 'system',
     label: '系统管理',
     children: [
-      { key: 'users', label: '用户', icon: <Users class="size-4" /> },
-      { key: 'analytics', label: '统计', icon: <BarChart3 class="size-4" /> },
+      {key: 'users', label: '用户', icon: <Users class="size-4" />},
+      {key: 'analytics', label: '统计', icon: <BarChart3 class="size-4" />},
     ],
   },
   {
@@ -46,8 +51,8 @@ const menuItems: NavMenuItemType[] = [
     label: '设置',
     icon: <Settings class="size-4" />,
     children: [
-      { key: 'profile', label: '个人资料' },
-      { key: 'security', label: '安全设置' },
+      {key: 'profile', label: '个人资料'},
+      {key: 'security', label: '安全设置'},
     ],
   },
 ]
@@ -57,15 +62,18 @@ function NavMenuPage() {
     <div class="space-y-8">
       <div>
         <h1 class="text-3xl font-bold">NavMenu & Sidebar</h1>
-        <p class="text-muted-foreground mt-2">
-          导航菜单和侧边栏组件示例
-        </p>
+        <p class="text-muted-foreground mt-2">导航菜单和侧边栏组件示例</p>
       </div>
 
       {/* Sidebar with NavMenu Demo */}
       <div class="border rounded-lg overflow-hidden">
-        <h2 class="text-xl font-semibold p-4 border-b bg-muted/50">Sidebar + NavMenu</h2>
-        <Sidebar.Provider defaultOpen class="flex h-[600px]">
+        <h2 class="text-xl font-semibold p-4 border-b bg-muted/50">
+          Sidebar + NavMenu
+        </h2>
+        <Sidebar.Provider
+          defaultOpen
+          class="flex h-[600px]"
+        >
           <SidebarDemo />
         </Sidebar.Provider>
       </div>
@@ -74,14 +82,17 @@ function NavMenuPage() {
 }
 
 function SidebarDemo() {
-  const { open, state } = useSidebar()
+  const {open, state} = useSidebar()
   const [activeKey, setActiveKey] = createSignal('profile')
 
   return (
     <>
       <Sidebar>
         <Sidebar.Header>
-          <Show when={open()} fallback={<span class="text-xl font-bold">B</span>}>
+          <Show
+            when={open()}
+            fallback={<span class="text-xl font-bold">B</span>}
+          >
             <span class="text-xl font-bold text-primary">Beeve</span>
           </Show>
         </Sidebar.Header>
@@ -102,7 +113,9 @@ function SidebarDemo() {
               </div>
               <div class="flex-1 min-w-0">
                 <div class="text-sm font-medium truncate">用户名</div>
-                <div class="text-xs text-muted-foreground truncate">user@example.com</div>
+                <div class="text-xs text-muted-foreground truncate">
+                  user@example.com
+                </div>
               </div>
             </div>
           </Show>
@@ -135,4 +148,3 @@ function SidebarDemo() {
     </>
   )
 }
-

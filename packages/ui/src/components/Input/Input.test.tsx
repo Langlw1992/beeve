@@ -2,10 +2,10 @@
  * Input 组件测试
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@solidjs/testing-library'
-import { createSignal } from 'solid-js'
-import { Input } from './Input'
+import {describe, it, expect, vi} from 'vitest'
+import {render, screen, fireEvent, waitFor} from '@solidjs/testing-library'
+import {createSignal} from 'solid-js'
+import {Input} from './Input'
 
 /** 获取 wrapper 容器（Input 组件的外层 div） */
 const getWrapper = () => {
@@ -110,10 +110,15 @@ describe('Input', () => {
 
     it('disabled 时不应该响应输入', async () => {
       const handleInput = vi.fn()
-      render(() => <Input disabled onInput={handleInput} />)
+      render(() => (
+        <Input
+          disabled
+          onInput={handleInput}
+        />
+      ))
 
       const input = screen.getByRole('textbox')
-      await fireEvent.input(input, { target: { value: '测试' } })
+      await fireEvent.input(input, {target: {value: '测试'}})
 
       // disabled 的 input 不应该触发事件
       expect(handleInput).not.toHaveBeenCalled()
@@ -158,7 +163,7 @@ describe('Input', () => {
       render(() => <Input onInput={handleInput} />)
 
       const input = screen.getByRole('textbox')
-      await fireEvent.input(input, { target: { value: '测试' } })
+      await fireEvent.input(input, {target: {value: '测试'}})
 
       expect(handleInput).toHaveBeenCalledWith('测试', expect.any(Object))
     })
@@ -168,7 +173,7 @@ describe('Input', () => {
       render(() => <Input onChange={handleChange} />)
 
       const input = screen.getByRole('textbox')
-      await fireEvent.change(input, { target: { value: '变化' } })
+      await fireEvent.change(input, {target: {value: '变化'}})
 
       expect(handleChange).toHaveBeenCalledWith('变化', expect.any(Object))
     })
@@ -199,7 +204,7 @@ describe('Input', () => {
       render(() => <Input onPressEnter={handlePressEnter} />)
 
       const input = screen.getByRole('textbox')
-      await fireEvent.keyDown(input, { key: 'Enter' })
+      await fireEvent.keyDown(input, {key: 'Enter'})
 
       expect(handlePressEnter).toHaveBeenCalled()
     })
@@ -209,7 +214,7 @@ describe('Input', () => {
       render(() => <Input onPressEnter={handlePressEnter} />)
 
       const input = screen.getByRole('textbox')
-      await fireEvent.keyDown(input, { key: 'a' })
+      await fireEvent.keyDown(input, {key: 'a'})
 
       expect(handlePressEnter).not.toHaveBeenCalled()
     })
@@ -219,7 +224,7 @@ describe('Input', () => {
       render(() => <Input onKeyDown={handleKeyDown} />)
 
       const input = screen.getByRole('textbox')
-      await fireEvent.keyDown(input, { key: 'a' })
+      await fireEvent.keyDown(input, {key: 'a'})
 
       expect(handleKeyDown).toHaveBeenCalled()
     })
@@ -231,11 +236,14 @@ describe('Input', () => {
       const [value, setValue] = createSignal('')
 
       render(() => (
-        <Input value={value()} onInput={(v) => setValue(v)} />
+        <Input
+          value={value()}
+          onInput={(v) => setValue(v)}
+        />
       ))
 
       const input = screen.getByRole('textbox')
-      await fireEvent.input(input, { target: { value: '新值' } })
+      await fireEvent.input(input, {target: {value: '新值'}})
 
       await waitFor(() => {
         expect(value()).toBe('新值')
@@ -282,7 +290,9 @@ describe('Input', () => {
   describe('密码切换', () => {
     it('密码类型应该显示切换按钮', () => {
       render(() => <Input type="password" />)
-      const toggleButton = document.querySelector('button[aria-label="显示密码"]')
+      const toggleButton = document.querySelector(
+        'button[aria-label="显示密码"]',
+      )
       expect(toggleButton).toBeInTheDocument()
     })
 
@@ -291,7 +301,9 @@ describe('Input', () => {
       const input = document.querySelector('input')
       expect(input).toHaveAttribute('type', 'password')
 
-      const toggleButton = document.querySelector('button[aria-label="显示密码"]') as HTMLButtonElement
+      const toggleButton = document.querySelector(
+        'button[aria-label="显示密码"]',
+      ) as HTMLButtonElement
       await fireEvent.click(toggleButton)
 
       expect(input).toHaveAttribute('type', 'text')
@@ -301,18 +313,24 @@ describe('Input', () => {
       render(() => <Input type="password" />)
       const input = document.querySelector('input')
 
-      const toggleButton = document.querySelector('button[aria-label="显示密码"]') as HTMLButtonElement
+      const toggleButton = document.querySelector(
+        'button[aria-label="显示密码"]',
+      ) as HTMLButtonElement
       await fireEvent.click(toggleButton)
       expect(input).toHaveAttribute('type', 'text')
 
-      const hideButton = document.querySelector('button[aria-label="隐藏密码"]') as HTMLButtonElement
+      const hideButton = document.querySelector(
+        'button[aria-label="隐藏密码"]',
+      ) as HTMLButtonElement
       await fireEvent.click(hideButton)
       expect(input).toHaveAttribute('type', 'password')
     })
 
     it('非密码类型不应该显示切换按钮', () => {
       render(() => <Input type="text" />)
-      const toggleButton = document.querySelector('button[aria-label="显示密码"]')
+      const toggleButton = document.querySelector(
+        'button[aria-label="显示密码"]',
+      )
       expect(toggleButton).not.toBeInTheDocument()
     })
   })
@@ -368,20 +386,36 @@ describe('Input', () => {
     })
 
     it('启用 allowClear 且有值时应该显示清空按钮', () => {
-      render(() => <Input allowClear value="测试" />)
+      render(() => (
+        <Input
+          allowClear
+          value="测试"
+        />
+      ))
       const clearButton = document.querySelector('button[aria-label="清空"]')
       expect(clearButton).toBeInTheDocument()
     })
 
     it('启用 allowClear 但值为空时清空按钮应该隐藏（占位但不可见）', () => {
-      render(() => <Input allowClear value="" />)
+      render(() => (
+        <Input
+          allowClear
+          value=""
+        />
+      ))
       const clearButton = document.querySelector('button[aria-label="清空"]')
       expect(clearButton).toBeInTheDocument()
       expect(clearButton).toHaveClass('invisible')
     })
 
     it('禁用状态下清空按钮应该隐藏', () => {
-      render(() => <Input allowClear value="测试" disabled />)
+      render(() => (
+        <Input
+          allowClear
+          value="测试"
+          disabled
+        />
+      ))
       const clearButton = document.querySelector('button[aria-label="清空"]')
       expect(clearButton).toBeInTheDocument()
       expect(clearButton).toHaveClass('invisible')
@@ -389,9 +423,17 @@ describe('Input', () => {
 
     it('点击清空按钮应该清空输入框', async () => {
       const handleInput = vi.fn()
-      render(() => <Input allowClear defaultValue="测试" onInput={handleInput} />)
+      render(() => (
+        <Input
+          allowClear
+          defaultValue="测试"
+          onInput={handleInput}
+        />
+      ))
 
-      const clearButton = document.querySelector('button[aria-label="清空"]') as HTMLButtonElement
+      const clearButton = document.querySelector(
+        'button[aria-label="清空"]',
+      ) as HTMLButtonElement
       expect(clearButton).toBeInTheDocument()
 
       await fireEvent.click(clearButton)
@@ -401,9 +443,17 @@ describe('Input', () => {
 
     it('点击清空按钮应该触发 onClear 回调', async () => {
       const handleClear = vi.fn()
-      render(() => <Input allowClear defaultValue="测试" onClear={handleClear} />)
+      render(() => (
+        <Input
+          allowClear
+          defaultValue="测试"
+          onClear={handleClear}
+        />
+      ))
 
-      const clearButton = document.querySelector('button[aria-label="清空"]') as HTMLButtonElement
+      const clearButton = document.querySelector(
+        'button[aria-label="清空"]',
+      ) as HTMLButtonElement
       await fireEvent.click(clearButton)
 
       expect(handleClear).toHaveBeenCalled()
@@ -419,23 +469,41 @@ describe('Input', () => {
     })
 
     it('启用 showCount 应该显示字数', () => {
-      render(() => <Input showCount value="测试" />)
+      render(() => (
+        <Input
+          showCount
+          value="测试"
+        />
+      ))
       const root = document.querySelector('[class*="relative"]')
       expect(root?.textContent).toContain('2')
     })
 
     it('设置 maxLength 应该显示 当前/最大 格式', () => {
-      render(() => <Input showCount maxLength={10} value="测试" />)
+      render(() => (
+        <Input
+          showCount
+          maxLength={10}
+          value="测试"
+        />
+      ))
       const root = document.querySelector('[class*="relative"]')
       expect(root?.textContent).toContain('2/10')
     })
 
     it('输入时字数统计应该更新', async () => {
       const [value, setValue] = createSignal('')
-      render(() => <Input showCount maxLength={10} value={value()} onInput={setValue} />)
+      render(() => (
+        <Input
+          showCount
+          maxLength={10}
+          value={value()}
+          onInput={setValue}
+        />
+      ))
 
       const input = screen.getByRole('textbox')
-      await fireEvent.input(input, { target: { value: '你好世界' } })
+      await fireEvent.input(input, {target: {value: '你好世界'}})
 
       await waitFor(() => {
         const root = document.querySelector('[class*="relative"]')
@@ -456,7 +524,7 @@ describe('Input', () => {
       await fireEvent.compositionStart(input)
 
       // 输入法组合中输入
-      await fireEvent.input(input, { target: { value: 'ni' } })
+      await fireEvent.input(input, {target: {value: 'ni'}})
 
       // 组合期间不应该触发回调
       expect(handleInput).not.toHaveBeenCalled()
@@ -472,10 +540,10 @@ describe('Input', () => {
       await fireEvent.compositionStart(input)
 
       // 输入法组合中输入
-      await fireEvent.input(input, { target: { value: 'ni' } })
+      await fireEvent.input(input, {target: {value: 'ni'}})
 
       // 模拟输入法结束
-      await fireEvent.compositionEnd(input, { target: { value: '你' } })
+      await fireEvent.compositionEnd(input, {target: {value: '你'}})
 
       // 组合结束后应该触发回调
       expect(handleInput).toHaveBeenCalledWith('你', expect.any(Object))
@@ -491,7 +559,7 @@ describe('Input', () => {
       await fireEvent.compositionStart(input)
 
       // 组合期间按 Enter（选择候选词）
-      await fireEvent.keyDown(input, { key: 'Enter' })
+      await fireEvent.keyDown(input, {key: 'Enter'})
 
       // 不应该触发回调
       expect(handlePressEnter).not.toHaveBeenCalled()
@@ -507,7 +575,12 @@ describe('Input', () => {
     })
 
     it('应该支持 rows 属性', () => {
-      render(() => <Input inputType="textarea" rows={5} />)
+      render(() => (
+        <Input
+          inputType="textarea"
+          rows={5}
+        />
+      ))
       const textarea = document.querySelector('textarea')
       expect(textarea).toHaveAttribute('rows', '5')
     })
@@ -519,7 +592,14 @@ describe('Input', () => {
     })
 
     it('应该支持字数统计', () => {
-      render(() => <Input inputType="textarea" showCount maxLength={100} defaultValue="测试" />)
+      render(() => (
+        <Input
+          inputType="textarea"
+          showCount
+          maxLength={100}
+          defaultValue="测试"
+        />
+      ))
       expect(screen.getByText('2/100')).toBeInTheDocument()
     })
 
@@ -531,10 +611,15 @@ describe('Input', () => {
 
     it('输入时应该触发 onInput', async () => {
       const handleInput = vi.fn()
-      render(() => <Input inputType="textarea" onInput={handleInput} />)
+      render(() => (
+        <Input
+          inputType="textarea"
+          onInput={handleInput}
+        />
+      ))
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await fireEvent.input(textarea, { target: { value: '多行文本' } })
+      await fireEvent.input(textarea, {target: {value: '多行文本'}})
 
       expect(handleInput).toHaveBeenCalledWith('多行文本', expect.any(Object))
     })
@@ -549,20 +634,36 @@ describe('Input', () => {
     })
 
     it('应该支持 min/max 属性', () => {
-      render(() => <Input inputType="number" min={0} max={100} />)
+      render(() => (
+        <Input
+          inputType="number"
+          min={0}
+          max={100}
+        />
+      ))
       const input = document.querySelector('input')
       expect(input).toHaveAttribute('min', '0')
       expect(input).toHaveAttribute('max', '100')
     })
 
     it('应该支持 step 属性', () => {
-      render(() => <Input inputType="number" step={5} />)
+      render(() => (
+        <Input
+          inputType="number"
+          step={5}
+        />
+      ))
       const input = document.querySelector('input')
       expect(input).toHaveAttribute('step', '5')
     })
 
     it('showControls 时应该显示增减按钮', () => {
-      render(() => <Input inputType="number" showControls />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+        />
+      ))
       expect(screen.getByLabelText('增加')).toBeInTheDocument()
       expect(screen.getByLabelText('减少')).toBeInTheDocument()
     })
@@ -575,7 +676,14 @@ describe('Input', () => {
 
     it('点击增加按钮应该增加值', async () => {
       const handleInput = vi.fn()
-      render(() => <Input inputType="number" showControls defaultValue="5" onInput={handleInput} />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          defaultValue="5"
+          onInput={handleInput}
+        />
+      ))
 
       await fireEvent.click(screen.getByLabelText('增加'))
 
@@ -584,7 +692,14 @@ describe('Input', () => {
 
     it('点击减少按钮应该减少值', async () => {
       const handleInput = vi.fn()
-      render(() => <Input inputType="number" showControls defaultValue="5" onInput={handleInput} />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          defaultValue="5"
+          onInput={handleInput}
+        />
+      ))
 
       await fireEvent.click(screen.getByLabelText('减少'))
 
@@ -592,14 +707,28 @@ describe('Input', () => {
     })
 
     it('达到最大值时增加按钮应该禁用', async () => {
-      render(() => <Input inputType="number" showControls max={10} defaultValue="10" />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          max={10}
+          defaultValue="10"
+        />
+      ))
 
       const incrementBtn = screen.getByLabelText('增加')
       expect(incrementBtn).toBeDisabled()
     })
 
     it('达到最小值时减少按钮应该禁用', async () => {
-      render(() => <Input inputType="number" showControls min={0} defaultValue="0" />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          min={0}
+          defaultValue="0"
+        />
+      ))
 
       const decrementBtn = screen.getByLabelText('减少')
       expect(decrementBtn).toBeDisabled()
@@ -607,7 +736,15 @@ describe('Input', () => {
 
     it('应该按 step 步长增减', async () => {
       const handleIncrement = vi.fn()
-      render(() => <Input inputType="number" showControls step={5} defaultValue="10" onInput={handleIncrement} />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          step={5}
+          defaultValue="10"
+          onInput={handleIncrement}
+        />
+      ))
 
       await fireEvent.click(screen.getByLabelText('增加'))
       expect(handleIncrement).toHaveBeenCalledWith('15', expect.any(Object))
@@ -615,7 +752,15 @@ describe('Input', () => {
 
     it('减少时应该按 step 步长', async () => {
       const handleDecrement = vi.fn()
-      render(() => <Input inputType="number" showControls step={5} defaultValue="20" onInput={handleDecrement} />)
+      render(() => (
+        <Input
+          inputType="number"
+          showControls
+          step={5}
+          defaultValue="20"
+          onInput={handleDecrement}
+        />
+      ))
 
       await fireEvent.click(screen.getByLabelText('减少'))
       expect(handleDecrement).toHaveBeenCalledWith('15', expect.any(Object))
