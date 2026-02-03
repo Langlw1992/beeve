@@ -201,6 +201,7 @@ export function TableCore<TData extends RowData>(
           }}
           aria-label={row.getIsExpanded() ? '收起' : '展开'}
           aria-expanded={row.getIsExpanded()}
+          data-state={row.getIsExpanded() ? 'expanded' : 'collapsed'}
         >
           <ChevronRight
             class={`${styles().expandIcon()} ${row.getIsExpanded() ? styles().expandIconExpanded() : ''}`}
@@ -219,7 +220,9 @@ export function TableCore<TData extends RowData>(
         </div>
       </Show>
 
-      <table class={styles().table()}>
+      {/* 滚动容器 - 支持横向滚动 */}
+      <div class={styles().scrollWrapper()}>
+        <table class={styles().table()}>
         {/* 表头 */}
         <Show when={showHeader()}>
           <thead class={styles().thead()}>
@@ -245,7 +248,7 @@ export function TableCore<TData extends RowData>(
 
                       return (
                         <th
-                          class={`${styles().th()} ${canSort() ? styles().thSortable() : ''} ${getPinningClass(isPinned(), true)}`}
+                          class={`${styles().th()} ${canSort() ? `${styles().thSortable()} group` : ''} ${getPinningClass(isPinned(), true)}`}
                           colSpan={header.colSpan}
                           style={{
                             width:
@@ -277,21 +280,23 @@ export function TableCore<TData extends RowData>(
                           role={canSort() ? 'button' : undefined}
                         >
                           <Show when={!header.isPlaceholder}>
-                            <div class="flex items-center gap-1">
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
+                            <div class="flex items-center gap-2 select-none">
+                              <span class="truncate">
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                              </span>
                               <Show when={canSort()}>
-                                <span class="inline-flex size-4 flex-shrink-0">
+                                <span class="inline-flex size-4 flex-shrink-0 transition-all duration-200">
                                   <Show when={sortDirection() === 'asc'}>
-                                    <ChevronUp class="size-4 text-primary" />
+                                    <ChevronUp class="size-4 text-primary drop-shadow-sm" />
                                   </Show>
                                   <Show when={sortDirection() === 'desc'}>
-                                    <ChevronDown class="size-4 text-primary" />
+                                    <ChevronDown class="size-4 text-primary drop-shadow-sm" />
                                   </Show>
                                   <Show when={!sortDirection()}>
-                                    <ChevronsUpDown class="size-4 text-muted-foreground/50" />
+                                    <ChevronsUpDown class="size-4 text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors" />
                                   </Show>
                                 </span>
                               </Show>
@@ -317,7 +322,14 @@ export function TableCore<TData extends RowData>(
                   colSpan={columnCount()}
                   class={styles().empty()}
                 >
-                  {props.emptyContent ?? props.emptyText ?? '暂无数据'}
+                  <div class="flex flex-col items-center justify-center gap-2">
+                    <svg class="size-12 text-muted-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" role="img" aria-label="空表格">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <div class="text-sm text-muted-foreground">
+                      {props.emptyContent ?? props.emptyText ?? '暂无数据'}
+                    </div>
+                  </div>
                 </td>
               </tr>
             }
@@ -435,6 +447,8 @@ export function TableCore<TData extends RowData>(
           </tfoot>
         </Show>
       </table>
+      </div>
+      {/* 滚动容器结束 */}
     </div>
   )
 }

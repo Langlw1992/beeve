@@ -17,9 +17,6 @@ const meta: Meta<typeof DatePicker> = {
     disabled: {
       control: 'boolean',
     },
-    showTime: {
-      control: 'boolean',
-    },
   },
 }
 
@@ -45,7 +42,6 @@ export const WithTime: Story = {
   ),
   args: {
     placeholder: 'Pick date & time',
-    showTime: true,
   },
 }
 

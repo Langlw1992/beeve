@@ -53,6 +53,32 @@ export const baseDatePickerStyles = {
 }
 
 /**
+ * 共享的 cell 基础样式
+ */
+const baseCellStyles = [
+  'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
+]
+
+/**
+ * 共享的 dayTrigger 基础样式
+ */
+const baseDayTriggerStyles = [
+  'relative size-8 p-0 font-medium bg-transparent transition-all duration-200',
+  // 基础 hover
+  'hover:bg-accent/50 hover:text-accent-foreground',
+  // 今天标记 - 底部小圆点
+  'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
+  'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
+  'data-[today][data-outside-range]:after:content-none',
+  // 禁用状态
+  'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:pointer-events-none',
+  // 外部日期（非当前月）
+  'data-[outside-range]:text-muted-foreground/40 data-[outside-range]:hover:bg-transparent',
+  // 焦点状态
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-1',
+]
+
+/**
  * DatePicker 单日选择样式
  */
 export const datePickerStyles = tv({
@@ -60,19 +86,19 @@ export const datePickerStyles = tv({
   slots: {
     ...baseDatePickerStyles.slots,
     cell: [
-      'relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md',
-      'h-8 w-8',
+      ...baseCellStyles,
+      // 单日选择特有：选中状态的行背景
+      '[&:has([aria-selected])]:bg-accent/50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md',
     ],
     dayTrigger: [
-      'relative size-8 p-0 font-normal rounded-md transition-colors',
-      'hover:bg-accent hover:text-accent-foreground',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
-      'data-[selected]:bg-primary data-[selected]:text-primary-foreground hover:data-[selected]:bg-primary hover:data-[selected]:text-primary-foreground',
-      'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:hover:bg-transparent',
-      'data-[outside-range]:text-muted-foreground/50',
-      'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
-      'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
-      'data-[today][data-outside-range]:after:content-none',
+      ...baseDayTriggerStyles,
+      // 单日选择特有：选中样式
+      'rounded-md',
+      'data-[selected]:bg-primary data-[selected]:text-primary-foreground data-[selected]:shadow-sm',
+      'data-[selected]:font-semibold data-[selected]:scale-105',
+      'hover:data-[selected]:bg-primary/90',
+      // 今天在选中状态下的标记颜色
+      'data-[today][data-selected]:after:bg-primary-foreground',
     ],
   },
 })
@@ -84,60 +110,48 @@ export const dateRangePickerStyles = tv({
   ...baseDatePickerStyles,
   slots: {
     ...baseDatePickerStyles.slots,
-    header: 'flex items-center justify-between', // 去掉 padding
-    grid: 'w-full border-collapse', // 去掉 space-y-1
+    // 范围选择特有的 header 和 row 样式
+    header: 'flex items-center justify-between',
+    grid: 'w-full border-collapse',
     row: ['group flex w-full mt-1', 'data-[week-mode]:cursor-pointer'],
     cell: [
-      'relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20',
-      // 范围内背景 - 连贯的视觉带
+      ...baseCellStyles,
+      // 范围选择特有：范围内背景
       'data-[in-range]:bg-primary/10',
       'data-[in-range]:before:content-[""] data-[in-range]:before:absolute data-[in-range]:before:inset-y-1 data-[in-range]:before:inset-x-0',
       'data-[in-range]:before:bg-primary/5 data-[in-range]:before:-z-10',
-      // 范围起始特殊处理 - 左侧圆角
       'data-[range-start]:before:rounded-l-md',
-      // 范围结束特殊处理 - 右侧圆角  
       'data-[range-end]:before:rounded-r-md',
       // 周 hover 效果
       'data-[week-hovered]:bg-accent/40',
       'data-[week-hovered]:before:content-[""] data-[week-hovered]:before:absolute data-[week-hovered]:before:inset-y-1 data-[week-hovered]:before:inset-x-0',
       'data-[week-hovered]:before:bg-accent/20 data-[week-hovered]:before:-z-10',
       'first:data-[week-hovered]:before:rounded-l-md last:data-[week-hovered]:before:rounded-r-md',
-      // 周 hover 与范围重叠时
       'data-[week-hovered][data-in-range]:bg-primary/15',
     ],
     dayTrigger: [
-      'relative size-8 p-0 font-medium bg-transparent transition-all duration-200',
-      // 基础 hover - 仅非范围日期
-      'hover:bg-accent/50 hover:text-accent-foreground',
-      // 今天标记 - 底部小圆点
-      'data-[today]:after:content-[""] data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:-translate-x-1/2',
-      'data-[today]:after:size-1 data-[today]:after:rounded-full data-[today]:after:bg-primary',
-      'data-[today][data-outside-range]:after:content-none',
-      // 禁用状态
-      'data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[disabled]:pointer-events-none',
-      // 外部日期（非当前月）
-      'data-[outside-range]:text-muted-foreground/40 data-[outside-range]:hover:bg-transparent',
-      // 周选择模式
-      'group-data-[week-mode]:hover:bg-accent/60',
-      // 焦点状态
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-1',
-      // 范围内的日期 - 透明背景，移除 hover
+      ...baseDayTriggerStyles,
+      // 范围选择特有：范围内日期样式
       'data-[in-range]:bg-transparent data-[in-range]:text-foreground data-[in-range]:hover:bg-transparent',
       'data-[in-range]:font-medium',
-      // 范围起始日期 - 强调样式
+      // 范围起始/结束日期 - 强调样式
       'data-[range-start]:bg-primary data-[range-start]:text-primary-foreground data-[range-start]:rounded-md',
       'data-[range-start]:hover:bg-primary/90 data-[range-start]:shadow-sm',
       'data-[range-start]:font-semibold data-[range-start]:scale-105',
-      // 范围结束日期 - 强调样式
       'data-[range-end]:bg-primary data-[range-end]:text-primary-foreground data-[range-end]:rounded-md',
       'data-[range-end]:hover:bg-primary/90 data-[range-end]:shadow-sm',
       'data-[range-end]:font-semibold data-[range-end]:scale-105',
-      // 周 hover 状态 - 透明背景
+      // 周选择模式
+      'group-data-[week-mode]:hover:bg-accent/60',
       'data-[week-hovered]:bg-transparent data-[week-hovered]:text-foreground',
-      // 今天在范围内时 - 调整标记颜色
+      // 今天在不同状态下的标记颜色
       'data-[today][data-in-range]:after:bg-primary/60',
       'data-[today][data-range-start]:after:bg-primary-foreground',
       'data-[today][data-range-end]:after:bg-primary-foreground',
+      // 外部日期（非当前月）- 必须放在最后以覆盖所有其他样式
+      'data-[outside-range]:bg-transparent! data-[outside-range]:text-muted-foreground/40!',
+      'data-[outside-range]:font-medium! data-[outside-range]:scale-100!',
+      'data-[outside-range]:shadow-none! data-[outside-range]:hover:bg-transparent!',
     ],
     presetButton: [
       'w-full justify-start text-left font-normal px-2 py-1.5 text-xs rounded-md transition-colors',

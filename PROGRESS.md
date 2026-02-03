@@ -85,6 +85,38 @@
 
 ## 会话日志
 
+### 2026-02-03
+- ✅ **重构 Table 组件样式为简洁实用风格**（参考 Ant Design, Shadcn/ui, Material-UI）
+- ✅ **选中和展开列优化**：
+  - 设置选中列和展开列为极度紧凑的 40px 宽度（w-[40px] min-w-[40px] max-w-[40px]）
+  - 使用严格的宽度约束防止列宽变化
+  - 优化图标和内容居中对齐
+- ✅ **展开内容样式优化**：
+  - 使用简洁的左侧边框（border-l-2 border-primary/40）
+  - 浅色背景（bg-muted/10）保持内容清晰
+  - 根据尺寸变体自适应内边距（sm: p-3, md: p-4, lg: p-5）
+- ✅ **整体风格简化**：
+  - 移除过度装饰，回归简洁实用的表格设计
+  - 圆角从 xl 降低到 lg，更符合主流设计
+  - 简化阴影和边框效果，突出功能性
+  - 优化空状态图标，使用更简洁的表格 SVG
+- ✅ **滚动体验改进**：
+  - 添加专用滚动容器（scrollWrapper）
+  - 启用平滑滚动（scroll-smooth）
+  - 支持横向滚动时的列固定功能
+- ✅ **选中展开列深度优化**（根据用户反馈"太丑了"进行重点改进）：
+  - **视觉层次增强**：选中列和展开列使用渐变背景（from-muted/40 to-muted/30 vs from-muted/50 to-muted/40）
+  - **内阴影效果**：添加 inset 阴影增强深度感（shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]）
+  - **边框加强**：使用 border-r-2（2px 粗边框）和半透明颜色（border-border/60）增强分隔
+  - **展开按钮重设计**：
+    * 增大尺寸至 size-8（32px）更容易点击
+    * 添加明显的背景（bg-muted/50）、边框（border-2）和阴影（shadow-sm）
+    * 悬停效果：bg-muted/80 + scale-105 + shadow-md
+    * 展开状态：使用主题色高亮（bg-primary + text-primary-foreground + shadow-lg + shadow-primary/20）
+  - **图标优化**：添加 drop-shadow-sm 和更流畅的旋转动画（duration-300 ease-out）
+- ✅ 通过完整的 typecheck 和 lint 验证
+- ✅ Storybook 视觉验证通过（所有 stories 渲染正常）
+
 ### 2026-01-27
 - ✅ 完成 DatePicker 组件基础开发（Input + Popover + Calendar）
 - ✅ 集成 @zag-js/date-picker 并解决类型兼容问题
