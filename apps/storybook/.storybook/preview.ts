@@ -36,12 +36,11 @@ const THEME_COLORS: ThemeColorName[] = [
   'teal',
 ]
 const RADIUS_OPTIONS = [
-  {value: 0, title: '0 (None)'},
-  {value: 0.3, title: '0.3 (Small)'},
-  {value: 0.5, title: '0.5 (Medium)'},
-  {value: 0.625, title: '0.625 (Default)'},
-  {value: 0.75, title: '0.75 (Large)'},
-  {value: 1, title: '1 (XL)'},
+  {value: '0.3', title: '0.3 (Small)'},
+  {value: '0.5', title: '0.5 (Medium)'},
+  {value: '0.625', title: '0.625 (Default)'},
+  {value: '0.75', title: '0.75 (Large)'},
+  {value: '1', title: '1 (XL)'},
 ]
 
 // 主题装饰器 - 应用主题变量
@@ -114,6 +113,7 @@ const preview: Preview = {
       defaultTheme: 'light',
     }),
   ],
+  tags: ['autodocs'],
 }
 
 export default preview
