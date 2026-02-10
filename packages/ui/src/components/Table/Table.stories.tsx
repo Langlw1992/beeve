@@ -11,6 +11,7 @@ import {
 import type {ColumnDef, Row, RowSelectionState} from './types'
 import {Badge} from '../Badge'
 import {Button} from '../Button'
+import {toast, Toaster} from '../Toast'
 
 // ==================== 示例数据类型 ====================
 
@@ -118,7 +119,7 @@ const columnsWithAction = [
       <Button
         size="sm"
         variant="ghost"
-        onClick={() => alert(`编辑: ${row.firstName}${row.lastName}`)}
+        onClick={() => toast.info(`编辑用户: ${row.firstName} ${row.lastName}`)}
       >
         编辑
       </Button>
@@ -252,11 +253,18 @@ export const Striped: Story = {
 
 export const Hoverable: Story = {
   name: '可悬停',
-  args: {
-    data: defaultData,
-    columns: simpleColumns,
-    hoverable: true,
-    onRowClick: (row) => alert(`点击了: ${row.firstName}${row.lastName}`),
+  render: () => {
+    return (
+      <>
+        <Toaster />
+        <DataTable
+          data={defaultData}
+          columns={simpleColumns}
+          hoverable={true}
+          onRowClick={(row) => toast.info(`点击了: ${row.firstName} ${row.lastName}`)}
+        />
+      </>
+    )
   },
 }
 
@@ -301,9 +309,16 @@ export const Empty: Story = {
 
 export const WithActionColumn: Story = {
   name: '操作列',
-  args: {
-    data: defaultData,
-    columns: columnsWithAction,
+  render: () => {
+    return (
+      <>
+        <Toaster />
+        <DataTable
+          data={defaultData}
+          columns={columnsWithAction}
+        />
+      </>
+    )
   },
 }
 

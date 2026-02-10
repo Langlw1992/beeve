@@ -91,6 +91,11 @@ export const Playground: Story = {
     size: 'md',
     variant: 'default',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Input {...args} />
+    </div>
+  ),
 }
 
 /**
@@ -143,7 +148,7 @@ export const StatusVariantMatrix: Story = {
  */
 export const Features: Story = {
   render: () => (
-    <div class="grid grid-cols-2 gap-6 w-[500px]">
+    <div class="flex flex-col gap-6 w-64">
       <Cell label="前缀图标">
         <Input
           prefix={<Search class="size-3.5" />}
@@ -216,7 +221,7 @@ export const Disabled: Story = {
  */
 export const TextareaMode: Story = {
   render: () => (
-    <div class="flex flex-col gap-6 w-80">
+    <div class="flex flex-col gap-6 w-64">
       <Cell label="基础 textarea">
         <Input
           inputType="textarea"
@@ -340,7 +345,7 @@ export const FormExample: Story = {
       setForm((prev) => ({...prev, [field]: v}))
 
     return (
-      <div class="flex flex-col gap-4 w-72">
+      <div class="flex flex-col gap-4 w-64">
         <div class="flex flex-col gap-1.5">
           <Label
             for="username"

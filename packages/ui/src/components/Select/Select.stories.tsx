@@ -130,7 +130,7 @@ export const Multiple: Story = {
     defaultValue: ['solid', 'react'],
   },
   render: (args) => (
-    <div class="w-80">
+    <div class="w-64">
       <Select {...args} />
     </div>
   ),
@@ -145,7 +145,7 @@ export const MaxCount: Story = {
     label: 'Fruits (Max 2 visible)',
   },
   render: (args) => (
-    <div class="w-80">
+    <div class="w-64">
       <Select {...args} />
     </div>
   ),
@@ -159,7 +159,7 @@ export const SearchableMulti: Story = {
     placeholder: 'Search stacks...',
   },
   render: (args) => (
-    <div class="w-80">
+    <div class="w-64">
       <Select {...args} />
     </div>
   ),

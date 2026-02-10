@@ -27,6 +27,11 @@ export const Default: Story = {
   args: {
     placeholder: '选择日期',
   },
+  render: (args) => (
+    <div class="w-64">
+      <DatePicker {...args} />
+    </div>
+  ),
 }
 
 export const Sizes: Story = {
@@ -53,6 +58,11 @@ export const WithLabel: Story = {
     label: '出生日期',
     placeholder: '选择日期...',
   },
+  render: (args) => (
+    <div class="w-64">
+      <DatePicker {...args} />
+    </div>
+  ),
 }
 
 export const ErrorState: Story = {
@@ -61,6 +71,11 @@ export const ErrorState: Story = {
     error: true,
     placeholder: '选择日期',
   },
+  render: (args) => (
+    <div class="w-64">
+      <DatePicker {...args} />
+    </div>
+  ),
 }
 
 export const Disabled: Story = {
@@ -69,6 +84,11 @@ export const Disabled: Story = {
     disabled: true,
     placeholder: '选择日期',
   },
+  render: (args) => (
+    <div class="w-64">
+      <DatePicker {...args} />
+    </div>
+  ),
 }
 
 export const CustomFormat: Story = {
@@ -170,14 +190,16 @@ export const WithMinMax: Story = {
 
 export const DisableWeekends: Story = {
   render: () => (
-    <DatePicker
-      label="禁用周末"
-      placeholder="选择工作日"
-      isDateUnavailable={(date) => {
-        const dayOfWeek = new Date(date.year, date.month - 1, date.day).getDay()
-        return dayOfWeek === 0 || dayOfWeek === 6
-      }}
-    />
+    <div class="w-64">
+      <DatePicker
+        label="禁用周末"
+        placeholder="选择工作日"
+        isDateUnavailable={(date) => {
+          const dayOfWeek = new Date(date.year, date.month - 1, date.day).getDay()
+          return dayOfWeek === 0 || dayOfWeek === 6
+        }}
+      />
+    </div>
   ),
 }
 
@@ -186,14 +208,16 @@ export const DisableSpecificDates: Story = {
     const holidays = ['2024-01-01', '2024-05-01', '2024-10-01']
 
     return (
-      <DatePicker
-        label="禁用节假日"
-        placeholder="选择日期"
-        isDateUnavailable={(date) => {
-          const dateStr = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
-          return holidays.includes(dateStr)
-        }}
-      />
+      <div class="w-64">
+        <DatePicker
+          label="禁用节假日"
+          placeholder="选择日期"
+          isDateUnavailable={(date) => {
+            const dateStr = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
+            return holidays.includes(dateStr)
+          }}
+        />
+      </div>
     )
   },
 }
@@ -203,7 +227,7 @@ export const MultipleValues: Story = {
     const [selectedDate, setSelectedDate] = createSignal<string>()
 
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <DatePicker
           label="选择日期"
           placeholder="点击选择"

@@ -1,0 +1,357 @@
+---
+title: Form
+description: 基于 @tanstack/solid-form 的表单组件系统，提供完整的表单状态管理和验证功能。
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
+## 概述
+
+Form 组件系统基于 [@tanstack/solid-form](https://tanstack.com/form/latest) 构建，提供了一套完整的表单解决方案，包括：
+
+- 🎯 **类型安全** - 完整的 TypeScript 支持
+- ✅ **灵活验证** - 支持同步/异步验证，集成 Zod 等 Schema 库
+- 🎨 **无障碍** - 遵循 ARIA 规范，自动关联 label、input、error
+- 📦 **组合式 API** - 细粒度的组件拆分，灵活组合
+- ⚡ **高性能** - 基于 SolidJS 的细粒度响应式更新
+
+## 安装
+
+```bash
+pnpm add @beeve/ui @tanstack/solid-form zod
+```
+
+## 基础用法
+
+<Tabs>
+<TabItem label="预览">
+
+```tsx
+import { createForm } from '@tanstack/solid-form'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from '@beeve/ui'
+import { Input, Button } from '@beeve/ui'
+
+function BasicForm() {
+  const form = createForm(() => ({
+    defaultValues: {
+      username: '',
+      email: '',
+    },
+    onSubmit: async ({ value }) => {
+      console.log('提交数据:', value)
+    },
+  }))
+
+  return (
+    <Form formApi={form} class="max-w-md space-y-4">
+      <FormField name="username">
+        {(field) => (
+          <FormItem>
+            <FormLabel>用户名</FormLabel>
+            <FormControl>
+              <Input
+                value={field().state.value}
+                onInput={(value) => field().handleChange(value)}
+                onBlur={field().handleBlur}
+                placeholder="请输入用户名"
+              />
+            </FormControl>
+            <FormDescription>这是您的公开显示名称</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      </FormField>
+
+      <FormField name="email">
+        {(field) => (
+          <FormItem>
+            <FormLabel required>邮箱</FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                value={field().state.value}
+                onInput={(value) => field().handleChange(value)}
+                onBlur={field().handleBlur}
+                placeholder="请输入邮箱地址"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      </FormField>
+
+      <form.Subscribe
+        selector={(state) => ({
+          canSubmit: state.canSubmit,
+          isSubmitting: state.isSubmitting,
+        })}
+      >
+        {(state) => (
+          <Button type="submit" disabled={!state().canSubmit}>
+            {state().isSubmitting ? '提交中...' : '提交'}
+          </Button>
+        )}
+      </form.Subscribe>
+    </Form>
+  )
+}
+```
+
+</TabItem>
+</Tabs>
+
+## 表单验证
+
+### 字段级验证
+
+使用 `validators` 属性在字段级别添加验证规则：
+
+```tsx
+<form.Field
+  name="username"
+  validators={{
+    onChange: ({ value }) =>
+      value.length < 3 ? '用户名至少需要 3 个字符' : undefined,
+    onBlur: ({ value }) =>
+      !/^[a-zA-Z0-9]+$/.test(value) ? '只能包含字母和数字' : undefined,
+  }}
+>
+  {(field) => (
+    <FormItem>
+      <FormLabel required>用户名</FormLabel>
+      <FormControl>
+        <Input
+          value={field().state.value}
+          onInput={(value) => field().handleChange(value)}
+          onBlur={field().handleBlur}
+          status={field().state.meta.errors.length > 0 ? 'error' : undefined}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+</form.Field>
+```
+
+### Zod Schema 验证
+
+TanStack Form 原生支持 Zod 等 Standard Schema 库：
+
+```tsx
+import { z } from 'zod'
+
+<form.Field
+  name="email"
+  validators={{
+    onChange: z.string().email('请输入有效的邮箱地址'),
+  }}
+>
+  {(field) => (
+    <FormItem>
+      <FormLabel required>邮箱</FormLabel>
+      <FormControl>
+        <Input
+          type="email"
+          value={field().state.value}
+          onInput={(value) => field().handleChange(value)}
+          status={field().state.meta.errors.length > 0 ? 'error' : undefined}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+</form.Field>
+```
+
+### 异步验证
+
+支持异步验证，例如检查用户名是否已存在：
+
+```tsx
+<form.Field
+  name="username"
+  asyncDebounceMs={500}
+  validators={{
+    onChangeAsync: async ({ value }) => {
+      const exists = await checkUsernameExists(value)
+      return exists ? '用户名已被占用' : undefined
+    },
+  }}
+>
+  {(field) => (
+    <FormItem>
+      <FormLabel required>用户名</FormLabel>
+      <FormControl>
+        <Input
+          value={field().state.value}
+          onInput={(value) => field().handleChange(value)}
+          suffix={field().state.meta.isValidating ? <Spinner /> : undefined}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+</form.Field>
+```
+
+## 尺寸变体
+
+Form 组件支持三种尺寸：`sm`、`md`（默认）、`lg`。
+
+```tsx
+// 紧凑模式 - 适用于密集布局
+<Form formApi={form} size="sm" class="space-y-3">
+  {/* ... */}
+</Form>
+
+// 标准模式（默认）
+<Form formApi={form} size="md" class="space-y-4">
+  {/* ... */}
+</Form>
+
+// 宽松模式 - 适用于重要表单
+<Form formApi={form} size="lg" class="space-y-5">
+  {/* ... */}
+</Form>
+```
+
+## 组件 API
+
+### Form
+
+表单容器组件，提供表单上下文。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `formApi` | `FormApi<any, any>` | - | TanStack Form API 实例（必填） |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 表单尺寸 |
+| `onSubmit` | `(e: SubmitEvent) => void` | - | 自定义提交处理（可选） |
+| `class` | `string` | - | 自定义类名 |
+
+### FormField
+
+字段包装器，连接 TanStack Form 的 Field API。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `name` | `string` | - | 字段名称（必填） |
+| `children` | `(field: Accessor<FieldApi>) => JSX.Element` | - | 渲染函数（必填） |
+
+### FormItem
+
+字段容器，提供统一的间距和布局。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `children` | `JSX.Element` | - | 子元素 |
+| `class` | `string` | - | 自定义类名 |
+
+### FormLabel
+
+字段标签，自动关联到输入框。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `children` | `JSX.Element` | - | 标签文本 |
+| `required` | `boolean` | `false` | 是否显示必填标记 |
+| `class` | `string` | - | 自定义类名 |
+
+### FormControl
+
+输入控件容器。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `children` | `JSX.Element` | - | 输入控件 |
+| `class` | `string` | - | 自定义类名 |
+
+### FormDescription
+
+字段描述文本。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `children` | `JSX.Element` | - | 描述文本 |
+| `class` | `string` | - | 自定义类名 |
+
+### FormMessage
+
+错误消息显示。
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `children` | `JSX.Element` | - | 自定义错误消息（覆盖字段验证错误） |
+| `class` | `string` | - | 自定义类名 |
+| `forceMount` | `boolean` | `false` | 强制显示（即使没有错误） |
+
+## 最佳实践
+
+### 1. 使用 Zod Schema 进行类型安全验证
+
+```tsx
+import { z } from 'zod'
+
+const userSchema = z.object({
+  username: z.string().min(3, '用户名至少 3 个字符'),
+  email: z.string().email('请输入有效的邮箱地址'),
+  age: z.number().min(18, '必须年满 18 岁'),
+})
+
+const form = createForm(() => ({
+  defaultValues: {
+    username: '',
+    email: '',
+    age: 0,
+  },
+  onSubmit: async ({ value }) => {
+    // value 类型会自动推断
+    console.log(value)
+  },
+}))
+```
+
+### 2. 统一错误状态样式
+
+将字段错误状态传递给输入组件：
+
+```tsx
+<Input
+  value={field().state.value}
+  onInput={(value) => field().handleChange(value)}
+  status={field().state.meta.errors.length > 0 ? 'error' : undefined}
+/>
+```
+
+### 3. 使用 Subscribe 控制提交按钮
+
+```tsx
+<form.Subscribe
+  selector={(state) => ({
+    canSubmit: state.canSubmit,
+    isSubmitting: state.isSubmitting,
+  })}
+>
+  {(state) => (
+    <Button type="submit" disabled={!state().canSubmit}>
+      {state().isSubmitting ? '提交中...' : '提交'}
+    </Button>
+  )}
+</form.Subscribe>
+```
+
+## 相关链接
+
+- [TanStack Form 官方文档](https://tanstack.com/form/latest)
+- [Zod 文档](https://zod.dev/)
+- [Input 组件](/components/input)
+- [Button 组件](/components/button)
+
+

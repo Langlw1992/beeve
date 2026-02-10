@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@internationalized/date": "^3.10.1",
+    "@tanstack/solid-form": "^1.28.0",
     "@tanstack/solid-table": "^8.21.3",
     "@zag-js/collapsible": "^1.33.0",
     "@zag-js/combobox": "^1.33.0",
@@ -44,6 +45,7 @@
     "@zag-js/select": "^1.33.0",
     "@zag-js/slider": "^1.33.0",
     "@zag-js/solid": "^1.33.0",
+    "@zag-js/tabs": "^1.33.1",
     "@zag-js/toast": "^1.33.0",
     "@zag-js/tooltip": "^1.33.0",
     "lucide-solid": "^0.562.0",

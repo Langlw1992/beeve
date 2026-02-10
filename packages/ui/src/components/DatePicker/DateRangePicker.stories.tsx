@@ -36,7 +36,7 @@ type Story = StoryObj<typeof DateRangePicker>
 
 export const Basic: Story = {
   render: (args) => (
-    <div class="w-[300px]">
+    <div class="w-64">
       <DateRangePicker {...args} />
     </div>
   ),
@@ -47,7 +47,7 @@ export const Basic: Story = {
 
 export const WithLabel: Story = {
   render: (args) => (
-    <div class="w-[300px]">
+    <div class="w-64">
       <DateRangePicker {...args} />
     </div>
   ),
@@ -59,7 +59,7 @@ export const WithLabel: Story = {
 
 export const WithPresets: Story = {
   render: (args) => (
-    <div class="w-[300px]">
+    <div class="w-64">
       <DateRangePicker {...args} />
     </div>
   ),
@@ -82,7 +82,7 @@ export const Controlled: Story = {
     }
 
     return (
-      <div class="flex flex-col gap-4 w-[300px]">
+      <div class="flex flex-col gap-4 w-64">
         <DateRangePicker
           label="受控日期范围"
           placeholder="选择日期"
@@ -100,7 +100,7 @@ export const Controlled: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div class="flex flex-col gap-4 w-[300px]">
+    <div class="flex flex-col gap-4 w-64">
       <DateRangePicker
         size="sm"
         placeholder="Small (sm)"
@@ -122,7 +122,7 @@ export const Sizes: Story = {
 
 export const ErrorState: Story = {
   render: (args) => (
-    <div class="w-[300px]">
+    <div class="w-64">
       <DateRangePicker {...args} />
     </div>
   ),
@@ -135,7 +135,7 @@ export const ErrorState: Story = {
 
 export const Disabled: Story = {
   render: (args) => (
-    <div class="w-[300px]">
+    <div class="w-64">
       <DateRangePicker {...args} />
     </div>
   ),
@@ -155,7 +155,7 @@ export const MinMaxDate: Story = {
     const maxDate = todayDate.add({days: 7})
 
     return (
-      <div class="flex flex-col gap-4 w-[300px]">
+      <div class="flex flex-col gap-4 w-64">
         <DateRangePicker
           label="限制日期范围"
           placeholder="只能选择前后7天"
@@ -172,7 +172,7 @@ export const MinMaxDate: Story = {
 
 export const CustomFormat: Story = {
   render: () => (
-    <div class="flex flex-col gap-4 w-[350px]">
+    <div class="flex flex-col gap-4 w-64">
       <DateRangePicker
         format="YYYY-MM-DD"
         placeholder="YYYY-MM-DD"

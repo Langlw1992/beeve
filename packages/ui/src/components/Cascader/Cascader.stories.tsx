@@ -76,6 +76,11 @@ export const Basic: Story = {
     options: locationOptions,
     placeholder: '请选择地区',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 默认值 */
@@ -85,6 +90,11 @@ export const DefaultValue: Story = {
     defaultValue: ['zhejiang', 'hangzhou', 'xihu'],
     placeholder: '请选择地区',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 可清除 */
@@ -95,6 +105,11 @@ export const Clearable: Story = {
     clearable: true,
     placeholder: '请选择地区',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 悬停展开 */
@@ -104,6 +119,11 @@ export const HoverExpand: Story = {
     expandTrigger: 'hover',
     placeholder: '悬停展开子菜单',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 选择即改变 */
@@ -113,6 +133,11 @@ export const ChangeOnSelect: Story = {
     changeOnSelect: true,
     placeholder: '选择任意级别即可',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 禁用状态 */
@@ -123,6 +148,11 @@ export const Disabled: Story = {
     defaultValue: ['zhejiang', 'hangzhou'],
     placeholder: '已禁用',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 不同尺寸 */
@@ -177,6 +207,11 @@ export const ShowLastPath: Story = {
     showPath: 'last',
     placeholder: '仅显示最后一级',
   },
+  render: (args) => (
+    <div class="w-64">
+      <Cascader {...args} />
+    </div>
+  ),
 }
 
 /** 多选模式 */
@@ -184,7 +219,7 @@ export const Multiple: Story = {
   render: () => {
     const [value, setValue] = createSignal<string[][]>([])
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <Cascader
           multiple
           options={locationOptions}
@@ -209,7 +244,7 @@ export const MultipleShowLast: Story = {
       ['jiangsu', 'suzhou', 'gusu'],
     ])
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <Cascader
           multiple
           options={locationOptions}
@@ -239,7 +274,7 @@ export const MultipleMaxTags: Story = {
       ['jiangsu', 'suzhou', 'gusu'],
     ])
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <Cascader
           multiple
           options={locationOptions}
@@ -263,7 +298,7 @@ export const MultipleAllSelectable: Story = {
   render: () => {
     const [value, setValue] = createSignal<string[][]>([])
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <Cascader
           multiple
           options={locationOptions}
@@ -287,7 +322,7 @@ export const MultipleParentSelectable: Story = {
   render: () => {
     const [value, setValue] = createSignal<string[][]>([])
     return (
-      <div class="flex flex-col gap-4 w-80">
+      <div class="flex flex-col gap-4 w-64">
         <Cascader
           multiple
           options={locationOptions}

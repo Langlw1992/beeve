@@ -7,6 +7,7 @@ import type {Meta, StoryObj} from 'storybook-solidjs-vite'
 import {Card} from './Card'
 import {Button} from '../Button'
 import {MoreHorizontal, Heart, MessageCircle, Share2} from 'lucide-solid'
+import {toast, Toaster} from '../Toast'
 
 /**
  * # Card 卡片
@@ -278,21 +279,24 @@ export const Loading: Story = {
 /** 可点击卡片 */
 export const Hoverable: Story = {
   render: () => (
-    <Section
-      title="可点击"
-      description="鼠标悬停显示阴影效果"
-    >
-      <Card
-        hoverable
-        title="可点击卡片"
-        onClick={() => alert('卡片被点击了')}
-        class="w-[320px]"
+    <>
+      <Toaster />
+      <Section
+        title="可点击"
+        description="鼠标悬停显示阴影效果"
       >
-        <p class="text-muted-foreground text-sm">
-          鼠标悬停时会有阴影效果，点击可触发事件。
-        </p>
-      </Card>
-    </Section>
+        <Card
+          hoverable
+          title="可点击卡片"
+          onClick={() => toast.info('卡片被点击了')}
+          class="w-[320px]"
+        >
+          <p class="text-muted-foreground text-sm">
+            鼠标悬停时会有阴影效果，点击可触发事件。
+          </p>
+        </Card>
+      </Section>
+    </>
   ),
 }
 

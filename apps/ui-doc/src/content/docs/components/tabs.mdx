@@ -1,0 +1,439 @@
+---
+title: Tabs 选项卡
+description: 用于组织和切换内容区域的选项卡组件
+---
+
+Tabs 组件提供了一种在相同区域内切换不同内容面板的方式。它基于 WAI-ARIA Tabs 设计模式，支持键盘导航和无障碍访问。
+
+## 何时使用
+
+- 将内容组织到多个视图中，用户一次只能查看一个视图
+- 在单个页面中展示层级相同的内容类别
+- 提供内容的不同视角或组织方式
+- 在低代码设计器中切换属性面板、样式面板等
+
+## 与 Segments 的区别
+
+**Tabs（选项卡）**：
+- 用于组织大块内容区域
+- 通常有明显的内容面板
+- 支持水平/垂直布局
+- 适合设置页面、文档管理
+
+**Segments（分段控制器，未来可能添加）**：
+- 更紧凑，类似按钮组
+- 用于切换视图模式（如列表/网格）
+- 通常不带内容面板，只作为状态切换器
+- 类似 iOS 的 Segmented Control
+
+## 基础用法
+
+最简单的用法，指定 `defaultValue` 设置默认激活的标签页。
+
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@beeve/ui'
+
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">账户</TabsTrigger>
+    <TabsTrigger value="password">密码</TabsTrigger>
+    <TabsTrigger value="notifications">通知</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="account">
+    <p>管理你的账户设置和偏好。</p>
+  </TabsContent>
+  
+  <TabsContent value="password">
+    <p>更改你的密码。</p>
+  </TabsContent>
+  
+  <TabsContent value="notifications">
+    <p>配置如何接收通知。</p>
+  </TabsContent>
+</Tabs>
+```
+
+## 样式变体
+
+提供 5 种样式变体，适用于不同的设计场景：
+
+| 变体 | 说明 | 适用场景 |
+|------|------|----------|
+| `default` | 简洁样式，透明背景 + hover 效果 | 通用场景，默认选择 |
+| `filled` | 填充背景，激活项有阴影 | 卡片内使用，视觉层次分明 |
+| `card` | 卡片样式，带边框和阴影 | 独立展示，强调每个选项 |
+| `pill` | 胶囊样式，高圆角 | 类似 Segments 效果，紧凑场景 |
+| `underline` | 下划线样式 | 最简洁，适合内容密集页面 |
+
+```tsx
+// Default - 简洁样式
+<Tabs variant="default" defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+</Tabs>
+
+// Filled - 填充背景（推荐用于属性面板）
+<Tabs variant="filled" defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">样式</TabsTrigger>
+    <TabsTrigger value="tab2">属性</TabsTrigger>
+  </TabsList>
+</Tabs>
+
+// Pill - 胶囊样式（类似 Segments）
+<Tabs variant="pill" defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">列表</TabsTrigger>
+    <TabsTrigger value="tab2">网格</TabsTrigger>
+  </TabsList>
+</Tabs>
+```
+
+## 尺寸
+
+提供 3 种尺寸，遵循 Beeve Design System（Compact Mode）规范：
+
+| 尺寸 | 高度 | 文字 | 适用场景 |
+|------|------|------|----------|
+| `sm` | 28px (h-7) | 12px | 属性面板、密集场景 |
+| `md` | 32px (h-8) | 14px | 默认尺寸，通用场景 |
+| `lg` | 36px (h-9) | 14px | 模态框、重要操作 |
+
+```tsx
+<Tabs size="sm" defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Small</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+</Tabs>
+
+<Tabs size="lg" defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Large</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+</Tabs>
+```
+
+## 垂直布局
+
+设置 `orientation="vertical"` 实现垂直布局，适合侧边栏导航。
+
+```tsx
+<Tabs orientation="vertical" defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">账户</TabsTrigger>
+    <TabsTrigger value="password">密码</TabsTrigger>
+    <TabsTrigger value="notifications">通知</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="account">账户设置内容</TabsContent>
+  <TabsContent value="password">密码设置内容</TabsContent>
+  <TabsContent value="notifications">通知设置内容</TabsContent>
+</Tabs>
+```
+
+## 禁用状态
+
+在 `TabsTrigger` 上设置 `disabled` 可以禁用单个标签页。禁用的标签页无法点击，键盘导航时会跳过。
+
+```tsx
+<Tabs defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">可用</TabsTrigger>
+    <TabsTrigger value="tab2" disabled>禁用</TabsTrigger>
+    <TabsTrigger value="tab3">可用</TabsTrigger>
+  </TabsList>
+</Tabs>
+```
+
+## 受控模式
+
+通过 `value` 和 `onValueChange` 实现受控模式，外部可以控制当前激活的标签页。
+
+```tsx
+import { createSignal } from 'solid-js'
+
+function ControlledTabs() {
+  const [value, setValue] = createSignal('account')
+  
+  return (
+    <>
+      <button onClick={() => setValue('password')}>
+        切换到密码页
+      </button>
+      
+      <Tabs 
+        value={value()} 
+        onValueChange={(details) => setValue(details.value)}
+      >
+        <TabsList>
+          <TabsTrigger value="account">账户</TabsTrigger>
+          <TabsTrigger value="password">密码</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="account">账户内容</TabsContent>
+        <TabsContent value="password">密码内容</TabsContent>
+      </Tabs>
+    </>
+  )
+}
+```
+
+## 高级特性
+
+### 懒加载（lazyMount）
+
+首次切换到标签页时才挂载内容，适合内容复杂、初始化耗时的场景，可以显著提升首屏性能。
+
+```tsx
+<Tabs defaultValue="tab1" lazyMount>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2（首次点击才加载）</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="tab1">立即渲染的内容</TabsContent>
+  <TabsContent value="tab2">
+    <ComplexComponent /> {/* 首次激活时才挂载 */}
+  </TabsContent>
+</Tabs>
+```
+
+**适用场景**：
+- 标签页内容包含复杂表格、图表
+- 需要请求后端数据的场景
+- 大量标签页（如 50+ 个）
+
+### Keep-alive（keepAlive）
+
+切换标签页后保持组件实例和状态不销毁，适合需要保持表单输入、滚动位置等场景。
+
+```tsx
+<Tabs defaultValue="form1" keepAlive>
+  <TabsList>
+    <TabsTrigger value="form1">表单 1</TabsTrigger>
+    <TabsTrigger value="form2">表单 2</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="form1">
+    <Input placeholder="输入内容后切换 tab，内容会保留" />
+  </TabsContent>
+  
+  <TabsContent value="form2">
+    <Input placeholder="表单 2 的输入框" />
+  </TabsContent>
+</Tabs>
+```
+
+**适用场景**：
+- 表单填写（用户可能频繁切换标签页）
+- 代码编辑器（保持光标位置和输入状态）
+- 筛选条件（保持用户的筛选设置）
+
+### 卸载控制（unmountOnExit）
+
+离开标签页后卸载内容，节省内存但会丢失状态。与 `keepAlive` 互斥。
+
+```tsx
+<Tabs defaultValue="tab1" unmountOnExit>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="tab1">
+    <Input placeholder="切换后会丢失内容" />
+  </TabsContent>
+  
+  <TabsContent value="tab2">
+    <HeavyComponent /> {/* 离开时卸载，节省内存 */}
+  </TabsContent>
+</Tabs>
+```
+
+**适用场景**：
+- 一次性内容（用户填写后提交，不会再回来）
+- 内存敏感的应用
+- 不需要保持状态的场景
+
+### 组合使用
+
+`lazyMount` 和 `keepAlive` 可以组合使用，实现最佳的性能和用户体验平衡：
+
+```tsx
+<Tabs defaultValue="tab1" lazyMount keepAlive>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+    <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+  </TabsList>
+  
+  {/* 首次激活时才挂载 + 激活后保持状态 */}
+  <TabsContent value="tab1">内容 1</TabsContent>
+  <TabsContent value="tab2">内容 2</TabsContent>
+  <TabsContent value="tab3">内容 3</TabsContent>
+</Tabs>
+```
+
+### 渲染模式对比
+
+| 模式 | 首次渲染 | 激活时 | 离开后 | 性能 | 状态保持 | 推荐场景 |
+|------|---------|--------|--------|------|---------|----------|
+| 默认 | 全部挂载 | 显示 | 隐藏 | 中 | ✅ | 内容简单 |
+| `lazyMount` | 不挂载 | 首次挂载 | 隐藏 | ✅ 好 | ✅ | 复杂内容 |
+| `keepAlive` | 全部挂载 | 显示 | 隐藏 | 中 | ✅ | 保持状态 |
+| `unmountOnExit` | 全部挂载 | 显示 | 卸载 | ✅ 省内存 | ❌ | 一次性内容 |
+| `lazyMount` + `keepAlive` | 不挂载 | 首次挂载 | 隐藏 | ✅✅ 最佳 | ✅ | **推荐** |
+| `lazyMount` + `unmountOnExit` | 不挂载 | 首次挂载 | 卸载 | ✅ | ❌ | 内存敏感 |
+
+## 带图标和徽章
+
+可以在 `TabsTrigger` 中使用图标和徽章组件，打造更丰富的标签页。
+
+```tsx
+import { FileText, Image } from 'lucide-solid'
+import { Badge } from '@beeve/ui'
+
+<Tabs defaultValue="documents">
+  <TabsList>
+    <TabsTrigger value="documents">
+      <FileText class="size-4" />
+      文档
+      <Badge size="sm">12</Badge>
+    </TabsTrigger>
+    
+    <TabsTrigger value="images">
+      <Image class="size-4" />
+      图片
+      <Badge size="sm">8</Badge>
+    </TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="documents">文档列表</TabsContent>
+  <TabsContent value="images">图片列表</TabsContent>
+</Tabs>
+```
+
+## 活动指示器
+
+使用 `TabsIndicator` 组件可以显示一个滑动的活动指示器，通常搭配 `default` 或 `underline` 变体使用。
+
+```tsx
+<Tabs defaultValue="tab1" variant="underline">
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+    <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+    <TabsIndicator />
+  </TabsList>
+</Tabs>
+```
+
+## API
+
+### Tabs Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `variant` | `'default' \| 'filled' \| 'card' \| 'pill' \| 'underline'` | `'default'` | 样式变体 |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | 尺寸 |
+| `value` | `string` | - | 当前激活的 tab（受控模式） |
+| `defaultValue` | `string` | - | 默认激活的 tab（非受控模式） |
+| `onValueChange` | `(details: { value: string }) => void` | - | tab 值变化时的回调 |
+| `onFocusChange` | `(details: { value: string }) => void` | - | 焦点 tab 变化时的回调 |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | 布局方向 |
+| `loop` | `boolean` | `false` | 是否循环键盘导航 |
+| `activationMode` | `'automatic' \| 'manual'` | `'automatic'` | 激活模式 |
+| `lazyMount` | `boolean` | `false` | 首次激活时才挂载内容 |
+| `keepAlive` | `boolean` | `false` | 切换后保持挂载状态 |
+| `unmountOnExit` | `boolean` | `false` | 离开后卸载（与 keepAlive 互斥） |
+| `class` | `string` | - | 自定义 class |
+
+### TabsList Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `class` | `string` | 自定义 class |
+
+### TabsTrigger Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `value` | `string` | tab 的唯一标识（必需） |
+| `disabled` | `boolean` | 是否禁用 |
+| `class` | `string` | 自定义 class |
+
+### TabsContent Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `value` | `string` | tab 的唯一标识（必需） |
+| `class` | `string` | 自定义 class |
+
+### TabsIndicator Props
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `class` | `string` | 自定义 class |
+
+## 无障碍访问
+
+Tabs 组件遵循 WAI-ARIA Tabs 设计模式，提供完整的键盘导航和屏幕阅读器支持。
+
+### 键盘交互
+
+| 按键 | 说明 |
+|------|------|
+| `Tab` | 焦点移动到当前激活的 tab 触发器 |
+| `Arrow Right` / `Arrow Down` | 移动到下一个 tab（自动激活） |
+| `Arrow Left` / `Arrow Up` | 移动到上一个 tab（自动激活） |
+| `Home` | 移动到第一个 tab |
+| `End` | 移动到最后一个 tab |
+| `Enter` / `Space` | 在 manual 模式下激活当前焦点的 tab |
+
+### ARIA 属性
+
+组件会自动添加以下 ARIA 属性：
+
+- `role="tablist"` - 标签列表容器
+- `role="tab"` - 标签触发器
+- `role="tabpanel"` - 标签内容面板
+- `aria-selected` - 标记当前选中的 tab
+- `aria-disabled` - 标记禁用的 tab
+- `aria-orientation` - 指示水平或垂直布局
+- `aria-controls` - 关联 tab 和其对应的内容面板
+
+## 最佳实践
+
+### 性能优化
+
+1. **大量标签页场景**：必须使用 `lazyMount`
+   ```tsx
+   <Tabs defaultValue="tab1" lazyMount>
+     {/* 50+ 个 tabs */}
+   </Tabs>
+   ```
+
+2. **推荐组合**：`lazyMount` + `keepAlive` 实现最佳平衡
+   ```tsx
+   <Tabs defaultValue="tab1" lazyMount keepAlive>
+     {/* 性能优化 + 状态保持 */}
+   </Tabs>
+   ```
+
+### 设计规范
+
+1. **标签页数量**：建议不超过 7 个，过多使用下拉菜单或分组
+2. **标签文本**：简短明确，2-4 个字最佳
+3. **一级导航**：使用 `default` 或 `underline` 变体
+4. **属性面板**：使用 `filled` 或 `pill` 变体 + `size="sm"`
+
+### 何时不使用
+
+- 内容不是平级关系时，考虑使用 Collapse（手风琴）
+- 需要同时查看多个内容时，使用独立的 Card 或 Panel
+- 作为页面主导航时，考虑使用 Menu 或 Sidebar

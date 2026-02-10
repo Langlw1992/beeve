@@ -31,7 +31,6 @@ NEVER guess - ALWAYS verify with context7:
 
 ### Backend
 - hono, @hono/zod-validator, drizzle-orm, zod
-
 ### Build Tools
 - vite, astro, @astrojs/starlight, typescript, biome
 
