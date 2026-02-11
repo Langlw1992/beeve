@@ -3,12 +3,12 @@
  * 选项卡组件故事
  */
 
-import type { Meta, StoryObj } from 'storybook-solidjs'
-import { Tabs, TabsList, TabsTrigger, TabsContent, TabsIndicator } from './Tabs'
-import { Badge } from '../Badge'
-import { Input } from '../Input'
-import { createSignal, For } from 'solid-js'
-import { FileText, Image, Music, Video, Settings } from 'lucide-solid'
+import type {Meta, StoryObj} from 'storybook-solidjs'
+import {Tabs, TabsList, TabsTrigger, TabsContent, TabsIndicator} from './Tabs'
+import {Badge} from '../Badge'
+import {Input} from '../Input'
+import {createSignal, For} from 'solid-js'
+import {FileText, Image, Music, Video, Settings} from 'lucide-solid'
 
 const meta = {
   title: 'Components/Tabs',
@@ -71,7 +71,10 @@ export const Sizes: Story = {
     <div class="flex flex-col gap-8">
       <div>
         <h3 class="text-sm font-medium mb-2">Small (sm) - 用于密集场景</h3>
-        <Tabs defaultValue="tab1" size="sm">
+        <Tabs
+          defaultValue="tab1"
+          size="sm"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -85,7 +88,10 @@ export const Sizes: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Medium (md) - 默认尺寸</h3>
-        <Tabs defaultValue="tab1" size="md">
+        <Tabs
+          defaultValue="tab1"
+          size="md"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -99,7 +105,10 @@ export const Sizes: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Large (lg) - 用于主要操作</h3>
-        <Tabs defaultValue="tab1" size="lg">
+        <Tabs
+          defaultValue="tab1"
+          size="lg"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -121,7 +130,10 @@ export const Variants: Story = {
     <div class="flex flex-col gap-8">
       <div>
         <h3 class="text-sm font-medium mb-2">Default - 简洁样式</h3>
-        <Tabs defaultValue="tab1" variant="default">
+        <Tabs
+          defaultValue="tab1"
+          variant="default"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -132,7 +144,10 @@ export const Variants: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Filled - 填充背景</h3>
-        <Tabs defaultValue="tab1" variant="filled">
+        <Tabs
+          defaultValue="tab1"
+          variant="filled"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -143,7 +158,10 @@ export const Variants: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Card - 卡片样式</h3>
-        <Tabs defaultValue="tab1" variant="card">
+        <Tabs
+          defaultValue="tab1"
+          variant="card"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -153,8 +171,13 @@ export const Variants: Story = {
       </div>
 
       <div>
-        <h3 class="text-sm font-medium mb-2">Pill - 胶囊样式（类似 Segments）</h3>
-        <Tabs defaultValue="tab1" variant="pill">
+        <h3 class="text-sm font-medium mb-2">
+          Pill - 胶囊样式（类似 Segments）
+        </h3>
+        <Tabs
+          defaultValue="tab1"
+          variant="pill"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -165,7 +188,10 @@ export const Variants: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Underline - 下划线样式</h3>
-        <Tabs defaultValue="tab1" variant="underline">
+        <Tabs
+          defaultValue="tab1"
+          variant="underline"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -185,7 +211,10 @@ export const Vertical: Story = {
     <div class="flex gap-8">
       <div class="flex-1">
         <h3 class="text-sm font-medium mb-2">垂直布局 - Default</h3>
-        <Tabs defaultValue="tab1" orientation="vertical">
+        <Tabs
+          defaultValue="tab1"
+          orientation="vertical"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -205,7 +234,11 @@ export const Vertical: Story = {
 
       <div class="flex-1">
         <h3 class="text-sm font-medium mb-2">垂直布局 - Filled</h3>
-        <Tabs defaultValue="tab1" orientation="vertical" variant="filled">
+        <Tabs
+          defaultValue="tab1"
+          orientation="vertical"
+          variant="filled"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -236,7 +269,10 @@ export const Disabled: Story = {
         <Tabs defaultValue="tab1">
           <TabsList>
             <TabsTrigger value="tab1">可用</TabsTrigger>
-            <TabsTrigger value="tab2" disabled>
+            <TabsTrigger
+              value="tab2"
+              disabled
+            >
               禁用
             </TabsTrigger>
             <TabsTrigger value="tab3">可用</TabsTrigger>
@@ -287,7 +323,10 @@ export const Controlled: Story = {
 
         <p class="text-sm text-muted-foreground">当前值: {value()}</p>
 
-        <Tabs value={value()} onValueChange={(details) => setValue(details.value)}>
+        <Tabs
+          value={value()}
+          onValueChange={(details) => setValue(details.value)}
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -312,14 +351,16 @@ export const Controlled: Story = {
 
 export const LazyMount: Story = {
   render: () => {
-    const LazyContent = (props: { name: string }) => {
+    const LazyContent = (props: {name: string}) => {
       console.log(`[LazyMount] ${props.name} 组件已挂载`)
       return (
         <div class="p-4 border rounded">
           <p>
             这是 <strong>{props.name}</strong> 的内容
           </p>
-          <p class="text-sm text-muted-foreground mt-2">打开控制台查看挂载日志</p>
+          <p class="text-sm text-muted-foreground mt-2">
+            打开控制台查看挂载日志
+          </p>
         </div>
       )
     }
@@ -328,10 +369,15 @@ export const LazyMount: Story = {
       <div class="flex flex-col gap-4">
         <div class="p-3 bg-blue-50 dark:bg-blue-950 rounded text-sm">
           <p class="font-medium">💡 懒加载演示</p>
-          <p class="text-muted-foreground mt-1">首次切换到 tab 时才会挂载内容，打开控制台查看挂载日志。</p>
+          <p class="text-muted-foreground mt-1">
+            首次切换到 tab 时才会挂载内容，打开控制台查看挂载日志。
+          </p>
         </div>
 
-        <Tabs defaultValue="tab1" lazyMount>
+        <Tabs
+          defaultValue="tab1"
+          lazyMount
+        >
           <TabsList>
             <TabsTrigger value="tab1">Tab 1</TabsTrigger>
             <TabsTrigger value="tab2">Tab 2 (懒加载)</TabsTrigger>
@@ -359,10 +405,16 @@ export const KeepAlive: Story = {
     <div class="flex flex-col gap-4">
       <div class="p-3 bg-green-50 dark:bg-green-950 rounded text-sm">
         <p class="font-medium">✨ Keep-alive 演示</p>
-        <p class="text-muted-foreground mt-1">切换 tab 后，输入框的内容会保持不丢失。</p>
+        <p class="text-muted-foreground mt-1">
+          切换 tab 后，输入框的内容会保持不丢失。
+        </p>
       </div>
 
-      <Tabs defaultValue="tab1" keepAlive lazyMount>
+      <Tabs
+        defaultValue="tab1"
+        keepAlive
+        lazyMount
+      >
         <TabsList>
           <TabsTrigger value="tab1">表单 1</TabsTrigger>
           <TabsTrigger value="tab2">表单 2</TabsTrigger>
@@ -371,19 +423,25 @@ export const KeepAlive: Story = {
         <TabsContent value="tab1">
           <div class="space-y-2">
             <Input placeholder="在这里输入内容..." />
-            <p class="text-sm text-muted-foreground">切换到其他 tab 后再回来，内容仍然保留</p>
+            <p class="text-sm text-muted-foreground">
+              切换到其他 tab 后再回来，内容仍然保留
+            </p>
           </div>
         </TabsContent>
         <TabsContent value="tab2">
           <div class="space-y-2">
             <Input placeholder="表单 2 的输入框..." />
-            <p class="text-sm text-muted-foreground">每个 tab 的状态都独立保存</p>
+            <p class="text-sm text-muted-foreground">
+              每个 tab 的状态都独立保存
+            </p>
           </div>
         </TabsContent>
         <TabsContent value="tab3">
           <div class="space-y-2">
             <Input placeholder="表单 3 的输入框..." />
-            <p class="text-sm text-muted-foreground">适合需要保持表单状态的场景</p>
+            <p class="text-sm text-muted-foreground">
+              适合需要保持表单状态的场景
+            </p>
           </div>
         </TabsContent>
       </Tabs>
@@ -398,10 +456,15 @@ export const UnmountOnExit: Story = {
     <div class="flex flex-col gap-4">
       <div class="p-3 bg-amber-50 dark:bg-amber-950 rounded text-sm">
         <p class="font-medium">🗑️ 卸载控制演示</p>
-        <p class="text-muted-foreground mt-1">离开 tab 后内容会被卸载，切换回来时重新初始化。</p>
+        <p class="text-muted-foreground mt-1">
+          离开 tab 后内容会被卸载，切换回来时重新初始化。
+        </p>
       </div>
 
-      <Tabs defaultValue="tab1" unmountOnExit>
+      <Tabs
+        defaultValue="tab1"
+        unmountOnExit
+      >
         <TabsList>
           <TabsTrigger value="tab1">表单 1</TabsTrigger>
           <TabsTrigger value="tab2">表单 2</TabsTrigger>
@@ -410,7 +473,9 @@ export const UnmountOnExit: Story = {
         <TabsContent value="tab1">
           <div class="space-y-2">
             <Input placeholder="输入内容后切换 tab..." />
-            <p class="text-sm text-muted-foreground">切换后内容会丢失（节省内存）</p>
+            <p class="text-sm text-muted-foreground">
+              切换后内容会丢失（节省内存）
+            </p>
           </div>
         </TabsContent>
         <TabsContent value="tab2">
@@ -422,7 +487,9 @@ export const UnmountOnExit: Story = {
         <TabsContent value="tab3">
           <div class="space-y-2">
             <Input placeholder="表单 3 的输入框..." />
-            <p class="text-sm text-muted-foreground">适合一次性内容，不需要保持状态</p>
+            <p class="text-sm text-muted-foreground">
+              适合一次性内容，不需要保持状态
+            </p>
           </div>
         </TabsContent>
       </Tabs>
@@ -434,29 +501,48 @@ export const UnmountOnExit: Story = {
 
 export const Complex: Story = {
   render: () => (
-    <Tabs defaultValue="documents" variant="default">
+    <Tabs
+      defaultValue="documents"
+      variant="default"
+    >
       <TabsList>
-        <TabsTrigger value="documents" class="gap-2">
+        <TabsTrigger
+          value="documents"
+          class="gap-2"
+        >
           <FileText class="size-4" />
           文档
           <Badge size="sm">12</Badge>
         </TabsTrigger>
-        <TabsTrigger value="images" class="gap-2">
+        <TabsTrigger
+          value="images"
+          class="gap-2"
+        >
           <Image class="size-4" />
           图片
           <Badge size="sm">8</Badge>
         </TabsTrigger>
-        <TabsTrigger value="music" class="gap-2">
+        <TabsTrigger
+          value="music"
+          class="gap-2"
+        >
           <Music class="size-4" />
           音乐
           <Badge size="sm">24</Badge>
         </TabsTrigger>
-        <TabsTrigger value="videos" class="gap-2">
+        <TabsTrigger
+          value="videos"
+          class="gap-2"
+        >
           <Video class="size-4" />
           视频
           <Badge size="sm">3</Badge>
         </TabsTrigger>
-        <TabsTrigger value="settings" disabled class="gap-2">
+        <TabsTrigger
+          value="settings"
+          disabled
+          class="gap-2"
+        >
           <Settings class="size-4" />
           设置
         </TabsTrigger>
@@ -493,7 +579,7 @@ export const Complex: Story = {
 
 export const Performance: Story = {
   render: () => {
-    const tabs = Array.from({ length: 50 }, (_, i) => ({
+    const tabs = Array.from({length: 50}, (_, i) => ({
       value: `tab-${i + 1}`,
       label: `Tab ${i + 1}`,
     }))
@@ -502,12 +588,22 @@ export const Performance: Story = {
       <div class="flex flex-col gap-4">
         <div class="p-3 bg-purple-50 dark:bg-purple-950 rounded text-sm">
           <p class="font-medium">⚡ 性能优化演示</p>
-          <p class="text-muted-foreground mt-1">50 个 tabs + 懒加载，只有激活的 tab 会渲染内容。</p>
+          <p class="text-muted-foreground mt-1">
+            50 个 tabs + 懒加载，只有激活的 tab 会渲染内容。
+          </p>
         </div>
 
-        <Tabs defaultValue="tab-1" lazyMount size="sm">
+        <Tabs
+          defaultValue="tab-1"
+          lazyMount
+          size="sm"
+        >
           <TabsList class="flex-wrap">
-            <For each={tabs}>{(tab) => <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>}</For>
+            <For each={tabs}>
+              {(tab) => (
+                <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
+              )}
+            </For>
           </TabsList>
           <For each={tabs}>
             {(tab) => (
@@ -516,7 +612,9 @@ export const Performance: Story = {
                   <p>
                     这是 <strong>{tab.label}</strong> 的内容
                   </p>
-                  <p class="text-sm text-muted-foreground mt-2">首次切换到这里时才挂载此内容</p>
+                  <p class="text-sm text-muted-foreground mt-2">
+                    首次切换到这里时才挂载此内容
+                  </p>
                 </div>
               </TabsContent>
             )}
@@ -534,7 +632,10 @@ export const WithIndicator: Story = {
     <div class="flex flex-col gap-8">
       <div>
         <h3 class="text-sm font-medium mb-2">Default + Indicator</h3>
-        <Tabs defaultValue="tab1" variant="default">
+        <Tabs
+          defaultValue="tab1"
+          variant="default"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>
@@ -546,7 +647,10 @@ export const WithIndicator: Story = {
 
       <div>
         <h3 class="text-sm font-medium mb-2">Underline + Indicator</h3>
-        <Tabs defaultValue="tab1" variant="underline">
+        <Tabs
+          defaultValue="tab1"
+          variant="underline"
+        >
           <TabsList>
             <TabsTrigger value="tab1">账户</TabsTrigger>
             <TabsTrigger value="tab2">密码</TabsTrigger>

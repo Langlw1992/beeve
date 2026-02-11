@@ -34,20 +34,16 @@ describe('Dialog', () => {
       // defaultOpen 在 jsdom 中不生效
     })
 
-    it('showCloseButton=false 时不显示关闭按钮', () => {
-      // 这个测试检查的是关闭按钮不存在，可以通过
+    it('closable=false 时不显示关闭按钮', () => {
       render(() => (
-        <Dialog defaultOpen>
-          <Dialog.Content showCloseButton={false}>
-            <Dialog.Title>标题</Dialog.Title>
-          </Dialog.Content>
-        </Dialog>
+        <Dialog
+          open={true}
+          title="标题"
+          closable={false}
+        />
       ))
 
-      // 由于 dialog 不显示，关闭按钮自然也不存在
-      expect(
-        screen.queryByRole('button', {name: 'Close'}),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTitle('关闭')).not.toBeInTheDocument()
     })
   })
 

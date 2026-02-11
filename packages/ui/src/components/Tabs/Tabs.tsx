@@ -24,8 +24,8 @@ import {
   useContext,
 } from 'solid-js'
 import * as tabs from '@zag-js/tabs'
-import { normalizeProps, useMachine } from '@zag-js/solid'
-import { tv, type VariantProps } from 'tailwind-variants'
+import {normalizeProps, useMachine} from '@zag-js/solid'
+import {tv, type VariantProps} from 'tailwind-variants'
 
 // ==================== Styles ====================
 
@@ -213,7 +213,10 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <div {...api().getRootProps()} class={styles.root({ class: local.class })}>
+      <div
+        {...api().getRootProps()}
+        class={styles.root({class: local.class})}
+      >
         {local.children}
       </div>
     </TabsContext.Provider>
@@ -229,10 +232,14 @@ export interface TabsListProps {
 
 export const TabsList: Component<TabsListProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children'])
-  const { api, styles } = useTabsContext()
+  const {api, styles} = useTabsContext()
 
   return (
-    <div {...api().getListProps()} class={styles.list({ class: local.class })} {...rest}>
+    <div
+      {...api().getListProps()}
+      class={styles.list({class: local.class})}
+      {...rest}
+    >
       {local.children}
     </div>
   )
@@ -252,13 +259,18 @@ export interface TabsTriggerProps {
 }
 
 export const TabsTrigger: Component<TabsTriggerProps> = (props) => {
-  const [local, rest] = splitProps(props, ['class', 'children', 'value', 'disabled'])
-  const { api, styles } = useTabsContext()
+  const [local, rest] = splitProps(props, [
+    'class',
+    'children',
+    'value',
+    'disabled',
+  ])
+  const {api, styles} = useTabsContext()
 
   return (
     <button
-      {...api().getTriggerProps({ value: local.value, disabled: local.disabled })}
-      class={styles.trigger({ class: local.class })}
+      {...api().getTriggerProps({value: local.value, disabled: local.disabled})}
+      class={styles.trigger({class: local.class})}
       {...rest}
     >
       {local.children}
@@ -279,7 +291,7 @@ export interface TabsContentProps {
 
 export const TabsContent: Component<TabsContentProps> = (props) => {
   const [local, rest] = splitProps(props, ['class', 'children', 'value'])
-  const { api, styles, lazyMount, keepAlive, unmountOnExit } = useTabsContext()
+  const {api, styles, lazyMount, keepAlive, unmountOnExit} = useTabsContext()
 
   // 追踪是否曾经被激活过（用于 lazyMount）
   const [everActivated, setEverActivated] = createSignal(false)
@@ -315,8 +327,8 @@ export const TabsContent: Component<TabsContentProps> = (props) => {
   return (
     <Show when={shouldRender()}>
       <div
-        {...api().getContentProps({ value: local.value })}
-        class={styles.content({ class: local.class })}
+        {...api().getContentProps({value: local.value})}
+        class={styles.content({class: local.class})}
         hidden={keepAlive && !isActive()}
         {...rest}
       >
@@ -334,7 +346,13 @@ export interface TabsIndicatorProps {
 
 export const TabsIndicator: Component<TabsIndicatorProps> = (props) => {
   const [local, rest] = splitProps(props, ['class'])
-  const { api, styles } = useTabsContext()
+  const {api, styles} = useTabsContext()
 
-  return <div {...api().getIndicatorProps()} class={styles.indicator({ class: local.class })} {...rest} />
+  return (
+    <div
+      {...api().getIndicatorProps()}
+      class={styles.indicator({class: local.class})}
+      {...rest}
+    />
+  )
 }

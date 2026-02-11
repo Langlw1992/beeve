@@ -94,9 +94,9 @@ const simpleColumns = columns<Person>([
     title: '状态',
     render: (value) => {
       const status = value as Person['status']
-      const variantMap = {
+      const statusMap = {
         active: 'success',
-        inactive: 'secondary',
+        inactive: 'default',
         pending: 'warning',
       } as const
       const labelMap = {
@@ -104,7 +104,12 @@ const simpleColumns = columns<Person>([
         inactive: '未激活',
         pending: '待审核',
       }
-      return <Badge variant={variantMap[status]}>{labelMap[status]}</Badge>
+      return (
+        <Badge
+          status={statusMap[status]}
+          text={labelMap[status]}
+        />
+      )
     },
   },
 ])
@@ -158,9 +163,9 @@ const nativeColumns: ColumnDef<Person, unknown>[] = [
     header: '状态',
     cell: (info) => {
       const status = info.getValue() as Person['status']
-      const variantMap = {
+      const statusMap = {
         active: 'success',
-        inactive: 'secondary',
+        inactive: 'default',
         pending: 'warning',
       } as const
       const labelMap = {
@@ -168,7 +173,12 @@ const nativeColumns: ColumnDef<Person, unknown>[] = [
         inactive: '未激活',
         pending: '待审核',
       }
-      return <Badge variant={variantMap[status]}>{labelMap[status]}</Badge>
+      return (
+        <Badge
+          status={statusMap[status]}
+          text={labelMap[status]}
+        />
+      )
     },
   },
 ]
@@ -260,8 +270,11 @@ export const Hoverable: Story = {
         <DataTable
           data={defaultData}
           columns={simpleColumns}
+          rowCount={defaultData.length}
           hoverable={true}
-          onRowClick={(row) => toast.info(`点击了: ${row.firstName} ${row.lastName}`)}
+          onRowClick={(row) =>
+            toast.info(`点击了: ${row.firstName} ${row.lastName}`)
+          }
         />
       </>
     )
@@ -316,6 +329,7 @@ export const WithActionColumn: Story = {
         <DataTable
           data={defaultData}
           columns={columnsWithAction}
+          rowCount={defaultData.length}
         />
       </>
     )

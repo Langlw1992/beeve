@@ -29,18 +29,14 @@
  * ```
  */
 
-import {
-  splitProps,
-  Show,
-  type JSX,
-} from 'solid-js'
-import { tv } from 'tailwind-variants'
-import { createFormHook, createFormHookContexts } from '@tanstack/solid-form'
-import { Input, type InputProps } from '../Input'
-import { Select, type SelectProps, type SelectValue } from '../Select'
-import { Checkbox, type CheckboxProps } from '../Checkbox'
-import { Switch, type SwitchProps } from '../Switch'
-import { Button } from '../Button'
+import {splitProps, Show, type JSX} from 'solid-js'
+import {tv} from 'tailwind-variants'
+import {createFormHook, createFormHookContexts} from '@tanstack/solid-form'
+import {Input, type InputProps} from '../Input'
+import {Select, type SelectProps, type SelectValue} from '../Select'
+import {Checkbox, type CheckboxProps} from '../Checkbox'
+import {Switch, type SwitchProps} from '../Switch'
+import {Button} from '../Button'
 
 // ============================================================================
 // Form Hook Contexts
@@ -50,7 +46,7 @@ import { Button } from '../Button'
  * 创建表单和字段的 Context
  * 用于在组件之间共享表单状态
  */
-export const { fieldContext, formContext, useFieldContext, useFormContext } =
+export const {fieldContext, formContext, useFieldContext, useFormContext} =
   createFormHookContexts()
 
 // ============================================================================
@@ -125,7 +121,8 @@ const formMessageStyles = tv({
  * TextField 组件
  * 文本输入字段，自动绑定到表单字段
  */
-interface TextFieldProps extends Omit<InputProps, 'value' | 'onInput' | 'onBlur'> {
+interface TextFieldProps
+  extends Omit<InputProps, 'value' | 'onInput' | 'onBlur'> {
   /** 标签文本 */
   label?: JSX.Element
   /** 描述文本 */
@@ -136,7 +133,11 @@ interface TextFieldProps extends Omit<InputProps, 'value' | 'onInput' | 'onBlur'
 
 function TextField(props: TextFieldProps) {
   const field = useFieldContext<string>()
-  const [local, inputProps] = splitProps(props, ['label', 'description', 'required'])
+  const [local, inputProps] = splitProps(props, [
+    'label',
+    'description',
+    'required',
+  ])
 
   const hasError = () => field().state.meta.errors.length > 0
 
@@ -147,7 +148,8 @@ function TextField(props: TextFieldProps) {
           for={field().name}
           class={formLabelStyles()}
           classList={{
-            "after:content-['*'] after:ml-0.5 after:text-destructive": local.required,
+            "after:content-['*'] after:ml-0.5 after:text-destructive":
+              local.required,
           }}
         >
           {local.label}
@@ -166,7 +168,10 @@ function TextField(props: TextFieldProps) {
         <p class={formDescriptionStyles()}>{local.description}</p>
       )}
       <Show when={hasError()}>
-        <p class={formMessageStyles({ status: 'error' })} role="alert">
+        <p
+          class={formMessageStyles({status: 'error'})}
+          role="alert"
+        >
           {field().state.meta.errors.join(', ')}
         </p>
       </Show>
@@ -179,7 +184,10 @@ function TextField(props: TextFieldProps) {
  * 下拉选择字段，自动绑定到表单字段
  */
 interface SelectFieldProps
-  extends Omit<SelectProps<SelectValue, unknown, undefined>, 'value' | 'onChange' | 'label'> {
+  extends Omit<
+    SelectProps<SelectValue, unknown, undefined>,
+    'value' | 'onChange' | 'label'
+  > {
   /** 标签文本 */
   label?: string
   /** 描述文本 */
@@ -191,7 +199,11 @@ interface SelectFieldProps
 function SelectField(props: SelectFieldProps) {
   // biome-ignore lint/suspicious/noExplicitAny: 字段值类型由表单数据决定
   const field = useFieldContext<any>()
-  const [local, selectProps] = splitProps(props, ['label', 'description', 'required'])
+  const [local, selectProps] = splitProps(props, [
+    'label',
+    'description',
+    'required',
+  ])
 
   const hasError = () => field().state.meta.errors.length > 0
 
@@ -202,7 +214,8 @@ function SelectField(props: SelectFieldProps) {
         <label
           class={formLabelStyles()}
           classList={{
-            "after:content-['*'] after:ml-0.5 after:text-destructive": local.required,
+            "after:content-['*'] after:ml-0.5 after:text-destructive":
+              local.required,
           }}
         >
           {local.label}
@@ -218,7 +231,10 @@ function SelectField(props: SelectFieldProps) {
         <p class={formDescriptionStyles()}>{local.description}</p>
       )}
       <Show when={hasError()}>
-        <p class={formMessageStyles({ status: 'error' })} role="alert">
+        <p
+          class={formMessageStyles({status: 'error'})}
+          role="alert"
+        >
           {field().state.meta.errors.join(', ')}
         </p>
       </Show>
@@ -230,7 +246,8 @@ function SelectField(props: SelectFieldProps) {
  * CheckboxField 组件
  * 复选框字段，自动绑定到表单字段
  */
-interface CheckboxFieldProps extends Omit<CheckboxProps, 'checked' | 'onChange'> {
+interface CheckboxFieldProps
+  extends Omit<CheckboxProps, 'checked' | 'onChange'> {
   /** 标签文本 */
   label?: JSX.Element
   /** 描述文本 */
@@ -256,7 +273,10 @@ function CheckboxField(props: CheckboxFieldProps) {
         <p class={formDescriptionStyles()}>{local.description}</p>
       )}
       <Show when={hasError()}>
-        <p class={formMessageStyles({ status: 'error' })} role="alert">
+        <p
+          class={formMessageStyles({status: 'error'})}
+          role="alert"
+        >
           {field().state.meta.errors.join(', ')}
         </p>
       </Show>
@@ -297,7 +317,10 @@ function SwitchField(props: SwitchFieldProps) {
         />
       </div>
       <Show when={hasError()}>
-        <p class={formMessageStyles({ status: 'error' })} role="alert">
+        <p
+          class={formMessageStyles({status: 'error'})}
+          role="alert"
+        >
           {field().state.meta.errors.join(', ')}
         </p>
       </Show>
@@ -324,10 +347,20 @@ function SubmitButton(props: SubmitButtonProps) {
   const form = useFormContext()
 
   return (
-    <form.Subscribe selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}>
+    <form.Subscribe
+      selector={(state) => ({
+        canSubmit: state.canSubmit,
+        isSubmitting: state.isSubmitting,
+      })}
+    >
       {(state) => (
-        <Button type="submit" disabled={!state().canSubmit}>
-          {state().isSubmitting ? (props.loadingLabel || '提交中...') : (props.label || '提交')}
+        <Button
+          type="submit"
+          disabled={!state().canSubmit}
+        >
+          {state().isSubmitting
+            ? props.loadingLabel || '提交中...'
+            : props.label || '提交'}
         </Button>
       )}
     </form.Subscribe>
@@ -342,7 +375,7 @@ function SubmitButton(props: SubmitButtonProps) {
  * 创建自定义表单 Hook
  * 注册所有字段组件和表单组件，提供完整的类型推断
  */
-export const { useAppForm: useForm } = createFormHook({
+export const {useAppForm: useForm} = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
@@ -355,5 +388,3 @@ export const { useAppForm: useForm } = createFormHook({
     SubmitButton,
   },
 })
-
-

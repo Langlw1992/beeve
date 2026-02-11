@@ -16,23 +16,13 @@ export const tableVariants = tv({
     ],
 
     // 滚动容器
-    scrollWrapper: [
-      'overflow-x-auto',
-      'scroll-smooth',
-    ],
+    scrollWrapper: ['overflow-x-auto', 'scroll-smooth'],
 
     // 表格
-    table: [
-      'w-full',
-      'text-sm',
-      'border-collapse',
-    ],
+    table: ['w-full', 'text-sm', 'border-collapse'],
 
     // ==================== 表头 ====================
-    thead: [
-      'bg-muted/50',
-      'border-b border-border',
-    ],
+    thead: ['bg-muted/50', 'border-b border-border'],
 
     th: [
       'text-left align-middle',
@@ -65,9 +55,7 @@ export const tableVariants = tv({
     ],
 
     // ==================== 表体 ====================
-    tbody: [
-      'divide-y divide-border',
-    ],
+    tbody: ['divide-y divide-border'],
 
     tr: [
       'transition-colors duration-150',
@@ -75,9 +63,7 @@ export const tableVariants = tv({
       'data-[state=selected]:bg-primary/[0.05]',
     ],
 
-    trSelected: [
-      'bg-primary/[0.05]',
-    ],
+    trSelected: ['bg-primary/[0.05]'],
 
     td: [
       'align-middle',
@@ -99,17 +85,10 @@ export const tableVariants = tv({
     ],
 
     // ==================== 表尾 ====================
-    tfoot: [
-      'border-t border-border',
-      'bg-muted/30',
-      'font-medium',
-    ],
+    tfoot: ['border-t border-border', 'bg-muted/30', 'font-medium'],
 
     // ==================== 空状态 ====================
-    empty: [
-      'text-center text-muted-foreground',
-      'font-normal',
-    ],
+    empty: ['text-center text-muted-foreground', 'font-normal'],
 
     // ==================== 展开行 ====================
     expandedRow: [
@@ -118,10 +97,7 @@ export const tableVariants = tv({
       'animate-in fade-in duration-200',
     ],
 
-    expandedContent: [
-      'border-l-2 border-primary/40',
-      'bg-muted/10',
-    ],
+    expandedContent: ['border-l-2 border-primary/40', 'bg-muted/10'],
 
     // ==================== 选择列（极度紧凑）====================
     selectCell: [
@@ -134,12 +110,8 @@ export const tableVariants = tv({
       'border-r-2 border-border/60',
       'transition-colors duration-200',
     ],
-    
-    selectWrapper: [
-      'flex items-center justify-center',
-      'h-full',
-      'relative',
-    ],
+
+    selectWrapper: ['flex items-center justify-center', 'h-full', 'relative'],
 
     // ==================== 展开列（极度紧凑）====================
     expandCell: [
@@ -152,12 +124,8 @@ export const tableVariants = tv({
       'border-r-2 border-border/60',
       'transition-colors duration-200',
     ],
-    
-    expandWrapper: [
-      'flex items-center justify-center',
-      'h-full',
-      'relative',
-    ],
+
+    expandWrapper: ['flex items-center justify-center', 'h-full', 'relative'],
 
     expandButton: [
       'inline-flex items-center justify-center',
@@ -200,11 +168,7 @@ export const tableVariants = tv({
       'animate-in fade-in duration-200',
     ],
 
-    loadingSpinner: [
-      'size-5',
-      'animate-spin',
-      'text-primary',
-    ],
+    loadingSpinner: ['size-5', 'animate-spin', 'text-primary'],
   },
 
   variants: {

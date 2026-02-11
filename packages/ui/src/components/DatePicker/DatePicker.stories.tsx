@@ -195,7 +195,11 @@ export const DisableWeekends: Story = {
         label="禁用周末"
         placeholder="选择工作日"
         isDateUnavailable={(date) => {
-          const dayOfWeek = new Date(date.year, date.month - 1, date.day).getDay()
+          const dayOfWeek = new Date(
+            date.year,
+            date.month - 1,
+            date.day,
+          ).getDay()
           return dayOfWeek === 0 || dayOfWeek === 6
         }}
       />

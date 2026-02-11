@@ -6,10 +6,7 @@ const config: StorybookConfig = {
     // 从 @beeve/ui 组件包读取 stories
     '../../../packages/ui/src/**/*.stories.@(ts|tsx)',
   ],
-  addons: [
-    '@storybook/addon-themes',
-    '@storybook/addon-docs',
-  ],
+  addons: ['@storybook/addon-themes', '@storybook/addon-docs'],
   framework: 'storybook-solidjs-vite',
   async viteFinal(config) {
     const {mergeConfig} = await import('vite')
