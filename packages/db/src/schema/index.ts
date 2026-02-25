@@ -5,3 +5,4 @@
  */
 
 export {account, session, user, verification} from './auth'
+export {oauthAccessToken, oauthApplication, oauthConsent} from './oidc'
