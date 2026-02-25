@@ -8,7 +8,9 @@ export function DatePickerBasic() {
       <DatePicker
         placeholder="Pick a date"
         value={val()}
-        onChange={setVal}
+        onChange={(details) => {
+          setVal(details.valueAsString)
+        }}
       />
       <div class="text-xs text-muted-foreground">Selected: {val()}</div>
     </div>
@@ -20,10 +22,11 @@ export function DatePickerWithTime() {
   return (
     <div class="w-[350px] flex flex-col gap-2">
       <DatePicker
-        showTime
         placeholder="Pick date & time"
         value={val()}
-        onChange={setVal}
+        onChange={(details) => {
+          setVal(details.valueAsString)
+        }}
       />
       <div class="text-xs text-muted-foreground">Selected: {val()}</div>
     </div>
@@ -35,12 +38,11 @@ export function DateRangePickerDemo() {
   return (
     <div class="w-[350px] flex flex-col gap-2">
       <DateRangePicker
-        startPlaceholder="Start date"
-        endPlaceholder="End date"
+        placeholder="Select date range"
         value={val()}
-        onChange={(v: string[] | undefined) => {
-          if (v && v.length === 2) {
-            setVal(v)
+        onChange={(details) => {
+          if (details.valueAsString.length === 2) {
+            setVal(details.valueAsString)
           }
         }}
       />

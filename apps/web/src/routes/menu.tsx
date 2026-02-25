@@ -58,7 +58,8 @@ function MenuPage() {
   const radioItems: MenuItemType[] = [
     {key: 'header', label: '选择主题', disabled: true},
     {
-      type: 'radio-group',
+      type: 'radio',
+      key: 'theme-group',
       name: 'theme',
       value: radioValue(),
       onChange: setRadioValue,
