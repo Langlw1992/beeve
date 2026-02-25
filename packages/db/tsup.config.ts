@@ -1,11 +1,10 @@
 import {defineConfig} from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/schema/index.ts'],
   format: ['esm'],
   dts: true,
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['postgres'],
 })

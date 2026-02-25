@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
+    "lint": "biome lint ./src",
+    "lint:fix": "biome lint --write ./src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
