@@ -1,0 +1,66 @@
+# 依赖目录
+node_modules/
+**/node_modules/
+
+# 构建产物
+dist/
+**/dist/
+.turbo/
+**/.turbo/
+storybook-static/
+
+# 版本控制
+.git/
+.gitignore
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# 环境变量（不要打包到镜像中）
+.env
+.env.local
+.env.*.local
+
+# 测试和覆盖率
+coverage/
+**/*.test.ts
+**/*.test.tsx
+**/*.stories.tsx
+
+# 文档和配置（非运行时必需）
+*.md
+LICENSE
+.github/
+.augment/
+.playwright-mcp/
+.serena/
+
+# 前端应用源码（server 镜像不需要，但保留 package.json 供 pnpm workspace 解析）
+apps/web/src/
+apps/storybook/src/
+apps/storybook/.storybook/
+apps/ui-doc/src/
+
+# UI 包源码（server 不依赖，但保留 package.json 供 pnpm workspace 解析）
+packages/ui/src/
+
+# TypeScript 构建信息
+*.tsbuildinfo
+
+# Docker 自身
+Dockerfile
+docker-compose.yml
+.dockerignore
+
