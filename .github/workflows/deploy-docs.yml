@@ -46,14 +46,14 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Build
+        run: pnpm build
+
       - name: Type check
         run: pnpm typecheck
 
       - name: Run tests
         run: pnpm --filter @beeve/ui test:run
-
-      - name: Build
-        run: pnpm build
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.1
