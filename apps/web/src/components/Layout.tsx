@@ -138,7 +138,7 @@ export const Layout: Component<LayoutProps> = (props) => {
               value={[
                 radiusPresets.findIndex((p) => p.value === config().radius),
               ]}
-              onValueChange={(v) => {
+              onChange={(v: {value: number[]}) => {
                 const preset = radiusPresets[v.value[0]]
                 if (preset) {
                   setRadius(preset.value)

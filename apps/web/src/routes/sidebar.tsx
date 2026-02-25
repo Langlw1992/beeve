@@ -47,8 +47,8 @@ function SidebarPage() {
               <Sidebar.Content>
                 <NavMenu
                   items={menuItems}
-                  activeKey={activeKey()}
-                  onSelect={setActiveKey}
+                  value={activeKey()}
+                  onChange={setActiveKey}
                 />
               </Sidebar.Content>
               <Sidebar.Footer>
@@ -82,8 +82,8 @@ function SidebarPage() {
               <Sidebar.Content>
                 <NavMenu
                   items={menuItems}
-                  activeKey={activeKey()}
-                  onSelect={setActiveKey}
+                  value={activeKey()}
+                  onChange={setActiveKey}
                 />
               </Sidebar.Content>
               <Sidebar.Footer>
@@ -114,8 +114,8 @@ function SidebarPage() {
               <Sidebar.Content>
                 <NavMenu
                   items={menuItems}
-                  activeKey={activeKey()}
-                  onSelect={setActiveKey}
+                  value={activeKey()}
+                  onChange={setActiveKey}
                 />
               </Sidebar.Content>
             </Sidebar>
@@ -176,8 +176,8 @@ function ControlledSidebarDemo() {
             <Sidebar.Content>
               <NavMenu
                 items={menuItems}
-                activeKey={activeKey()}
-                onSelect={setActiveKey}
+                value={activeKey()}
+                onChange={setActiveKey}
               />
             </Sidebar.Content>
           </Sidebar>

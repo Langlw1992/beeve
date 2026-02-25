@@ -76,25 +76,25 @@ function PopoverPage() {
       >
         <div class="flex flex-wrap gap-4">
           <Popover
-            placement="top"
+            positioning={{placement: 'top'}}
             content={<PopoverDescription>顶部弹出</PopoverDescription>}
           >
             <Button variant="outline">Top</Button>
           </Popover>
           <Popover
-            placement="bottom"
+            positioning={{placement: 'bottom'}}
             content={<PopoverDescription>底部弹出</PopoverDescription>}
           >
             <Button variant="outline">Bottom</Button>
           </Popover>
           <Popover
-            placement="left"
+            positioning={{placement: 'left'}}
             content={<PopoverDescription>左侧弹出</PopoverDescription>}
           >
             <Button variant="outline">Left</Button>
           </Popover>
           <Popover
-            placement="right"
+            positioning={{placement: 'right'}}
             content={<PopoverDescription>右侧弹出</PopoverDescription>}
           >
             <Button variant="outline">Right</Button>

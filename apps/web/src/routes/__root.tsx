@@ -44,7 +44,7 @@ const routes = [
   {path: '/presence', label: 'Presence'},
   {path: '/progress', label: 'Progress'},
   {path: '/radio', label: 'Radio'},
-  {path: '/select', label: 'Select'},
+
   {path: '/sidebar', label: 'Sidebar'},
   {path: '/skeleton', label: 'Skeleton'},
   {path: '/slider', label: 'Slider'},
@@ -153,7 +153,7 @@ function RootComponent() {
               value={[
                 radiusPresets.findIndex((p) => p.value === config().radius),
               ]}
-              onValueChange={(v) => {
+              onChange={(v: {value: number[]}) => {
                 const preset = radiusPresets[v.value[0]]
                 if (preset) {
                   setRadius(preset.value)

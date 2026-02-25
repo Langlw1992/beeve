@@ -100,7 +100,7 @@ function SidebarDemo() {
           <NavMenu
             items={menuItems}
             value={activeKey()}
-            onValueChange={setActiveKey}
+            onChange={setActiveKey}
             collapsed={!open()}
             defaultExpandedKeys={['settings']}
           />

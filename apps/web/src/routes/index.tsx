@@ -8,7 +8,6 @@ import {createFileRoute, Link} from '@tanstack/solid-router'
 const componentRoutes = [
   {path: '/button', label: 'Button'},
   {path: '/input', label: 'Input'},
-  {path: '/select', label: 'Select'},
   {path: '/checkbox', label: 'Checkbox'},
   {path: '/switch', label: 'Switch'},
   {path: '/radio', label: 'Radio'},

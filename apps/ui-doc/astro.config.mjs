@@ -27,7 +27,6 @@ export default defineConfig({
             {label: 'Input 输入框', slug: 'components/input'},
             {label: 'Checkbox 复选框', slug: 'components/checkbox'},
             {label: 'Radio 单选框', slug: 'components/radio'},
-            {label: 'Select 选择器', slug: 'components/select'},
             {label: 'Switch 开关', slug: 'components/switch'},
           ],
         },
