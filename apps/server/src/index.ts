@@ -9,6 +9,8 @@ import {cors} from '@elysiajs/cors'
 import {html} from '@elysiajs/html'
 import {Elysia} from 'elysia'
 import {env} from './env'
+import {authRoutes} from './routes/auth'
+import {pageRoutes} from './routes/pages'
 
 // ==================== 应用实例 ====================
 
@@ -19,6 +21,8 @@ const app = new Elysia()
     }),
   )
   .use(html())
+  .use(authRoutes)
+  .use(pageRoutes)
   // ==================== 健康检查端点 ====================
   .get('/health', () => ({
     status: 'ok' as const,
