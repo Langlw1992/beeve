@@ -1,0 +1,63 @@
+# ==================== Beeve Docker Compose 配置 ====================
+# 用于本地开发环境，包含认证服务和 PostgreSQL 数据库
+#
+# 使用方法：
+#   启动所有服务：docker compose up -d
+#   仅启动数据库：docker compose up -d postgres
+#   查看日志：    docker compose logs -f server
+#   停止服务：    docker compose down
+#   清理数据：    docker compose down -v
+
+services:
+  # ==================== PostgreSQL 数据库 ====================
+  postgres:
+    image: postgres:16-alpine
+    container_name: beeve-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-beeve}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-beeve_password}
+      POSTGRES_DB: ${POSTGRES_DB:-beeve}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-beeve}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - beeve-network
+
+  # ==================== Beeve 认证服务 ====================
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    container_name: beeve-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-beeve}:${POSTGRES_PASSWORD:-beeve_password}@postgres:5432/${POSTGRES_DB:-beeve}
+      PORT: ${PORT:-3000}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?请在 .env 中设置 BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+    ports:
+      - "${PORT:-3000}:3000"
+    networks:
+      - beeve-network
+
+# ==================== 数据卷 ====================
+volumes:
+  postgres_data:
+    driver: local
+
+# ==================== 网络 ====================
+networks:
+  beeve-network:
+    driver: bridge
+
