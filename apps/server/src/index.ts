@@ -25,7 +25,7 @@ const app = new Elysia()
   .use(pageRoutes)
   // ==================== 健康检查端点 ====================
   .get('/health', () => ({
-    status: 'ok' as const,
+    status: 'ok',
     timestamp: new Date().toISOString(),
   }))
   .listen(env.PORT)
