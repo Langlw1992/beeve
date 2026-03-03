@@ -10,7 +10,7 @@ import {getDb} from '@beeve/db'
 import * as schema from '@beeve/db/schema'
 import {betterAuth} from 'better-auth'
 import {drizzleAdapter} from 'better-auth/adapters/drizzle'
-import {jwt} from 'better-auth/plugins'
+import {admin, jwt} from 'better-auth/plugins'
 import {env} from './env'
 
 // ==================== Better Auth 实例 ====================
@@ -35,6 +35,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    admin(),
     jwt(),
     oauthProvider({
       loginPage: '/sign-in',
