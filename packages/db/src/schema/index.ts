@@ -6,4 +6,16 @@
 
 export {account, session, user, verification} from './auth'
 export {jwks} from './jwks'
-export {oauthAccessToken, oauthApplication, oauthConsent} from './oidc'
+export {
+  accountRelations,
+  oauthAccessToken,
+  oauthAccessTokenRelations,
+  oauthClient,
+  oauthClientRelations,
+  oauthConsent,
+  oauthConsentRelations,
+  oauthRefreshToken,
+  oauthRefreshTokenRelations,
+  sessionRelations,
+  userRelations,
+} from './oidc'
