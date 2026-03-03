@@ -1,10 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react",
-    "jsxFactory": "Html.createElement",
-    "jsxFragmentFactory": "Html.Fragment",
-    "jsxImportSource": "",
     "noEmit": true
   },
   "include": ["src"]

@@ -1,16 +1,23 @@
 /**
  * @beeve/server - Elysia 认证服务入口
  *
- * 基于 Elysia.js 和 Bun 运行时的认证服务骨架。
- * 当前阶段仅包含基础配置和健康检查端点。
+ * 基于 Elysia.js 和 Bun 运行时的纯 API + OAuth 2.1 Provider 服务。
  */
 
+import {
+  oauthProviderAuthServerMetadata,
+  oauthProviderOpenIdConfigMetadata,
+} from '@better-auth/oauth-provider'
 import {cors} from '@elysiajs/cors'
-import {html} from '@elysiajs/html'
 import {Elysia} from 'elysia'
+import {auth} from './auth'
 import {env} from './env'
 import {authRoutes} from './routes/auth'
-import {pageRoutes} from './routes/pages'
+
+// ==================== Well-Known 元数据处理器 ====================
+
+const openIdConfigHandler = oauthProviderOpenIdConfigMetadata(auth)
+const authServerHandler = oauthProviderAuthServerMetadata(auth)
 
 // ==================== 应用实例 ====================
 
@@ -20,9 +27,16 @@ const app = new Elysia()
       origin: env.CORS_ORIGIN,
     }),
   )
-  .use(html())
   .use(authRoutes)
-  .use(pageRoutes)
+  // ==================== Well-Known 端点 ====================
+  .get('/.well-known/openid-configuration', async ({request}) => {
+    const response = await openIdConfigHandler(request)
+    return response
+  })
+  .get('/.well-known/oauth-authorization-server', async ({request}) => {
+    const response = await authServerHandler(request)
+    return response
+  })
   // ==================== 健康检查端点 ====================
   .get('/health', () => ({
     status: 'ok',

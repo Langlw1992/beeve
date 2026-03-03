@@ -5,4 +5,5 @@
  */
 
 export {account, session, user, verification} from './auth'
+export {jwks} from './jwks'
 export {oauthAccessToken, oauthApplication, oauthConsent} from './oidc'
