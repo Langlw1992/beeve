@@ -37,7 +37,7 @@ const envSchema = z.object({
   GITHUB_CLIENT_SECRET: z.string().min(1, '必须提供 GITHUB_CLIENT_SECRET'),
 
   /** 前端应用 URL（OAuth 回调等） */
-  AUTH_APP_URL: z.url().default('http://localhost:5173'),
+  AUTH_APP_URL: z.url().default('http://localhost:5174'),
 })
 
 // ==================== 环境变量解析与导出 ====================
