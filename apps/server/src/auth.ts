@@ -32,6 +32,8 @@ export const auth = betterAuth({
     github: {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
+      // 请求邮箱权限，解决 GitHub 用户邮箱私有时无法获取的问题
+      scope: ['user:email'],
     },
   },
   plugins: [
