@@ -19,11 +19,13 @@ declare module '@tanstack/solid-router' {
 
 const root = document.getElementById('root')
 
-render(
-  () => (
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  ),
-  root!,
-)
+if (root) {
+  render(
+    () => (
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    ),
+    root,
+  )
+}
