@@ -1,0 +1,31 @@
+{
+  "name": "@beeve/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "biome lint ./src",
+    "lint:fix": "biome lint --write ./src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@beeve/ui": "workspace:*",
+    "@better-auth/oauth-provider": "^1.2.18",
+    "@tanstack/solid-router": "^1.144.0",
+    "better-auth": "^1.2.18",
+    "lucide-solid": "^0.562.0",
+    "solid-js": "^1.9.5",
+    "tailwind-variants": "^0.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/router-plugin": "^1.145.4",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vite-plugin-solid": "^2.11.0"
+  }
+}

@@ -15,14 +15,29 @@ const envSchema = z.object({
   /** 服务端口号 */
   PORT: z.coerce.number().int().positive().default(3000),
 
-  /** Better Auth 密钥（Wave 2 使用） */
+  /** Better Auth 密钥 */
   BETTER_AUTH_SECRET: z.string().min(1, '必须提供 BETTER_AUTH_SECRET'),
 
-  /** Better Auth 服务 URL（Wave 2 使用） */
+  /** Better Auth 服务 URL */
   BETTER_AUTH_URL: z.url().default('http://localhost:3000'),
 
   /** CORS 允许的源 */
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+
+  /** Google OAuth 客户端 ID */
+  GOOGLE_CLIENT_ID: z.string().min(1, '必须提供 GOOGLE_CLIENT_ID'),
+
+  /** Google OAuth 客户端密钥 */
+  GOOGLE_CLIENT_SECRET: z.string().min(1, '必须提供 GOOGLE_CLIENT_SECRET'),
+
+  /** GitHub OAuth 客户端 ID */
+  GITHUB_CLIENT_ID: z.string().min(1, '必须提供 GITHUB_CLIENT_ID'),
+
+  /** GitHub OAuth 客户端密钥 */
+  GITHUB_CLIENT_SECRET: z.string().min(1, '必须提供 GITHUB_CLIENT_SECRET'),
+
+  /** 前端应用 URL（OAuth 回调等） */
+  AUTH_APP_URL: z.url().default('http://localhost:5174'),
 })
 
 // ==================== 环境变量解析与导出 ====================
