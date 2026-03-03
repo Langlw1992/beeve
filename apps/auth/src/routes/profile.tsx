@@ -3,8 +3,8 @@
  */
 import {createSignal, createEffect, Show, For, onMount} from 'solid-js'
 import {createFileRoute, useNavigate} from '@tanstack/solid-router'
-import {Button, Skeleton} from '@beeve/ui'
-import {LogOut, Monitor, Smartphone, X} from 'lucide-solid'
+import {Button, Dialog, Input, Label, Skeleton, toast} from '@beeve/ui'
+import {LogOut, Monitor, Smartphone, X, SquarePen, Shield} from 'lucide-solid'
 import {tv} from 'tailwind-variants'
 import {authClient} from '../lib/auth-client'
 
@@ -149,6 +149,10 @@ function ProfilePage() {
   const [revokingToken, setRevokingToken] = createSignal<string | null>(null)
   const [signOutLoading, setSignOutLoading] = createSignal(false)
 
+  // ===== 编辑资料弹窗状态 =====
+  const [editOpen, setEditOpen] = createSignal(false)
+  const [editName, setEditName] = createSignal('')
+
   // 未登录时重定向到登录页
   createEffect(() => {
     if (!session().isPending && !session().data) {
@@ -192,6 +196,29 @@ function ProfilePage() {
     } catch {
       setSignOutLoading(false)
     }
+  }
+
+  /** 打开编辑资料弹窗 */
+  const openEditDialog = () => {
+    setEditName(user()?.name ?? '')
+    setEditOpen(true)
+  }
+
+  /** 保存编辑的资料 */
+  const handleSaveProfile = async () => {
+    const trimmedName = editName().trim()
+    if (!trimmedName) {
+      toast.error('姓名不能为空')
+      throw new Error('姓名不能为空')
+    }
+
+    const {error} = await authClient.updateUser({name: trimmedName})
+    if (error) {
+      toast.error(`更新失败: ${error.message}`)
+      throw error
+    }
+
+    toast.success('资料已更新')
   }
 
   /** 判断是否为当前会话 */
@@ -266,6 +293,16 @@ function ProfilePage() {
                   注册于 {formatDate(user()?.createdAt)}
                 </div>
               </div>
+            </div>
+            <div class="mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={openEditDialog}
+              >
+                <SquarePen class="size-3.5" />
+                编辑资料
+              </Button>
             </div>
           </Show>
         </div>
@@ -357,17 +394,57 @@ function ProfilePage() {
           </Show>
         </div>
 
-        {/* 退出登录 */}
-        <Button
-          variant="outline"
-          size="lg"
-          class="w-full"
-          loading={signOutLoading()}
-          onClick={handleSignOut}
+        {/* 操作按钮 */}
+        <div class="flex flex-col gap-3">
+          {/* Admin 入口 - 仅管理员可见 */}
+          <Show
+            when={
+              (user() as Record<string, unknown> | undefined)?.role === 'admin'
+            }
+          >
+            <a href="/admin">
+              <Button
+                variant="outline"
+                size="lg"
+                class="w-full"
+              >
+                <Shield class="size-4" />
+                用户管理
+              </Button>
+            </a>
+          </Show>
+
+          {/* 退出登录 */}
+          <Button
+            variant="outline"
+            size="lg"
+            class="w-full"
+            loading={signOutLoading()}
+            onClick={handleSignOut}
+          >
+            <LogOut class="size-4" />
+            退出登录
+          </Button>
+        </div>
+
+        {/* 编辑资料弹窗 */}
+        <Dialog
+          open={editOpen()}
+          onOpenChange={setEditOpen}
+          title="编辑资料"
+          onOk={handleSaveProfile}
+          okText="保存"
+          width="md"
         >
-          <LogOut class="size-4" />
-          退出登录
-        </Button>
+          <div class="flex flex-col gap-2">
+            <Label required>姓名</Label>
+            <Input
+              value={editName()}
+              onInput={(v: string) => setEditName(v)}
+              placeholder="请输入姓名"
+            />
+          </div>
+        </Dialog>
       </div>
     </div>
   )

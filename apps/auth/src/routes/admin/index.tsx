@@ -25,23 +25,21 @@ import {
   UserCog,
   LogOut,
   SquarePen,
+  UserPlus,
 } from 'lucide-solid'
 import {authClient} from '../../lib/auth-client'
+import {
+  EditUserDialog,
+  SetRoleDialog,
+  BanUserDialog,
+  CreateUserDialog,
+  DeleteUserConfirm,
+  BatchBanDialog,
+  BatchDeleteDialog,
+} from '../../components/admin'
+import type {AdminUser} from '../../components/admin'
 
 // ==================== 类型定义 ====================
-
-type AdminUser = {
-  id: string
-  name: string
-  email: string
-  role: string | null
-  banned: boolean | null
-  banReason: string | null
-  banExpires: string | null
-  createdAt: string
-  image: string | null
-  emailVerified: boolean
-}
 
 type ListUsersResponse = {
   users: AdminUser[]
@@ -177,6 +175,16 @@ function AdminPage() {
   const [total, setTotal] = createSignal(0)
   const [loading, setLoading] = createSignal(true)
 
+  // ===== 弹窗状态 =====
+  const [currentUser, setCurrentUser] = createSignal<AdminUser | null>(null)
+  const [editOpen, setEditOpen] = createSignal(false)
+  const [roleOpen, setRoleOpen] = createSignal(false)
+  const [banOpen, setBanOpen] = createSignal(false)
+  const [deleteOpen, setDeleteOpen] = createSignal(false)
+  const [createOpen, setCreateOpen] = createSignal(false)
+  const [batchBanOpen, setBatchBanOpen] = createSignal(false)
+  const [batchDeleteOpen, setBatchDeleteOpen] = createSignal(false)
+
   const {tableProps, state, selectedRows, resetSelection} = useDataTable({
     pageSize: 10,
     deps: () => [searchValue(), roleFilter()],
@@ -236,39 +244,31 @@ function AdminPage() {
     fetchUsers()
   })
 
-  // ===== 单行操作 =====
+  // ===== 单行操作（打开弹窗） =====
   const handleEdit = (user: AdminUser) => {
-    toast.info(`编辑用户: ${user.name}（功能开发中）`)
+    setCurrentUser(user)
+    setEditOpen(true)
   }
 
-  const handleSetRole = async (user: AdminUser) => {
-    const newRole = user.role === 'admin' ? 'user' : 'admin'
-    try {
-      await authClient.admin.setRole({userId: user.id, role: newRole})
-      toast.success(
-        `已将 ${user.name} 的角色设为 ${newRole === 'admin' ? '管理员' : '用户'}`,
-      )
-      fetchUsers()
-    } catch {
-      toast.error('设置角色失败')
-    }
+  const handleSetRole = (user: AdminUser) => {
+    setCurrentUser(user)
+    setRoleOpen(true)
   }
 
   const handleToggleBan = async (user: AdminUser) => {
-    try {
-      if (user.banned) {
+    if (user.banned) {
+      // 已封禁则直接解封
+      try {
         await authClient.admin.unbanUser({userId: user.id})
         toast.success(`已解封用户 ${user.name}`)
-      } else {
-        await authClient.admin.banUser({
-          userId: user.id,
-          banReason: '管理员操作',
-        })
-        toast.success(`已封禁用户 ${user.name}`)
+        fetchUsers()
+      } catch {
+        toast.error('解封失败')
       }
-      fetchUsers()
-    } catch {
-      toast.error(user.banned ? '解封失败' : '封禁失败')
+    } else {
+      // 未封禁则打开封禁弹窗
+      setCurrentUser(user)
+      setBanOpen(true)
     }
   }
 
@@ -281,31 +281,20 @@ function AdminPage() {
     }
   }
 
-  const handleDelete = async (user: AdminUser) => {
-    try {
-      await authClient.admin.removeUser({userId: user.id})
-      toast.success(`已删除用户 ${user.name}`)
-      fetchUsers()
-    } catch {
-      toast.error('删除用户失败')
-    }
+  const handleDelete = (user: AdminUser) => {
+    setCurrentUser(user)
+    setDeleteOpen(true)
   }
 
-  // ===== 批量操作 =====
-  const handleBatchBan = async () => {
-    const ids = selectedRows()
-    try {
-      await Promise.all(
-        ids.map((id) =>
-          authClient.admin.banUser({userId: id, banReason: '批量封禁'}),
-        ),
-      )
-      toast.success(`已批量封禁 ${ids.length} 个用户`)
-      resetSelection()
-      fetchUsers()
-    } catch {
-      toast.error('批量封禁失败')
-    }
+  // ===== 弹窗操作成功回调 =====
+  const handleDialogSuccess = () => {
+    resetSelection()
+    fetchUsers()
+  }
+
+  // ===== 批量操作（打开弹窗） =====
+  const handleBatchBan = () => {
+    setBatchBanOpen(true)
   }
 
   const handleBatchUnban = async () => {
@@ -322,18 +311,8 @@ function AdminPage() {
     }
   }
 
-  const handleBatchDelete = async () => {
-    const ids = selectedRows()
-    try {
-      await Promise.all(
-        ids.map((id) => authClient.admin.removeUser({userId: id})),
-      )
-      toast.success(`已批量删除 ${ids.length} 个用户`)
-      resetSelection()
-      fetchUsers()
-    } catch {
-      toast.error('批量删除失败')
-    }
+  const handleBatchDelete = () => {
+    setBatchDeleteOpen(true)
   }
 
   const cols = createColumns({
@@ -346,11 +325,17 @@ function AdminPage() {
 
   return (
     <div class="mx-auto max-w-7xl p-6">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-foreground">用户管理</h1>
-        <p class="mt-1 text-sm text-muted-foreground">
-          管理系统中的所有用户账号
-        </p>
+      <div class="mb-6 flex items-start justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-foreground">用户管理</h1>
+          <p class="mt-1 text-sm text-muted-foreground">
+            管理系统中的所有用户账号
+          </p>
+        </div>
+        <Button onClick={() => setCreateOpen(true)}>
+          <UserPlus size={16} />
+          新建用户
+        </Button>
       </div>
 
       {/* 搜索和筛选栏 */}
@@ -431,6 +416,58 @@ function AdminPage() {
         getRowId={(row) => row.id}
         emptyText="暂无用户数据"
         {...tableProps}
+      />
+
+      {/* 弹窗组件 */}
+      <Show when={currentUser()}>
+        {(user) => (
+          <>
+            <EditUserDialog
+              open={editOpen()}
+              onOpenChange={setEditOpen}
+              user={user()}
+              onSuccess={handleDialogSuccess}
+            />
+            <SetRoleDialog
+              open={roleOpen()}
+              onOpenChange={setRoleOpen}
+              user={user()}
+              onSuccess={handleDialogSuccess}
+            />
+            <BanUserDialog
+              open={banOpen()}
+              onOpenChange={setBanOpen}
+              user={user()}
+              onSuccess={handleDialogSuccess}
+            />
+            <DeleteUserConfirm
+              open={deleteOpen()}
+              onOpenChange={setDeleteOpen}
+              user={user()}
+              onSuccess={handleDialogSuccess}
+            />
+          </>
+        )}
+      </Show>
+
+      <CreateUserDialog
+        open={createOpen()}
+        onOpenChange={setCreateOpen}
+        onSuccess={handleDialogSuccess}
+      />
+
+      <BatchBanDialog
+        open={batchBanOpen()}
+        onOpenChange={setBatchBanOpen}
+        userIds={selectedRows()}
+        onSuccess={handleDialogSuccess}
+      />
+
+      <BatchDeleteDialog
+        open={batchDeleteOpen()}
+        onOpenChange={setBatchDeleteOpen}
+        userIds={selectedRows()}
+        onSuccess={handleDialogSuccess}
       />
     </div>
   )

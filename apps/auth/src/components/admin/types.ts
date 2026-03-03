@@ -10,9 +10,10 @@ export type AdminUser = {
   role: string | null
   banned: boolean | null
   banReason: string | null
-  banExpires: number | null
+  banExpires: number | string | null
   image: string | null
-  createdAt: Date
+  createdAt: Date | string
+  emailVerified?: boolean
 }
 
 /** 通用弹窗 Props（带用户数据） */
