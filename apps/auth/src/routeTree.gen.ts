@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ConsentRouteImport } from './routes/consent'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
@@ -28,35 +29,44 @@ const ConsentRoute = ConsentRouteImport.update({
   path: '/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/consent': typeof ConsentRoute
   '/profile': typeof ProfileRoute
   '/sign-in': typeof SignInRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/consent': typeof ConsentRoute
   '/profile': typeof ProfileRoute
   '/sign-in': typeof SignInRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/consent': typeof ConsentRoute
   '/profile': typeof ProfileRoute
   '/sign-in': typeof SignInRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/consent' | '/profile' | '/sign-in'
+  fullPaths: '/consent' | '/profile' | '/sign-in' | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/consent' | '/profile' | '/sign-in'
-  id: '__root__' | '/consent' | '/profile' | '/sign-in'
+  to: '/consent' | '/profile' | '/sign-in' | '/admin'
+  id: '__root__' | '/consent' | '/profile' | '/sign-in' | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   ConsentRoute: typeof ConsentRoute
   ProfileRoute: typeof ProfileRoute
   SignInRoute: typeof SignInRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/solid-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof ConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsentRoute: ConsentRoute,
   ProfileRoute: ProfileRoute,
   SignInRoute: SignInRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
