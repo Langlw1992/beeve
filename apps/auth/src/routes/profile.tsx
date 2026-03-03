@@ -80,13 +80,17 @@ function GitHubIcon() {
 
 /** 获取用户名首字母 */
 function getInitials(name: string | null | undefined): string {
-  if (!name) return '?'
+  if (!name) {
+    return '?'
+  }
   return name.charAt(0).toUpperCase()
 }
 
 /** 格式化日期 */
 function formatDate(date: Date | string | null | undefined): string {
-  if (!date) return '未知'
+  if (!date) {
+    return '未知'
+  }
   const d = typeof date === 'string' ? new Date(date) : date
   return d.toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -97,19 +101,29 @@ function formatDate(date: Date | string | null | undefined): string {
 
 /** 解析 User-Agent 判断设备类型 */
 function isMobileDevice(userAgent: string | null | undefined): boolean {
-  if (!userAgent) return false
+  if (!userAgent) {
+    return false
+  }
   return /mobile|android|iphone|ipad/i.test(userAgent)
 }
 
 /** 从 User-Agent 提取浏览器信息 */
 function parseBrowser(userAgent: string | null | undefined): string {
-  if (!userAgent) return '未知浏览器'
-  if (userAgent.includes('Chrome') && !userAgent.includes('Edg'))
+  if (!userAgent) {
+    return '未知浏览器'
+  }
+  if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
     return 'Chrome'
-  if (userAgent.includes('Firefox')) return 'Firefox'
-  if (userAgent.includes('Safari') && !userAgent.includes('Chrome'))
+  }
+  if (userAgent.includes('Firefox')) {
+    return 'Firefox'
+  }
+  if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
     return 'Safari'
-  if (userAgent.includes('Edg')) return 'Edge'
+  }
+  if (userAgent.includes('Edg')) {
+    return 'Edge'
+  }
   return '未知浏览器'
 }
 
