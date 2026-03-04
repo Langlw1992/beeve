@@ -55,7 +55,9 @@ function GitHubIcon() {
 
 /** 从 URL 获取重定向路径 */
 function getRedirectPath(): string {
-  if (typeof window === 'undefined') return '/profile'
+  if (typeof window === 'undefined') {
+    return '/profile'
+  }
   const params = new URLSearchParams(window.location.search)
   const redirect = params.get('redirect')
   return redirect?.startsWith('/') ? redirect : '/profile'
