@@ -22,7 +22,7 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.url().default('http://localhost:3000'),
 
   /** CORS 允许的源 */
-  CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  CORS_ORIGIN: z.string().default('http://localhost:5174'),
 
   /** Google OAuth 客户端 ID */
   GOOGLE_CLIENT_ID: z.string().min(1, '必须提供 GOOGLE_CLIENT_ID'),

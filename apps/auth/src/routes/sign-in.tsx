@@ -53,6 +53,14 @@ function GitHubIcon() {
   )
 }
 
+/** 从 URL 获取重定向路径 */
+function getRedirectPath(): string {
+  if (typeof window === 'undefined') return '/profile'
+  const params = new URLSearchParams(window.location.search)
+  const redirect = params.get('redirect')
+  return redirect?.startsWith('/') ? redirect : '/profile'
+}
+
 // ==================== 登录页组件 ====================
 
 function SignInPage() {
@@ -62,10 +70,11 @@ function SignInPage() {
   const [githubLoading, setGithubLoading] = createSignal(false)
   const [error, setError] = createSignal('')
 
-  // 已登录时跳转到用户中心
+  // 已登录时跳转到重定向目标或用户中心
   createEffect(() => {
     if (!session().isPending && session().data) {
-      navigate({to: '/profile'})
+      const redirectPath = getRedirectPath()
+      navigate({to: redirectPath})
     }
   })
 
@@ -82,9 +91,11 @@ function SignInPage() {
     }
 
     try {
+      const redirectPath = getRedirectPath()
+      const callbackURL = `${window.location.origin}${redirectPath}`
       await authClient.signIn.social({
         provider,
-        callbackURL: '/profile',
+        callbackURL,
       })
     } catch (err) {
       const message =
@@ -155,6 +166,8 @@ function SignInPage() {
     </div>
   )
 }
+
+// ==================== 路由导出 ====================
 
 export const Route = createFileRoute('/sign-in')({
   component: SignInPage,

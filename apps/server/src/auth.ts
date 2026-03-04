@@ -24,6 +24,10 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: [env.CORS_ORIGIN, env.AUTH_APP_URL],
   disabledPaths: ['/token'],
+  accountLinking: {
+    enabled: true,
+    trustedProviders: ['google', 'github'],
+  },
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
@@ -40,8 +44,8 @@ export const auth = betterAuth({
     admin(),
     jwt(),
     oauthProvider({
-      loginPage: '/sign-in',
-      consentPage: '/consent',
+      loginPage: `${env.AUTH_APP_URL}/sign-in`,
+      consentPage: `${env.AUTH_APP_URL}/consent`,
     }),
   ],
 })
