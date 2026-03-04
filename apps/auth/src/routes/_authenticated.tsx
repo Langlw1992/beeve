@@ -15,10 +15,20 @@ import {authClient} from '../lib/auth-client'
 
 // ==================== 导航菜单配置 ====================
 
-const menuItems: NavMenuItemType[] = [
-  {key: 'profile', label: '用户中心', icon: <User class="size-4" />},
-  {key: 'admin', label: '用户管理', icon: <Shield class="size-4" />},
-]
+/** 根据角色动态生成菜单项 */
+const getMenuItems = (isAdmin: boolean): NavMenuItemType[] => {
+  const items: NavMenuItemType[] = [
+    {key: 'profile', label: '用户中心', icon: <User class="size-4" />},
+  ]
+  if (isAdmin) {
+    items.push({
+      key: 'admin',
+      label: '用户管理',
+      icon: <Shield class="size-4" />,
+    })
+  }
+  return items
+}
 
 /** 菜单 key 与路由路径的映射 */
 const keyToPath: Record<string, string> = {
@@ -71,6 +81,7 @@ function AuthenticatedLayout() {
 
   const user = () => session().data?.user
   const isPending = () => session().isPending
+  const isAdmin = () => user()?.role === 'admin'
 
   return (
     <Show
@@ -100,7 +111,7 @@ function AuthenticatedLayout() {
 
           <Sidebar.Content>
             <NavMenu
-              items={menuItems}
+              items={getMenuItems(isAdmin())}
               value={activeKey()}
               onChange={handleMenuChange}
             />
