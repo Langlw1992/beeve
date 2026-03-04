@@ -1,8 +1,8 @@
 /**
  * 登录页 - 社交登录（Google / GitHub）
  */
-import {createSignal, Show} from 'solid-js'
-import {createFileRoute} from '@tanstack/solid-router'
+import {createSignal, createEffect, Show} from 'solid-js'
+import {createFileRoute, useNavigate} from '@tanstack/solid-router'
 import {Button} from '@beeve/ui'
 import {authClient} from '../lib/auth-client'
 
@@ -56,9 +56,18 @@ function GitHubIcon() {
 // ==================== 登录页组件 ====================
 
 function SignInPage() {
+  const navigate = useNavigate()
+  const session = authClient.useSession()
   const [googleLoading, setGoogleLoading] = createSignal(false)
   const [githubLoading, setGithubLoading] = createSignal(false)
   const [error, setError] = createSignal('')
+
+  // 已登录时跳转到用户中心
+  createEffect(() => {
+    if (!session().isPending && session().data) {
+      navigate({to: '/profile'})
+    }
+  })
 
   const isLoading = () => googleLoading() || githubLoading()
 
@@ -75,7 +84,7 @@ function SignInPage() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: window.location.href,
+        callbackURL: '/profile',
       })
     } catch (err) {
       const message =

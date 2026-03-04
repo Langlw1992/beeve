@@ -1,19 +1,19 @@
 /**
  * 用户中心页 - 用户信息、关联账号、活跃会话管理
+ * 认证检查由 _authenticated 布局统一处理
  */
-import {createSignal, createEffect, Show, For, onMount} from 'solid-js'
-import {createFileRoute, useNavigate} from '@tanstack/solid-router'
-import {Button, Skeleton} from '@beeve/ui'
-import {LogOut, Monitor, Smartphone, X} from 'lucide-solid'
+import {createSignal, Show, For, onMount} from 'solid-js'
+import {createFileRoute} from '@tanstack/solid-router'
+import {Button, Dialog, Input, Label, Skeleton, toast} from '@beeve/ui'
+import {Monitor, Smartphone, X, SquarePen} from 'lucide-solid'
 import {tv} from 'tailwind-variants'
-import {authClient} from '../lib/auth-client'
+import {authClient} from '../../lib/auth-client'
 
 // ==================== 样式定义 ====================
 
 const profileStyles = tv({
   slots: {
-    container: 'flex min-h-screen items-center justify-center px-4 py-8',
-    wrapper: 'w-full max-w-md space-y-6',
+    container: 'mx-auto max-w-2xl p-6',
     card: 'rounded-[var(--radius)] border border-border bg-card p-6',
     sectionTitle: 'text-sm font-medium text-muted-foreground mb-3',
     avatar:
@@ -142,19 +142,14 @@ type SessionInfo = {
 // ==================== 用户中心页组件 ====================
 
 function ProfilePage() {
-  const navigate = useNavigate()
   const session = authClient.useSession()
   const [sessions, setSessions] = createSignal<SessionInfo[]>([])
   const [sessionsLoading, setSessionsLoading] = createSignal(true)
   const [revokingToken, setRevokingToken] = createSignal<string | null>(null)
-  const [signOutLoading, setSignOutLoading] = createSignal(false)
 
-  // 未登录时重定向到登录页
-  createEffect(() => {
-    if (!session().isPending && !session().data) {
-      navigate({to: '/sign-in'})
-    }
-  })
+  // ===== 编辑资料弹窗状态 =====
+  const [editOpen, setEditOpen] = createSignal(false)
+  const [editName, setEditName] = createSignal('')
 
   // 加载活跃会话列表
   onMount(async () => {
@@ -183,15 +178,27 @@ function ProfilePage() {
     }
   }
 
-  /** 退出登录 */
-  const handleSignOut = async () => {
-    setSignOutLoading(true)
-    try {
-      await authClient.signOut()
-      navigate({to: '/sign-in'})
-    } catch {
-      setSignOutLoading(false)
+  /** 打开编辑资料弹窗 */
+  const openEditDialog = () => {
+    setEditName(user()?.name ?? '')
+    setEditOpen(true)
+  }
+
+  /** 保存编辑的资料 */
+  const handleSaveProfile = async () => {
+    const trimmedName = editName().trim()
+    if (!trimmedName) {
+      toast.error('姓名不能为空')
+      throw new Error('姓名不能为空')
     }
+
+    const {error} = await authClient.updateUser({name: trimmedName})
+    if (error) {
+      toast.error(`更新失败: ${error.message}`)
+      throw error
+    }
+
+    toast.success('资料已更新')
   }
 
   /** 判断是否为当前会话 */
@@ -205,15 +212,15 @@ function ProfilePage() {
 
   return (
     <div class={profileStyles.container()}>
-      <div class={profileStyles.wrapper()}>
-        {/* Logo 和标题 */}
-        <div class="text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground text-xl font-bold">
-            B
-          </div>
-          <h1 class="mt-4 text-2xl font-bold tracking-tight text-foreground">
+      <div class="space-y-6">
+        {/* 页面标题 */}
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-foreground">
             用户中心
           </h1>
+          <p class="text-sm text-muted-foreground mt-1">
+            管理您的个人信息和会话
+          </p>
         </div>
 
         {/* 用户信息卡片 */}
@@ -266,6 +273,16 @@ function ProfilePage() {
                   注册于 {formatDate(user()?.createdAt)}
                 </div>
               </div>
+            </div>
+            <div class="mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={openEditDialog}
+              >
+                <SquarePen class="size-3.5" />
+                编辑资料
+              </Button>
             </div>
           </Show>
         </div>
@@ -357,22 +374,29 @@ function ProfilePage() {
           </Show>
         </div>
 
-        {/* 退出登录 */}
-        <Button
-          variant="outline"
-          size="lg"
-          class="w-full"
-          loading={signOutLoading()}
-          onClick={handleSignOut}
+        {/* 编辑资料弹窗 */}
+        <Dialog
+          open={editOpen()}
+          onOpenChange={setEditOpen}
+          title="编辑资料"
+          onOk={handleSaveProfile}
+          okText="保存"
+          width="md"
         >
-          <LogOut class="size-4" />
-          退出登录
-        </Button>
+          <div class="flex flex-col gap-2">
+            <Label required>姓名</Label>
+            <Input
+              value={editName()}
+              onInput={(v: string) => setEditName(v)}
+              placeholder="请输入姓名"
+            />
+          </div>
+        </Dialog>
       </div>
     </div>
   )
 }
 
-export const Route = createFileRoute('/profile')({
+export const Route = createFileRoute('/_authenticated/profile')({
   component: ProfilePage,
 })
