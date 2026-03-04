@@ -4,10 +4,7 @@
  * 基于 Elysia.js 和 Bun 运行时的纯 API + OAuth 2.1 Provider 服务。
  */
 
-import {
-  oauthProviderAuthServerMetadata,
-  oauthProviderOpenIdConfigMetadata,
-} from '@better-auth/oauth-provider'
+import {oauthProviderAuthServerMetadata, oauthProviderOpenIdConfigMetadata,} from '@better-auth/oauth-provider'
 import {cors} from '@elysiajs/cors'
 import {Elysia} from 'elysia'
 import {auth} from './auth'
@@ -30,12 +27,10 @@ const app = new Elysia()
   .use(authRoutes)
   // ==================== Well-Known 端点 ====================
   .get('/.well-known/openid-configuration', async ({request}) => {
-    const response = await openIdConfigHandler(request)
-    return response
+    return await openIdConfigHandler(request)
   })
   .get('/.well-known/oauth-authorization-server', async ({request}) => {
-    const response = await authServerHandler(request)
-    return response
+    return await authServerHandler(request)
   })
   // ==================== 健康检查端点 ====================
   .get('/health', () => ({

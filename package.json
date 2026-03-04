@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
+    "postinstall": "pnpm --filter @beeve/db build",
+    "dev": "pnpm dev:deps && turbo run dev --filter=!@beeve/db",
+    "dev:server": "pnpm dev:deps && turbo run dev --filter=@beeve/server",
+    "dev:deps": "test -d packages/db/dist || pnpm --filter @beeve/db build",
     "dev:web": "turbo run dev --filter=@beeve/web --filter=@beeve/docs --filter=@beeve/storybook",
-    "dev:server": "turbo run dev --filter=@beeve/server",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",

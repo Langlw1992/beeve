@@ -50,10 +50,19 @@ function AuthenticatedLayout() {
   const session = authClient.useSession()
   const [signOutLoading, setSignOutLoading] = createSignal(false)
 
-  // 未登录时重定向到登录页
+  // 未登录时重定向到登录页，保留原始目标 URL
   createEffect(() => {
     if (!session().isPending && !session().data) {
-      navigate({to: '/sign-in'})
+      const currentPath = location().pathname
+      const searchParams = new URLSearchParams()
+      if (currentPath && currentPath !== '/') {
+        searchParams.set('redirect', currentPath)
+      }
+      const queryString = searchParams.toString()
+      const targetUrl = queryString
+        ? `/sign-in?${queryString}`
+        : '/sign-in'
+      window.location.href = targetUrl
     }
   })
 
@@ -145,7 +154,7 @@ function AuthenticatedLayout() {
             </div>
             <button
               type="button"
-              class="flex w-full items-center gap-2 rounded-[var(--radius)] px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              class="flex w-full items-center gap-2 rounded-(--radius) px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
               onClick={handleSignOut}
               disabled={signOutLoading()}
             >
