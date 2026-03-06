@@ -4,20 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "pnpm --filter @beeve/db build",
-    "dev": "pnpm dev:deps && turbo run dev --filter=!@beeve/db",
-    "dev:server": "pnpm dev:deps && turbo run dev --filter=@beeve/server",
-    "dev:deps": "test -d packages/db/dist || pnpm --filter @beeve/db build",
-    "dev:web": "turbo run dev --filter=@beeve/web --filter=@beeve/docs --filter=@beeve/storybook",
+    "dev": "turbo run dev --filter=@beeve/storybook",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "biome format --write .",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "db:generate": "pnpm --filter @beeve/db generate",
-    "db:migrate": "pnpm --filter @beeve/db migrate",
-    "db:studio": "pnpm --filter @beeve/db studio"
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
