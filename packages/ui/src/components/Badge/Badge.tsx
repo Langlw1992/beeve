@@ -153,6 +153,8 @@ export interface BadgeProps {
   showZero?: boolean
   /** 颜色 */
   color?: BadgeVariants['color']
+  /** 变体样式 (secondary | outline | destructive | default) */
+  variant?: 'default' | 'secondary' | 'outline' | 'destructive'
   /** 状态（用于独立状态点） */
   status?: BadgeVariants['status']
   /** 状态文本（与 status 配合使用） */
@@ -182,6 +184,7 @@ export const Badge: Component<BadgeProps> = (props) => {
     'dot',
     'showZero',
     'color',
+    'variant',
     'status',
     'text',
     'size',
@@ -194,9 +197,17 @@ export const Badge: Component<BadgeProps> = (props) => {
   const isStandalone = () => !local.children
   const isStatusBadge = () => isStandalone() && local.status && local.text
 
+  // variant 映射到 color
+  const variantColor = (): BadgeVariants['color'] => {
+    if (local.variant === 'destructive') return 'red'
+    if (local.variant === 'secondary') return undefined
+    if (local.variant === 'outline') return undefined
+    return local.color
+  }
+
   const styles = createMemo(() =>
     badgeVariants({
-      color: local.color,
+      color: variantColor(),
       status: local.status,
       size: local.size,
       placement: local.placement,
@@ -253,6 +264,34 @@ export const Badge: Component<BadgeProps> = (props) => {
       >
         <span class={styles().statusDot()} />
         <span class={styles().statusText()}>{local.text}</span>
+      </span>
+    )
+  }
+
+  // 独立使用 Badge 作为标签（带 variant 支持）
+  if (isStandalone() && !local.status && !local.text) {
+    const baseClasses =
+      'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'
+    const variantClasses = () => {
+      switch (local.variant) {
+        case 'secondary':
+          return 'bg-secondary text-secondary-foreground'
+        case 'outline':
+          return 'border border-input bg-transparent'
+        case 'destructive':
+          return 'bg-destructive text-destructive-foreground'
+        default:
+          return 'bg-primary text-primary-foreground'
+      }
+    }
+    return (
+      <span
+        class={[baseClasses, variantClasses(), local.class]
+          .filter(Boolean)
+          .join(' ')}
+        {...rest}
+      >
+        {local.children}
       </span>
     )
   }

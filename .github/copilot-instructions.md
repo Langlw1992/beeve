@@ -23,14 +23,49 @@ pnpm --filter @beeve/ui vitest run src/components/Button/Button.test.tsx
 
 # Dev servers
 pnpm dev              # Storybook
+pnpm --filter @beeve/server dev  # API server
+
+# Server
+pnpm --filter @beeve/server db:generate  # Generate Drizzle migration
+pnpm --filter @beeve/server db:migrate   # Run migration
+pnpm --filter @beeve/server db:studio    # Drizzle Studio
 ```
 
 ## Architecture
 
-**Monorepo structure:**
+**Current workspaces:**
 
 - `packages/ui` — SolidJS component library (`@beeve/ui`), built with tsup
 - `apps/storybook` — Storybook for component documentation
+- `apps/server` — Elysia API server with Better Auth (OAuth, PostgreSQL, Drizzle ORM)
+
+**Target monorepo expansion (planned):**
+
+```text
+apps/
+  storybook/
+  server/     # auth, session, permission, user management, business API/BFF
+  web/        # main web product
+  desktop/    # desktop shell, prefer reusing web flows
+  mobile/     # iOS/mobile app with native UI
+
+packages/
+  ui/         # SolidJS web/desktop UI
+  tokens/     # theme tokens and design contracts
+  contracts/  # API schemas, DTOs, permission model
+  api-client/ # typed API client
+  auth-core/  # auth/session abstractions
+  domain-user/ # user/org/role/permission domain logic
+  utils/      # platform-agnostic helpers
+  config-*    # shared toolchain configs
+```
+
+**Boundary rules:**
+
+- Shared logic belongs in `packages/*`, not in `apps/*`
+- `@beeve/ui` is for SolidJS Web/Desktop only; mobile should reuse tokens/contracts/domain code instead of importing Solid components
+- New business modules should build on top of auth + user context first
+- If a workspace is added, update `pnpm-workspace.yaml`, `turbo.json`, shared tsconfig, and AI guidance docs together
 
 **UI library layering:** Headless primitives (Zag.js state machines) in `src/primitives/` → Styled components in `src/components/` → Exported via `src/index.ts`.
 
@@ -61,3 +96,14 @@ ComponentName/
 **Formatting (Biome):** 2-space indent, single quotes, no semicolons, trailing commas, no bracket spacing. Files matching `*.gen.ts` are excluded from linting.
 
 **Turbo `transit` task** — lint and typecheck tasks depend on `transit`, which is a pre-build step. This ensures generated files are up-to-date before checking.
+
+## Product Direction
+
+- Start from the UI library, but evolve the repository around an **auth-first platform**
+- Priority order:
+  1. shared contracts and auth foundations
+  2. web app and server
+  3. user management / RBAC / session management
+  4. desktop app
+  5. mobile app
+- When implementing new features, prefer package extraction before platform-specific duplication
