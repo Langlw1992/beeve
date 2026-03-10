@@ -1,25 +1,30 @@
 import {auth} from '@/auth'
+import {db} from '@/config/db'
+import {user} from '@/db/schema'
 import {Errors, isAPIError} from '@/lib/errors'
 import type {Session, User} from 'better-auth'
-import {Elysia} from 'elysia'
+import {eq} from 'drizzle-orm'
+import {Elysia, t} from 'elysia'
+
+/**
+ * 获取当前会话信息
+ */
+async function getCurrentSession(headers: Headers) {
+  const session = await auth.api.getSession({headers})
+  return session
+}
 
 /**
  * 当前用户相关路由
- * GET /api/v1/me - 获取当前用户信息
- *
- * 返回格式: { user: User, session: Session }
- * 错误格式: { message: string, code?: string }
+ * GET /api/me - 获取当前用户信息
+ * PATCH /api/me - 更新当前用户资料
  */
-export const meRoutes = new Elysia({prefix: '/api'}).get(
-  '/me',
-  async ({request, set}) => {
+export const meRoutes = new Elysia({prefix: '/api'})
+  // 获取当前用户信息
+  .get('/me', async ({request, set}) => {
     try {
-      // 使用 Better Auth 验证会话
-      const session = await auth.api.getSession({
-        headers: request.headers,
-      })
+      const session = await getCurrentSession(request.headers)
 
-      // 未登录返回 401
       if (!session) {
         set.status = 401
         throw Errors.unauthorized('请先登录')
@@ -27,16 +32,12 @@ export const meRoutes = new Elysia({prefix: '/api'}).get(
 
       const {user} = session
 
-      // 返回用户基本信息（与 better-auth 格式保持一致）
       return {
         user,
         session,
       }
     } catch (error) {
-      // 如果是 APIError，检查是否是认证错误
       if (isAPIError(error)) {
-        // better-auth 在 token 无效时返回的 code 可能是 FAILED_TO_GET_SESSION 等
-        // 统一转换为 401 Unauthorized
         if (
           error.body?.code?.includes('SESSION') ||
           error.body?.code?.includes('TOKEN')
@@ -47,12 +48,99 @@ export const meRoutes = new Elysia({prefix: '/api'}).get(
         throw error
       }
 
-      // 处理其他错误（如 token 解析错误）
       console.error('[MeRoute] Error:', error)
       throw Errors.invalidToken('无效的认证令牌')
     }
-  },
-)
+  })
+
+  // 更新当前用户资料
+  .patch(
+    '/me',
+    async ({request, set, body}) => {
+      try {
+        const session = await getCurrentSession(request.headers)
+
+        if (!session) {
+          set.status = 401
+          throw Errors.unauthorized('请先登录')
+        }
+
+        const userId = session.user.id
+
+        // 构建更新数据
+        const updateData: Partial<typeof user.$inferInsert> = {
+          updatedAt: new Date(),
+        }
+
+        if (body.name !== undefined) {
+          updateData.name = body.name
+        }
+
+        if (body.image !== undefined) {
+          updateData.image = body.image
+        }
+
+        // 更新用户信息
+        const updated = await db
+          .update(user)
+          .set(updateData)
+          .where(eq(user.id, userId))
+          .returning()
+
+        if (!updated.length) {
+          throw Errors.notFound('用户')
+        }
+
+        return {
+          user: updated[0],
+        }
+      } catch (error) {
+        if (isAPIError(error)) {
+          throw error
+        }
+
+        console.error('[MeRoute] Update error:', error)
+        throw Errors.internal('更新用户资料失败')
+      }
+    },
+    {
+      body: t.Object({
+        name: t.Optional(t.String({minLength: 1, maxLength: 100})),
+        image: t.Optional(t.String()),
+      }),
+    },
+  )
+
+  // 获取当前用户权限
+  .get('/me/permissions', async ({request, set}) => {
+    try {
+      const session = await getCurrentSession(request.headers)
+
+      if (!session) {
+        set.status = 401
+        throw Errors.unauthorized('请先登录')
+      }
+
+      const userId = session.user.id
+
+      // 动态导入避免循环依赖
+      const {getUserEffectivePermissions} = await import(
+        '@/lib/user-permissions'
+      )
+      const permissions = await getUserEffectivePermissions(userId)
+
+      return {
+        permissions,
+      }
+    } catch (error) {
+      if (isAPIError(error)) {
+        throw error
+      }
+
+      console.error('[MeRoute] Permissions error:', error)
+      throw Errors.internal('获取权限失败')
+    }
+  })
 
 // 导出类型（从 better-auth 复用）
 export type {Session, User}

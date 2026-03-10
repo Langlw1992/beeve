@@ -1,0 +1,36 @@
+{
+  "name": "@beeve/auth-client",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks.js",
+      "types": "./dist/hooks.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write"
+  },
+  "dependencies": {
+    "better-auth": "^1.5.4",
+    "@beeve/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "solid-js": "^1.9.0",
+    "@types/node": "^20.0.0"
+  }
+}

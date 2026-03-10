@@ -1,10 +1,5 @@
-import {db} from '~/config/db'
-import {
-  user,
-  userPermissions,
-  roleTemplates,
-  userRoleTemplates,
-} from '~/db/schema'
+import {db} from '@/config/db'
+import {user, userPermissions, userRoleTemplates} from '@/db/schema'
 import {eq} from 'drizzle-orm'
 
 /**
@@ -19,7 +14,9 @@ export async function getUserEffectivePermissions(
     where: eq(user.id, userId),
   })
 
-  if (!userData) return []
+  if (!userData) {
+    return []
+  }
 
   // admin类型返回超级权限
   if (userData.userType === 'admin') {
@@ -37,7 +34,9 @@ export async function getUserEffectivePermissions(
   })
 
   if (roleAssignment?.roleTemplate) {
-    roleAssignment.roleTemplate.permissions.forEach((p) => permissions.add(p))
+    for (const p of roleAssignment.roleTemplate.permissions) {
+      permissions.add(p)
+    }
   }
 
   // 加载直接授予的权限
@@ -45,7 +44,9 @@ export async function getUserEffectivePermissions(
     where: eq(userPermissions.userId, userId),
   })
 
-  directPermissions.forEach((p) => permissions.add(p.permission))
+  for (const p of directPermissions) {
+    permissions.add(p.permission)
+  }
 
   return Array.from(permissions)
 }
@@ -59,14 +60,20 @@ export function hasPermission(
   required: string,
 ): boolean {
   // 直接匹配
-  if (userPermissions.includes(required)) return true
+  if (userPermissions.includes(required)) {
+    return true
+  }
 
   // 通配符匹配
   for (const perm of userPermissions) {
-    if (perm === '*') return true
+    if (perm === '*') {
+      return true
+    }
     if (perm.endsWith(':*')) {
       const prefix = perm.slice(0, -1)
-      if (required.startsWith(prefix)) return true
+      if (required.startsWith(prefix)) {
+        return true
+      }
     }
   }
 

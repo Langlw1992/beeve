@@ -1,24 +1,25 @@
 {
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
+    "target": "ES2022",
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "allowJs": true,
-    "checkJs": false,
-    "strict": true,
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
-    "types": ["vinxi/types/client", "node"],
-    "isolatedModules": true,
+
+    /* Linting */
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "~/*": ["./app/*"]
-    },
-    "baseUrl": "."
-  },
-  "include": ["app/**/*", "app.config.ts"]
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  }
 }

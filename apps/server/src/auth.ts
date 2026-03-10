@@ -36,6 +36,7 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {provider: 'pg'}),
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
+  basePath: '/api/auth',
   trustedOrigins: env.CORS_ORIGIN.split(',').map((o) => o.trim()),
   plugins: [bearer()], // Bearer Token 支持 iOS
   socialProviders: buildSocialProviders(),

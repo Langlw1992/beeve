@@ -35,7 +35,7 @@ import {
   createEffect,
   on,
 } from 'solid-js'
-import {Portal} from 'solid-js/web'
+import {isServer, Portal} from 'solid-js/web'
 import * as popover from '@zag-js/popover'
 import {useMachine, normalizeProps} from '@zag-js/solid'
 import {ChevronDown, ChevronRight, X, Check} from 'lucide-solid'
@@ -613,8 +613,8 @@ export function Cascader<T = unknown>(props: CascaderProps<T>) {
         </span>
       </button>
 
-      {/* 弹出层 */}
-      <Show when={api().open}>
+      {/* 弹出层 - 只在客户端渲染 */}
+      <Show when={api().open && !isServer}>
         <Portal>
           <div
             {...api().getPositionerProps()}

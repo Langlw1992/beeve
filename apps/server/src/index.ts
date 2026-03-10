@@ -3,19 +3,47 @@ import {Elysia} from 'elysia'
 import {auth} from './auth'
 import {env} from './config/env'
 import {errorHandler} from './middleware/error-handler'
-import {meRoutes} from './routes/me'
 import {adminRoutes} from './routes/admin'
+import {aiRoutes} from './routes/ai'
+import {meRoutes} from './routes/me'
+import {reminderRoutes} from './routes/reminders'
+import {taskRoutes} from './routes/tasks'
+import {todayRoutes} from './routes/today'
+
+// 允许的 CORS 源列表
+const allowedOrigins = env.CORS_ORIGIN.split(',').map((o) => o.trim())
 
 /**
  * Better Auth 请求处理器
- * 验证请求方法并转发到 auth.handler
+ * 将请求转发到 auth.handler，并添加 CORS 头
  */
-const betterAuthView = ({request}: {request: Request}) => {
-  const BETTER_AUTH_ACCEPT_METHODS = ['POST', 'GET']
-  if (BETTER_AUTH_ACCEPT_METHODS.includes(request.method)) {
-    return auth.handler(request)
+const betterAuthView = async ({request}: {request: Request}) => {
+  const response = await auth.handler(request)
+
+  // 添加 CORS 头到响应
+  const origin = request.headers.get('origin')
+  const corsHeaders = new Headers(response.headers)
+
+  if (origin && allowedOrigins.includes(origin)) {
+    corsHeaders.set('Access-Control-Allow-Origin', origin)
+  } else {
+    corsHeaders.set('Access-Control-Allow-Origin', allowedOrigins[0])
   }
-  return new Response('Method Not Allowed', {status: 405})
+  corsHeaders.set('Access-Control-Allow-Credentials', 'true')
+  corsHeaders.set(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS',
+  )
+  corsHeaders.set(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-Requested-With',
+  )
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: corsHeaders,
+  })
 }
 
 /**
@@ -24,19 +52,28 @@ const betterAuthView = ({request}: {request: Request}) => {
 const app = new Elysia()
   .use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: (request) => {
+        const origin = request.headers.get('origin')
+        if (origin && allowedOrigins.includes(origin)) {
+          return origin
+        }
+        return allowedOrigins[0]
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      // 明确指定允许的请求头，避免返回 "undefined"
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     }),
   )
   .onError(errorHandler)
-  // Better Auth 挂载到 /api/auth/* 路径
+  // Better Auth 端点 - 使用 .all() 配合自定义 handler 以正确处理 CORS
   .all('/api/auth/*', betterAuthView)
   // 自定义 API 路由
   .use(meRoutes)
   .use(adminRoutes)
+  .use(taskRoutes)
+  .use(reminderRoutes)
+  .use(todayRoutes)
+  .use(aiRoutes)
   // API 根路径信息
   .get('/api', () => ({
     name: 'Beeve API',
@@ -45,6 +82,10 @@ const app = new Elysia()
       auth: '/api/auth/*',
       me: '/api/me',
       admin: '/api/admin/*',
+      tasks: '/api/v1/tasks',
+      reminders: '/api/v1/reminders',
+      today: '/api/v1/today',
+      ai: '/api/v1/ai/*',
       health: '/health',
     },
   }))
@@ -59,9 +100,6 @@ const app = new Elysia()
     timestamp: new Date().toISOString(),
   }))
   .listen(env.PORT || 3000)
-
-// 注意：Elysia 的 mount() 会拦截所有请求，404 处理需要在 mount 之前
-// 但由于 better-auth 需要挂载到 /api/auth，我们在 errorHandler 中处理 404
 
 console.log(`🦊 Server running at ${app.server?.hostname}:${app.server?.port}`)
 

@@ -17,6 +17,16 @@
         "default": "./dist/index.js"
       }
     },
+    "./components/*": {
+      "solid": {
+        "types": "./dist/components/*/index.d.ts",
+        "default": "./src/components/*/index.ts"
+      },
+      "import": {
+        "types": "./dist/components/*/index.d.ts",
+        "default": "./dist/components/*/index.js"
+      }
+    },
     "./styles": "./src/styles/index.css"
   },
   "scripts": {

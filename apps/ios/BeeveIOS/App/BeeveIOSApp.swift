@@ -3,13 +3,13 @@ import SwiftUI
 
 @main
 struct BeeveIOSApp: App {
-  private let products = ProductCatalogService().products
-
   var body: some Scene {
     WindowGroup {
-      RootTabView(products: products)
+      RootTabView()
+        .tint(.indigo)
     }
     .modelContainer(for: [
+      TaskItem.self,
       ReminderItem.self,
       UserProfile.self,
       NotificationSetting.self,

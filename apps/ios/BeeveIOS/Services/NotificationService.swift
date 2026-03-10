@@ -7,6 +7,7 @@ struct ReminderDraft {
   let scheduledAt: Date
   let repeatDaily: Bool
   let relatedProductId: String?
+  let relatedTaskId: String?
 }
 
 struct NotificationService {
