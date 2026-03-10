@@ -1,16 +1,30 @@
 import {defineConfig} from 'vite'
-import solid from 'vite-plugin-solid'
+import {devtools} from '@tanstack/devtools-vite'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
-import path from 'node:path'
+
+import {tanstackStart} from '@tanstack/solid-start/plugin/vite'
+
+import solidPlugin from 'vite-plugin-solid'
 
 export default defineConfig({
-  plugins: [solid(), tailwindcss()],
-  resolve: {
-    alias: {
-      '~': path.resolve(__dirname, 'app'),
+  server: {
+    port: 8000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
-  server: {
-    port: 5174,
-  },
+  plugins: [
+    devtools(),
+    // this is the plugin that enables path aliases
+    viteTsConfigPaths({
+      projects: ['./tsconfig.json'],
+    }),
+    tailwindcss(),
+    tanstackStart(),
+    solidPlugin({ssr: true}),
+  ],
 })

@@ -1,38 +1,38 @@
 {
   "name": "@beeve/auth",
-  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev --port 8000",
     "build": "vite build",
-    "start": "vite preview",
-    "lint": "biome lint ./app",
-    "lint:fix": "biome lint --write ./app",
-    "typecheck": "tsc --noEmit"
+    "start": "node .output/server/index.mjs",
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@beeve/auth-client": "workspace:*",
+    "@beeve/contracts": "workspace:*",
     "@beeve/ui": "workspace:*",
-    "@tanstack/solid-query": "^5.90.23",
-    "@tanstack/solid-router": "^1.166.2",
-    "@tanstack/solid-start": "^1.166.3",
-    "@tanstack/solid-start-client": "^1.166.2",
-    "@tanstack/solid-start-server": "^1.166.2",
-    "@tanstack/start-plugin-core": "^1.166.3",
-    "@tanstack/start-server-core": "^1.166.2",
-    "better-auth": "^1.5.4",
-    "date-fns": "^4.1.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/router-plugin": "^1.133.21",
+    "@tanstack/solid-query": "^5.66.0",
+    "@tanstack/solid-router": "^1.166.6",
+    "@tanstack/solid-router-devtools": "^1.166.6",
+    "@tanstack/solid-router-ssr-query": "^1.166.6",
+    "@tanstack/solid-start": "^1.166.6",
     "lucide-solid": "^0.562.0",
-    "solid-js": "^1.9.3",
-    "vinxi": "^0.5.0"
+    "solid-js": "^1.9.11",
+    "tailwindcss": "^4.1.18",
+    "vite-tsconfig-paths": "^5.1.4",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@tailwindcss/vite": "^4.0.0",
-    "@types/node": "^20.19.37",
-    "tailwindcss": "^4.0.0",
+    "@tanstack/devtools-vite": "^0.5.3",
     "typescript": "^5.7.2",
     "vite": "^7.3.1",
     "vite-plugin-solid": "^2.11.10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "lightningcss"]
   }
 }
