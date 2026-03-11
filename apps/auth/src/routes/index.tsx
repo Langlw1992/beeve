@@ -57,31 +57,33 @@ function HomePage() {
 
       <section class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
-          [
-            Shield,
-            '安全可靠',
-            '基于 Better Auth 构建，支持会话管理、CSRF 保护等安全特性。',
-          ],
-          [
-            Zap,
-            '社交登录',
-            '支持 Google、GitHub 等主流社交账号一键登录，提升用户体验。',
-          ],
-          [Lock, '权限管理', '内置用户角色和权限系统，灵活控制访问权限。'],
-        ].map(([Icon, title, desc], index) => (
+          {
+            icon: Shield,
+            title: '安全可靠',
+            desc: '基于 Better Auth 构建，支持会话管理、CSRF 保护等安全特性。',
+          },
+          {
+            icon: Zap,
+            title: '社交登录',
+            desc: '支持 Google、GitHub 等主流社交账号一键登录，提升用户体验。',
+          },
+          {
+            icon: Lock,
+            title: '权限管理',
+            desc: '内置用户角色和权限系统，灵活控制访问权限。',
+          },
+        ].map((feature, index) => (
           <article
             class="island-shell feature-card rise-in rounded-2xl p-5"
             style={{'animation-delay': `${index * 90 + 80}ms`}}
           >
             <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--lagoon)]/10">
-              <Icon class="size-5 text-[var(--lagoon-deep)]" />
+              <feature.icon class="size-5 text-[var(--lagoon-deep)]" />
             </div>
             <h2 class="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title as string}
+              {feature.title}
             </h2>
-            <p class="m-0 text-sm text-[var(--sea-ink-soft)]">
-              {desc as string}
-            </p>
+            <p class="m-0 text-sm text-[var(--sea-ink-soft)]">{feature.desc}</p>
           </article>
         ))}
       </section>

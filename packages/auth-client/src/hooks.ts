@@ -1,18 +1,23 @@
-import type {Session, User} from '@beeve/contracts'
 /**
  * 认证相关 Hooks
  * 用于 SolidJS 组件中获取认证状态
  */
 import {createSignal} from 'solid-js'
+import {isServer} from 'solid-js/web'
+import type {AuthSessionObj, AuthUser} from './client.js'
 import {authClient} from './client.js'
 
 /**
  * 会话状态 store
  * 全局共享的认证状态
+ *
+ * 注意：SSR 环境下此 signal 在服务端被所有请求共享。
+ * 服务端不应调用 initSession()，只在客户端 onMount 中初始化。
+ * 默认 isLoading: true 确保 SSR 输出 loading 状态而非错误内容。
  */
 interface SessionStore {
-  user: User | null
-  session: Session | null
+  user: AuthUser | null
+  session: AuthSessionObj | null
   isLoading: boolean
   error: Error | null
 }
@@ -26,9 +31,14 @@ const [sessionStore, setSessionStore] = createSignal<SessionStore>({
 
 /**
  * 初始化会话
- * 在应用启动时调用
+ * 在应用启动时调用（仅客户端）
  */
 export async function initSession() {
+  // SSR 服务端不应发起会话请求，避免状态泄漏
+  if (isServer) {
+    return
+  }
+
   setSessionStore((prev: SessionStore) => ({
     ...prev,
     isLoading: true,
@@ -40,8 +50,8 @@ export async function initSession() {
 
     if (result.data) {
       setSessionStore({
-        user: result.data.user as User,
-        session: result.data.session as unknown as Session,
+        user: result.data.user,
+        session: result.data.session,
         isLoading: false,
         error: null,
       })
@@ -194,7 +204,7 @@ export function useSignOut() {
         error: null,
       })
 
-      if (options?.redirectTo) {
+      if (options?.redirectTo && typeof window !== 'undefined') {
         window.location.href = options.redirectTo
       }
     } finally {
@@ -212,12 +222,15 @@ export function useSignOut() {
 export function useSocialSignIn() {
   const [isLoading, setIsLoading] = createSignal(false)
 
+  const getOrigin = () =>
+    typeof window !== 'undefined' ? window.location.origin : ''
+
   const signInWithGoogle = async (callbackURL?: string) => {
     setIsLoading(true)
     try {
       await authClient.signIn.social({
         provider: 'google',
-        callbackURL: callbackURL ?? `${window.location.origin}/dashboard`,
+        callbackURL: callbackURL ?? `${getOrigin()}/dashboard`,
       })
     } finally {
       setIsLoading(false)
@@ -229,7 +242,7 @@ export function useSocialSignIn() {
     try {
       await authClient.signIn.social({
         provider: 'github',
-        callbackURL: callbackURL ?? `${window.location.origin}/dashboard`,
+        callbackURL: callbackURL ?? `${getOrigin()}/dashboard`,
       })
     } finally {
       setIsLoading(false)

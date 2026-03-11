@@ -13,10 +13,15 @@ async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
     ...options,
   })
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}))
-    throw new Error(
-      (error as {message?: string}).message || `请求失败: ${path}`,
-    )
+    const body: unknown = await response.json().catch(() => null)
+    const message =
+      typeof body === 'object' &&
+      body !== null &&
+      'message' in body &&
+      typeof body.message === 'string'
+        ? body.message
+        : `请求失败: ${path}`
+    throw new Error(message)
   }
   return response.json()
 }
