@@ -1,47 +1,16 @@
 {
   "name": "beeve",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "turbo dev --filter=@beeve/web --filter=@beeve/server --filter=@beeve/auth",
-    "dev:web": "turbo dev --filter=@beeve/web",
-    "dev:auth": "turbo dev --filter=@beeve/auth",
-    "dev:server": "turbo dev --filter=@beeve/server",
-    "dev:docs": "turbo dev --filter=@beeve/storybook",
-    "dev:all": "turbo dev",
-
-    "build": "turbo build",
-    "build:auth": "turbo build --filter=@beeve/auth",
-    "build:web": "turbo build --filter=@beeve/web",
-    "build:server": "turbo build --filter=@beeve/server",
-
-    "db:generate": "turbo db:generate --filter=@beeve/server",
-    "db:migrate": "turbo db:migrate --filter=@beeve/server",
-    "db:push": "turbo db:push --filter=@beeve/server",
-    "db:studio": "turbo db:studio --filter=@beeve/server",
-    "db:setup": "pnpm --filter @beeve/server db:push",
-
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
-    "format": "biome format --write .",
-    "typecheck": "turbo typecheck",
-
-    "setup": "pnpm install && pnpm db:setup",
-    "clean": "turbo clean && rm -rf node_modules"
-  },
+  "scripts": {},
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.4.6",
     "turbo": "^2.8.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.22.0",
   "engines": {
     "node": ">=20"
-  },
-  "pnpm": {
-    "overrides": {
-      "vinxi>vite": "^7.3.1"
-    }
   }
 }
