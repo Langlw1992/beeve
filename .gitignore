@@ -1,17 +1,10 @@
 # Dependencies
 node_modules/
-
 # Build outputs
 dist/
 .turbo/
-storybook-static/
-
-# IDE
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+.vscode/
 .idea/
-
 # OS
 .DS_Store
 Thumbs.db
@@ -25,19 +18,3 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
-
-# Testing
-coverage/
-
-# Misc
-*.tsbuildinfo
-/.playwright-mcp/
-/.serena/
-# iOS
-apps/ios/.build/
-apps/ios/DerivedData/
-apps/ios/.swiftpm/
-apps/ios/xcuserdata/
-apps/ios/*.xcodeproj/xcuserdata/
-apps/ios/*.xcodeproj/project.xcworkspace/xcuserdata/
-/pnpm-lock.yaml
