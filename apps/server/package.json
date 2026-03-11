@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./auth": "./src/auth.ts",
+    "./db": "./src/db/schema.ts"
+  },
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "build": "tsc --noEmit",
@@ -17,7 +21,6 @@
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
-    "@beeve/contracts": "workspace:*",
     "@elysiajs/cors": "^1.4.1",
     "better-auth": "^1.5.4",
     "drizzle-orm": "^0.45.1",

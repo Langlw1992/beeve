@@ -1,12 +1,12 @@
-import {useSession} from '@beeve/auth-client'
+import { authClient } from '@/lib/auth'
 import {
   Link,
   Outlet,
   createFileRoute,
   useNavigate,
 } from '@tanstack/solid-router'
-import {ChevronRight, FileText, Shield, Users} from 'lucide-solid'
-import {Show, createEffect} from 'solid-js'
+import { ChevronRight, FileText, Shield, Users } from 'lucide-solid'
+import { Show, createEffect } from 'solid-js'
 
 // 管理员路由根组件 - 客户端检查管理员权限
 export const Route = createFileRoute('/admin')({
@@ -32,22 +32,22 @@ const menuItems = [
 ]
 
 function AdminLayout() {
-  const {user, isLoading, isAuthenticated} = useSession()
+  const session = authClient.useSession()
   const navigate = useNavigate()
 
   // 客户端权限检查：未登录重定向到登录页，非管理员重定向到仪表板
   createEffect(() => {
-    if (isLoading()) return
-    if (!isAuthenticated()) {
-      navigate({to: '/login'})
-    } else if (user()?.userType !== 'admin') {
-      navigate({to: '/dashboard'})
+    if (session().isPending) return
+    if (!session().data) {
+      navigate({ to: '/login' })
+    } else if (session().data?.user?.userType !== 'admin') {
+      navigate({ to: '/dashboard' })
     }
   })
 
   return (
     <Show
-      when={!isLoading() && user()?.userType === 'admin'}
+      when={!session().isPending && session().data?.user?.userType === 'admin'}
       fallback={
         <div class="flex min-h-[60vh] items-center justify-center">
           <div class="text-[var(--sea-ink-soft)]">验证权限中...</div>

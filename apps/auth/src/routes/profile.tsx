@@ -1,9 +1,9 @@
-import {initSession, useSession, useSignOut} from '@beeve/auth-client'
-import {Button, Card, Dialog, Input} from '@beeve/ui'
-import {createFileRoute, useNavigate} from '@tanstack/solid-router'
-import {ArrowLeft, Camera, LogOut, Save, User} from 'lucide-solid'
-import {Show, createEffect, createSignal} from 'solid-js'
-import {updateProfile} from '../lib/admin-api'
+import { authClient } from '@/lib/auth'
+import { Button, Card, Dialog, Input } from '@beeve/ui'
+import { createFileRoute, useNavigate } from '@tanstack/solid-router'
+import { ArrowLeft, Camera, LogOut, Save, User } from 'lucide-solid'
+import { Show, createEffect, createSignal } from 'solid-js'
+import { updateProfile } from '../lib/admin-api'
 
 export const Route = createFileRoute('/profile')({
   component: ProfilePage,
@@ -11,8 +11,7 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const navigate = useNavigate()
-  const {user, isLoading, isAuthenticated} = useSession()
-  const {signOut} = useSignOut()
+  const session = authClient.useSession()
 
   const [name, setName] = createSignal('')
   const [image, setImage] = createSignal('')
@@ -22,14 +21,14 @@ function ProfilePage() {
 
   // 未登录时响应式重定向到登录页
   createEffect(() => {
-    if (!isLoading() && !isAuthenticated()) {
-      navigate({to: '/login'})
+    if (!session().isPending && !session().data) {
+      navigate({ to: '/login' })
     }
   })
 
   // 当用户数据加载后，响应式初始化表单
   createEffect(() => {
-    const u = user()
+    const u = session().data?.user
     if (u) {
       setName(u.name || '')
       setImage(u.image || '')
@@ -41,10 +40,7 @@ function ProfilePage() {
     setSaveError('')
 
     try {
-      await updateProfile({name: name(), image: image()})
-
-      // 刷新会话以获取最新用户信息
-      await initSession()
+      await updateProfile({ name: name(), image: image() })
       setShowSuccessDialog(true)
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : '更新失败')
@@ -54,7 +50,8 @@ function ProfilePage() {
   }
 
   const handleSignOut = async () => {
-    await signOut({redirectTo: '/'})
+    await authClient.signOut()
+    navigate({ to: '/' })
   }
 
   return (
@@ -62,7 +59,7 @@ function ProfilePage() {
       <div class="mx-auto max-w-2xl">
         {/* 返回按钮 */}
         <button
-          onClick={() => navigate({to: '/dashboard'})}
+          onClick={() => navigate({ to: '/dashboard' })}
           class="mb-6 inline-flex items-center gap-2 text-sm text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]"
         >
           <ArrowLeft class="size-4" />
@@ -86,7 +83,7 @@ function ProfilePage() {
         </div>
 
         <Show
-          when={!isLoading()}
+          when={!session().isPending}
           fallback={
             <div class="flex items-center justify-center py-20">
               <div class="text-[var(--sea-ink-soft)]">加载中...</div>
@@ -165,7 +162,7 @@ function ProfilePage() {
                     邮箱
                   </label>
                   <Input
-                    value={user()?.email || ''}
+                    value={session().data?.user?.email || ''}
                     disabled
                     class="bg-muted"
                   />
@@ -181,7 +178,7 @@ function ProfilePage() {
                     </label>
                     <Input
                       value={
-                        user()?.userType === 'admin' ? '管理员' : '普通用户'
+                        session().data?.user?.userType === 'admin' ? '管理员' : '普通用户'
                       }
                       disabled
                       class="bg-muted"
@@ -192,7 +189,7 @@ function ProfilePage() {
                       账户状态
                     </label>
                     <Input
-                      value={user()?.status === 'active' ? '正常' : '已禁用'}
+                      value={session().data?.user?.status === 'active' ? '正常' : '已禁用'}
                       disabled
                       class="bg-muted"
                     />
@@ -209,7 +206,7 @@ function ProfilePage() {
               <div class="ml-auto flex gap-3">
                 <Button
                   variant="outline"
-                  onClick={() => navigate({to: '/dashboard'})}
+                  onClick={() => navigate({ to: '/dashboard' })}
                 >
                   取消
                 </Button>

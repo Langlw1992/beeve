@@ -1,8 +1,8 @@
-import {useSession, useSignOut} from '@beeve/auth-client'
-import {Button, Card} from '@beeve/ui'
-import {Link, createFileRoute, useNavigate} from '@tanstack/solid-router'
-import {LogOut, Shield, User} from 'lucide-solid'
-import {Show, createEffect} from 'solid-js'
+import { authClient } from '@/lib/auth'
+import { Button, Card } from '@beeve/ui'
+import { Link, createFileRoute, useNavigate } from '@tanstack/solid-router'
+import { LogOut, Shield, User } from 'lucide-solid'
+import { Show, createEffect } from 'solid-js'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardPage,
@@ -10,18 +10,18 @@ export const Route = createFileRoute('/dashboard')({
 
 function DashboardPage() {
   const navigate = useNavigate()
-  const {user, isLoading, isAuthenticated} = useSession()
-  const {signOut, isLoading: isSignOutLoading} = useSignOut()
+  const session = authClient.useSession()
 
   // 未登录时响应式重定向到登录页
   createEffect(() => {
-    if (!isLoading() && !isAuthenticated()) {
-      navigate({to: '/login'})
+    if (!session().isPending && !session().data) {
+      navigate({ to: '/login' })
     }
   })
 
   const handleSignOut = async () => {
-    await signOut({redirectTo: '/'})
+    await authClient.signOut()
+    navigate({ to: '/' })
   }
 
   return (
@@ -39,7 +39,6 @@ function DashboardPage() {
           <Button
             variant="outline"
             onClick={handleSignOut}
-            loading={isSignOutLoading()}
           >
             <LogOut class="size-4" />
             <span>退出登录</span>
@@ -47,7 +46,7 @@ function DashboardPage() {
         </div>
 
         <Show
-          when={!isLoading()}
+          when={!session().isPending}
           fallback={
             <div class="flex items-center justify-center py-20">
               <div class="text-[var(--sea-ink-soft)]">加载中...</div>
@@ -68,16 +67,16 @@ function DashboardPage() {
                   </div>
                   <div>
                     <p class="text-lg font-semibold text-[var(--sea-ink)]">
-                      {user()?.name || '未设置姓名'}
+                      {session().data?.user?.name || '未设置姓名'}
                     </p>
                     <p class="text-sm text-[var(--sea-ink-soft)]">
-                      {user()?.email}
+                      {session().data?.user?.email}
                     </p>
                   </div>
                 </div>
                 <div class="rounded-lg bg-muted p-3 text-sm">
                   <p class="text-[var(--sea-ink-soft)]">
-                    用户 ID: {user()?.id}
+                    用户 ID: {session().data?.user?.id}
                   </p>
                 </div>
               </div>
@@ -107,7 +106,7 @@ function DashboardPage() {
                   <span class="inline-flex items-center rounded-full bg-[var(--lagoon)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--lagoon-deep)]">
                     已登录用户
                   </span>
-                  <Show when={user()?.userType === 'admin'}>
+                  <Show when={session().data?.user?.userType === 'admin'}>
                     <span class="inline-flex items-center rounded-full bg-[var(--palm)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--palm)]">
                       管理员
                     </span>
@@ -138,7 +137,7 @@ function DashboardPage() {
                   </div>
                 </Link>
 
-                <Show when={user()?.userType === 'admin'}>
+                <Show when={session().data?.user?.userType === 'admin'}>
                   <Link
                     to="/admin/users"
                     class="flex items-center gap-3 rounded-lg border border-[var(--line)] p-4 transition-colors hover:bg-[var(--foam)]"

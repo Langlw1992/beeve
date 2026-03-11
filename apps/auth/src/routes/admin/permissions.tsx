@@ -1,4 +1,4 @@
-import type {RoleTemplate} from '@beeve/contracts'
+import type {RoleTemplate} from '../../lib/admin-api'
 import {
   Badge,
   Button,

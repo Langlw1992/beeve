@@ -1,4 +1,4 @@
-import type {UserListItem} from '@beeve/contracts'
+import type {UserListItem} from '../../lib/admin-api'
 import {
   Badge,
   Button,

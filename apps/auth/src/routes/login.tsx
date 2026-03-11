@@ -1,8 +1,8 @@
-import {useSession, useSignIn, useSocialSignIn} from '@beeve/auth-client'
-import {Button, Input, Label} from '@beeve/ui'
-import {Link, createFileRoute, useNavigate} from '@tanstack/solid-router'
-import {ArrowRight, Chrome, Github, Lock, Mail} from 'lucide-solid'
-import {Show, createEffect, createSignal} from 'solid-js'
+import { authClient } from '@/lib/auth'
+import { Button, Input, Label } from '@beeve/ui'
+import { Link, createFileRoute, useNavigate } from '@tanstack/solid-router'
+import { ArrowRight, Chrome, Github, Lock, Mail } from 'lucide-solid'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -10,40 +10,56 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const navigate = useNavigate()
-  const {isAuthenticated} = useSession()
-  const {signIn, isLoading: isEmailLoading, error: emailError} = useSignIn()
-  const {
-    signInWithGoogle,
-    signInWithGithub,
-    isLoading: isSocialLoading,
-  } = useSocialSignIn()
+  const session = authClient.useSession()
 
   const [email, setEmail] = createSignal('')
   const [password, setPassword] = createSignal('')
+  const [isLoading, setIsLoading] = createSignal(false)
+  const [error, setError] = createSignal<string | null>(null)
 
   // 如果已登录，响应式重定向到 dashboard
   createEffect(() => {
-    if (isAuthenticated()) {
-      navigate({to: '/dashboard'})
+    if (session().data) {
+      navigate({ to: '/dashboard' })
     }
   })
 
   const handleEmailLogin = async (e: Event) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
     try {
-      await signIn(email(), password())
-      navigate({to: '/dashboard'})
+      const result = await authClient.signIn.email({
+        email: email(),
+        password: password(),
+      })
+
+      if (result.error) {
+        setError(result.error.message || '登录失败')
+        return
+      }
+
+      navigate({ to: '/dashboard' })
     } catch {
-      // 错误已在 hook 中处理
+      setError('登录过程中发生错误')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleGoogleLogin = () => {
-    signInWithGoogle()
+    authClient.signIn.social({
+      provider: 'google',
+      callbackURL: `${window.location.origin}/dashboard`,
+    })
   }
 
   const handleGithubLogin = () => {
-    signInWithGithub()
+    authClient.signIn.social({
+      provider: 'github',
+      callbackURL: `${window.location.origin}/dashboard`,
+    })
   }
 
   return (
@@ -62,7 +78,6 @@ function LoginPage() {
             <Button
               variant="outline"
               onClick={handleGoogleLogin}
-              disabled={isSocialLoading()}
               class="gap-2"
             >
               <Chrome class="size-4" />
@@ -71,7 +86,6 @@ function LoginPage() {
             <Button
               variant="outline"
               onClick={handleGithubLogin}
-              disabled={isSocialLoading()}
               class="gap-2"
             >
               <Github class="size-4" />
@@ -104,7 +118,7 @@ function LoginPage() {
                 placeholder="your@email.com"
                 value={email()}
                 onInput={(value) => setEmail(value)}
-                disabled={isEmailLoading()}
+                disabled={isLoading()}
                 prefix={<Mail class="size-4" />}
                 autocomplete="email"
               />
@@ -126,22 +140,22 @@ function LoginPage() {
                 placeholder="••••••••"
                 value={password()}
                 onInput={(value) => setPassword(value)}
-                disabled={isEmailLoading()}
+                disabled={isLoading()}
                 prefix={<Lock class="size-4" />}
                 autocomplete="current-password"
               />
             </div>
 
-            <Show when={emailError()}>
+            <Show when={error()}>
               <div class="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {emailError()?.message}
+                {error()}
               </div>
             </Show>
 
             <Button
               type="submit"
               class="w-full"
-              loading={isEmailLoading()}
+              loading={isLoading()}
               disabled={!email() || !password()}
             >
               <span>登录</span>

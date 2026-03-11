@@ -2,8 +2,43 @@
  * 管理后台共享 API 请求函数
  * 将散落在各 admin 页面的 fetch 调用统一到此处
  */
-import {API_BASE_URL} from '@beeve/auth-client'
-import type {AuditLog, RoleTemplate, UserListItem} from '@beeve/contracts'
+
+// API 基础 URL（使用相对路径，通过 Vite proxy）
+const API_BASE_URL = ''
+
+// ==================== 类型定义 ====================
+
+export interface UserListItem {
+  id: string
+  name: string
+  email: string
+  image: string | null
+  userType: 'regular' | 'admin'
+  status: 'active' | 'disabled'
+  createdAt: string
+}
+
+export interface RoleTemplate {
+  id: string
+  name: string
+  description: string | null
+  permissions: string[]
+  isSystem: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AuditLog {
+  id: string
+  userId: string | null
+  action: string
+  resource: string
+  resourceId: string | null
+  details: Record<string, unknown> | null
+  ipAddress: string | null
+  userAgent: string | null
+  createdAt: string
+}
 
 // ==================== 通用请求封装 ====================
 
@@ -34,7 +69,7 @@ export async function fetchUsers(params: {
   limit: number
 }): Promise<{
   data: UserListItem[]
-  pagination: {page: number; limit: number; total: number}
+  pagination: { page: number; limit: number; total: number }
 }> {
   const searchParams = new URLSearchParams()
   if (params.search) {
@@ -52,22 +87,22 @@ export async function updateUserStatus(
 ) {
   return adminFetch(`/api/admin/users/${userId}/status`, {
     method: 'PATCH',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({status}),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
   })
 }
 
 export async function assignUserRole(userId: string, roleTemplateId: string) {
   return adminFetch(`/api/admin/users/${userId}/role`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({roleTemplateId}),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ roleTemplateId }),
   })
 }
 
 // ==================== 角色管理 ====================
 
-export async function fetchRoles(): Promise<{data: RoleTemplate[]}> {
+export async function fetchRoles(): Promise<{ data: RoleTemplate[] }> {
   return adminFetch('/api/admin/roles')
 }
 
@@ -78,18 +113,18 @@ export async function createRole(data: {
 }): Promise<RoleTemplate> {
   return adminFetch('/api/admin/roles', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
 }
 
 export async function updateRole(
   roleId: string,
-  data: {name?: string; description?: string; permissions?: string[]},
+  data: { name?: string; description?: string; permissions?: string[] },
 ): Promise<RoleTemplate> {
   return adminFetch(`/api/admin/roles/${roleId}`, {
     method: 'PATCH',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
 }
@@ -109,7 +144,7 @@ export async function fetchAuditLogs(params: {
   limit: number
 }): Promise<{
   data: AuditLog[]
-  pagination: {page: number; limit: number; total: number}
+  pagination: { page: number; limit: number; total: number }
 }> {
   const searchParams = new URLSearchParams()
   if (params.userId) {
@@ -125,10 +160,10 @@ export async function fetchAuditLogs(params: {
 }
 
 export async function fetchAllUsers(): Promise<{
-  data: {id: string; name: string; email: string}[]
+  data: { id: string; name: string; email: string }[]
 }> {
   const result = await adminFetch<{
-    data: {id: string; name: string; email: string}[]
+    data: { id: string; name: string; email: string }[]
   }>('/api/admin/users?limit=100')
   return {
     data: result.data.map((u) => ({
@@ -147,7 +182,7 @@ export async function updateProfile(data: {
 }): Promise<void> {
   return adminFetch('/api/me', {
     method: 'PATCH',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
 }

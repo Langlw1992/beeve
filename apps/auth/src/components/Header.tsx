@@ -1,20 +1,15 @@
-import {initSession, useSession, useSignOut} from '@beeve/auth-client'
-import {Button} from '@beeve/ui'
-import {Link} from '@tanstack/solid-router'
-import {LogOut, User} from 'lucide-solid'
-import {Show, onMount} from 'solid-js'
+import { authClient } from '@/lib/auth'
+import { Button } from '@beeve/ui'
+import { Link } from '@tanstack/solid-router'
+import { LogOut, User } from 'lucide-solid'
+import { Show } from 'solid-js'
 
 export default function Header() {
-  const {user, isLoading, isAuthenticated} = useSession()
-  const {signOut, isLoading: isSignOutLoading} = useSignOut()
-
-  // 初始化会话
-  onMount(() => {
-    initSession()
-  })
+  const session = authClient.useSession()
 
   const handleSignOut = async () => {
-    await signOut({redirectTo: '/'})
+    await authClient.signOut()
+    window.location.href = '/'
   }
 
   return (
@@ -34,22 +29,22 @@ export default function Header() {
           <Link
             to="/"
             class="nav-link"
-            activeProps={{class: 'nav-link is-active'}}
+            activeProps={{ class: 'nav-link is-active' }}
           >
             首页
           </Link>
           <Link
             to="/about"
             class="nav-link"
-            activeProps={{class: 'nav-link is-active'}}
+            activeProps={{ class: 'nav-link is-active' }}
           >
             关于
           </Link>
-          <Show when={isAuthenticated()}>
+          <Show when={session().data}>
             <Link
               to="/dashboard"
               class="nav-link"
-              activeProps={{class: 'nav-link is-active'}}
+              activeProps={{ class: 'nav-link is-active' }}
             >
               仪表板
             </Link>
@@ -58,13 +53,13 @@ export default function Header() {
 
         <div class="ml-auto flex items-center gap-2">
           <Show
-            when={!isLoading()}
+            when={!session().isPending}
             fallback={
               <div class="h-8 w-16 animate-pulse rounded-md bg-muted" />
             }
           >
             <Show
-              when={isAuthenticated()}
+              when={session().data}
               fallback={
                 <div class="flex items-center gap-2">
                   <Link
@@ -90,13 +85,12 @@ export default function Header() {
                   <div class="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--lagoon)]/10">
                     <User class="size-4 text-[var(--lagoon-deep)]" />
                   </div>
-                  <span class="hidden sm:inline">{user()?.name}</span>
+                  <span class="hidden sm:inline">{session().data?.user?.name}</span>
                 </Link>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleSignOut}
-                  loading={isSignOutLoading()}
                   title="退出登录"
                 >
                   <LogOut class="size-4" />

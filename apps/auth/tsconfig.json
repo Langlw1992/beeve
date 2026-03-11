@@ -6,15 +6,19 @@
     "jsxImportSource": "solid-js",
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
 
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
-    /* Linting */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@beeve/server/*": ["../server/src/*"]
+    },
+
     "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": true,

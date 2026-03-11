@@ -1,12 +1,12 @@
-import {useSession} from '@beeve/auth-client'
-import {Link, createFileRoute} from '@tanstack/solid-router'
-import {ArrowRight, Lock, Shield, Zap} from 'lucide-solid'
-import {Show} from 'solid-js'
+import { authClient } from '@/lib/auth'
+import { Link, createFileRoute } from '@tanstack/solid-router'
+import { ArrowRight, Lock, Shield, Zap } from 'lucide-solid'
+import { Show } from 'solid-js'
 
-export const Route = createFileRoute('/')({component: HomePage})
+export const Route = createFileRoute('/')({ component: HomePage })
 
 function HomePage() {
-  const {isAuthenticated} = useSession()
+  const session = authClient.useSession()
 
   return (
     <main class="page-wrap px-4 pb-8 pt-14">
@@ -25,7 +25,7 @@ function HomePage() {
 
         <div class="flex flex-wrap gap-3">
           <Show
-            when={isAuthenticated()}
+            when={session().data}
             fallback={
               <>
                 <Link
@@ -75,7 +75,7 @@ function HomePage() {
         ].map((feature, index) => (
           <article
             class="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{'animation-delay': `${index * 90 + 80}ms`}}
+            style={{ 'animation-delay': `${index * 90 + 80}ms` }}
           >
             <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--lagoon)]/10">
               <feature.icon class="size-5 text-[var(--lagoon-deep)]" />

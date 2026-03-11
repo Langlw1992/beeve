@@ -1,4 +1,4 @@
-import type {AuditLog} from '@beeve/contracts'
+import type {AuditLog} from '../../lib/admin-api'
 import {
   Badge,
   Button,
