@@ -8,7 +8,6 @@ import {
 import {TanStackRouterDevtools} from '@tanstack/solid-router-devtools'
 
 import type * as Solid from 'solid-js'
-import {Suspense} from 'solid-js'
 import {HydrationScript} from 'solid-js/web'
 
 import Header from '../components/Header'
@@ -49,7 +48,7 @@ function RootDocument(props: {children: Solid.JSX.Element}) {
       </head>
       <body>
         <HeadContent />
-        <Suspense>{props.children}</Suspense>
+        {props.children}
         <Scripts />
       </body>
     </html>

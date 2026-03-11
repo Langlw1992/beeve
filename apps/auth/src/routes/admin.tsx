@@ -9,7 +9,7 @@ import {ChevronRight, FileText, Shield, Users} from 'lucide-solid'
 import {Show, createEffect} from 'solid-js'
 
 // 管理员路由根组件 - 客户端检查管理员权限
-export const Route = createFileRoute('/admin/__root')({
+export const Route = createFileRoute('/admin')({
   component: AdminLayout,
 })
 

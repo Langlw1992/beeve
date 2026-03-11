@@ -14,10 +14,11 @@ function resolveApiBaseUrl(): string {
     return process.env.BEEVE_API_URL
   }
   // Vite 客户端环境（import.meta.env 由打包工具注入，类型由 env.d.ts 声明）
+  // VITE_API_URL 为空字符串时使用相对路径，请求通过 Vite proxy 转发
   try {
     const env = import.meta.env
-    if (env?.VITE_API_URL) {
-      return env.VITE_API_URL
+    if (env && 'VITE_API_URL' in env) {
+      return env.VITE_API_URL ?? ''
     }
   } catch {
     // import.meta 不可用时忽略
