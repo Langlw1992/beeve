@@ -8,10 +8,13 @@
 import SwiftUI
 
 @main
-struct beeve_appApp: App {
+struct BeeveAppApp: App {
+    @State private var store = BeeveStore()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(store)
         }
     }
 }
