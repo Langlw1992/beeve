@@ -1,0 +1,17 @@
+{
+  "name": "auth-server",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "bun test",
+    "dev": "bun run --watch src/index.ts"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
+    "elysia": "latest"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.9.3"
+  },
+  "module": "src/index.js"
+}
