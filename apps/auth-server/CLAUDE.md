@@ -11,7 +11,7 @@
 
 - **框架**: Elysia (Bun 运行时)
 - **认证**: Better Auth + Drizzle Adapter
-- **数据库**: SQLite + Drizzle ORM
+- **数据库**: PostgreSQL + Drizzle ORM
 - **CORS**: `@elysiajs/cors`
 
 ## 目录结构
@@ -28,10 +28,13 @@ src/
 ## 环境变量
 
 ```bash
-# 服务配置
-BETTER_AUTH_URL=http://localhost:3001
+# 服务配置 (端口规范: 前端 3000/3010/3020..., 后端 8000/8001/8002...)
+BETTER_AUTH_URL=http://localhost:8000
 BETTER_AUTH_SECRET=your-secret-key
 AUTH_WEB_ORIGIN=http://localhost:3000
+
+# 数据库配置
+DATABASE_URL=postgresql://beeve:beeve_secret@localhost:15432/beeve_auth
 
 # 社交登录（按需配置）
 GOOGLE_CLIENT_ID=

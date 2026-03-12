@@ -1,15 +1,10 @@
-import {mkdirSync} from 'node:fs'
-import {dirname, resolve} from 'node:path'
-
-import {Database} from 'bun:sqlite'
-import {drizzle} from 'drizzle-orm/bun-sqlite'
+import {drizzle} from 'drizzle-orm/node-postgres'
+import {Pool} from 'pg'
 
 import * as schema from './schema'
 
-export const databaseFile = resolve(process.cwd(), 'data/auth.db')
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
 
-mkdirSync(dirname(databaseFile), {recursive: true})
-
-export const sqlite = new Database(databaseFile)
-
-export const db = drizzle(sqlite, {schema})
+export const db = drizzle(pool, {schema})

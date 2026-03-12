@@ -8,14 +8,14 @@ import * as schema from './db/schema'
 const authWebOrigin = process.env.AUTH_WEB_ORIGIN ?? 'http://localhost:3000'
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3001',
+  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:8000',
   basePath: '/api/auth',
   secret:
     process.env.BETTER_AUTH_SECRET ??
     'better-auth-dev-secret-change-me-in-production',
   trustedOrigins: [authWebOrigin, 'https://appleid.apple.com'],
   database: drizzleAdapter(db, {
-    provider: 'sqlite',
+    provider: 'pg',
     schema,
   }),
   socialProviders: {

@@ -30,14 +30,11 @@
     "./styles": "./src/styles/index.css"
   },
   "scripts": {
-    "build": "tsup",
     "dev": "tsup --watch",
+    "build": "tsup",
     "lint": "biome lint ./src",
-    "lint:fix": "biome lint --write ./src",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
     "@internationalized/date": "^3.10.1",
