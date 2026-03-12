@@ -2,53 +2,33 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalDependencies": [".env", "tsconfig.json"],
-  "globalEnv": ["NODE_ENV"],
+  "globalEnv": ["NODE_ENV", "DATABASE_URL"],
   "tasks": {
-    "transit": {
-      "dependsOn": ["^transit"]
-    },
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
-    },
-    "@beeve/storybook#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["storybook-static/**"]
+    "clean": {
+      "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "lint": {
-      "dependsOn": ["transit"],
-      "outputs": []
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".output/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
-    "lint:fix": {
-      "dependsOn": ["transit"],
+    "lint": {
       "outputs": []
     },
     "typecheck": {
-      "dependsOn": ["transit"],
       "outputs": []
-    },
-    "clean": {
-      "cache": false
-    },
-    "db:generate": {
-      "cache": false,
-      "inputs": ["drizzle.config.ts", "src/db/schema/**"]
     },
     "db:migrate": {
       "cache": false,
-      "inputs": ["src/db/migrations/**"]
+      "env": ["DATABASE_URL"]
     },
     "db:push": {
-      "cache": false
-    },
-    "db:studio": {
       "cache": false,
-      "persistent": true
+      "env": ["DATABASE_URL"]
     }
   }
 }

@@ -4,7 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "pnpm --filter auth-server typecheck"
+    "bootstrap": "pnpm install && docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 15432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine && sleep 3 && cd apps/auth-server && pnpm db:push",
+    "dev": "turbo clean && turbo dev",
+    "dev:web": "turbo dev --filter=auth-web",
+    "dev:server": "turbo dev --filter=auth-server",
+    "check": "turbo lint typecheck",
+    "build": "turbo clean && turbo build",
+    "db:start": "docker start beeve-postgres 2>/dev/null || docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 15432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine",
+    "db:migrate": "cd apps/auth-server && pnpm db:migrate",
+    "db:push": "cd apps/auth-server && pnpm db:push"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
