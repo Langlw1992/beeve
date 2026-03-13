@@ -39,6 +39,13 @@ private enum ReminderFilter: String, CaseIterable, Identifiable {
     }
 }
 
+private enum AppSpacing {
+    static let pageTop: CGFloat = 12
+    static let pageBottom: CGFloat = 42
+    static let section: CGFloat = 16
+    static let cardContent: CGFloat = 12
+}
+
 private struct AppBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
 
@@ -111,14 +118,62 @@ private extension View {
     }
 }
 
+private struct CircleIconBadge: View {
+    let symbol: String
+    let tint: Color
+    var size: CGFloat = 38
+    var iconSize: CGFloat = 16
+
+    var body: some View {
+        Circle()
+            .fill(tint.opacity(0.14))
+            .frame(width: size, height: size)
+            .overlay(
+                Image(systemName: symbol)
+                    .font(.system(size: iconSize, weight: .semibold))
+                    .foregroundStyle(tint)
+            )
+    }
+}
+
+private struct PriorityPill: View {
+    let priority: ReminderPriority
+
+    var body: some View {
+        Text(priority.label)
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(priority.color.opacity(0.14), in: Capsule())
+            .foregroundStyle(priority.color)
+    }
+}
+
 private struct AssistantToolbarButton: View {
     let action: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         Button(action: action) {
-            Label("AI", systemImage: "sparkles")
-                .font(.subheadline.weight(.semibold))
+            HStack(spacing: 8) {
+                CircleIconBadge(symbol: "sparkles", tint: .indigo, size: 28, iconSize: 12)
+                Text("AI")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+            }
+            .padding(.horizontal, 10)
+            .frame(height: 36)
+            .background(
+                colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.78),
+                in: Capsule()
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.42))
+            )
         }
+        .buttonStyle(.plain)
     }
 }
 
@@ -170,7 +225,7 @@ private struct SectionCard<Content: View>: View {
                 .font(.headline)
                 .padding(.horizontal, 4)
 
-            VStack(spacing: 10) {
+            VStack(spacing: AppSpacing.cardContent) {
                 content
             }
         }
@@ -221,6 +276,7 @@ struct ContentView: View {
                     }
                     .tag(AppTab.profile)
             }
+            .tint(.indigo)
         }
         .sheet(isPresented: $isPresentingAddReminder) {
             AddReminderSheet()
@@ -245,7 +301,7 @@ private struct HomeDashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: AppSpacing.section) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(store.greetingTitle)
                             .font(.largeTitle.bold())
@@ -306,8 +362,8 @@ private struct HomeDashboardView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 42)
+                .padding(.top, AppSpacing.pageTop)
+                .padding(.bottom, AppSpacing.pageBottom)
             }
             .scrollIndicators(.hidden)
             .navigationTitle("Beeve")
@@ -345,6 +401,7 @@ private struct HeroOverviewCard: View {
                     .frame(width: 48, height: 48)
                     .overlay(
                         Image(systemName: "brain.head.profile")
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundStyle(.white)
                     )
             }
@@ -396,6 +453,10 @@ private struct HeroMetric: View {
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(.white.opacity(0.12))
+        )
         .foregroundStyle(.white)
     }
 }
@@ -408,8 +469,11 @@ private struct GlassSection<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Label(title, systemImage: symbol)
-                .font(.headline)
+            HStack(spacing: 10) {
+                CircleIconBadge(symbol: symbol, tint: tint, size: 32, iconSize: 13)
+                Text(title)
+                    .font(.headline)
+            }
 
             content
         }
@@ -455,8 +519,12 @@ private struct TriageBadge: View {
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            (colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.62)),
+            (colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.16)),
             in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.32))
         )
     }
 }
@@ -472,12 +540,7 @@ private struct NextReminderCard: View {
                     Text(reminder.title)
                         .font(.title3.bold())
                     Spacer()
-                    Text(reminder.priority.label)
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(reminder.priority.color.opacity(0.14), in: Capsule())
-                        .foregroundStyle(reminder.priority.color)
+                    PriorityPill(priority: reminder.priority)
                 }
 
                 Text("\(reminder.category.label) · \(reminder.dueDate?.formatted(date: .omitted, time: .shortened) ?? "待分拣")")
@@ -503,11 +566,12 @@ private struct CompletionSuggestionCard: View {
                     .font(.body)
                     .foregroundStyle(.secondary)
 
-                HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 10) {
                     Button(suggestion.primaryLabel) {
                         onTapDestination(suggestion.primaryDestination)
                     }
                     .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     if let label = suggestion.secondaryLabel, let destination = suggestion.secondaryDestination {
                         Button(label) {
@@ -516,10 +580,9 @@ private struct CompletionSuggestionCard: View {
                         .buttonStyle(.bordered)
                     }
 
-                    Spacer()
-
                     Button("关闭", action: onDismiss)
-                        .font(.caption)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -533,7 +596,7 @@ private struct QuickActionsSection: View {
     let onOpenAssistant: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.cardContent) {
             Text("快速操作")
                 .font(.title3.bold())
 
@@ -556,10 +619,8 @@ private struct QuickActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 12) {
-                Image(systemName: symbol)
-                    .font(.title2)
-                    .foregroundStyle(tint)
+            VStack(alignment: .leading, spacing: 10) {
+                CircleIconBadge(symbol: symbol, tint: tint, size: 40, iconSize: 16)
 
                 Text(title)
                     .font(.headline)
@@ -570,7 +631,7 @@ private struct QuickActionButton: View {
                     .foregroundStyle(.secondary)
             }
             .padding(18)
-            .frame(maxWidth: .infinity, minHeight: 128, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 136, alignment: .leading)
             .appCard(tint: tint, cornerRadius: 24)
         }
         .buttonStyle(.plain)
@@ -596,9 +657,13 @@ private struct ReminderPreviewRow: View {
                         .strikethrough(reminder.isCompleted)
                         .foregroundStyle(reminder.isCompleted ? .secondary : .primary)
 
-                    Text(store.scheduleText(for: reminder))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        PriorityPill(priority: reminder.priority)
+                        Text(store.scheduleText(for: reminder))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
 
                 Spacer()
@@ -631,14 +696,14 @@ private struct RemindersView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
+                .padding(.top, AppSpacing.pageTop)
 
                 SegmentedFilterBar(selection: $selectedFilter)
                     .padding(.horizontal)
-                    .padding(.top, 12)
+                    .padding(.top, AppSpacing.section)
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: AppSpacing.section) {
                         if sections.isEmpty {
                             ContentUnavailableView(
                                 "当前筛选下没有事项",
@@ -666,7 +731,8 @@ private struct RemindersView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 14)
+                .padding(.top, AppSpacing.section)
+                .padding(.bottom, AppSpacing.pageBottom)
             }
             .navigationTitle("提醒")
             .toolbar {
@@ -725,16 +791,10 @@ private struct ReminderRow: View {
             .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text(reminder.title)
-                        .font(.headline)
-                        .strikethrough(reminder.isCompleted)
-                        .foregroundStyle(reminder.isCompleted ? .secondary : .primary)
-                    Spacer()
-                    Text(reminder.priority.label)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(reminder.priority.color)
-                }
+                Text(reminder.title)
+                    .font(.headline)
+                    .strikethrough(reminder.isCompleted)
+                    .foregroundStyle(reminder.isCompleted ? .secondary : .primary)
 
                 if !reminder.note.isEmpty {
                     Text(reminder.note)
@@ -742,12 +802,17 @@ private struct ReminderRow: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text(scheduleText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    PriorityPill(priority: reminder.priority)
+                    Text(scheduleText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
             }
         }
-        .padding(.vertical, 4)
+        .padding(14)
+        .background(reminder.priority.color.opacity(0.06), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
                 .tint(reminder.isCompleted ? .orange : .green)
@@ -776,7 +841,7 @@ private struct ToolsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: AppSpacing.section) {
                     HeroMiniBanner(
                         title: "工具箱",
                         subtitle: "把高频动作收在一个地方，减少在不同 App 之间来回切换。",
@@ -809,8 +874,8 @@ private struct ToolsView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 42)
+                .padding(.top, AppSpacing.pageTop)
+                .padding(.bottom, AppSpacing.pageBottom)
             }
             .scrollIndicators(.hidden)
             .navigationTitle("工具")
@@ -828,9 +893,7 @@ private struct ToolCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: tool.symbolName)
-                .font(.title2)
-                .foregroundStyle(tool.tint)
+            CircleIconBadge(symbol: tool.symbolName, tint: tool.tint, size: 40, iconSize: 16)
 
             Text(tool.title)
                 .font(.headline)
@@ -858,7 +921,7 @@ private struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: AppSpacing.section) {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack(spacing: 14) {
                             Circle()
@@ -906,8 +969,8 @@ private struct ProfileView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 42)
+                .padding(.top, AppSpacing.pageTop)
+                .padding(.bottom, AppSpacing.pageBottom)
             }
             .scrollIndicators(.hidden)
             .navigationTitle("我的")
@@ -930,13 +993,7 @@ private struct HeroMiniBanner: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 14) {
-            Circle()
-                .fill(tint.opacity(0.16))
-                .frame(width: 44, height: 44)
-                .overlay(
-                    Image(systemName: symbol)
-                        .foregroundStyle(tint)
-                )
+            CircleIconBadge(symbol: symbol, tint: tint, size: 44, iconSize: 18)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
@@ -973,13 +1030,7 @@ private struct ProfileSettingRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(tint.opacity(0.14))
-                .frame(width: 38, height: 38)
-                .overlay(
-                    Image(systemName: symbol)
-                        .foregroundStyle(tint)
-                )
+            CircleIconBadge(symbol: symbol, tint: tint)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -1003,13 +1054,7 @@ private struct ProfileActionButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                Circle()
-                    .fill(tint.opacity(0.14))
-                    .frame(width: 38, height: 38)
-                    .overlay(
-                        Image(systemName: symbol)
-                            .foregroundStyle(tint)
-                    )
+                CircleIconBadge(symbol: symbol, tint: tint)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
@@ -1071,6 +1116,9 @@ private struct AssistantSheet: View {
                     Text("AI 回复为本地演示结果，但交互形态已按全局助理来设计。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.indigo.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                     HStack(alignment: .bottom, spacing: 12) {
                         TextField("比如：帮我拆解今天的任务", text: $draft, axis: .vertical)
@@ -1133,7 +1181,13 @@ private struct MessageBubble: View {
 
     private var backgroundStyle: AnyShapeStyle {
         if message.role == .assistant {
-            AnyShapeStyle(Color.white.opacity(0.82))
+            AnyShapeStyle(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.9), Color.indigo.opacity(0.08)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
         } else {
             AnyShapeStyle(
                 LinearGradient(
@@ -1163,7 +1217,7 @@ private struct AddReminderSheet: View {
                 AppBackgroundView()
 
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(spacing: AppSpacing.section) {
                         GlassSection(title: "事项", symbol: "square.and.pencil", tint: .blue) {
                             VStack(spacing: 12) {
                                 TextField("提醒标题", text: $title)

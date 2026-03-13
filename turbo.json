@@ -21,14 +21,6 @@
     },
     "typecheck": {
       "outputs": []
-    },
-    "db:migrate": {
-      "cache": false,
-      "env": ["DATABASE_URL"]
-    },
-    "db:push": {
-      "cache": false,
-      "env": ["DATABASE_URL"]
     }
   }
 }

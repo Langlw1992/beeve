@@ -16,8 +16,7 @@
 **后端**
 - Elysia - Bun 高性能 Web 框架
 - Better Auth - 认证库（支持 OAuth/SSO）
-- Drizzle ORM - 类型安全的数据库 ORM
-- SQLite - 数据库
+- PostgreSQL - 数据库（pg Pool）
 
 **工程化**
 - pnpm workspace - Monorepo 管理
@@ -56,12 +55,6 @@ turbo build --filter=auth-server     # 构建 auth-server
 turbo lint               # 检查代码
 turbo lint:fix           # 自动修复
 turbo typecheck          # 类型检查
-
-# 数据库相关（auth-server）
-turbo db:generate        # 生成 Drizzle 迁移
-turbo db:migrate         # 执行数据库迁移
-turbo db:push            # 推送 schema 变更
-turbo db:studio          # 启动 Drizzle Studio
 ```
 
 ## 编码原则

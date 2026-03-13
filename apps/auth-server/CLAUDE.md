@@ -5,22 +5,19 @@
 基于 Elysia 框架的高性能认证服务，为 Beeve 产品体系提供：
 - 用户认证 API（Better Auth）
 - 社交登录集成（Google、GitHub、Apple）
-- 数据库管理与迁移
+- 数据库管理
 
 ## 技术栈
 
 - **框架**: Elysia (Bun 运行时)
-- **认证**: Better Auth + Drizzle Adapter
-- **数据库**: PostgreSQL + Drizzle ORM
+- **认证**: Better Auth
+- **数据库**: PostgreSQL (pg Pool)
 - **CORS**: `@elysiajs/cors`
 
 ## 目录结构
 
 ```
 src/
-├── db/                  # 数据库相关
-│   ├── schema.ts        # 表结构定义
-│   └── index.ts         # 数据库连接
 ├── auth.ts              # Better Auth 配置
 └── index.ts             # 服务入口
 ```
@@ -34,7 +31,7 @@ BETTER_AUTH_SECRET=your-secret-key
 AUTH_WEB_ORIGIN=http://localhost:3000
 
 # 数据库配置
-DATABASE_URL=postgresql://beeve:beeve_secret@localhost:15432/beeve_auth
+DATABASE_URL=postgresql://beeve:beeve_secret@localhost:5432/beeve_auth
 
 # 社交登录（按需配置）
 GOOGLE_CLIENT_ID=
@@ -50,14 +47,12 @@ APPLE_APP_BUNDLE_IDENTIFIER=
 
 ```bash
 # 开发（使用 Bun）
-bun run dev              # 启动开发服务器（带热重载）
+bun run dev              # 启动开发服务器（带热载）
 turbo dev --filter=auth-server   # 通过 turbo 启动
 
-# 数据库
-turbo db:generate        # 生成迁移文件
-turbo db:migrate         # 执行迁移
-turbo db:push            # 快速同步 schema
-turbo db:studio          # Drizzle Studio GUI
+# 数据库（使用 Better Auth CLI）
+npx auth@latest migrate    # 执行数据库迁移（创建/更新表）
+npx auth@latest generate   # 生成 ORM Schema（Prisma/Drizzle）
 
 # 构建
 turbo build --filter=auth-server
@@ -66,7 +61,7 @@ turbo build --filter=auth-server
 ## Better Auth 集成
 
 **服务端配置**: `src/auth.ts`
-- 基于 Drizzle Adapter 的 SQLite 存储
+- 直接使用 pg Pool 连接 PostgreSQL
 - 支持 Google、GitHub、Apple 社交登录
 - Admin 插件启用
 
@@ -77,4 +72,4 @@ turbo build --filter=auth-server
 
 - 必须使用 Bun 运行（Elysia 依赖 Bun 特性）
 - 开发时 auth-web 和 auth-server 需同时运行
-- 数据库变更后需运行 `turbo db:generate`
+- 首次运行或 Better Auth 版本升级后，执行 `npx @better-auth/cli@latest migrate`
