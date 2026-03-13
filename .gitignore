@@ -19,3 +19,7 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 /pnpm-lock.yaml
+
+# IOS
+**/xcuserdata/
+**/*.xcuserstate
