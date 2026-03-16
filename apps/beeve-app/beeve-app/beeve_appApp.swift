@@ -14,7 +14,7 @@ struct BeeveAppApp: App {
     @State private var store: BeeveStore
 
     init() {
-        let container = try! ModelContainer(for: Reminder.self)
+        let container = try! ModelContainer(for: Reminder.self, Tag.self)
         self.modelContainer = container
 
         let context = container.mainContext

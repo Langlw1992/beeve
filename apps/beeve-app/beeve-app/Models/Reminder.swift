@@ -13,10 +13,16 @@ final class Reminder {
     var sortOrder: Int
     var createdAt: Date
 
-    // Subtask support (Phase 2)
+    // Subtask support
     @Relationship(deleteRule: .cascade, inverse: \Reminder.parent)
     var children: [Reminder]?
     var parent: Reminder?
+
+    // Tags (many-to-many)
+    var tags: [Tag]?
+
+    // Repeat rule
+    var repeatRule: RepeatRule?
 
     init(
         title: String,
@@ -25,7 +31,8 @@ final class Reminder {
         category: ReminderCategory = .work,
         priority: ReminderPriority = .medium,
         isCompleted: Bool = false,
-        sortOrder: Int = 0
+        sortOrder: Int = 0,
+        repeatRule: RepeatRule? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -36,6 +43,7 @@ final class Reminder {
         self.isCompleted = isCompleted
         self.sortOrder = sortOrder
         self.createdAt = .now
+        self.repeatRule = repeatRule
     }
 }
 
@@ -102,6 +110,36 @@ extension Reminder {
     }
 
     var isInbox: Bool {
-        !isCompleted && dueDate == nil
+        !isCompleted && dueDate == nil && parent == nil
+    }
+
+    var isTopLevel: Bool {
+        parent == nil
+    }
+
+    var subtasks: [Reminder] {
+        (children ?? []).sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    var subtaskProgress: Double {
+        let subs = subtasks
+        guard !subs.isEmpty else { return isCompleted ? 1.0 : 0.0 }
+        let done = subs.filter(\.isCompleted).count
+        return Double(done) / Double(subs.count)
+    }
+
+    var subtaskSummary: String? {
+        let subs = subtasks
+        guard !subs.isEmpty else { return nil }
+        let done = subs.filter(\.isCompleted).count
+        return "\(done)/\(subs.count)"
+    }
+
+    var isRepeating: Bool {
+        repeatRule != nil
+    }
+
+    var tagNames: [String] {
+        (tags ?? []).map(\.name)
     }
 }

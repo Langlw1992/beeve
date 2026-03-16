@@ -3,13 +3,17 @@ import SwiftUI
 struct RemindersView: View {
     @Environment(BeeveStore.self) private var store
     @State private var selectedFilter: ReminderFilter = .all
+    @State private var isEditing = false
+    @State private var selectedReminders: Set<UUID> = []
+    @State private var showTagFilter = false
+    @State private var filterTag: Tag?
 
     let onAddReminder: () -> Void
     let onOpenAssistant: () -> Void
 
     var body: some View {
         NavigationStack {
-            List {
+            List(selection: isEditing ? Binding(get: { selectedReminders }, set: { selectedReminders = $0 }) : nil) {
                 Section {
                     Text("从收件箱到今天要做的事，尽量在一个界面完成分拣。")
                         .font(.subheadline)
@@ -20,14 +24,46 @@ struct RemindersView: View {
                 .listRowSeparator(.hidden)
 
                 Section {
-                    SegmentedFilterBar(selection: $selectedFilter)
-                        .padding(.vertical, 4)
+                    HStack(spacing: 8) {
+                        SegmentedFilterBar(selection: $selectedFilter)
+                        if !store.allTags.isEmpty {
+                            Menu {
+                                Button("全部标签") { filterTag = nil }
+                                ForEach(store.allTags, id: \.id) { tag in
+                                    Button(tag.name) { filterTag = tag }
+                                }
+                            } label: {
+                                Image(systemName: filterTag != nil ? "tag.fill" : "tag")
+                                    .font(.subheadline)
+                                    .foregroundStyle(filterTag?.color ?? .secondary)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
 
-                if sections.isEmpty {
+                // Smart Inbox triage banner
+                if selectedFilter == .inbox && !store.inboxReminders.isEmpty && !isEditing {
+                    Section {
+                        SmartInboxBanner(
+                            count: store.inboxReminders.count,
+                            onTriageAll: {
+                                withAnimation(.snappy) {
+                                    for r in store.inboxReminders {
+                                        store.quickTriageToday(r)
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                if filteredSections.isEmpty {
                     Section {
                         ContentUnavailableView(
                             "当前筛选下没有事项",
@@ -40,7 +76,7 @@ struct RemindersView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                 } else {
-                    ForEach(sections, id: \.title) { section in
+                    ForEach(filteredSections, id: \.title) { section in
                         Section(section.title) {
                             ForEach(section.items) { reminder in
                                 ReminderRow(
@@ -67,9 +103,34 @@ struct RemindersView: View {
                                         }
                                     }
                                 )
+                                .tag(reminder.id)
                                 .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
+                                // Smart inbox quick triage swipe
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    if reminder.isInbox {
+                                        Button("今天") {
+                                            withAnimation(.snappy) { store.quickTriageToday(reminder) }
+                                        }
+                                        .tint(.blue)
+                                    }
+                                }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    if reminder.isInbox {
+                                        Button("以后") {
+                                            withAnimation(.snappy) { store.quickTriageSomeday(reminder) }
+                                        }
+                                        .tint(.gray)
+                                        Button("本周") {
+                                            withAnimation(.snappy) { store.quickTriageThisWeek(reminder) }
+                                        }
+                                        .tint(.orange)
+                                    }
+                                }
+                            }
+                            .onMove { source, destination in
+                                store.moveReminder(from: source, to: destination, in: section.items)
                             }
                         }
                     }
@@ -78,8 +139,17 @@ struct RemindersView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .background(AppBackgroundView())
+            .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
             .navigationTitle("提醒")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(isEditing ? "完成" : "编辑") {
+                        withAnimation(.snappy) {
+                            isEditing.toggle()
+                            if !isEditing { selectedReminders.removeAll() }
+                        }
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     AssistantToolbarButton(action: onOpenAssistant)
                 }
@@ -87,9 +157,73 @@ struct RemindersView: View {
                     Button("新增", systemImage: "plus", action: onAddReminder)
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                if isEditing && !selectedReminders.isEmpty {
+                    batchBar
+                }
+            }
             .sensoryFeedback(.selection, trigger: selectedFilter)
             .animation(.snappy, value: selectedFilter)
         }
+    }
+
+    // MARK: - Batch Action Bar
+
+    private var batchBar: some View {
+        HStack(spacing: 16) {
+            Text("\(selectedReminders.count) 项已选")
+                .font(.subheadline.weight(.semibold))
+
+            Spacer()
+
+            Button("完成") {
+                let items = selectedItems
+                withAnimation(.snappy) {
+                    store.batchComplete(items)
+                    selectedReminders.removeAll()
+                }
+            }
+            .tint(.green)
+
+            Button("今天") {
+                let items = selectedItems
+                withAnimation(.snappy) {
+                    store.batchAssignToday(items)
+                    selectedReminders.removeAll()
+                }
+            }
+            .tint(.blue)
+
+            Button("删除", role: .destructive) {
+                let items = selectedItems
+                withAnimation(.snappy) {
+                    store.batchDelete(items)
+                    selectedReminders.removeAll()
+                }
+            }
+        }
+        .padding()
+        .glassCapsule(tint: .indigo)
+        .padding(.horizontal)
+        .padding(.bottom, 8)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+
+    private var selectedItems: [Reminder] {
+        store.allReminders.filter { selectedReminders.contains($0.id) }
+    }
+
+    // MARK: - Sections
+
+    private var filteredSections: [ReminderListSection] {
+        sections.map { section in
+            if let filterTag {
+                let filtered = section.items.filter { ($0.tags ?? []).contains(where: { $0.id == filterTag.id }) }
+                return ReminderListSection(title: section.title, items: filtered, tint: section.tint)
+            }
+            return section
+        }
+        .filter { !$0.items.isEmpty }
     }
 
     private var sections: [ReminderListSection] {
@@ -100,15 +234,14 @@ struct RemindersView: View {
                 ReminderListSection(title: "今天", items: store.todayReminders, tint: .blue),
                 ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: .orange),
             ]
-            .filter { !$0.items.isEmpty }
         case .inbox:
-            return [ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: .purple)].filter { !$0.items.isEmpty }
+            return [ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: .purple)]
         case .today:
-            return [ReminderListSection(title: "今天", items: store.todayReminders, tint: .blue)].filter { !$0.items.isEmpty }
+            return [ReminderListSection(title: "今天", items: store.todayReminders, tint: .blue)]
         case .upcoming:
-            return [ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: .orange)].filter { !$0.items.isEmpty }
+            return [ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: .orange)]
         case .completed:
-            return [ReminderListSection(title: "已完成", items: store.completedReminders, tint: .green)].filter { !$0.items.isEmpty }
+            return [ReminderListSection(title: "已完成", items: store.completedReminders, tint: .green)]
         }
     }
 }
@@ -117,4 +250,34 @@ private struct ReminderListSection {
     let title: String
     let items: [Reminder]
     let tint: Color
+}
+
+// MARK: - Smart Inbox Banner
+
+struct SmartInboxBanner: View {
+    let count: Int
+    let onTriageAll: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            CircleIconBadge(symbol: "tray.full.fill", tint: .purple, size: 36, iconSize: 14)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("有 \(count) 条事项待分拣")
+                    .font(.subheadline.weight(.semibold))
+                Text("左滑安排到今天，右滑标记为以后处理")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Button("全部今天", action: onTriageAll)
+                .font(.caption.weight(.semibold))
+                .buttonStyle(.bordered)
+                .tint(.purple)
+        }
+        .padding(12)
+        .appCard(tint: .purple, cornerRadius: 16)
+    }
 }

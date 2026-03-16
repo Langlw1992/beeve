@@ -36,7 +36,7 @@ final class BeeveStore {
             sortBy: [SortDescriptor(\.sortOrder), SortDescriptor(\.createdAt, order: .reverse)]
         )
         let fetched = (try? modelContext.fetch(descriptor)) ?? []
-        return fetched.sorted { lhs, rhs in
+        return fetched.filter(\.isTopLevel).sorted { lhs, rhs in
             if lhs.isCompleted != rhs.isCompleted { return !lhs.isCompleted }
             if let ld = lhs.dueDate, let rd = rhs.dueDate { return ld < rd }
             if lhs.dueDate != nil { return true }
@@ -98,7 +98,9 @@ final class BeeveStore {
         note: String = "",
         dueDate: Date? = nil,
         category: ReminderCategory = .work,
-        priority: ReminderPriority = .medium
+        priority: ReminderPriority = .medium,
+        tags: [Tag] = [],
+        repeatRule: RepeatRule? = nil
     ) {
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanTitle.isEmpty else { return }
@@ -108,8 +110,10 @@ final class BeeveStore {
             note: note.trimmingCharacters(in: .whitespacesAndNewlines),
             dueDate: dueDate,
             category: category,
-            priority: priority
+            priority: priority,
+            repeatRule: repeatRule
         )
+        reminder.tags = tags
         modelContext.insert(reminder)
         try? modelContext.save()
     }
@@ -117,6 +121,20 @@ final class BeeveStore {
     func toggleReminder(_ reminder: Reminder) {
         reminder.isCompleted.toggle()
         if reminder.isCompleted {
+            // If repeating, spawn next occurrence
+            if let rule = reminder.repeatRule, let due = reminder.dueDate {
+                let nextDate = rule.nextOccurrence(from: due)
+                let next = Reminder(
+                    title: reminder.title,
+                    note: reminder.note,
+                    dueDate: nextDate,
+                    category: reminder.category,
+                    priority: reminder.priority,
+                    repeatRule: rule
+                )
+                next.tags = reminder.tags
+                modelContext.insert(next)
+            }
             completionSuggestion = followUpSuggestion(afterCompleting: reminder)
         } else {
             completionSuggestion = nil
@@ -127,6 +145,160 @@ final class BeeveStore {
     func deleteReminder(_ reminder: Reminder) {
         modelContext.delete(reminder)
         try? modelContext.save()
+    }
+
+    // MARK: - Subtask Actions
+
+    func addSubtask(to parent: Reminder, title: String) {
+        let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanTitle.isEmpty else { return }
+
+        let sub = Reminder(
+            title: cleanTitle,
+            category: parent.category,
+            priority: parent.priority,
+            sortOrder: (parent.children?.count ?? 0)
+        )
+        sub.parent = parent
+        modelContext.insert(sub)
+        try? modelContext.save()
+    }
+
+    func toggleSubtask(_ subtask: Reminder) {
+        subtask.isCompleted.toggle()
+        // Auto-complete parent if all subtasks done
+        if let parent = subtask.parent {
+            let allDone = parent.subtasks.allSatisfy(\.isCompleted)
+            if allDone && !parent.isCompleted {
+                parent.isCompleted = true
+                if let rule = parent.repeatRule, let due = parent.dueDate {
+                    spawnNextOccurrence(from: parent, rule: rule, baseDue: due)
+                }
+                completionSuggestion = followUpSuggestion(afterCompleting: parent)
+            }
+        }
+        try? modelContext.save()
+    }
+
+    func deleteSubtask(_ subtask: Reminder) {
+        modelContext.delete(subtask)
+        try? modelContext.save()
+    }
+
+    // MARK: - Tag Actions
+
+    var allTags: [Tag] {
+        let descriptor = FetchDescriptor<Tag>(sortBy: [SortDescriptor(\.name)])
+        return (try? modelContext.fetch(descriptor)) ?? []
+    }
+
+    func createTag(name: String, colorHex: String = "6366F1") {
+        let clean = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty else { return }
+        let tag = Tag(name: clean, colorHex: colorHex)
+        modelContext.insert(tag)
+        try? modelContext.save()
+    }
+
+    func deleteTag(_ tag: Tag) {
+        modelContext.delete(tag)
+        try? modelContext.save()
+    }
+
+    func addTag(_ tag: Tag, to reminder: Reminder) {
+        var current = reminder.tags ?? []
+        guard !current.contains(where: { $0.id == tag.id }) else { return }
+        current.append(tag)
+        reminder.tags = current
+        try? modelContext.save()
+    }
+
+    func removeTag(_ tag: Tag, from reminder: Reminder) {
+        reminder.tags = (reminder.tags ?? []).filter { $0.id != tag.id }
+        try? modelContext.save()
+    }
+
+    // MARK: - Batch Operations
+
+    func batchComplete(_ reminders: [Reminder]) {
+        for r in reminders {
+            r.isCompleted = true
+            if let rule = r.repeatRule, let due = r.dueDate {
+                spawnNextOccurrence(from: r, rule: rule, baseDue: due)
+            }
+        }
+        try? modelContext.save()
+    }
+
+    func batchDelete(_ reminders: [Reminder]) {
+        for r in reminders {
+            modelContext.delete(r)
+        }
+        try? modelContext.save()
+    }
+
+    func batchAssignToday(_ reminders: [Reminder]) {
+        let calendar = Calendar.current
+        let today9am = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: .now) ?? .now
+        for r in reminders {
+            r.dueDate = today9am
+        }
+        try? modelContext.save()
+    }
+
+    func batchSetCategory(_ reminders: [Reminder], category: ReminderCategory) {
+        for r in reminders {
+            r.category = category
+        }
+        try? modelContext.save()
+    }
+
+    func moveReminder(from source: IndexSet, to destination: Int, in list: [Reminder]) {
+        var mutable = list
+        mutable.move(fromOffsets: source, toOffset: destination)
+        for (i, r) in mutable.enumerated() {
+            r.sortOrder = i
+        }
+        try? modelContext.save()
+    }
+
+    // MARK: - Smart Inbox
+
+    func quickTriageToday(_ reminder: Reminder) {
+        let calendar = Calendar.current
+        reminder.dueDate = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: .now) ?? .now
+        try? modelContext.save()
+    }
+
+    func quickTriageThisWeek(_ reminder: Reminder) {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: .now)
+        let daysToFriday = (6 - weekday + 7) % 7
+        let friday = calendar.date(byAdding: .day, value: max(1, daysToFriday), to: .now) ?? .now
+        reminder.dueDate = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: friday) ?? friday
+        try? modelContext.save()
+    }
+
+    func quickTriageSomeday(_ reminder: Reminder) {
+        reminder.priority = .low
+        // Keep in inbox (no dueDate), just lower priority
+        try? modelContext.save()
+    }
+
+    // MARK: - Private Helpers
+
+    private func spawnNextOccurrence(from reminder: Reminder, rule: RepeatRule, baseDue: Date) {
+        let nextDate = rule.nextOccurrence(from: baseDue)
+        let next = Reminder(
+            title: reminder.title,
+            note: reminder.note,
+            dueDate: nextDate,
+            category: reminder.category,
+            priority: reminder.priority,
+            repeatRule: rule
+        )
+        next.tags = reminder.tags
+        modelContext.insert(next)
     }
 
     func assignTonight(_ reminder: Reminder) {
@@ -374,15 +546,29 @@ extension BeeveStore {
     }
 
     static func seedSampleDataIfEmpty(into context: ModelContext) {
+        // Seed default tags
+        let tagDescriptor = FetchDescriptor<Tag>()
+        let tagCount = (try? context.fetchCount(tagDescriptor)) ?? 0
+        if tagCount == 0 {
+            for (name, hex) in Tag.defaultTags {
+                context.insert(Tag(name: name, colorHex: hex))
+            }
+        }
+
         let descriptor = FetchDescriptor<Reminder>()
         let count = (try? context.fetchCount(descriptor)) ?? 0
-        guard count == 0 else { return }
+        guard count == 0 else {
+            try? context.save()
+            return
+        }
 
         let samples = [
             Reminder(title: "整理今天的产品思路", note: "把 AI 助理首页的结构定下来", dueDate: .now.addingTimeInterval(60 * 45), category: .work, priority: .high),
             Reminder(title: "喝水和站起来走动", note: "给自己留 10 分钟", dueDate: .now.addingTimeInterval(60 * 120), category: .health, priority: .medium),
             Reminder(title: "把脑中的新功能先记下来", note: "先放收件箱，晚点再决定是否排期", category: .idea, priority: .medium),
             Reminder(title: "记录一个新灵感", note: "把最近想到的工具功能记下来", dueDate: .now.addingTimeInterval(60 * 60 * 24), category: .idea, priority: .low, isCompleted: true),
+            // Demo repeat task
+            Reminder(title: "每日复盘 5 分钟", note: "回顾今天完成了什么，明天优先做什么", dueDate: .now.addingTimeInterval(60 * 60 * 10), category: .work, priority: .medium, repeatRule: .daily),
         ]
 
         for sample in samples {

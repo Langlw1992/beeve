@@ -10,6 +10,9 @@ struct AddReminderSheet: View {
     @State private var shouldSchedule = false
     @State private var category: ReminderCategory = .work
     @State private var priority: ReminderPriority = .medium
+    @State private var selectedTags: Set<UUID> = []
+    @State private var repeatRule: RepeatRule?
+    @State private var newTagName = ""
 
     var body: some View {
         NavigationStack {
@@ -58,6 +61,29 @@ struct AddReminderSheet: View {
                                     }
                                 }
                             }
+
+                            // Repeat rule
+                            GlassSection(title: "重复", symbol: "arrow.trianglehead.2.clockwise", tint: .cyan) {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 8) {
+                                            RepeatChip(label: "不重复", isSelected: repeatRule == nil) {
+                                                repeatRule = nil
+                                            }
+                                            ForEach(RepeatRule.presets, id: \.label) { rule in
+                                                RepeatChip(label: rule.label, isSelected: repeatRule == rule) {
+                                                    repeatRule = rule
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if let rule = repeatRule {
+                                        Text("完成后会自动生成下一个「\(rule.label)」任务。")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
                         }
 
                         GlassSection(title: "分类与优先级", symbol: "line.3.horizontal.decrease.circle", tint: .indigo) {
@@ -77,6 +103,38 @@ struct AddReminderSheet: View {
                                 .pickerStyle(.segmented)
                             }
                         }
+
+                        // Tags
+                        GlassSection(title: "标签", symbol: "tag", tint: .purple) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                FlowLayout(spacing: 8) {
+                                    ForEach(store.allTags, id: \.id) { tag in
+                                        TagChip(
+                                            tag: tag,
+                                            isSelected: selectedTags.contains(tag.id),
+                                            action: {
+                                                if selectedTags.contains(tag.id) {
+                                                    selectedTags.remove(tag.id)
+                                                } else {
+                                                    selectedTags.insert(tag.id)
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+
+                                HStack(spacing: 8) {
+                                    TextField("新标签", text: $newTagName)
+                                        .textFieldStyle(.roundedBorder)
+                                    Button("添加") {
+                                        store.createTag(name: newTagName)
+                                        newTagName = ""
+                                    }
+                                    .disabled(newTagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                                    .buttonStyle(.bordered)
+                                }
+                            }
+                        }
                     }
                     .padding()
                     .padding(.bottom, 24)
@@ -90,12 +148,15 @@ struct AddReminderSheet: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("保存") {
+                        let tags = store.allTags.filter { selectedTags.contains($0.id) }
                         store.addReminder(
                             title: title,
                             note: note,
                             dueDate: shouldSchedule ? dueDate : nil,
                             category: category,
-                            priority: priority
+                            priority: priority,
+                            tags: tags,
+                            repeatRule: shouldSchedule ? repeatRule : nil
                         )
                         dismiss()
                     }
@@ -117,6 +178,8 @@ struct AddReminderSheet: View {
     }
 }
 
+// MARK: - Supporting Views
+
 struct QuickTimeButton: View {
     let title: String
     let action: () -> Void
@@ -124,5 +187,81 @@ struct QuickTimeButton: View {
     var body: some View {
         Button(title, action: action)
             .buttonStyle(.bordered)
+    }
+}
+
+struct RepeatChip: View {
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(label, action: action)
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(isSelected ? Color.cyan.opacity(0.2) : Color.secondary.opacity(0.1), in: Capsule())
+            .foregroundStyle(isSelected ? .cyan : .secondary)
+    }
+}
+
+struct TagChip: View {
+    let tag: Tag
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Circle()
+                    .fill(tag.color)
+                    .frame(width: 8, height: 8)
+                Text(tag.name)
+                    .font(.caption.weight(.medium))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(isSelected ? tag.color.opacity(0.2) : Color.secondary.opacity(0.08), in: Capsule())
+            .foregroundStyle(isSelected ? tag.color : .secondary)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = layout(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = layout(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y), proposal: .unspecified)
+        }
+    }
+
+    private func layout(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > maxWidth && x > 0 {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            positions.append(CGPoint(x: x, y: y))
+            rowHeight = max(rowHeight, size.height)
+            x += size.width + spacing
+        }
+
+        return (CGSize(width: maxWidth, height: y + rowHeight), positions)
     }
 }
