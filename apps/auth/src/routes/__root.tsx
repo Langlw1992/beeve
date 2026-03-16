@@ -8,6 +8,7 @@ import {
     Scripts,
 } from '@tanstack/solid-router'
 import { HydrationScript } from 'solid-js/web'
+import '@/styles.css'
 
 export const Route = createRootRoute({
     head: () => ({

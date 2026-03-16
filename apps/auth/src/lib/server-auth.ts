@@ -17,7 +17,7 @@ export const auth = betterAuth({
 		"better-auth-dev-secret-change-me-in-production",
 	trustedOrigins: [appOrigin, "https://appleid.apple.com"],
 	emailAndPassword: {
-		enabled: true,
+		enabled: false,
 	},
 	socialProviders: {
 		google: {
