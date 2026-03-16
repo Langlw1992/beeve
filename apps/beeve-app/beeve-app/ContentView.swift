@@ -50,22 +50,8 @@ private struct AppBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [
-                    Color(red: 0.06, green: 0.07, blue: 0.12),
-                    Color(red: 0.10, green: 0.09, blue: 0.18),
-                    Color.black
-                ]
-                : [
-                    Color(red: 0.95, green: 0.97, blue: 1.0),
-                    Color(red: 0.97, green: 0.95, blue: 1.0),
-                    Color(.systemGroupedBackground)
-                ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+        (colorScheme == .dark ? Color(.systemGroupedBackground) : Color(.secondarySystemGroupedBackground))
+            .ignoresSafeArea()
     }
 }
 
@@ -77,44 +63,186 @@ private struct AppCardModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .background(background, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(backgroundStyle)
+            )
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [tint.opacity(colorScheme == .dark ? 0.14 : 0.08), .clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(borderColor)
             )
-            .shadow(color: shadowColor, radius: 14, y: 8)
+            .shadow(color: shadowColor, radius: 8, y: 3)
     }
 
-    private var background: LinearGradient {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [
-                    Color(.secondarySystemBackground),
-                    tint.opacity(0.20),
-                    Color.black.opacity(0.22)
-                ]
-                : [
-                    Color.white.opacity(0.96),
-                    tint.opacity(0.10),
-                    Color(.systemBackground)
-                ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+    private var backgroundStyle: AnyShapeStyle {
+        AnyShapeStyle(colorScheme == .dark ? Color(.secondarySystemGroupedBackground) : Color(.systemBackground))
     }
 
     private var borderColor: Color {
-        colorScheme == .dark ? .white.opacity(0.08) : .white.opacity(0.55)
+        colorScheme == .dark ? .white.opacity(0.06) : tint.opacity(0.10)
     }
 
     private var shadowColor: Color {
-        colorScheme == .dark ? .black.opacity(0.28) : tint.opacity(0.10)
+        colorScheme == .dark ? .black.opacity(0.12) : .black.opacity(0.04)
     }
 }
 
 private extension View {
     func appCard(tint: Color = .indigo, cornerRadius: CGFloat = 24) -> some View {
         modifier(AppCardModifier(tint: tint, cornerRadius: cornerRadius))
+    }
+
+    func immersiveScrollMotion() -> some View {
+        scrollTransition(axis: .vertical) { content, phase in
+            content
+                .scaleEffect(phase.isIdentity ? 1 : 0.97)
+                .opacity(phase.isIdentity ? 1 : 0.9)
+                .offset(y: phase.isIdentity ? 0 : 10)
+        }
+    }
+}
+
+private struct PressableScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .brightness(configuration.isPressed ? -0.02 : 0)
+            .animation(.spring(response: 0.22, dampingFraction: 0.78), value: configuration.isPressed)
+    }
+}
+
+private struct AuroraBackdrop: View {
+    let primary: Color
+    let secondary: Color
+    var cornerRadius: CGFloat = 30
+
+    var body: some View {
+        GeometryReader { geometry in
+            TimelineView(.animation(minimumInterval: 1 / 24)) { context in
+                let time = context.date.timeIntervalSinceReferenceDate
+
+                ZStack {
+                    Circle()
+                        .fill(primary.opacity(0.22))
+                        .frame(width: geometry.size.width * 0.72)
+                        .blur(radius: 24)
+                        .offset(
+                            x: sin(time * 0.72) * 34 - geometry.size.width * 0.18,
+                            y: cos(time * 0.54) * 26 - geometry.size.height * 0.20
+                        )
+
+                    Circle()
+                        .fill(secondary.opacity(0.18))
+                        .frame(width: geometry.size.width * 0.64)
+                        .blur(radius: 22)
+                        .offset(
+                            x: cos(time * 0.58) * 42 + geometry.size.width * 0.2,
+                            y: sin(time * 0.66) * 30 + geometry.size.height * 0.12
+                        )
+
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(0.18),
+                            .clear,
+                            secondary.opacity(0.08),
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                }
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            }
+        }
+        .allowsHitTesting(false)
+    }
+}
+
+private struct LiveStatusPill: View {
+    let title: String
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: 8) {
+            TimelineView(.animation(minimumInterval: 1 / 8)) { context in
+                let time = context.date.timeIntervalSinceReferenceDate
+                Circle()
+                    .fill(tint)
+                    .frame(width: 8, height: 8)
+                    .scaleEffect(0.82 + abs(sin(time * 2.2)) * 0.34)
+                    .shadow(color: tint.opacity(0.45), radius: 8)
+            }
+
+            Text(title)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.primary)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(tint.opacity(0.16))
+        )
+    }
+}
+
+private struct MetricMiniBars: View {
+    let tint: Color
+    let level: Double
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(0..<5, id: \.self) { index in
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .fill(index < highlightedBars ? tint : tint.opacity(0.18))
+                    .frame(width: 6, height: CGFloat(8 + index * 5))
+            }
+        }
+        .animation(.snappy, value: highlightedBars)
+    }
+
+    private var highlightedBars: Int {
+        max(1, min(5, Int((level * 5).rounded(.up))))
+    }
+}
+
+private struct DockGlowOverlay: View {
+    let tint: Color
+    var cornerRadius: CGFloat = 22
+
+    var body: some View {
+        GeometryReader { geometry in
+            TimelineView(.animation(minimumInterval: 1 / 20)) { context in
+                let time = context.date.timeIntervalSinceReferenceDate
+
+                LinearGradient(
+                    colors: [
+                        .clear,
+                        tint.opacity(0.22),
+                        .white.opacity(0.18),
+                        .clear,
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: geometry.size.width * 0.52)
+                .blur(radius: 14)
+                .offset(x: sin(time * 0.9) * geometry.size.width * 0.22)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .allowsHitTesting(false)
     }
 }
 
@@ -126,7 +254,7 @@ private struct CircleIconBadge: View {
 
     var body: some View {
         Circle()
-            .fill(tint.opacity(0.14))
+            .fill(tint.opacity(0.10))
             .frame(width: size, height: size)
             .overlay(
                 Image(systemName: symbol)
@@ -136,16 +264,40 @@ private struct CircleIconBadge: View {
     }
 }
 
+private struct SurfaceKicker: View {
+    let title: String
+    let symbol: String
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: symbol)
+                .font(.caption.weight(.bold))
+            Text(title.uppercased())
+                .font(.caption.weight(.bold))
+                .lineLimit(1)
+        }
+        .foregroundStyle(tint)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(tint.opacity(0.08), in: Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(tint.opacity(0.12))
+        )
+    }
+}
+
 private struct PriorityPill: View {
     let priority: ReminderPriority
 
     var body: some View {
         Text(priority.label)
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(priority.color.opacity(0.14), in: Capsule())
-            .foregroundStyle(priority.color)
+            .font(.caption.weight(.medium))
+            .padding(.horizontal, 9)
+            .padding(.vertical, 4)
+            .background(priority.color.opacity(0.10), in: Capsule())
+            .foregroundStyle(priority.color.opacity(0.9))
     }
 }
 
@@ -157,20 +309,22 @@ private struct AssistantToolbarButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                CircleIconBadge(symbol: "sparkles", tint: .indigo, size: 28, iconSize: 12)
-                Text("AI")
+                Image(systemName: "lightbulb")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text("建议")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
             }
             .padding(.horizontal, 10)
             .frame(height: 36)
             .background(
-                colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.78),
+                colorScheme == .dark ? Color.white.opacity(0.06) : Color(.systemBackground),
                 in: Capsule()
             )
             .overlay(
                 Capsule()
-                    .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.42))
+                    .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.08) : Color.black.opacity(0.08))
             )
         }
         .buttonStyle(.plain)
@@ -195,10 +349,8 @@ private struct SegmentedFilterBar: View {
                             .frame(height: 36)
                             .background(
                                 selection == filter
-                                    ? AnyShapeStyle(
-                                        LinearGradient(colors: [Color.indigo, Color.blue], startPoint: .leading, endPoint: .trailing)
-                                    )
-                                    : AnyShapeStyle(colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.72)),
+                                    ? AnyShapeStyle(Color.accentColor)
+                                    : AnyShapeStyle(colorScheme == .dark ? Color.white.opacity(0.04) : Color(.systemBackground)),
                                 in: Capsule()
                             )
                     }
@@ -207,7 +359,7 @@ private struct SegmentedFilterBar: View {
             }
             .padding(6)
             .background(
-                colorScheme == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.46),
+                colorScheme == .dark ? Color.white.opacity(0.04) : Color.black.opacity(0.03),
                 in: Capsule()
             )
         }
@@ -292,6 +444,9 @@ struct ContentView: View {
 
 private struct HomeDashboardView: View {
     @Environment(BeeveStore.self) private var store
+    @State private var spotlightIndex = 0
+    @State private var isQuickActionsExpanded = true
+    @State private var isTodayExpanded = true
 
     let onAddReminder: () -> Void
     let onOpenReminders: () -> Void
@@ -314,14 +469,58 @@ private struct HomeDashboardView: View {
                         focusScore: store.focusScore,
                         completedCount: store.completedCount,
                         pendingCount: store.pendingCount,
+                        inboxCount: store.inboxReminders.count,
                         homeSuggestion: store.homeSuggestion,
                         onOpenAssistant: onOpenAssistant
                     )
+                    .immersiveScrollMotion()
+
+                    SpotlightCarousel(
+                        selection: $spotlightIndex,
+                        overdueCount: store.overdueReminders.count,
+                        inboxCount: store.inboxReminders.count,
+                        todayCount: store.todayReminders.count,
+                        upcomingCount: store.upcomingReminders.count,
+                        nextReminderTitle: store.nextImportantReminder?.title,
+                        onAddReminder: onAddReminder,
+                        onOpenReminders: onOpenReminders,
+                        onOpenAssistant: onOpenAssistant
+                    )
+                    .immersiveScrollMotion()
+
+                    DayPulseStrip(
+                        overdueCount: store.overdueReminders.count,
+                        inboxCount: store.inboxReminders.count,
+                        todayCount: store.todayReminders.count,
+                        upcomingCount: store.upcomingReminders.count,
+                        completedCount: store.completedCount,
+                        onOpenReminders: onOpenReminders
+                    )
 
                     TriageCard(summary: store.triageSummary, inboxCount: store.inboxReminders.count, todayCount: store.todayReminders.count)
+                        .immersiveScrollMotion()
 
                     if let nextReminder = store.nextImportantReminder {
                         NextReminderCard(reminder: nextReminder, onOpenReminders: onOpenReminders)
+                            .immersiveScrollMotion()
+                    }
+
+                    RhythmBoardCard(
+                        overdueCount: store.overdueReminders.count,
+                        todayCount: store.todayReminders.count,
+                        upcomingCount: store.upcomingReminders.count,
+                        nextReminderTitle: store.nextImportantReminder?.title,
+                        onOpenReminders: onOpenReminders,
+                        onOpenAssistant: onOpenAssistant
+                    )
+                    .immersiveScrollMotion()
+
+                    if !store.pendingPreviewReminders.isEmpty {
+                        AgendaTimelineCard(
+                            reminders: store.pendingPreviewReminders,
+                            onOpenReminders: onOpenReminders
+                        )
+                        .immersiveScrollMotion()
                     }
 
                     if let suggestion = store.completionSuggestion {
@@ -342,24 +541,41 @@ private struct HomeDashboardView: View {
                                 store.clearCompletionSuggestion()
                             }
                         )
+                        .immersiveScrollMotion()
                     }
 
-                    QuickActionsSection(
-                        onAddReminder: onAddReminder,
-                        onOpenReminders: onOpenReminders,
-                        onOpenTools: onOpenTools,
-                        onOpenAssistant: onOpenAssistant
-                    )
+                    ExpandableSectionCard(
+                        title: "快速入口",
+                        symbol: "square.grid.2x2",
+                        tint: .blue,
+                        isExpanded: $isQuickActionsExpanded
+                    ) {
+                        QuickActionsSection(
+                            onAddReminder: onAddReminder,
+                            onOpenReminders: onOpenReminders,
+                            onOpenTools: onOpenTools,
+                            onOpenAssistant: onOpenAssistant
+                        )
+                    }
+                    .immersiveScrollMotion()
 
-                    GlassSection(title: "今天进行中", symbol: "bolt.badge.clock", tint: .blue) {
+                    ExpandableSectionCard(
+                        title: "今天进行中",
+                        symbol: "bolt.badge.clock",
+                        tint: .blue,
+                        isExpanded: $isTodayExpanded
+                    ) {
                         VStack(spacing: 12) {
                             ForEach(store.pendingPreviewReminders) { reminder in
                                 ReminderPreviewRow(reminder: reminder) {
-                                    store.toggleReminder(reminder)
+                                    withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
+                                        store.toggleReminder(reminder)
+                                    }
                                 }
                             }
                         }
                     }
+                    .immersiveScrollMotion()
                 }
                 .padding(.horizontal)
                 .padding(.top, AppSpacing.pageTop)
@@ -372,6 +588,18 @@ private struct HomeDashboardView: View {
                     AssistantToolbarButton(action: onOpenAssistant)
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                HomeContextBar(
+                    onAddReminder: onAddReminder,
+                    onOpenReminders: onOpenReminders,
+                    onOpenAssistant: onOpenAssistant
+                )
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .background(.clear)
+            }
+            .sensoryFeedback(.success, trigger: store.completedCount)
+            .sensoryFeedback(.impact(weight: .light), trigger: store.pendingCount)
         }
     }
 }
@@ -380,84 +608,522 @@ private struct HeroOverviewCard: View {
     let focusScore: Int
     let completedCount: Int
     let pendingCount: Int
+    let inboxCount: Int
     let homeSuggestion: String
     let onOpenAssistant: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .top) {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack(alignment: .center, spacing: 18) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("你的 AI 助理已在线", systemImage: "sparkles")
-                        .font(.headline)
-                        .foregroundStyle(.white.opacity(0.9))
-                    Text("今天先做最重要的一件事。")
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer()
-                Circle()
-                    .fill(.white.opacity(0.16))
-                    .frame(width: 48, height: 48)
-                    .overlay(
-                        Image(systemName: "brain.head.profile")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundStyle(.white)
+                    SurfaceKicker(
+                        title: pendingCount == 0 ? "Ready" : "Today",
+                        symbol: "sparkles",
+                        tint: pendingCount == 0 ? .green : .indigo
                     )
-            }
+                    Text("先把今天收拢成几个清晰动作。")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
 
-            Text(homeSuggestion)
-                .font(.body)
-                .foregroundStyle(.white.opacity(0.84))
+                    Text(homeSuggestion)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                }
+
+                Spacer(minLength: 12)
+
+                DailyProgressRing(
+                    progress: progress,
+                    score: focusScore,
+                    completedCount: completedCount,
+                    pendingCount: pendingCount
+                )
+            }
 
             HStack(spacing: 12) {
-                HeroMetric(title: "专注分", value: "\(focusScore)")
-                HeroMetric(title: "已完成", value: "\(completedCount)")
-                HeroMetric(title: "待处理", value: "\(pendingCount)")
+                HeroMetric(title: "专注分", value: "\(focusScore)", tint: .indigo, level: Double(focusScore) / 100)
+                HeroMetric(title: "已完成", value: "\(completedCount)", tint: .green, level: min(1, Double(completedCount) / 6))
+                HeroMetric(title: "收件箱", value: "\(inboxCount)", tint: .purple, level: min(1, Double(inboxCount) / 6))
             }
 
-            Button("让 AI 帮我安排下一步", action: onOpenAssistant)
-                .buttonStyle(.borderedProminent)
-                .tint(.white)
-                .foregroundStyle(.indigo)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ActionChip(title: pendingCount == 0 ? "今天比较轻" : "还有 \(pendingCount) 项待处理", systemImage: "sparkle.magnifyingglass", tint: .indigo, action: onOpenAssistant)
+                    ActionChip(title: completedCount == 0 ? "开始第一个完成" : "已推进 \(completedCount) 项", systemImage: "checkmark.circle", tint: .green, action: onOpenAssistant)
+                    ActionChip(title: "查看建议", systemImage: "lightbulb", tint: .orange, action: onOpenAssistant)
+                }
+            }
         }
         .padding(22)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(red: 0.34, green: 0.30, blue: 0.95),
-                    Color(red: 0.18, green: 0.55, blue: 0.98),
-                    Color(red: 0.10, green: 0.14, blue: 0.32)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 30, style: .continuous)
-        )
-        .shadow(color: Color.indigo.opacity(0.28), radius: 18, y: 10)
+        .appCard(tint: .blue, cornerRadius: 30)
+    }
+
+    private var progress: Double {
+        let total = completedCount + pendingCount
+        guard total > 0 else { return 0 }
+        return Double(completedCount) / Double(total)
     }
 }
 
 private struct HeroMetric: View {
     let title: String
     let value: String
+    let tint: Color
+    let level: Double
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            MetricMiniBars(tint: tint, level: level)
+
             Text(value)
                 .font(.headline)
+                .contentTransition(.numericText())
             Text(title)
                 .font(.caption)
-                .foregroundStyle(.white.opacity(0.72))
+                .foregroundStyle(.secondary)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(.white.opacity(0.12))
+                .strokeBorder(tint.opacity(0.10))
         )
-        .foregroundStyle(.white)
+        .animation(.snappy, value: value)
+    }
+}
+
+private struct DailyProgressRing: View {
+    let progress: Double
+    let score: Int
+    let completedCount: Int
+    let pendingCount: Int
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.primary.opacity(0.08), lineWidth: 10)
+
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(
+                    AngularGradient(colors: [.blue, .indigo, .purple], center: .center),
+                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+                .animation(.snappy(duration: 0.45), value: progress)
+
+            VStack(spacing: 2) {
+                Text("\(score)")
+                    .font(.title2.bold())
+                    .contentTransition(.numericText())
+                Text("\(completedCount)/\(completedCount + pendingCount)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(width: 92, height: 92)
+        .scaleEffect(completedCount > 0 ? 1.0 : 0.96)
+        .animation(.spring(response: 0.35, dampingFraction: 0.72), value: completedCount)
+    }
+}
+
+private struct DayPulseStrip: View {
+    let overdueCount: Int
+    let inboxCount: Int
+    let todayCount: Int
+    let upcomingCount: Int
+    let completedCount: Int
+    let onOpenReminders: () -> Void
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                PulseChip(title: "逾期", value: overdueCount, tint: .red, action: onOpenReminders)
+                PulseChip(title: "收件箱", value: inboxCount, tint: .purple, action: onOpenReminders)
+                PulseChip(title: "今天", value: todayCount, tint: .blue, action: onOpenReminders)
+                PulseChip(title: "接下来", value: upcomingCount, tint: .orange, action: onOpenReminders)
+                PulseChip(title: "完成", value: completedCount, tint: .green, action: onOpenReminders)
+            }
+            .padding(.vertical, 2)
+        }
+    }
+}
+
+private struct PulseChip: View {
+    let title: String
+    let value: Int
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(tint)
+                    .frame(width: 8, height: 8)
+                    .scaleEffect(value > 0 ? 1 : 0.72)
+                    .animation(value > 0 ? .easeInOut(duration: 0.9).repeatForever(autoreverses: true) : .default, value: value)
+
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Text("\(value)")
+                    .font(.subheadline.bold())
+                    .contentTransition(.numericText())
+                    .foregroundStyle(.primary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+            .background(tint.opacity(0.08), in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .buttonStyle(PressableScaleButtonStyle())
+    }
+}
+
+private struct ActionChip: View {
+    let title: String
+    let systemImage: String
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(tint)
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(tint.opacity(0.08), in: Capsule())
+        }
+        .buttonStyle(PressableScaleButtonStyle())
+    }
+}
+
+private struct SpotlightCarousel: View {
+    @Binding var selection: Int
+    let overdueCount: Int
+    let inboxCount: Int
+    let todayCount: Int
+    let upcomingCount: Int
+    let nextReminderTitle: String?
+    let onAddReminder: () -> Void
+    let onOpenReminders: () -> Void
+    let onOpenAssistant: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                SurfaceKicker(title: "Focus", symbol: "viewfinder.circle", tint: selectionTint)
+                Spacer()
+                Text("\(selection + 1)/3")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .contentTransition(.numericText())
+            }
+
+            Text("焦点视图")
+                .font(.title3.bold())
+                .foregroundStyle(.primary)
+
+            TabView(selection: $selection) {
+                EditorialSpotlightCard(
+                    eyebrow: "INBOX",
+                    title: inboxCount > 0 ? "还有 \(inboxCount) 条想法等你落地" : "收件箱已经清空",
+                    detail: inboxCount > 0 ? "现在适合做一轮快速分拣，把模糊任务变成具体安排。" : "可以顺手记录新想法，保持列表轻盈。",
+                    accent: .purple,
+                    symbol: "tray.full.fill",
+                    primaryTitle: "去分拣",
+                    primaryAction: onOpenReminders
+                )
+                .tag(0)
+
+                EditorialSpotlightCard(
+                    eyebrow: "FOCUS",
+                    title: nextReminderTitle ?? "把最重要的一项先推起来",
+                    detail: nextReminderTitle != nil ? "先推进眼前最关键的动作，再决定今天剩余时间怎么分配。" : "如果你还没开始，先挑一件最想完成的事。",
+                    accent: .indigo,
+                    symbol: "sparkles.rectangle.stack",
+                    primaryTitle: "看建议",
+                    primaryAction: onOpenAssistant
+                )
+                .tag(1)
+
+                EditorialSpotlightCard(
+                    eyebrow: "FLOW",
+                    title: "今天 \(todayCount) 项，接下来 \(upcomingCount) 项",
+                    detail: overdueCount > 0 ? "先处理逾期，再回到今天主线，你会更有掌控感。" : "当前节奏不错，可以趁状态顺手补一条新提醒。",
+                    accent: .orange,
+                    symbol: "calendar.day.timeline.left",
+                    primaryTitle: "快速收集",
+                    primaryAction: onAddReminder
+                )
+                .tag(2)
+            }
+            .frame(height: 188)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+
+            HStack(spacing: 8) {
+                ForEach(0..<3, id: \.self) { index in
+                    Capsule()
+                        .fill(index == selection ? Color.accentColor : Color.primary.opacity(0.12))
+                        .frame(width: index == selection ? 18 : 8, height: 8)
+                        .animation(.snappy, value: selection)
+                }
+            }
+        }
+    }
+
+    private var selectionTint: Color {
+        switch selection {
+        case 0: .purple
+        case 1: .indigo
+        default: .orange
+        }
+    }
+}
+
+private struct EditorialSpotlightCard: View {
+    let eyebrow: String
+    let title: String
+    let detail: String
+    let accent: Color
+    let symbol: String
+    let primaryTitle: String
+    let primaryAction: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    SurfaceKicker(title: eyebrow, symbol: symbol, tint: accent)
+                    Text(title)
+                        .font(.title3.bold())
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.leading)
+                }
+
+                Spacer()
+
+                CircleIconBadge(symbol: symbol, tint: accent, size: 42, iconSize: 17)
+            }
+
+            Text(detail)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.leading)
+
+            Spacer(minLength: 0)
+
+            Button(primaryTitle, action: primaryAction)
+                .buttonStyle(.borderedProminent)
+                .tint(accent)
+        }
+        .padding(20)
+        .appCard(tint: accent, cornerRadius: 28)
+        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .buttonStyle(PressableScaleButtonStyle())
+    }
+}
+
+private struct ExpandableSectionCard<Content: View>: View {
+    let title: String
+    let symbol: String
+    let tint: Color
+    @Binding var isExpanded: Bool
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Button {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 10) {
+                    SurfaceKicker(title: title, symbol: symbol, tint: tint)
+
+                    Spacer()
+
+                    Image(systemName: "chevron.down")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.secondary)
+                        .rotationEffect(.degrees(isExpanded ? 0 : -90))
+                }
+            }
+            .buttonStyle(.plain)
+            .buttonStyle(PressableScaleButtonStyle())
+
+            if isExpanded {
+                content
+                    .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity), removal: .opacity))
+            }
+        }
+        .padding(18)
+        .appCard(tint: tint, cornerRadius: 26)
+    }
+}
+
+private struct HomeContextBar: View {
+    let onAddReminder: () -> Void
+    let onOpenReminders: () -> Void
+    let onOpenAssistant: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button(action: onAddReminder) {
+                Label("收集", systemImage: "plus")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button(action: onOpenReminders) {
+                Label("提醒", systemImage: "checklist")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+
+            Button(action: onOpenAssistant) {
+                Label("建议", systemImage: "lightbulb")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(10)
+        .appCard(tint: .indigo, cornerRadius: 22)
+        .offset(y: -2)
+        .compositingGroup()
+    }
+}
+
+private struct RhythmBoardCard: View {
+    let overdueCount: Int
+    let todayCount: Int
+    let upcomingCount: Int
+    let nextReminderTitle: String?
+    let onOpenReminders: () -> Void
+    let onOpenAssistant: () -> Void
+
+    var body: some View {
+        GlassSection(title: "今日节奏", symbol: "waveform.path.ecg", tint: .indigo) {
+            VStack(spacing: 0) {
+                RhythmRow(
+                    title: "现在",
+                    subtitle: overdueCount > 0 ? "先处理 \(overdueCount) 个逾期事项" : (nextReminderTitle ?? "从当前最重要的一项开始"),
+                    accent: .red,
+                    action: onOpenReminders
+                )
+                SectionDivider()
+                RhythmRow(
+                    title: "接下来",
+                    subtitle: todayCount > 0 ? "今天还排了 \(todayCount) 项，适合继续推进" : "留一个 25 分钟专注块，推进最关键的一件事",
+                    accent: .blue,
+                    action: onOpenAssistant
+                )
+                SectionDivider()
+                RhythmRow(
+                    title: "稍后",
+                    subtitle: upcomingCount > 0 ? "后面还有 \(upcomingCount) 项可排进今天尾段" : "完成后给自己留 5 分钟整理和收尾",
+                    accent: .green,
+                    action: onOpenAssistant
+                )
+            }
+        }
+    }
+}
+
+private struct RhythmRow: View {
+    let title: String
+    let subtitle: String
+    let accent: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title.uppercased())
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(accent)
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.leading)
+                }
+
+                Spacer()
+
+                Image(systemName: "arrow.up.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, 12)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct AgendaTimelineCard: View {
+    @Environment(BeeveStore.self) private var store
+
+    let reminders: [ReminderItem]
+    let onOpenReminders: () -> Void
+
+    var body: some View {
+        GlassSection(title: "今日时间线", symbol: "timeline.selection", tint: .teal) {
+            VStack(spacing: 0) {
+                ForEach(Array(reminders.enumerated()), id: \.element.id) { index, reminder in
+                    Button(action: onOpenReminders) {
+                        HStack(alignment: .top, spacing: 12) {
+                            VStack(spacing: 0) {
+                                Circle()
+                                    .fill(reminder.priority.color)
+                                    .frame(width: 10, height: 10)
+
+                                if index < reminders.count - 1 {
+                                    Rectangle()
+                                        .fill(reminder.priority.color.opacity(0.20))
+                                        .frame(width: 2, height: 44)
+                                }
+                            }
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(store.scheduleText(for: reminder))
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(reminder.priority.color)
+
+                                Text(reminder.title)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .multilineTextAlignment(.leading)
+
+                                if !reminder.note.isEmpty {
+                                    Text(reminder.note)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                            }
+
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .buttonStyle(PressableScaleButtonStyle())
+                }
+            }
+        }
     }
 }
 
@@ -469,11 +1135,7 @@ private struct GlassSection<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 10) {
-                CircleIconBadge(symbol: symbol, tint: tint, size: 32, iconSize: 13)
-                Text(title)
-                    .font(.headline)
-            }
+            SurfaceKicker(title: title, symbol: symbol, tint: tint)
 
             content
         }
@@ -488,7 +1150,7 @@ private struct TriageCard: View {
     let todayCount: Int
 
     var body: some View {
-        GlassSection(title: "助理分拣建议", symbol: "tray.and.arrow.down.fill", tint: .purple) {
+        GlassSection(title: "今日整理", symbol: "tray", tint: .purple) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(summary)
                     .font(.body)
@@ -519,12 +1181,12 @@ private struct TriageBadge: View {
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            (colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.16)),
+            (colorScheme == .dark ? Color.white.opacity(0.05) : Color(.secondarySystemBackground)),
             in: RoundedRectangle(cornerRadius: 18, style: .continuous)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.06) : Color.white.opacity(0.32))
+                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.05))
         )
     }
 }
@@ -547,8 +1209,8 @@ private struct NextReminderCard: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
-                Button("查看提醒列表", action: onOpenReminders)
-                    .buttonStyle(.borderedProminent)
+                Button("打开提醒列表", action: onOpenReminders)
+                    .buttonStyle(.bordered)
             }
         }
     }
@@ -560,7 +1222,7 @@ private struct CompletionSuggestionCard: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        GlassSection(title: suggestion.title, symbol: "checkmark.circle.badge.sparkles", tint: .green) {
+        GlassSection(title: suggestion.title, symbol: "checkmark.circle", tint: .green) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(suggestion.detail)
                     .font(.body)
@@ -570,7 +1232,7 @@ private struct CompletionSuggestionCard: View {
                     Button(suggestion.primaryLabel) {
                         onTapDestination(suggestion.primaryDestination)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     if let label = suggestion.secondaryLabel, let destination = suggestion.secondaryDestination {
@@ -596,21 +1258,26 @@ private struct QuickActionsSection: View {
     let onOpenAssistant: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.cardContent) {
-            Text("快速操作")
-                .font(.title3.bold())
-
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                QuickActionButton(title: "快速收集", subtitle: "先记下来，别丢", symbol: "plus.circle.fill", tint: .blue, action: onAddReminder)
-                QuickActionButton(title: "清空收件箱", subtitle: "安排时间和优先级", symbol: "tray.full.fill", tint: .purple, action: onOpenReminders)
-                QuickActionButton(title: "启动工具", subtitle: "开始专注或记录", symbol: "bolt.fill", tint: .orange, action: onOpenTools)
-                QuickActionButton(title: "打开 AI", subtitle: "随时问下一步", symbol: "sparkles", tint: .indigo, action: onOpenAssistant)
-            }
+        VStack(spacing: 0) {
+            ActionRowButton(title: "快速收集", subtitle: "先记下来，别丢", symbol: "plus.circle.fill", tint: .blue, action: onAddReminder)
+            SectionDivider()
+            ActionRowButton(title: "清空收件箱", subtitle: "安排时间和优先级", symbol: "tray.full.fill", tint: .purple, action: onOpenReminders)
+            SectionDivider()
+            ActionRowButton(title: "启动工具", subtitle: "开始专注或记录", symbol: "bolt.fill", tint: .orange, action: onOpenTools)
+            SectionDivider()
+            ActionRowButton(title: "查看建议", subtitle: "需要时再打开", symbol: "lightbulb", tint: .indigo, action: onOpenAssistant)
         }
     }
 }
 
-private struct QuickActionButton: View {
+private struct SectionDivider: View {
+    var body: some View {
+        Divider()
+            .padding(.leading, 50)
+    }
+}
+
+private struct ActionRowButton: View {
     let title: String
     let subtitle: String
     let symbol: String
@@ -619,22 +1286,28 @@ private struct QuickActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 10) {
-                CircleIconBadge(symbol: symbol, tint: tint, size: 40, iconSize: 16)
+            HStack(spacing: 12) {
+                CircleIconBadge(symbol: symbol, tint: tint, size: 38, iconSize: 15)
 
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
 
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
             }
-            .padding(18)
-            .frame(maxWidth: .infinity, minHeight: 136, alignment: .leading)
-            .appCard(tint: tint, cornerRadius: 24)
+            .padding(.vertical, 12)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableScaleButtonStyle())
     }
 }
 
@@ -675,7 +1348,10 @@ private struct ReminderPreviewRow: View {
             .padding(16)
             .appCard(tint: reminder.priority.color, cornerRadius: 20)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableScaleButtonStyle())
+        .contextMenu {
+            Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
+        }
     }
 }
 
@@ -688,52 +1364,75 @@ private struct RemindersView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                HStack {
+            List {
+                Section {
                     Text("从收件箱到今天要做的事，尽量在一个界面完成分拣。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Spacer()
+                        .padding(.vertical, 4)
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-                SegmentedFilterBar(selection: $selectedFilter)
-                    .padding(.horizontal)
-                    .padding(.top, AppSpacing.section)
+                Section {
+                    SegmentedFilterBar(selection: $selectedFilter)
+                        .padding(.vertical, 4)
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: AppSpacing.section) {
-                        if sections.isEmpty {
-                            ContentUnavailableView(
-                                "当前筛选下没有事项",
-                                systemImage: "line.3.horizontal.decrease.circle",
-                                description: Text("试试切换筛选，或先快速收集一条新提醒。")
-                            )
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 36)
-                        } else {
-                            ForEach(sections, id: \.title) { section in
-                                SectionCard(title: section.title, tint: section.tint) {
-                                    ForEach(section.items) { reminder in
-                                        ReminderRow(
-                                            reminder: reminder,
-                                            scheduleText: store.scheduleText(for: reminder),
-                                            onToggle: { store.toggleReminder(reminder) },
-                                            onTonight: { store.assignTonight(reminder) },
-                                            onTomorrow: { store.assignTomorrowMorning(reminder) },
-                                            onDelete: { store.deleteReminder(reminder) }
-                                        )
+                if sections.isEmpty {
+                    Section {
+                        ContentUnavailableView(
+                            "当前筛选下没有事项",
+                            systemImage: "line.3.horizontal.decrease.circle",
+                            description: Text("试试切换筛选，或先快速收集一条新提醒。")
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 32)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } else {
+                    ForEach(sections, id: \.title) { section in
+                        Section(section.title) {
+                            ForEach(section.items) { reminder in
+                                ReminderRow(
+                                    reminder: reminder,
+                                    scheduleText: store.scheduleText(for: reminder),
+                                    onToggle: {
+                                        withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
+                                            store.toggleReminder(reminder)
+                                        }
+                                    },
+                                    onTonight: {
+                                        withAnimation(.snappy) {
+                                            store.assignTonight(reminder)
+                                        }
+                                    },
+                                    onTomorrow: {
+                                        withAnimation(.snappy) {
+                                            store.assignTomorrowMorning(reminder)
+                                        }
+                                    },
+                                    onDelete: {
+                                        withAnimation(.snappy) {
+                                            store.deleteReminder(reminder)
+                                        }
                                     }
-                                }
+                                )
+                                .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.section)
-                .padding(.bottom, AppSpacing.pageBottom)
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppBackgroundView())
             .navigationTitle("提醒")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -743,6 +1442,8 @@ private struct RemindersView: View {
                     Button("新增", systemImage: "plus", action: onAddReminder)
                 }
             }
+            .sensoryFeedback(.selection, trigger: selectedFilter)
+            .animation(.snappy, value: selectedFilter)
         }
     }
 
@@ -774,6 +1475,8 @@ private struct ReminderSection {
 }
 
 private struct ReminderRow: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     let reminder: ReminderItem
     let scheduleText: String
     let onToggle: () -> Void
@@ -812,7 +1515,24 @@ private struct ReminderRow: View {
             }
         }
         .padding(14)
-        .background(reminder.priority.color.opacity(0.06), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(
+            colorScheme == .dark ? Color.white.opacity(0.03) : Color(.secondarySystemBackground),
+            in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.04) : Color.black.opacity(0.04))
+        )
+        .contextMenu {
+            Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
+
+            if !reminder.isCompleted {
+                Button("今晚处理", action: onTonight)
+                Button("明早处理", action: onTomorrow)
+            }
+
+            Button("删除", role: .destructive, action: onDelete)
+        }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
                 .tint(reminder.isCompleted ? .orange : .green)
@@ -836,8 +1556,6 @@ private struct ToolsView: View {
 
     let onOpenAssistant: () -> Void
 
-    private let columns = [GridItem(.flexible()), GridItem(.flexible())]
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -849,25 +1567,31 @@ private struct ToolsView: View {
                         tint: .orange
                     )
 
-                    LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(store.tools) { tool in
-                            Button {
-                                activeSummary = store.runTool(tool)
-                            } label: {
-                                ToolCard(tool: tool)
+                    GlassSection(title: "常用工具", symbol: "square.grid.2x2", tint: .orange) {
+                        VStack(spacing: 0) {
+                            ForEach(Array(store.tools.enumerated()), id: \.element.id) { index, tool in
+                                Button {
+                                    activeSummary = store.runTool(tool)
+                                } label: {
+                                    ToolListRow(tool: tool)
+                                }
+                                .buttonStyle(.plain)
+
+                                if index < store.tools.count - 1 {
+                                    SectionDivider()
+                                }
                             }
-                            .buttonStyle(.plain)
                         }
                     }
 
                     if let activeSummary {
-                        GlassSection(title: "刚刚完成", symbol: "wand.and.stars", tint: .orange) {
+                        GlassSection(title: "刚刚完成", symbol: "checkmark.circle", tint: .orange) {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(activeSummary)
                                     .font(.body)
                                     .foregroundStyle(.secondary)
 
-                                Button("让 AI 接着安排", action: onOpenAssistant)
+                                Button("继续整理", action: onOpenAssistant)
                                     .buttonStyle(.bordered)
                             }
                         }
@@ -888,28 +1612,36 @@ private struct ToolsView: View {
     }
 }
 
-private struct ToolCard: View {
+private struct ToolListRow: View {
     let tool: ToolItem
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            CircleIconBadge(symbol: tool.symbolName, tint: tool.tint, size: 40, iconSize: 16)
+        HStack(spacing: 12) {
+            CircleIconBadge(symbol: tool.symbolName, tint: tool.tint, size: 38, iconSize: 15)
 
-            Text(tool.title)
-                .font(.headline)
-                .foregroundStyle(.primary)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(tool.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
 
-            Text(tool.description)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                    Spacer()
 
-            Text(tool.statusText)
+                    Text(tool.statusText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(tool.tint)
+                }
+
+                Text(tool.description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Image(systemName: "chevron.right")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(tool.tint)
+                .foregroundStyle(.tertiary)
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, minHeight: 154, alignment: .leading)
-        .appCard(tint: tool.tint, cornerRadius: 24)
+        .padding(.vertical, 12)
     }
 }
 
@@ -938,7 +1670,7 @@ private struct ProfileView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Lang")
                                     .font(.title2.bold())
-                                Text("个人 AI 助理正在逐步了解你的节奏")
+                                Text("Beeve 会逐步贴合你的节奏")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -954,7 +1686,7 @@ private struct ProfileView: View {
 
                     GlassSection(title: "偏好设置", symbol: "slider.horizontal.3", tint: .indigo) {
                         VStack(spacing: 14) {
-                            ProfileSettingRow(title: "AI 主动建议", subtitle: "保持开启，适时提醒你下一步", symbol: "sparkles", tint: .indigo)
+                            ProfileSettingRow(title: "建议入口", subtitle: "需要时再查看，不主动打断当前流程", symbol: "lightbulb", tint: .indigo)
                             ProfileSettingRow(title: "默认快速收集", subtitle: "先进入收件箱，稍后再分拣", symbol: "tray.full", tint: .purple)
                             ProfileSettingRow(title: "专注节奏", subtitle: "25 分钟专注 + 5 分钟回顾", symbol: "timer", tint: .orange)
                         }
@@ -962,9 +1694,9 @@ private struct ProfileView: View {
 
                     GlassSection(title: "账号与数据", symbol: "person.text.rectangle", tint: .blue) {
                         VStack(spacing: 12) {
-                            ProfileActionButton(title: "让 AI 解释当前建议", subtitle: "了解为什么此刻推荐你先做这些事", symbol: "bubble.left.and.exclamationmark.bubble.right", tint: .blue, action: onOpenAssistant)
+                            ProfileActionButton(title: "查看当前建议", subtitle: "需要时再看下一步，不打断手头工作", symbol: "text.bubble", tint: .blue, action: onOpenAssistant)
                             ProfileActionButton(title: "通知与提醒", subtitle: "下一步可接入本地通知与日程时间块", symbol: "bell.badge", tint: .orange, action: {})
-                            ProfileActionButton(title: "隐私与数据", subtitle: "未来可在这里管理上下文记忆和同步设置", symbol: "lock.shield", tint: .green, action: {})
+                            ProfileActionButton(title: "隐私与数据", subtitle: "未来可在这里管理同步、导出和本地数据设置", symbol: "lock.shield", tint: .green, action: {})
                         }
                     }
                 }
@@ -1005,19 +1737,10 @@ private struct HeroMiniBanner: View {
             Spacer()
         }
         .padding(18)
-        .background(
-            LinearGradient(
-                colors: colorScheme == .dark
-                    ? [Color(.secondarySystemBackground), tint.opacity(0.24)]
-                    : [tint.opacity(0.18), Color.white.opacity(0.92)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 24, style: .continuous)
-        )
+        .background(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.45))
+                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.08) : tint.opacity(0.10))
         )
     }
 }
@@ -1085,9 +1808,9 @@ private struct AssistantSheet: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
                         HeroMiniBanner(
-                            title: "Beeve AI",
+                            title: "建议",
                             subtitle: store.assistantContextSummary,
-                            symbol: "sparkles",
+                            symbol: "lightbulb",
                             tint: .indigo
                         )
 
@@ -1113,12 +1836,12 @@ private struct AssistantSheet: View {
                         }
                     }
 
-                    Text("AI 回复为本地演示结果，但交互形态已按全局助理来设计。")
+                    Text("当前内容为本地演示结果，后续会接入真实能力。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color.indigo.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .background(Color.black.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                     HStack(alignment: .bottom, spacing: 12) {
                         TextField("比如：帮我拆解今天的任务", text: $draft, axis: .vertical)
@@ -1138,7 +1861,7 @@ private struct AssistantSheet: View {
                 .padding()
                 .background(AppBackgroundView())
             }
-            .navigationTitle("Beeve AI")
+            .navigationTitle("建议")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("关闭") {
@@ -1154,26 +1877,27 @@ private struct MessageBubble: View {
     let message: AssistantMessage
 
     var body: some View {
-        HStack {
-            if message.role == .assistant {
-                bubble
-                Spacer(minLength: 40)
-            } else {
-                Spacer(minLength: 40)
-                bubble
-            }
-        }
+        bubble
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var bubble: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(message.role == .assistant ? "Beeve 助手" : "你")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+            HStack {
+                Text(message.role == .assistant ? "Beeve 建议" : "你的输入")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Text(message.createdAt.formatted(date: .omitted, time: .shortened))
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
 
             Text(message.content)
                 .font(.body)
-                .foregroundStyle(message.role == .assistant ? AnyShapeStyle(.primary) : AnyShapeStyle(.white))
+                .foregroundStyle(.primary)
         }
         .padding(14)
         .background(backgroundStyle, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -1182,19 +1906,11 @@ private struct MessageBubble: View {
     private var backgroundStyle: AnyShapeStyle {
         if message.role == .assistant {
             AnyShapeStyle(
-                LinearGradient(
-                    colors: [Color.white.opacity(0.9), Color.indigo.opacity(0.08)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Color(.secondarySystemBackground)
             )
         } else {
             AnyShapeStyle(
-                LinearGradient(
-                    colors: [Color.blue, Color.indigo],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                Color.accentColor.opacity(0.08)
             )
         }
     }

@@ -4,20 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install && docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine && sleep 3 && cd apps/auth-server && pnpm db:push",
+    "bootstrap": "pnpm install && docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine",
     "dev": "turbo clean && turbo dev",
-    "dev:web": "turbo dev --filter=auth-web",
-    "dev:server": "turbo dev --filter=auth-server",
+    "dev:auth": "turbo dev --filter=@beeve/auth",
     "check": "turbo lint typecheck",
     "build": "turbo clean && turbo build",
     "db:start": "docker start beeve-postgres 2>/dev/null || docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine",
-    "db:migrate": "cd apps/auth-server && pnpm db:migrate",
-    "db:push": "cd apps/auth-server && pnpm db:push"
+    "db:migrate": "cd apps/auth && npx @better-auth/cli@latest migrate",
+    "db:generate": "cd apps/auth && npx @better-auth/cli@latest generate"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
     "turbo": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   },
   "packageManager": "pnpm@10.22.0",
   "engines": {

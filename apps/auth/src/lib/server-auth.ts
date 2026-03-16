@@ -1,19 +1,24 @@
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 import { admin } from "better-auth/plugins/admin";
+// TanStack Start Solid 专用 cookie 插件
+import { tanstackStartCookies } from "better-auth/tanstack-start/solid";
 
-const authWebOrigin = process.env.AUTH_WEB_ORIGIN ?? "http://localhost:3000";
+const appOrigin = process.env.APP_ORIGIN ?? "http://localhost:3000";
 
 export const auth = betterAuth({
 	database: new Pool({
 		connectionString: process.env.DATABASE_URL,
 	}),
-	baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:8000",
+	baseURL: appOrigin,
 	basePath: "/api/auth",
 	secret:
 		process.env.BETTER_AUTH_SECRET ??
 		"better-auth-dev-secret-change-me-in-production",
-	trustedOrigins: [authWebOrigin, "https://appleid.apple.com"],
+	trustedOrigins: [appOrigin, "https://appleid.apple.com"],
+	emailAndPassword: {
+		enabled: true,
+	},
 	socialProviders: {
 		google: {
 			clientId: process.env.GOOGLE_CLIENT_ID ?? "google-client-id",
@@ -27,11 +32,17 @@ export const auth = betterAuth({
 			clientSecret:
 				process.env.GITHUB_CLIENT_SECRET ?? "github-client-secret",
 		},
-		apple: {
-			clientId: process.env.APPLE_CLIENT_ID ?? "apple-client-id",
-			clientSecret: process.env.APPLE_CLIENT_SECRET ?? "apple-client-secret",
-			appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER,
-		},
+		// Apple OAuth 仅在配置了真实凭证时启用
+		...(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET
+			? {
+					apple: {
+						clientId: process.env.APPLE_CLIENT_ID,
+						clientSecret: process.env.APPLE_CLIENT_SECRET,
+						appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER,
+					},
+				}
+			: {}),
 	},
-	plugins: [admin()],
+	// tanstackStartCookies 必须是最后一个插件
+	plugins: [admin(), tanstackStartCookies()],
 });

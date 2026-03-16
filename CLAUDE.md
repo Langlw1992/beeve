@@ -22,7 +22,6 @@
 - pnpm workspace - Monorepo 管理
 - Turborepo - 任务编排与缓存
 - Biome - 代码规范与格式化
-- Bun - auth-server 运行环境
 - TypeScript - 严格类型检查
 
 ## 项目结构
@@ -30,8 +29,7 @@
 ```
 beeve/
 ├── packages/ui          # 基础 UI 组件库（无头 + 样式）
-├── apps/auth-web        # 用户管理基础架构（SSO/认证中心前端）
-├── apps/auth-server     # 认证服务后端（Elysia + Better Auth）
+├── apps/auth            # 认证服务（前后端一体，@beeve/auth）
 ├── apps/beeve-app       # iOS/macOS 原生应用（SwiftUI）
 └── [更多应用待添加]      # 后续产品应用
 ```
@@ -45,11 +43,9 @@ turbo dev                # 启动所有 dev 服务
 
 # 针对特定项目（使用 --filter）
 turbo dev --filter=@beeve/ui         # 仅开发 UI 包
-turbo dev --filter=auth-web          # 仅开发 auth-web
-turbo dev --filter=auth-server       # 仅开发 auth-server
+turbo dev --filter=@beeve/auth       # 仅开发 auth
 turbo build --filter=@beeve/ui       # 构建 UI 包
-turbo build --filter=auth-web        # 构建 auth-web
-turbo build --filter=auth-server     # 构建 auth-server
+turbo build --filter=@beeve/auth     # 构建 auth
 
 # 代码质量（全仓库）
 turbo lint               # 检查代码
@@ -85,8 +81,7 @@ turbo typecheck          # 类型检查
 - 根目录 CLAUDE.md 只定义方向与原则
 - 具体实现细节见子项目 CLAUDE.md：
   - `packages/ui/CLAUDE.md` - 组件开发规范
-  - `apps/auth-web/CLAUDE.md` - 前端应用开发规范
-  - `apps/auth-server/` - 后端服务开发规范
+  - `apps/auth/CLAUDE.md` - 认证服务开发规范
 
 ## 部署
 
@@ -96,7 +91,6 @@ turbo typecheck          # 类型检查
 ## 待办
 
 - [ ] 完善 packages/ui 组件库
-- [ ] auth-web 用户管理功能
-- [ ] auth-server API 完善
+- [ ] @beeve/auth 用户管理功能
 - [ ] beeve-app 原生应用开发
 - [ ] 添加更多产品应用

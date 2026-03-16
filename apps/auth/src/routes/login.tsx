@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from '@tanstack/solid-router'
+import { createFileRoute } from '@tanstack/solid-router'
 import { createSignal, Show } from 'solid-js'
-import { authClient } from '../lib/auth-client'
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -47,7 +47,6 @@ const AppleIcon = () => (
 )
 
 function LoginPage() {
-  const navigate = useNavigate()
   const [isLoading, setIsLoading] = createSignal<string | null>(null)
   const [error, setError] = createSignal<string | null>(null)
 
