@@ -400,8 +400,31 @@ final class BeeveStore {
         guard !text.isEmpty else { return }
 
         messages.append(AssistantMessage(role: .user, content: text))
-        messages.append(AssistantMessage(role: .assistant, content: assistantReply(for: text)))
+
+        let context = AssistantContext(
+            pendingCount: pendingReminders.count,
+            completedCount: completedReminders.count,
+            inboxCount: inboxReminders.count,
+            nextImportantTitle: nextImportantReminder?.title
+        )
+
+        // Placeholder for async reply
+        let placeholderIndex = messages.count
+        messages.append(AssistantMessage(role: .assistant, content: "正在思考…"))
         persistMessages()
+
+        let aiService = AIAssistantService()
+        Task {
+            let reply = await aiService.getReply(
+                for: text,
+                context: context,
+                localFallback: { [self] msg in self.assistantReply(for: msg) }
+            )
+            if placeholderIndex < messages.count {
+                messages[placeholderIndex] = AssistantMessage(role: .assistant, content: reply)
+            }
+            persistMessages()
+        }
     }
 
     func suggestedAssistantPrompts() -> [String] {

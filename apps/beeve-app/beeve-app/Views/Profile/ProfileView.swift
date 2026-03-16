@@ -1,7 +1,10 @@
+import AuthenticationServices
 import SwiftUI
 
 struct ProfileView: View {
     @Environment(BeeveStore.self) private var store
+    @State private var authService = AuthService()
+    @State private var showSignIn = false
 
     let onOpenAssistant: () -> Void
 
@@ -17,15 +20,15 @@ struct ProfileView: View {
                                 )
                                 .frame(width: 64, height: 64)
                                 .overlay(
-                                    Text("L")
+                                    Text(authService.currentUser?.name?.prefix(1).uppercased() ?? "B")
                                         .font(.title2.bold())
                                         .foregroundStyle(.white)
                                 )
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Lang")
+                                Text(authService.currentUser?.name ?? "Beeve 用户")
                                     .font(.title2.bold())
-                                Text("Beeve 会逐步贴合你的节奏")
+                                Text(authService.isAuthenticated ? "已登录" : "Beeve 会逐步贴合你的节奏")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -51,6 +54,26 @@ struct ProfileView: View {
 
                     GlassSection(title: "账号与数据", symbol: "person.text.rectangle", tint: .blue) {
                         VStack(spacing: 12) {
+                            if authService.isAuthenticated {
+                                ProfileActionButton(title: "已登录", subtitle: authService.currentUser?.email ?? "已通过 Apple 账号登录", symbol: "checkmark.shield.fill", tint: .green, action: {})
+                                ProfileActionButton(title: "退出登录", subtitle: "清除本地登录状态", symbol: "rectangle.portrait.and.arrow.right", tint: .red, action: { authService.signOut() })
+                            } else {
+                                SignInWithAppleButton(.signIn) { request in
+                                    request.requestedScopes = [.fullName, .email]
+                                } onCompletion: { result in
+                                    switch result {
+                                    case .success(let auth):
+                                        if let credential = auth.credential as? ASAuthorizationAppleIDCredential {
+                                            Task { await authService.signInWithApple(credential: credential) }
+                                        }
+                                    case .failure:
+                                        break
+                                    }
+                                }
+                                .signInWithAppleButtonStyle(.whiteOutline)
+                                .frame(height: 50)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
                             ProfileActionButton(title: "查看当前建议", subtitle: "需要时再看下一步，不打断手头工作", symbol: "text.bubble", tint: .blue, action: onOpenAssistant)
                             ProfileActionButton(title: "通知与提醒", subtitle: "下一步可接入本地通知与日程时间块", symbol: "bell.badge", tint: .orange, action: {})
                             ProfileActionButton(title: "隐私与数据", subtitle: "未来可在这里管理同步、导出和本地数据设置", symbol: "lock.shield", tint: .green, action: {})

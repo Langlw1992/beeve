@@ -39,7 +39,7 @@ struct AssistantSheet: View {
                         }
                     }
 
-                    Text("当前内容为本地演示结果，后续会接入真实能力。")
+                    Text("AI 助手已连接，可以帮你安排任务、拆解计划。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 12)
