@@ -2,6 +2,7 @@ import Foundation
 
 enum AppTab: Hashable {
     case home
+    case planner
     case reminders
     case tools
     case profile

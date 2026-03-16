@@ -24,6 +24,10 @@ struct ContentView: View {
                 )
             }
 
+            Tab("规划", systemImage: "calendar.day.timeline.leading", value: .planner) {
+                DailyPlannerView(onOpenAssistant: { showAssistant = true })
+            }
+
             Tab("提醒", systemImage: "bell.badge.fill", value: .reminders) {
                 RemindersView(
                     onAddReminder: { showAddReminder = true },
@@ -50,6 +54,23 @@ struct ContentView: View {
         }
         .onAppear {
             configureTabBarAppearance()
+            setupNotifications()
+        }
+    }
+
+    private func setupNotifications() {
+        let service = NotificationService.shared
+        service.registerCategories()
+        Task {
+            let granted = await service.requestAuthorization()
+            if granted {
+                service.scheduleMorningDigest(pendingCount: store.pendingCount)
+                service.scheduleEveningReview(completedToday: store.completedCount, pendingCount: store.pendingCount)
+                // Schedule notifications for pending reminders with due dates
+                for reminder in store.pendingReminders where reminder.dueDate != nil {
+                    service.scheduleNotification(for: reminder)
+                }
+            }
         }
     }
 }
