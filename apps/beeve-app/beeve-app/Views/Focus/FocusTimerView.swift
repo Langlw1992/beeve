@@ -39,13 +39,6 @@ struct FocusTimerView: View {
 
     private var setupView: some View {
         VStack(spacing: 24) {
-            HeroMiniBanner(
-                title: "准备专注",
-                subtitle: "选择时长和关联任务，倒计时开始后尽量不要中断。",
-                symbol: "timer",
-                tint: .orange
-            )
-
             GlassSection(title: "时长", symbol: "clock.fill", tint: .orange) {
                 HStack(spacing: 12) {
                     ForEach(durations, id: \.self) { mins in

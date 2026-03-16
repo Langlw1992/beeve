@@ -9,13 +9,6 @@ struct StatisticsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    HeroMiniBanner(
-                        title: "数据统计",
-                        subtitle: "了解你的效率节奏，发现可以优化的地方。",
-                        symbol: "chart.bar.xaxis.ascending",
-                        tint: .indigo
-                    )
-
                     // Overview cards
                     overviewSection
 

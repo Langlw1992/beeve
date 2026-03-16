@@ -8,7 +8,6 @@ struct HeroOverviewCard: View {
     let pendingCount: Int
     let inboxCount: Int
     let homeSuggestion: String
-    let onOpenAssistant: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -44,14 +43,6 @@ struct HeroOverviewCard: View {
                 HeroMetric(title: "专注分", value: "\(focusScore)", tint: .indigo, level: Double(focusScore) / 100)
                 HeroMetric(title: "已完成", value: "\(completedCount)", tint: .green, level: min(1, Double(completedCount) / 6))
                 HeroMetric(title: "收件箱", value: "\(inboxCount)", tint: .purple, level: min(1, Double(inboxCount) / 6))
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ActionChip(title: pendingCount == 0 ? "今天比较轻" : "还有 \(pendingCount) 项待处理", systemImage: "sparkle.magnifyingglass", tint: .indigo, action: onOpenAssistant)
-                    ActionChip(title: completedCount == 0 ? "开始第一个完成" : "已推进 \(completedCount) 项", systemImage: "checkmark.circle", tint: .green, action: onOpenAssistant)
-                    ActionChip(title: "查看建议", systemImage: "lightbulb", tint: .orange, action: onOpenAssistant)
-                }
             }
         }
         .padding(22)

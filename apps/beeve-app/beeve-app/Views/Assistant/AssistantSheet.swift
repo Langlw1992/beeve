@@ -10,13 +10,6 @@ struct AssistantSheet: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
-                        HeroMiniBanner(
-                            title: "建议",
-                            subtitle: store.assistantContextSummary,
-                            symbol: "lightbulb",
-                            tint: .indigo
-                        )
-
                         ForEach(store.messages) { message in
                             MessageBubble(message: message)
                         }

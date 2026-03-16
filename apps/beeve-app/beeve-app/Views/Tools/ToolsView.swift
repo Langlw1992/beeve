@@ -3,20 +3,12 @@ import SwiftUI
 struct ToolsView: View {
     @Environment(BeeveStore.self) private var store
     @State private var destination: ToolDestination?
-
-    let onOpenAssistant: () -> Void
+    @State private var showAssistant = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    HeroMiniBanner(
-                        title: "工具箱",
-                        subtitle: "把高频动作收在一个地方，减少在不同 App 之间来回切换。",
-                        symbol: "square.grid.2x2.fill",
-                        tint: .orange
-                    )
-
                     GlassSection(title: "核心工具", symbol: "star.fill", tint: .orange) {
                         VStack(spacing: 0) {
                             ToolNavRow(title: "专注计时", description: "番茄钟模式，关联任务深度专注", symbol: "timer", tint: .orange) {
@@ -43,7 +35,9 @@ struct ToolsView: View {
                                 // Navigate to reminders inbox filter
                             }
                             SectionDivider()
-                            ToolNavRow(title: "问问助手", description: "让 Beeve 帮你安排、拆解、复盘", symbol: "bubble.left.and.bubble.right", tint: .indigo, action: onOpenAssistant)
+                            ToolNavRow(title: "问问助手", description: "让 Beeve 帮你安排、拆解、复盘", symbol: "bubble.left.and.bubble.right", tint: .indigo) {
+                                showAssistant = true
+                            }
                         }
                     }
                 }
@@ -54,11 +48,6 @@ struct ToolsView: View {
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
             .navigationTitle("工具")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    AssistantToolbarButton(action: onOpenAssistant)
-                }
-            }
             .navigationDestination(item: $destination) { dest in
                 switch dest {
                 case .focus:
@@ -70,6 +59,10 @@ struct ToolsView: View {
                 case .statistics:
                     StatisticsView()
                 }
+            }
+            .sheet(isPresented: $showAssistant) {
+                AssistantSheet()
+                    .presentationDetents([.large])
             }
         }
     }

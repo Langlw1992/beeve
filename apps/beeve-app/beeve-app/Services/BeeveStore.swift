@@ -467,16 +467,16 @@ final class BeeveStore {
                 detail: "还有 \(inboxReminders.count) 条事项没安排时间，把它们分拣掉会更轻松。",
                 primaryLabel: "去分拣",
                 primaryDestination: .reminders,
-                secondaryLabel: "问问助手",
-                secondaryDestination: .assistant
+                secondaryLabel: "看看工具",
+                secondaryDestination: .tools
             )
         }
 
         return CompletionSuggestion(
             title: "当前节奏不错",
-            detail: "你已经推进了一件事。要不要让 Beeve 帮你安排接下来的一段时间？",
-            primaryLabel: "打开助手",
-            primaryDestination: .assistant,
+            detail: "你已经推进了一件事。可以继续推进下一项，或者用工具开始专注。",
+            primaryLabel: "查看提醒",
+            primaryDestination: .reminders,
             secondaryLabel: "看看工具",
             secondaryDestination: .tools
         )

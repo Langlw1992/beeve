@@ -11,13 +11,6 @@ struct NotesView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    HeroMiniBanner(
-                        title: "快捷笔记",
-                        subtitle: "灵感转瞬即逝，先记下来再说。",
-                        symbol: "note.text",
-                        tint: .cyan
-                    )
-
                     if filteredNotes.isEmpty {
                         emptyState
                     } else {

@@ -5,8 +5,6 @@ struct DailyPlannerView: View {
     @State private var selectedDate: Date = .now
     @State private var showAddReminder = false
 
-    let onOpenAssistant: () -> Void
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -80,9 +78,6 @@ struct DailyPlannerView: View {
             .background(AppBackgroundView())
             .navigationTitle("每日规划")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    AssistantToolbarButton(action: onOpenAssistant)
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("新增", systemImage: "plus") { showAddReminder = true }
                 }

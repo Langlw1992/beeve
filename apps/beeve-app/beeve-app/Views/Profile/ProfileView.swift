@@ -4,9 +4,6 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(BeeveStore.self) private var store
     @State private var authService = AuthService()
-    @State private var showSignIn = false
-
-    let onOpenAssistant: () -> Void
 
     var body: some View {
         NavigationStack {
@@ -36,13 +33,6 @@ struct ProfileView: View {
                     }
                     .padding(18)
                     .appCard(tint: .cyan, cornerRadius: 28)
-
-                    HeroMiniBanner(
-                        title: "本周状态",
-                        subtitle: "已完成 \(store.completedCount) 项，当前待处理 \(store.pendingCount) 项。继续保持轻量推进节奏。",
-                        symbol: "chart.bar.fill",
-                        tint: .indigo
-                    )
 
                     GlassSection(title: "偏好设置", symbol: "slider.horizontal.3", tint: .indigo) {
                         VStack(spacing: 14) {
@@ -74,9 +64,8 @@ struct ProfileView: View {
                                 .frame(height: 50)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
-                            ProfileActionButton(title: "查看当前建议", subtitle: "需要时再看下一步，不打断手头工作", symbol: "text.bubble", tint: .blue, action: onOpenAssistant)
-                            ProfileActionButton(title: "通知与提醒", subtitle: "下一步可接入本地通知与日程时间块", symbol: "bell.badge", tint: .orange, action: {})
-                            ProfileActionButton(title: "隐私与数据", subtitle: "未来可在这里管理同步、导出和本地数据设置", symbol: "lock.shield", tint: .green, action: {})
+                            ProfileActionButton(title: "通知与提醒", subtitle: "管理推送通知和日程提醒", symbol: "bell.badge", tint: .orange, action: {})
+                            ProfileActionButton(title: "隐私与数据", subtitle: "管理同步、导出和本地数据", symbol: "lock.shield", tint: .green, action: {})
                         }
                     }
                 }
@@ -86,11 +75,6 @@ struct ProfileView: View {
             }
             .scrollIndicators(.hidden)
             .navigationTitle("我的")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    AssistantToolbarButton(action: onOpenAssistant)
-                }
-            }
         }
     }
 }

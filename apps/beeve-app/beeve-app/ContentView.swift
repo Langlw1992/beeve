@@ -11,7 +11,6 @@ struct ContentView: View {
     @Environment(BeeveStore.self) private var store
     @State private var selectedTab: AppTab = .home
     @State private var showAddReminder = false
-    @State private var showAssistant = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -19,38 +18,30 @@ struct ContentView: View {
                 DashboardView(
                     onAddReminder: { showAddReminder = true },
                     onOpenReminders: { selectedTab = .reminders },
-                    onOpenTools: { selectedTab = .tools },
-                    onOpenAssistant: { showAssistant = true }
+                    onOpenTools: { selectedTab = .tools }
                 )
             }
 
             Tab("规划", systemImage: "calendar.day.timeline.leading", value: .planner) {
-                DailyPlannerView(onOpenAssistant: { showAssistant = true })
+                DailyPlannerView()
             }
 
             Tab("提醒", systemImage: "bell.badge.fill", value: .reminders) {
-                RemindersView(
-                    onAddReminder: { showAddReminder = true },
-                    onOpenAssistant: { showAssistant = true }
-                )
+                RemindersView(onAddReminder: { showAddReminder = true })
             }
 
             Tab("工具", systemImage: "square.grid.2x2.fill", value: .tools) {
-                ToolsView(onOpenAssistant: { showAssistant = true })
+                ToolsView()
             }
 
             Tab("我的", systemImage: "person.circle.fill", value: .profile) {
-                ProfileView(onOpenAssistant: { showAssistant = true })
+                ProfileView()
             }
         }
         .tint(.indigo)
         .sheet(isPresented: $showAddReminder) {
             AddReminderSheet()
                 .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $showAssistant) {
-            AssistantSheet()
-                .presentationDetents([.large])
         }
         .onAppear {
             configureTabBarAppearance()

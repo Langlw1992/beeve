@@ -9,13 +9,6 @@ struct HabitsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    HeroMiniBanner(
-                        title: "习惯追踪",
-                        subtitle: "每天完成小目标，积累大变化。",
-                        symbol: "flame.fill",
-                        tint: .green
-                    )
-
                     if habits.isEmpty {
                         emptyState
                     } else {

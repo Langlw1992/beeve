@@ -9,20 +9,10 @@ struct RemindersView: View {
     @State private var filterTag: Tag?
 
     let onAddReminder: () -> Void
-    let onOpenAssistant: () -> Void
 
     var body: some View {
         NavigationStack {
             List(selection: isEditing ? Binding(get: { selectedReminders }, set: { selectedReminders = $0 }) : nil) {
-                Section {
-                    Text("从收件箱到今天要做的事，尽量在一个界面完成分拣。")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .padding(.vertical, 4)
-                }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-
                 Section {
                     HStack(spacing: 8) {
                         SegmentedFilterBar(selection: $selectedFilter)
@@ -149,9 +139,6 @@ struct RemindersView: View {
                             if !isEditing { selectedReminders.removeAll() }
                         }
                     }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    AssistantToolbarButton(action: onOpenAssistant)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("新增", systemImage: "plus", action: onAddReminder)
