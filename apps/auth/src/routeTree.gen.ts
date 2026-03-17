@@ -9,208 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as SettingsSessionsRouteImport } from './routes/settings/sessions'
-import { Route as SettingsAccountsRouteImport } from './routes/settings/accounts'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
-import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
-import { Route as AdminUsersUserIdRouteImport } from './routes/admin/users/$userId'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsSessionsRoute = SettingsSessionsRouteImport.update({
-  id: '/settings/sessions',
-  path: '/settings/sessions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsAccountsRoute = SettingsAccountsRouteImport.update({
-  id: '/settings/accounts',
-  path: '/settings/accounts',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
-  id: '/admin/users/',
-  path: '/admin/users/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
-  id: '/admin/users/$userId',
-  path: '/admin/users/$userId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
   '/api/$': typeof ApiSplatRoute
-  '/settings/accounts': typeof SettingsAccountsRoute
-  '/settings/sessions': typeof SettingsSessionsRoute
-  '/admin/': typeof AdminIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
   '/api/$': typeof ApiSplatRoute
-  '/settings/accounts': typeof SettingsAccountsRoute
-  '/settings/sessions': typeof SettingsSessionsRoute
-  '/admin': typeof AdminIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/admin/users': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
   '/api/$': typeof ApiSplatRoute
-  '/settings/accounts': typeof SettingsAccountsRoute
-  '/settings/sessions': typeof SettingsSessionsRoute
-  '/admin/': typeof AdminIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/login'
-    | '/api/$'
-    | '/settings/accounts'
-    | '/settings/sessions'
-    | '/admin/'
-    | '/dashboard/'
-    | '/admin/users/$userId'
-    | '/admin/users/'
+  fullPaths: '/api/$'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/login'
-    | '/api/$'
-    | '/settings/accounts'
-    | '/settings/sessions'
-    | '/admin'
-    | '/dashboard'
-    | '/admin/users/$userId'
-    | '/admin/users'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/login'
-    | '/api/$'
-    | '/settings/accounts'
-    | '/settings/sessions'
-    | '/admin/'
-    | '/dashboard/'
-    | '/admin/users/$userId'
-    | '/admin/users/'
+  to: '/api/$'
+  id: '__root__' | '/api/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  LoginRoute: typeof LoginRoute
   ApiSplatRoute: typeof ApiSplatRoute
-  SettingsAccountsRoute: typeof SettingsAccountsRoute
-  SettingsSessionsRoute: typeof SettingsSessionsRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
-  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/sessions': {
-      id: '/settings/sessions'
-      path: '/settings/sessions'
-      fullPath: '/settings/sessions'
-      preLoaderRoute: typeof SettingsSessionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/accounts': {
-      id: '/settings/accounts'
-      path: '/settings/accounts'
-      fullPath: '/settings/accounts'
-      preLoaderRoute: typeof SettingsAccountsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
@@ -218,34 +48,11 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/users/': {
-      id: '/admin/users/'
-      path: '/admin/users'
-      fullPath: '/admin/users/'
-      preLoaderRoute: typeof AdminUsersIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/users/$userId': {
-      id: '/admin/users/$userId'
-      path: '/admin/users/$userId'
-      fullPath: '/admin/users/$userId'
-      preLoaderRoute: typeof AdminUsersUserIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  LoginRoute: LoginRoute,
   ApiSplatRoute: ApiSplatRoute,
-  SettingsAccountsRoute: SettingsAccountsRoute,
-  SettingsSessionsRoute: SettingsSessionsRoute,
-  AdminIndexRoute: AdminIndexRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
-  AdminUsersUserIdRoute: AdminUsersUserIdRoute,
-  AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

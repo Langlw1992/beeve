@@ -9,7 +9,6 @@ import solidPlugin from 'vite-plugin-solid'
 export default defineConfig({
   plugins: [
     devtools(),
-    // this is the plugin that enables path aliases
     viteTsConfigPaths(),
     tailwindcss(),
     tanstackStart(),
