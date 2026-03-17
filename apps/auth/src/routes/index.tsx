@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect } from '@tanstack/solid-router'
 import { Show } from 'solid-js'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth/client'
 
 export const Route = createFileRoute('/')({
   component: HomePage,

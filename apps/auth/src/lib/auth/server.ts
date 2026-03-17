@@ -1,17 +1,17 @@
 import { betterAuth } from "better-auth";
-import { Pool } from "pg";
+import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { admin } from "better-auth/plugins/admin";
-// TanStack Start Solid 专用 cookie 插件
 import { tanstackStartCookies } from "better-auth/tanstack-start/solid";
+import { db } from "./db";
 
 const appOrigin = process.env.APP_ORIGIN ?? "http://localhost:3000";
 
 export const auth = betterAuth({
-	database: new Pool({
-		connectionString: process.env.DATABASE_URL,
-	}),
 	baseURL: appOrigin,
 	basePath: "/api/auth",
+	database: drizzleAdapter(db, {
+		provider: "pg",
+	}),
 	secret:
 		process.env.BETTER_AUTH_SECRET ??
 		"better-auth-dev-secret-change-me-in-production",
@@ -38,7 +38,8 @@ export const auth = betterAuth({
 					apple: {
 						clientId: process.env.APPLE_CLIENT_ID,
 						clientSecret: process.env.APPLE_CLIENT_SECRET,
-						appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER,
+						appBundleIdentifier:
+							process.env.APPLE_APP_BUNDLE_IDENTIFIER,
 					},
 				}
 			: {}),

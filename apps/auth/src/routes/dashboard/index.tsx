@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/solid-router'
 import { requireAuth } from '@/lib/guards'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth/client'
 
 export const Route = createFileRoute('/dashboard/')({
   component: DashboardPage,

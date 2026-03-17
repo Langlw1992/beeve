@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/solid-router'
 import { createSignal, Show } from 'solid-js'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth/client'
 import { requireGuest } from '@/lib/guards'
 
 export const Route = createFileRoute('/login')({

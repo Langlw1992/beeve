@@ -1,5 +1,5 @@
 import { redirect } from '@tanstack/solid-router'
-import { authClient } from './auth-client'
+import { authClient } from './auth/client'
 
 /**
  * 路由守卫 - 要求已登录
@@ -25,4 +25,24 @@ export async function requireGuest() {
   if (session?.user) {
     throw redirect({ to: '/dashboard' })
   }
+}
+
+/**
+ * 路由守卫 - 要求管理员权限
+ * 非管理员用户将被重定向到 /dashboard
+ */
+export async function requireAdmin() {
+  const { data: session } = await authClient.getSession()
+
+  if (!session?.user) {
+    throw redirect({ to: '/login' })
+  }
+
+  // Check if user has admin role
+  const role = (session.user as { role?: string }).role
+  if (role !== 'admin') {
+    throw redirect({ to: '/dashboard' })
+  }
+
+  return { user: session.user }
 }
