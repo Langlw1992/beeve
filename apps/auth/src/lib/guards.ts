@@ -38,9 +38,7 @@ export async function requireAdmin() {
     throw redirect({ to: '/login' })
   }
 
-  // Check if user has admin role
-  const role = (session.user as { role?: string }).role
-  if (role !== 'admin') {
+  if (session.user.role !== 'admin') {
     throw redirect({ to: '/dashboard' })
   }
 

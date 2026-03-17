@@ -3,6 +3,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { admin } from "better-auth/plugins/admin";
 import { tanstackStartCookies } from "better-auth/tanstack-start/solid";
 import { db } from "./db";
+import * as schema from "./schema";
 
 const appOrigin = process.env.APP_ORIGIN ?? "http://localhost:3000";
 
@@ -11,6 +12,7 @@ export const auth = betterAuth({
 	basePath: "/api/auth",
 	database: drizzleAdapter(db, {
 		provider: "pg",
+		schema,
 	}),
 	secret:
 		process.env.BETTER_AUTH_SECRET ??

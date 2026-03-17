@@ -61,6 +61,16 @@
       "attributePosition": "multiline"
     }
   },
+  "css": {
+    "parser": {
+      "cssModules": false,
+      "allowWrongLineComments": false,
+      "tailwindDirectives": true
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
   "json": {
     "formatter": {
       "trailingCommas": "none"
