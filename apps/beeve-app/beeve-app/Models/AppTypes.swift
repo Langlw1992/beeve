@@ -2,10 +2,7 @@ import Foundation
 
 enum AppTab: Hashable {
     case home
-    case planner
-    case reminders
-    case tools
-    case profile
+    case record
 }
 
 enum ReminderFilter: String, CaseIterable, Identifiable {

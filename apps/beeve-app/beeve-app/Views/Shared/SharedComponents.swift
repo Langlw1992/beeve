@@ -10,28 +10,13 @@ struct CircleIconBadge: View {
 
     var body: some View {
         Circle()
-            .fill(.ultraThinMaterial)
+            .fill(Color(.tertiarySystemFill))
             .frame(width: size, height: size)
-            .background(
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [.white.opacity(0.28), tint.opacity(0.16), .clear],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-            )
             .overlay(
                 Image(systemName: symbol)
                     .font(.system(size: iconSize, weight: .semibold))
-                    .foregroundStyle(tint)
+                    .foregroundStyle(.secondary)
             )
-            .overlay(
-                Circle()
-                    .strokeBorder(.white.opacity(0.18), lineWidth: 0.8)
-            )
-            .shadow(color: tint.opacity(0.16), radius: 10, y: 6)
     }
 }
 
@@ -45,15 +30,11 @@ struct SurfaceKicker: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: symbol)
-                .font(.caption.weight(.bold))
-            Text(title.uppercased())
-                .font(.caption.weight(.bold))
+            Text(title)
                 .lineLimit(1)
         }
-        .foregroundStyle(tint)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
-        .glassCapsule(tint: tint)
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(.secondary)
     }
 }
 
@@ -106,7 +87,7 @@ struct ActionChip: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Image(systemName: systemImage)
-                    .foregroundStyle(tint)
+                    .foregroundStyle(.secondary)
                 Text(title)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
@@ -214,7 +195,6 @@ struct HeroMiniBanner: View {
 
 struct AssistantToolbarButton: View {
     let action: () -> Void
-
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {

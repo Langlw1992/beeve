@@ -39,7 +39,6 @@ struct FlashNoteListView: View {
                                     }
                                 }
                             )
-                            .immersiveScrollMotion()
                             .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
@@ -51,7 +50,14 @@ struct FlashNoteListView: View {
             .scrollIndicators(.hidden)
             .scrollContentBackground(.hidden)
             .background(AppBackgroundView())
-            .navigationTitle("闪念")
+            .navigationTitle("记录")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: ProfileView()) {
+                        Image(systemName: "gearshape")
+                    }
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 FlashNoteInputBar()
             }
@@ -65,7 +71,7 @@ struct FlashNoteListView: View {
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 8) {
-                SurfaceKicker(title: "Flash Note", symbol: "bolt.fill", tint: .purple)
+                SurfaceKicker(title: "记录", symbol: "bolt.fill", tint: .purple)
                 Text("先记下来，再决定它是提醒、笔记还是灵感。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -74,8 +80,8 @@ struct FlashNoteListView: View {
             Spacer(minLength: 12)
 
             VStack(alignment: .trailing, spacing: 8) {
-                countBadge(title: "待处理", value: store.pendingFlashNotes.count, tint: .purple)
-                countBadge(title: "全部", value: flashNotes.count, tint: .indigo)
+                countBadge(title: "待处理", value: store.pendingFlashNotes.count)
+                countBadge(title: "全部", value: flashNotes.count)
             }
         }
     }
@@ -96,7 +102,7 @@ struct FlashNoteListView: View {
         .appCard(tint: .purple, cornerRadius: 24)
     }
 
-    private func countBadge(title: String, value: Int, tint: Color) -> some View {
+    private func countBadge(title: String, value: Int) -> some View {
         VStack(alignment: .trailing, spacing: 2) {
             Text("\(value)")
                 .font(.headline.bold())
@@ -107,6 +113,6 @@ struct FlashNoteListView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .glassCapsule(tint: tint)
+        .glassCapsule(tint: .secondary)
     }
 }

@@ -52,7 +52,7 @@ struct PulseChip: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .glassCapsule(tint: tint)
+            .glassCapsule(tint: .secondary)
         }
         .buttonStyle(.plain)
         .buttonStyle(PressableScaleButtonStyle())
@@ -119,7 +119,7 @@ struct NextReminderCard: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
-                Button("打开提醒列表", action: onOpenReminders)
+                Button("查看今天进行中", action: onOpenReminders)
                     .buttonStyle(.bordered)
             }
         }
@@ -284,99 +284,6 @@ struct CompletionSuggestionCard: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Quick Actions
-
-struct QuickActionsSection: View {
-    let onAddReminder: () -> Void
-    let onOpenReminders: () -> Void
-    let onOpenTools: () -> Void
-    let onOpenAssistant: () -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            ActionRowButton(title: "快速收集", subtitle: "先记下来，别丢", symbol: "plus.circle.fill", tint: .blue, action: onAddReminder)
-            SectionDivider()
-            ActionRowButton(title: "清空收件箱", subtitle: "安排时间和优先级", symbol: "tray.full.fill", tint: .purple, action: onOpenReminders)
-            SectionDivider()
-            ActionRowButton(title: "启动工具", subtitle: "开始专注或记录", symbol: "bolt.fill", tint: .orange, action: onOpenTools)
-            SectionDivider()
-            ActionRowButton(title: "查看建议", subtitle: "需要时再打开", symbol: "lightbulb", tint: .indigo, action: onOpenAssistant)
-        }
-    }
-}
-
-struct ActionRowButton: View {
-    let title: String
-    let subtitle: String
-    let symbol: String
-    let tint: Color
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                CircleIconBadge(symbol: symbol, tint: tint, size: 38, iconSize: 15)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(.vertical, 12)
-        }
-        .buttonStyle(PressableScaleButtonStyle())
-    }
-}
-
-// MARK: - Home Context Bar
-
-struct HomeContextBar: View {
-    let onAddReminder: () -> Void
-    let onOpenReminders: () -> Void
-    let onOpenAssistant: () -> Void
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Button(action: onAddReminder) {
-                Label("收集", systemImage: "plus")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-
-            Button(action: onOpenReminders) {
-                Label("提醒", systemImage: "checklist")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-
-            Button(action: onOpenAssistant) {
-                Label("建议", systemImage: "lightbulb")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-        }
-        .padding(10)
-        .appCard(tint: .indigo, cornerRadius: 22)
-        .overlay(DockGlowOverlay(tint: .cyan, cornerRadius: 22))
-        .offset(y: -2)
-        .compositingGroup()
     }
 }
 
