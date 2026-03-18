@@ -4,6 +4,7 @@
  */
 
 import {
+  children,
   splitProps,
   Show,
   createSignal,
@@ -280,6 +281,9 @@ export const Input: Component<InputProps> = (props) => {
     return Number.isNaN(num) ? 0 : num
   })
 
+  const resolvedPrefix = children(() => local.prefix)
+  const resolvedSuffix = children(() => local.suffix)
+
   // 清空按钮是否可见
   const clearButtonVisible = createMemo(
     () => currentValue().length > 0 && !variants.disabled,
@@ -289,7 +293,10 @@ export const Input: Component<InputProps> = (props) => {
   const showSuffix = createMemo(
     () =>
       !isTextarea() &&
-      (local.allowClear || isPassword() || local.showCount || local.suffix),
+      (local.allowClear ||
+        isPassword() ||
+        local.showCount ||
+        resolvedSuffix()),
   )
 
   // 字数统计文本
@@ -400,8 +407,8 @@ export const Input: Component<InputProps> = (props) => {
     <div class={styles().root()}>
       <div class={styles().wrapper({class: local.class})}>
         {/* Prefix - 仅非 textarea 模式 */}
-        <Show when={!isTextarea() && local.prefix}>
-          <span class={styles().prefix()}>{local.prefix}</span>
+        <Show when={!isTextarea() && resolvedPrefix()}>
+          <span class={styles().prefix()}>{resolvedPrefix()}</span>
         </Show>
 
         {/* Textarea 模式 */}
@@ -469,7 +476,7 @@ export const Input: Component<InputProps> = (props) => {
             <Show when={local.showCount && !isTextarea()}>
               <span class={styles().count()}>{countText()}</span>
             </Show>
-            {local.suffix}
+            {resolvedSuffix()}
           </span>
         </Show>
 

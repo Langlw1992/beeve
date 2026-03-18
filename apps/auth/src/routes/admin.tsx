@@ -1,97 +1,126 @@
 import {createFileRoute} from '@tanstack/solid-router'
 import type {JSX} from 'solid-js'
-import {createSignal, Show, createMemo} from 'solid-js'
-import {createQuery, useQueryClient} from '@tanstack/solid-query'
-import {Card, Button, Badge, Input, Table, columns, actionColumn} from '@beeve/ui'
-import {Users, Search, RefreshCw, Shield, Ban, CheckCircle} from 'lucide-solid'
+import {
+  Suspense,
+  Show,
+  For,
+  createMemo,
+  createResource,
+  createSignal,
+} from 'solid-js'
+import {
+  Card,
+  Button,
+  Badge,
+  Input,
+  Table,
+  columns,
+  actionColumn,
+} from '@beeve/ui'
+import {
+  Users,
+  Search,
+  RefreshCw,
+  Shield,
+  Ban,
+  CheckCircle,
+  LogOut,
+} from 'lucide-solid'
 import {requireAdmin} from '@/lib/guards'
-import {authClient} from '@/lib/auth/client'
+import {loadAdminUsersData, loadCurrentUserData} from '@/lib/loaders/account'
 import {AppLayout} from '@/components/AppLayout'
-
-type ListUsersResponse = Awaited<ReturnType<typeof authClient.admin.listUsers>>
-type AdminUser = NonNullable<ListUsersResponse['data']>['users'][number]
+import {applyAdminBatchAction} from '@/lib/services/client/account'
+import type {AppUserDto, BatchUserAction} from '@/lib/services/contracts'
+import {countAdminUsers} from '@/lib/services/serializers'
+import {isAdminRole} from '@/lib/auth/policy'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: () => requireAdmin(),
+  loader: async () => loadCurrentUserData(),
   component: AdminPage,
 })
 
 function AdminPage() {
-  const queryClient = useQueryClient()
+  const me = Route.useLoaderData()
   const [searchQuery, setSearchQuery] = createSignal('')
-
-  const users = createQuery(() => ({
-    queryKey: ['admin', 'users'],
-    queryFn: async () => {
-      const result = await authClient.admin.listUsers({
-        query: {limit: 100},
-      })
-      return result.data?.users ?? []
-    },
-  }))
+  const [selection, setSelection] = createSignal<Record<string, boolean>>({})
+  const [actionMessage, setActionMessage] = createSignal<string | null>(null)
+  const [pendingAction, setPendingAction] = createSignal<string | null>(null)
+  const [users, {refetch: refetchUsers}] = createResource(() =>
+    loadAdminUsersData(),
+  )
 
   const filteredUsers = createMemo(() => {
-    const query = searchQuery().toLowerCase()
-    const list = users.data ?? []
+    const query = searchQuery().trim().toLowerCase()
+    const list = users()?.users ?? []
+
     if (!query) {
       return list
     }
+
     return list.filter(
-      (u) =>
-        u.name?.toLowerCase().includes(query) ||
-        u.email.toLowerCase().includes(query),
+      (user) =>
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query),
     )
   })
 
-  const invalidateUsers = () =>
-    queryClient.invalidateQueries({queryKey: ['admin', 'users']})
+  const selectedUserIds = createMemo(() =>
+    Object.entries(selection())
+      .filter(([, selected]) => selected)
+      .map(([id]) => id),
+  )
 
-  const handleBanUser = async (userId: string, banned: boolean) => {
-    try {
-      if (banned) {
-        await authClient.admin.banUser({userId})
-      } else {
-        await authClient.admin.unbanUser({userId})
-      }
-      await invalidateUsers()
-    } catch {
-      // silently fail
-    }
-  }
+  const runBatchAction = async (
+    action: BatchUserAction,
+    userIds = selectedUserIds(),
+  ) => {
+    setPendingAction(action.type)
+    setActionMessage(null)
 
-  const handleSetRole = async (userId: string, role: 'user' | 'admin') => {
     try {
-      await authClient.admin.setRole({userId, role})
-      await invalidateUsers()
-    } catch {
-      // silently fail
+      const result = await applyAdminBatchAction({
+        userIds,
+        action,
+      })
+      void refetchUsers()
+      setSelection({})
+      setActionMessage(
+        `${result.processedUserIds.length} user(s) updated via ${result.action}.`,
+      )
+    } catch (error) {
+      setActionMessage(
+        error instanceof Error ? error.message : 'Failed to update users.',
+      )
+    } finally {
+      setPendingAction(null)
     }
   }
 
   const userColumns = [
-    ...columns<AdminUser>([
+    ...columns<AppUserDto>([
       {
         key: 'name',
         title: 'User',
-        render: (_v, u) => (
+        render: (_value, user) => (
           <div class="flex items-center gap-3">
             <Show
-              when={u.image}
+              when={user.image}
               fallback={
                 <div class="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                  {u.name?.charAt(0)?.toUpperCase() ?? '?'}
+                  {user.name.charAt(0).toUpperCase()}
                 </div>
               }
             >
               <img
-                src={u.image ?? ''}
-                alt={u.name ?? ''}
+                src={user.image ?? ''}
+                alt={user.name}
                 class="size-8 rounded-full object-cover"
               />
             </Show>
             <div>
-              <p class="font-medium">{u.name ?? 'Unnamed'}</p>
-              <p class="text-xs text-muted-foreground">{u.email}</p>
+              <p class="font-medium">{user.name}</p>
+              <p class="text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>
         ),
@@ -99,18 +128,18 @@ function AdminPage() {
       {
         key: 'role',
         title: 'Role',
-        render: (_v, u) => (
-          <Badge variant={u.role === 'admin' ? 'default' : 'secondary'}>
-            {u.role ?? 'user'}
+        render: (_value, user) => (
+          <Badge variant={isAdminRole(user.role) ? 'default' : 'secondary'}>
+            {user.role}
           </Badge>
         ),
       },
       {
         key: 'banned',
         title: 'Status',
-        render: (_v, u) => (
+        render: (_value, user) => (
           <Show
-            when={!u.banned}
+            when={!user.banned}
             fallback={<Badge variant="destructive">Banned</Badge>}
           >
             <Badge variant="outline">Active</Badge>
@@ -120,128 +149,259 @@ function AdminPage() {
       {
         key: 'createdAt',
         title: 'Joined',
-        render: (_v, u) => (
+        render: (_value, user) => (
           <span class="text-muted-foreground">
-            {new Date(u.createdAt).toLocaleDateString()}
+            {new Date(user.createdAt).toLocaleDateString()}
           </span>
         ),
       },
     ]),
-    actionColumn<AdminUser>({
+    actionColumn<AppUserDto>({
       title: 'Actions',
-      render: (u) => (
+      render: (user) => (
         <div class="flex items-center justify-end gap-1">
-          <Show when={u.role !== 'admin'}>
+          <Show when={!isAdminRole(user.role)}>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleSetRole(u.id, 'admin')}
+              onClick={() =>
+                runBatchAction({type: 'set-role', role: 'admin'}, [user.id])
+              }
               title="Promote to admin"
             >
               <Shield class="size-3.5" />
             </Button>
           </Show>
-          <Show when={u.role === 'admin'}>
+          <Show when={isAdminRole(user.role)}>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleSetRole(u.id, 'user')}
+              onClick={() =>
+                runBatchAction({type: 'set-role', role: 'user'}, [user.id])
+              }
               title="Demote to user"
             >
               <CheckCircle class="size-3.5" />
             </Button>
           </Show>
-          <Show when={!u.banned}>
+          <Show when={!user.banned}>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleBanUser(u.id, true)}
+              onClick={() => runBatchAction({type: 'ban'}, [user.id])}
               title="Ban user"
             >
               <Ban class="size-3.5 text-destructive" />
             </Button>
           </Show>
-          <Show when={u.banned}>
+          <Show when={user.banned}>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleBanUser(u.id, false)}
+              onClick={() => runBatchAction({type: 'unban'}, [user.id])}
               title="Unban user"
             >
               <CheckCircle class="size-3.5 text-green-500" />
             </Button>
           </Show>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => runBatchAction({type: 'revoke-sessions'}, [user.id])}
+            title="Revoke user sessions"
+          >
+            <LogOut class="size-3.5" />
+          </Button>
         </div>
       ),
     }),
   ]
 
   return (
-    <AppLayout>
-      <div class="mx-auto max-w-5xl space-y-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-2xl font-bold tracking-tight">Admin Panel</h1>
-            <p class="text-muted-foreground">Manage users and permissions</p>
+    <AppLayout
+      user={me().user}
+      currentPath="/admin"
+      pageTitle="Admin workspace"
+      pageDescription="Administrative routes are still guarded on the server, while the user roster streams in underneath this shell."
+      pageActions={
+        <Button variant="outline" onClick={() => void refetchUsers()} loading={users.loading}>
+          <RefreshCw class="size-4" />
+          Refresh
+        </Button>
+      }
+    >
+      <div class="space-y-6">
+        <Card variant="outlined" size="lg">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h2 class="text-lg font-semibold tracking-tight">User operations</h2>
+              <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
+                This area is optimized for high-signal tasks: search, select, then
+                apply one controlled action across a batch.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <Badge variant="outline">{selectedUserIds().length} selected</Badge>
+              <Badge variant="outline">Server-checked admin access</Badge>
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="md"
-            onClick={invalidateUsers}
-            loading={users.isPending}
-          >
-            <RefreshCw class="size-4" />
-            Refresh
-          </Button>
-        </div>
-
-        {/* Stats */}
-        <div class="grid gap-4 sm:grid-cols-3">
-          <StatCard
-            icon={<Users class="size-5 text-primary" />}
-            label="Total Users"
-            value={String(users.data?.length ?? 0)}
-          />
-          <StatCard
-            icon={<Shield class="size-5 text-primary" />}
-            label="Admins"
-            value={String(
-              users.data?.filter((u) => u.role === 'admin').length ?? 0,
-            )}
-          />
-          <StatCard
-            icon={<Ban class="size-5 text-destructive" />}
-            label="Banned"
-            value={String(users.data?.filter((u) => u.banned).length ?? 0)}
-          />
-        </div>
-
-        {/* User list */}
-        <Card variant="outlined" size="md">
-          {/* Search */}
-          <div class="mb-4">
-            <Input
-              type="search"
-              placeholder="Search users by name or email..."
-              prefix={<Search class="size-4" />}
-              value={searchQuery()}
-              onInput={(value) => setSearchQuery(value)}
-              allowClear
-            />
-          </div>
-
-          {/* Table */}
-          <Table
-            data={filteredUsers()}
-            columns={userColumns}
-            loading={users.isPending}
-            hoverable
-            emptyText="No users found"
-            pageSize={20}
-          />
         </Card>
+
+        <Suspense fallback={<AdminUsersFallback />}>
+          <AdminUsersSection
+            users={filteredUsers}
+            rawUsers={users}
+            actionMessage={actionMessage}
+            pendingAction={pendingAction}
+            selection={selection}
+            onSelection={setSelection}
+            searchQuery={searchQuery}
+            onSearchQuery={setSearchQuery}
+            selectedUserIds={selectedUserIds}
+            onRunBatchAction={runBatchAction}
+            userColumns={userColumns}
+          />
+        </Suspense>
       </div>
     </AppLayout>
+  )
+}
+
+function AdminUsersSection(props: {
+  users: () => AppUserDto[]
+  rawUsers: () => {users: AppUserDto[]; total: number} | undefined
+  actionMessage: () => string | null
+  pendingAction: () => string | null
+  selection: () => Record<string, boolean>
+  onSelection: (selection: Record<string, boolean>) => void
+  searchQuery: () => string
+  onSearchQuery: (value: string) => void
+  selectedUserIds: () => string[]
+  onRunBatchAction: (
+    action: BatchUserAction,
+    userIds?: string[],
+  ) => Promise<void>
+  userColumns: Array<unknown>
+}) {
+  const allUsers = createMemo(() => props.rawUsers()?.users ?? [])
+
+  return (
+    <>
+      <div class="grid gap-4 sm:grid-cols-3">
+        <StatCard
+          icon={<Users class="size-5 text-primary" />}
+          label="Total users"
+          value={String(props.rawUsers()?.total ?? 0)}
+        />
+        <StatCard
+          icon={<Shield class="size-5 text-primary" />}
+          label="Admins"
+          value={String(countAdminUsers(allUsers()))}
+        />
+        <StatCard
+          icon={<Ban class="size-5 text-destructive" />}
+          label="Banned"
+          value={String(allUsers().filter((user) => user.banned).length)}
+        />
+      </div>
+
+      <Card variant="outlined" size="md">
+        <div class="mb-4 flex flex-col gap-3">
+          <Input
+            type="search"
+            placeholder="Search users by name or email..."
+            prefix={<Search class="size-4" />}
+            value={props.searchQuery()}
+            onInput={props.onSearchQuery}
+            allowClear
+          />
+
+          <div class="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={props.selectedUserIds().length === 0}
+              loading={props.pendingAction() === 'set-role'}
+              onClick={() =>
+                void props.onRunBatchAction({type: 'set-role', role: 'admin'})
+              }
+            >
+              Promote
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={props.selectedUserIds().length === 0}
+              loading={props.pendingAction() === 'set-role'}
+              onClick={() =>
+                void props.onRunBatchAction({type: 'set-role', role: 'user'})
+              }
+            >
+              Demote
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={props.selectedUserIds().length === 0}
+              loading={props.pendingAction() === 'ban'}
+              onClick={() => void props.onRunBatchAction({type: 'ban'})}
+            >
+              Ban
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={props.selectedUserIds().length === 0}
+              loading={props.pendingAction() === 'unban'}
+              onClick={() => void props.onRunBatchAction({type: 'unban'})}
+            >
+              Unban
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={props.selectedUserIds().length === 0}
+              loading={props.pendingAction() === 'revoke-sessions'}
+              onClick={() =>
+                void props.onRunBatchAction({type: 'revoke-sessions'})
+              }
+            >
+              Revoke sessions
+            </Button>
+          </div>
+
+          <Show when={props.actionMessage()}>
+            {(message) => <p class="text-sm text-muted-foreground">{message()}</p>}
+          </Show>
+        </div>
+
+        <Table
+          data={props.users()}
+          columns={props.userColumns as never}
+          loading={false}
+          hoverable
+          emptyText="No users found"
+          pageSize={20}
+          selectable
+          getRowId={(row) => row.id}
+          selection={props.selection()}
+          onSelection={props.onSelection}
+        />
+      </Card>
+    </>
+  )
+}
+
+function AdminUsersFallback() {
+  return (
+    <>
+      <div class="grid gap-4 sm:grid-cols-3">
+        <For each={Array.from({length: 3})}>
+          {() => <div class="h-28 animate-pulse rounded-xl border border-border bg-card" />}
+        </For>
+      </div>
+      <Card variant="outlined" size="md" loading loadingConfig={{rows: 6}} />
+    </>
   )
 }
 

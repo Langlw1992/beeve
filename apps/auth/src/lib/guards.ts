@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/solid-router'
 import { getSession } from './auth/functions'
+import {isAdminUser} from './auth/policy'
 
 /**
  * 路由守卫 - 要求已登录
@@ -38,7 +39,7 @@ export async function requireAdmin() {
     throw redirect({ to: '/login' })
   }
 
-  if (session.user.role !== 'admin') {
+  if (!isAdminUser(session.user)) {
     throw redirect({ to: '/dashboard' })
   }
 

@@ -4,8 +4,8 @@ import type {JSX} from 'solid-js'
 import {Button} from '@beeve/ui'
 import {ArrowLeft} from 'lucide-solid'
 import {requireGuest} from '@/lib/guards'
-import {authClient} from '@/lib/auth/client'
 import {getEnabledSocialProviders} from '@/lib/auth/functions'
+import {signInWithSocial} from '@/lib/services/client/auth'
 
 type SocialProvider = 'google' | 'github' | 'apple'
 
@@ -42,10 +42,7 @@ function LoginPage() {
   const handleSocialLogin = async (provider: SocialProvider) => {
     setLoading(provider)
     try {
-      await authClient.signIn.social({
-        provider,
-        callbackURL: '/dashboard',
-      })
+      await signInWithSocial(provider)
     } catch {
       setLoading(null)
     }

@@ -17,7 +17,14 @@
  * ```
  */
 
-import {splitProps, Show, createMemo, type Component, type JSX} from 'solid-js'
+import {
+  splitProps,
+  Show,
+  createMemo,
+  children,
+  type Component,
+  type JSX,
+} from 'solid-js'
 import {tv, type VariantProps} from 'tailwind-variants'
 import {Skeleton} from '../Skeleton'
 
@@ -150,7 +157,17 @@ export const Card: Component<CardProps> = (props) => {
     }),
   )
 
-  const hasHeader = () => local.title || local.description || local.extra
+  const title = children(() => local.title)
+  const description = children(() => local.description)
+  const extra = children(() => local.extra)
+  const body = children(() => local.children)
+  const footer = children(() => local.footer)
+  const actions = children(() => local.actions)
+
+  const hasHeader = () =>
+    title.toArray().length > 0 ||
+    description.toArray().length > 0 ||
+    extra.toArray().length > 0
   const coverPosition = () => local.coverPosition ?? 'top'
 
   // 渲染加载骨架
@@ -205,15 +222,15 @@ export const Card: Component<CardProps> = (props) => {
     <Show when={hasHeader()}>
       <div class={styles().header()}>
         <div class="flex-1 min-w-0">
-          <Show when={local.title}>
-            <div class={styles().title()}>{local.title}</div>
+          <Show when={title.toArray().length > 0}>
+            <div class={styles().title()}>{title()}</div>
           </Show>
-          <Show when={local.description}>
-            <div class={styles().description()}>{local.description}</div>
+          <Show when={description.toArray().length > 0}>
+            <div class={styles().description()}>{description()}</div>
           </Show>
         </div>
-        <Show when={local.extra}>
-          <div class={styles().extra()}>{local.extra}</div>
+        <Show when={extra.toArray().length > 0}>
+          <div class={styles().extra()}>{extra()}</div>
         </Show>
       </div>
     </Show>
@@ -221,18 +238,18 @@ export const Card: Component<CardProps> = (props) => {
 
   // 渲染内容
   const renderBody = () => (
-    <Show when={local.children}>
-      <div class={styles().body()}>{local.children}</div>
+    <Show when={body.toArray().length > 0}>
+      <div class={styles().body()}>{body()}</div>
     </Show>
   )
 
   // 渲染底部
   const renderFooter = () => (
-    <Show when={local.footer || local.actions}>
+    <Show when={footer.toArray().length > 0 || actions.toArray().length > 0}>
       <div class={styles().footer()}>
-        {local.footer}
-        <Show when={local.actions}>
-          <div class={styles().actions()}>{local.actions}</div>
+        {footer()}
+        <Show when={actions.toArray().length > 0}>
+          <div class={styles().actions()}>{actions()}</div>
         </Show>
       </div>
     </Show>

@@ -4,6 +4,7 @@
 
 import {describe, it, expect, vi} from 'vitest'
 import {render, screen, fireEvent} from '@solidjs/testing-library'
+import {createSignal} from 'solid-js'
 import {Card} from './Card'
 
 describe('Card', () => {
@@ -40,6 +41,27 @@ describe('Card', () => {
         </Card>
       ))
       expect(screen.getByText('操作')).toBeInTheDocument()
+    })
+
+    it('应该稳定渲染复杂 JSX props 并响应更新', () => {
+      const [name, setName] = createSignal('初始用户')
+
+      render(() => (
+        <Card
+          title={<span>个人资料</span>}
+          extra={<button type="button">编辑</button>}
+        >
+          <div>{name()}</div>
+        </Card>
+      ))
+
+      expect(screen.getByText('个人资料')).toBeInTheDocument()
+      expect(screen.getByText('编辑')).toBeInTheDocument()
+      expect(screen.getByText('初始用户')).toBeInTheDocument()
+
+      setName('更新用户')
+
+      expect(screen.getByText('更新用户')).toBeInTheDocument()
     })
   })
 
