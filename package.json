@@ -10,8 +10,8 @@
     "check": "turbo lint typecheck",
     "build": "turbo clean && turbo build",
     "db:start": "docker start beeve-postgres 2>/dev/null || docker run -d --name beeve-postgres -e POSTGRES_USER=beeve -e POSTGRES_PASSWORD=beeve_secret -e POSTGRES_DB=beeve_auth -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:17-alpine",
-    "db:migrate": "cd apps/auth && npx auth@latest migrate",
-    "db:generate": "cd apps/auth && npx auth@latest generate"
+    "db:migrate": "pnpm --filter @beeve/auth db:migrate",
+    "db:generate": "pnpm --filter @beeve/auth auth:schema:generate && pnpm --filter @beeve/auth db:generate"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",

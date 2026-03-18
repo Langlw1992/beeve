@@ -1,19 +1,45 @@
 import {createFileRoute, Link} from '@tanstack/solid-router'
-import {createSignal} from 'solid-js'
+import {For, createMemo, createSignal} from 'solid-js'
+import type {JSX} from 'solid-js'
 import {Button} from '@beeve/ui'
 import {ArrowLeft} from 'lucide-solid'
 import {requireGuest} from '@/lib/guards'
 import {authClient} from '@/lib/auth/client'
+import {getEnabledSocialProviders} from '@/lib/auth/functions'
+
+type SocialProvider = 'google' | 'github' | 'apple'
+
+const socialProviderOptions: Array<{
+  id: SocialProvider
+  label: string
+  Icon: () => JSX.Element
+}> = [
+  {id: 'google', label: 'Continue with Google', Icon: GoogleIcon},
+  {id: 'github', label: 'Continue with GitHub', Icon: GithubIcon},
+  {id: 'apple', label: 'Continue with Apple', Icon: AppleIcon},
+]
 
 export const Route = createFileRoute('/login')({
-  beforeLoad: () => requireGuest(),
+  beforeLoad: async () => {
+    await requireGuest()
+    return {
+      availableProviders: await getEnabledSocialProviders(),
+    }
+  },
   component: LoginPage,
 })
 
 function LoginPage() {
-  const [loading, setLoading] = createSignal<string | null>(null)
+  const [loading, setLoading] = createSignal<SocialProvider | null>(null)
+  const routeContext = Route.useRouteContext()
 
-  const handleSocialLogin = async (provider: 'google' | 'github' | 'apple') => {
+  const enabledProviders = createMemo(() =>
+    socialProviderOptions.filter(
+      (provider) => routeContext().availableProviders[provider.id],
+    ),
+  )
+
+  const handleSocialLogin = async (provider: SocialProvider) => {
     setLoading(provider)
     try {
       await authClient.signIn.social({
@@ -50,38 +76,30 @@ function LoginPage() {
 
         {/* Social login buttons */}
         <div class="space-y-3">
-          <Button
-            variant="outline"
-            class="w-full justify-center gap-3"
-            disabled={loading() !== null}
-            loading={loading() === 'google'}
-            onClick={() => handleSocialLogin('google')}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </Button>
+          <For each={enabledProviders()}>
+            {(provider) => (
+              <Button
+                variant="outline"
+                class="w-full justify-center gap-3"
+                disabled={loading() !== null}
+                loading={loading() === provider.id}
+                onClick={() => handleSocialLogin(provider.id)}
+              >
+                <provider.Icon />
+                {provider.label}
+              </Button>
+            )}
+          </For>
+        </div>
 
-          <Button
-            variant="outline"
-            class="w-full justify-center gap-3"
-            disabled={loading() !== null}
-            loading={loading() === 'github'}
-            onClick={() => handleSocialLogin('github')}
-          >
-            <GithubIcon />
-            Continue with GitHub
-          </Button>
-
-          <Button
-            variant="outline"
-            class="w-full justify-center gap-3"
-            disabled={loading() !== null}
-            loading={loading() === 'apple'}
-            onClick={() => handleSocialLogin('apple')}
-          >
-            <AppleIcon />
-            Continue with Apple
-          </Button>
+        <div
+          classList={{
+            hidden: enabledProviders().length > 0,
+          }}
+          class="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground"
+        >
+          No social providers are configured yet. Add OAuth credentials to
+          enable sign-in.
         </div>
 
         {/* Divider */}

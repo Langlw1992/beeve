@@ -1,15 +1,10 @@
-import {createFileRoute, redirect, Link} from '@tanstack/solid-router'
+import {createFileRoute, Link} from '@tanstack/solid-router'
 import {Button} from '@beeve/ui'
 import {Shield, Github, ArrowRight} from 'lucide-solid'
-import {authClient} from '@/lib/auth/client'
+import {requireGuest} from '@/lib/guards'
 
 export const Route = createFileRoute('/')({
-  beforeLoad: async () => {
-    const {data: session} = await authClient.getSession()
-    if (session?.user) {
-      throw redirect({to: '/dashboard'})
-    }
-  },
+  beforeLoad: () => requireGuest(),
   component: IndexPage,
 })
 
@@ -47,8 +42,8 @@ function IndexPage() {
           </h1>
 
           <p class="mb-8 text-lg text-muted-foreground sm:text-xl">
-            Sign in once, access everything. Powered by social login with
-            Google, GitHub, and Apple.
+            Sign in once, access everything. Powered by Better Auth social
+            providers.
           </p>
 
           <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -75,7 +70,7 @@ function IndexPage() {
         <div class="mx-auto mt-20 grid max-w-4xl gap-6 sm:grid-cols-3">
           <FeatureCard
             title="Social Login"
-            description="Sign in with Google, GitHub, or Apple. No passwords needed."
+            description="Sign in with your configured social providers. No passwords needed."
           />
           <FeatureCard
             title="Secure by Default"

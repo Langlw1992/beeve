@@ -49,6 +49,7 @@ pnpm dev                 # 开发服务器（:3000）
 pnpm build               # 生产构建
 pnpm lint                # Biome lint
 pnpm typecheck           # tsc --noEmit
+pnpm auth:schema:generate # Better Auth 配置 -> schema.ts
 pnpm db:generate         # Drizzle 生成迁移文件
 pnpm db:migrate          # 应用迁移
 pnpm db:studio           # Drizzle Studio
@@ -56,13 +57,24 @@ pnpm db:studio           # Drizzle Studio
 
 Schema 重新生成（插件变更后）：
 ```bash
-npx auth@latest generate --config src/lib/auth/server.ts --output src/lib/auth/schema.ts
+pnpm auth:schema:generate
+```
+
+Drizzle 适配器注意事项：
+```bash
+# Better Auth CLI 只负责按配置生成 schema.ts
+pnpm auth:schema:generate
+
+# 迁移由 Drizzle 自己执行，不使用 `auth migrate`
+pnpm db:generate
+pnpm db:migrate
 ```
 
 ## 环境变量（.env.local）
 
 ```bash
 APP_ORIGIN=http://localhost:3000
+BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=
 DATABASE_URL=postgresql://beeve:beeve_secret@localhost:5432/beeve_auth
 GOOGLE_CLIENT_ID=

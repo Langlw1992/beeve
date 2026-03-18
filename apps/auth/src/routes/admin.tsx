@@ -6,8 +6,10 @@ import {Card, Button, Badge, Input, Table, columns, actionColumn} from '@beeve/u
 import {Users, Search, RefreshCw, Shield, Ban, CheckCircle} from 'lucide-solid'
 import {requireAdmin} from '@/lib/guards'
 import {authClient} from '@/lib/auth/client'
-import type {SelectUser} from '@/lib/auth/schema'
 import {AppLayout} from '@/components/AppLayout'
+
+type ListUsersResponse = Awaited<ReturnType<typeof authClient.admin.listUsers>>
+type AdminUser = NonNullable<ListUsersResponse['data']>['users'][number]
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: () => requireAdmin(),
@@ -67,7 +69,7 @@ function AdminPage() {
   }
 
   const userColumns = [
-    ...columns<SelectUser>([
+    ...columns<AdminUser>([
       {
         key: 'name',
         title: 'User',
@@ -125,7 +127,7 @@ function AdminPage() {
         ),
       },
     ]),
-    actionColumn<SelectUser>({
+    actionColumn<AdminUser>({
       title: 'Actions',
       render: (u) => (
         <div class="flex items-center justify-end gap-1">

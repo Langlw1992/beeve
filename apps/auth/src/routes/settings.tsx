@@ -222,8 +222,8 @@ function SettingsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => revokeSession(sess.id)}
-                          loading={revoking() === sess.id}
+                          onClick={() => revokeSession(sess.token)}
+                          loading={revoking() === sess.token}
                           title="Revoke session"
                         >
                           <Trash2 class="size-4 text-destructive" />

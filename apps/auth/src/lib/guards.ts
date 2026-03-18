@@ -1,12 +1,12 @@
 import { redirect } from '@tanstack/solid-router'
-import { authClient } from './auth/client'
+import { getSession } from './auth/functions'
 
 /**
  * 路由守卫 - 要求已登录
  * 未登录用户将被重定向到 /login
  */
 export async function requireAuth() {
-  const { data: session } = await authClient.getSession()
+  const session = await getSession()
 
   if (!session?.user) {
     throw redirect({ to: '/login' })
@@ -20,7 +20,7 @@ export async function requireAuth() {
  * 已登录用户将被重定向到 /dashboard
  */
 export async function requireGuest() {
-  const { data: session } = await authClient.getSession()
+  const session = await getSession()
 
   if (session?.user) {
     throw redirect({ to: '/dashboard' })
@@ -32,7 +32,7 @@ export async function requireGuest() {
  * 非管理员用户将被重定向到 /dashboard
  */
 export async function requireAdmin() {
-  const { data: session } = await authClient.getSession()
+  const session = await getSession()
 
   if (!session?.user) {
     throw redirect({ to: '/login' })
