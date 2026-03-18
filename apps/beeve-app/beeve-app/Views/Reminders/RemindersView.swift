@@ -190,7 +190,11 @@ struct RemindersView: View {
             }
         }
         .padding()
-        .glassCapsule(tint: .indigo)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.8)
+        )
         .padding(.horizontal)
         .padding(.bottom, 8)
         .transition(.move(edge: .bottom).combined(with: .opacity))
