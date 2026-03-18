@@ -9,9 +9,12 @@ final class Reminder {
     var dueDate: Date?
     var category: ReminderCategory
     var priority: ReminderPriority
+    var origin: ReminderOrigin
     var isCompleted: Bool
+    var completedAt: Date?
     var sortOrder: Int
     var createdAt: Date
+    var lastSuggestedAt: Date?
 
     // Subtask support
     @Relationship(deleteRule: .cascade, inverse: \Reminder.parent)
@@ -30,9 +33,12 @@ final class Reminder {
         dueDate: Date? = nil,
         category: ReminderCategory = .work,
         priority: ReminderPriority = .medium,
+        origin: ReminderOrigin = .manual,
         isCompleted: Bool = false,
+        completedAt: Date? = nil,
         sortOrder: Int = 0,
-        repeatRule: RepeatRule? = nil
+        repeatRule: RepeatRule? = nil,
+        lastSuggestedAt: Date? = nil
     ) {
         self.id = UUID()
         self.title = title
@@ -40,14 +46,26 @@ final class Reminder {
         self.dueDate = dueDate
         self.category = category
         self.priority = priority
+        self.origin = origin
         self.isCompleted = isCompleted
+        self.completedAt = completedAt
         self.sortOrder = sortOrder
         self.createdAt = .now
         self.repeatRule = repeatRule
+        self.lastSuggestedAt = lastSuggestedAt
     }
 }
 
 // MARK: - Enums
+
+enum ReminderOrigin: String, CaseIterable, Codable, Identifiable {
+    case manual
+    case assistant
+    case capture
+    case recurring
+
+    var id: String { rawValue }
+}
 
 enum ReminderPriority: String, CaseIterable, Codable, Identifiable {
     case high
@@ -141,5 +159,9 @@ extension Reminder {
 
     var tagNames: [String] {
         (tags ?? []).map(\.name)
+    }
+
+    var completionDate: Date? {
+        completedAt
     }
 }

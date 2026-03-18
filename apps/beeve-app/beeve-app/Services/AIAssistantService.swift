@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 @MainActor
 @Observable
@@ -9,28 +10,24 @@ final class AIAssistantService {
     func getReply(
         for text: String,
         context: AssistantContext,
-        localFallback: (String) -> String
-    ) async -> String {
-        // If user has auth token, try remote AI
+        localFallback: (String, AssistantContext) -> AssistantResponse
+    ) async -> AssistantResponse {
         if let token = loadToken() {
             isProcessing = true
             defer { isProcessing = false }
 
             do {
-                let response = try await APIClient.shared.sendAssistantMessage(
+                return try await APIClient.shared.sendAssistantMessage(
                     text,
                     context: context,
                     token: token
                 )
-                return response.reply
             } catch {
-                // Fall back to local
-                return localFallback(text)
+                return localFallback(text, context)
             }
         }
 
-        // No auth — use local logic
-        return localFallback(text)
+        return localFallback(text, context)
     }
 
     private func loadToken() -> String? {

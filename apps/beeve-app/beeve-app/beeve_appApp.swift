@@ -21,13 +21,14 @@ struct BeeveAppApp: App {
             Habit.self,
             HabitLog.self,
             Note.self,
-            FlashNote.self
+            FlashNote.self,
+            UserMemoryItem.self
         )
         self.modelContainer = container
 
         let context = container.mainContext
         BeeveStore.migrateFromUserDefaults(into: context)
-        BeeveStore.seedSampleDataIfEmpty(into: context)
+        BeeveStore.ensureDefaultTags(in: context)
 
         self._store = State(initialValue: BeeveStore(modelContext: context))
     }

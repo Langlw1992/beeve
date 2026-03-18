@@ -133,10 +133,37 @@ struct AssistantContext: Codable {
     let pendingCount: Int
     let completedCount: Int
     let inboxCount: Int
+    let pendingCaptureCount: Int
     let nextImportantTitle: String?
+    let memorySummary: [String]
+    let preferredFocusDuration: Int?
 }
 
 struct AssistantResponse: Codable {
     let reply: String
-    let suggestions: [String]?
+    let suggestedActions: [AssistantActionSuggestion]?
+    let recommendedDestination: SecondaryDestination?
+    let memoryCandidates: [String]?
+    let captureResult: AssistantCaptureResult?
+
+    init(
+        reply: String,
+        suggestedActions: [AssistantActionSuggestion]? = nil,
+        recommendedDestination: SecondaryDestination? = nil,
+        memoryCandidates: [String]? = nil,
+        captureResult: AssistantCaptureResult? = nil
+    ) {
+        self.reply = reply
+        self.suggestedActions = suggestedActions
+        self.recommendedDestination = recommendedDestination
+        self.memoryCandidates = memoryCandidates
+        self.captureResult = captureResult
+    }
+}
+
+struct AssistantCaptureResult: Codable {
+    let title: String?
+    let category: FlashNoteCategory?
+    let suggestedAction: FlashNoteSuggestedAction?
+    let confidence: Double?
 }

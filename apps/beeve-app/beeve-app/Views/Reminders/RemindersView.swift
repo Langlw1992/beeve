@@ -5,10 +5,8 @@ struct RemindersView: View {
     @State private var selectedFilter: ReminderFilter = .all
     @State private var isEditing = false
     @State private var selectedReminders: Set<UUID> = []
-    @State private var showTagFilter = false
     @State private var filterTag: Tag?
-
-    let onAddReminder: () -> Void
+    @State private var showAddReminder = false
 
     var body: some View {
         NavigationStack {
@@ -141,8 +139,14 @@ struct RemindersView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("新增", systemImage: "plus", action: onAddReminder)
+                    Button("新增", systemImage: "plus") {
+                        showAddReminder = true
+                    }
                 }
+            }
+            .sheet(isPresented: $showAddReminder) {
+                AddReminderSheet()
+                    .presentationDetents([.medium, .large])
             }
             .safeAreaInset(edge: .bottom) {
                 if isEditing && !selectedReminders.isEmpty {

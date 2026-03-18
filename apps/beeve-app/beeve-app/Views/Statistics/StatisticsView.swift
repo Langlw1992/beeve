@@ -135,8 +135,8 @@ struct StatisticsView: View {
             let date = calendar.date(byAdding: .day, value: -offset, to: .now)!
             let label = date.formatted(.dateTime.weekday(.narrow))
             let completed = store.completedReminders.filter {
-                // Use createdAt as proxy (no completedAt field yet)
-                calendar.isDate($0.createdAt, inSameDayAs: date)
+                guard let completedAt = $0.completedAt else { return false }
+                return calendar.isDate(completedAt, inSameDayAs: date)
             }.count
             return (label, completed)
         }

@@ -5,14 +5,16 @@ struct FlashNoteInputBar: View {
     @FocusState private var isFocused: Bool
     @State private var draft = ""
     @State private var feedbackTrigger = 0
+    var icon: String = "square.and.pencil"
+    var placeholder: String = "先记下来，稍后再整理…"
     var onSend: (() -> Void)? = nil
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 12) {
             HStack(spacing: 10) {
-                CircleIconBadge(symbol: "bolt.fill", tint: .purple, size: 36, iconSize: 14)
+                CircleIconBadge(symbol: icon, tint: AppTheme.capture, size: 36, iconSize: 14)
 
-                TextField("记下一闪而过的想法…", text: $draft, axis: .vertical)
+                TextField(placeholder, text: $draft, axis: .vertical)
                     .font(.body)
                     .lineLimit(1...4)
                     .submitLabel(.send)
@@ -21,10 +23,10 @@ struct FlashNoteInputBar: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .background(AppTheme.elevatedSurface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(.white.opacity(0.12), lineWidth: 0.8)
+                    .strokeBorder(AppTheme.capture.opacity(0.10), lineWidth: 0.8)
             )
 
             Button(action: send) {
@@ -32,8 +34,8 @@ struct FlashNoteInputBar: View {
                     .font(.headline.weight(.bold))
                     .foregroundStyle(.white)
                     .frame(width: 46, height: 46)
-                    .background(Color.indigo, in: Circle())
-                    .shadow(color: Color.indigo.opacity(0.28), radius: 14, y: 8)
+                    .background(AppTheme.capture, in: Circle())
+                    .shadow(color: AppTheme.capture.opacity(0.28), radius: 14, y: 8)
             }
             .buttonStyle(PressableScaleButtonStyle())
             .disabled(!canSend)
@@ -58,7 +60,7 @@ struct FlashNoteInputBar: View {
         guard !text.isEmpty else { return }
 
         withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
-            store.addFlashNote(content: text)
+            store.addFlashNote(content: text, source: .text)
         }
         draft = ""
         feedbackTrigger += 1

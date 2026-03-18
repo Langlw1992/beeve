@@ -140,7 +140,7 @@ struct AddReminderSheet: View {
                     .padding(.bottom, 24)
                 }
             }
-            .navigationTitle("快速收集")
+            .navigationTitle("新建提醒")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("取消") { dismiss() }

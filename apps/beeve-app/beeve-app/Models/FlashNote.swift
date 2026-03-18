@@ -5,8 +5,12 @@ import SwiftData
 final class FlashNote {
     @Attribute(.unique) var id: UUID
     var content: String
+    var source: FlashNoteSource
+    var transcript: String?
     var category: FlashNoteCategory
     var status: FlashNoteStatus
+    var aiConfidence: Double?
+    var suggestedAction: FlashNoteSuggestedAction?
     var createdAt: Date
     var processedAt: Date?
     var linkedReminderId: UUID?
@@ -15,8 +19,12 @@ final class FlashNote {
 
     init(
         content: String,
+        source: FlashNoteSource = .text,
+        transcript: String? = nil,
         category: FlashNoteCategory = .auto,
         status: FlashNoteStatus = .pending,
+        aiConfidence: Double? = nil,
+        suggestedAction: FlashNoteSuggestedAction? = nil,
         createdAt: Date = .now,
         processedAt: Date? = nil,
         linkedReminderId: UUID? = nil,
@@ -25,13 +33,51 @@ final class FlashNote {
     ) {
         self.id = UUID()
         self.content = content
+        self.source = source
+        self.transcript = transcript
         self.category = category
         self.status = status
+        self.aiConfidence = aiConfidence
+        self.suggestedAction = suggestedAction
         self.createdAt = createdAt
         self.processedAt = processedAt
         self.linkedReminderId = linkedReminderId
         self.linkedNoteId = linkedNoteId
         self.aiSuggestion = aiSuggestion
+    }
+}
+
+enum FlashNoteSource: String, Codable, CaseIterable, Identifiable {
+    case text
+    case voice
+
+    var id: String { rawValue }
+}
+
+enum FlashNoteSuggestedAction: String, Codable, CaseIterable, Identifiable {
+    case reminder
+    case note
+    case idea
+    case schedule
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .reminder: "转提醒"
+        case .note: "转笔记"
+        case .idea: "保留想法"
+        case .schedule: "安排今天"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .reminder: "checklist"
+        case .note: "note.text"
+        case .idea: "lightbulb"
+        case .schedule: "calendar.badge.clock"
+        }
     }
 }
 
@@ -73,9 +119,16 @@ enum FlashNoteStatus: String, Codable, CaseIterable, Identifiable {
 
 extension FlashNote {
     var preview: String {
-        let text = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        let text = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
         if text.isEmpty { return "空闪念" }
         return String(text.prefix(80))
     }
-}
 
+    var rawText: String {
+        let candidate = transcript?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let candidate, !candidate.isEmpty {
+            return candidate
+        }
+        return content
+    }
+}

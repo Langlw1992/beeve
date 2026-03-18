@@ -66,10 +66,10 @@ final class NotificationService {
 
     func scheduleMorningDigest(pendingCount: Int) {
         let content = UNMutableNotificationContent()
-        content.title = "早上好，准备开始新的一天"
+        content.title = "晨间计划"
         content.body = pendingCount > 0
-            ? "你有 \(pendingCount) 项待处理事项，打开 Beeve 看看今天的安排。"
-            : "今天还没有安排，适合先收集几个想法。"
+            ? "你有 \(pendingCount) 项待处理事项，打开 Beeve 收拢今天的下一步。"
+            : "今天还没有安排，适合先记录几个关键动作。"
         content.sound = .default
         content.categoryIdentifier = "DIGEST"
 
@@ -88,9 +88,9 @@ final class NotificationService {
 
     func scheduleEveningReview(completedToday: Int, pendingCount: Int) {
         let content = UNMutableNotificationContent()
-        content.title = "今天收拢一下"
+        content.title = "晚间回顾"
         content.body = completedToday > 0
-            ? "今天完成了 \(completedToday) 项，还有 \(pendingCount) 项待处理。花 2 分钟回顾一下。"
+            ? "今天完成了 \(completedToday) 项，还有 \(pendingCount) 项待处理。花 2 分钟收个尾。"
             : "今天还没完成任何事项，不如现在快速看一下明天的安排。"
         content.sound = .default
         content.categoryIdentifier = "DIGEST"

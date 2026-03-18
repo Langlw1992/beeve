@@ -10,12 +10,12 @@ struct CircleIconBadge: View {
 
     var body: some View {
         Circle()
-            .fill(Color(.tertiarySystemFill))
+            .fill(tint.opacity(0.12))
             .frame(width: size, height: size)
             .overlay(
                 Image(systemName: symbol)
                     .font(.system(size: iconSize, weight: .semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(tint)
             )
     }
 }
@@ -30,6 +30,7 @@ struct SurfaceKicker: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: symbol)
+                .foregroundStyle(tint)
             Text(title)
                 .lineLimit(1)
         }
@@ -202,14 +203,14 @@ struct AssistantToolbarButton: View {
             HStack(spacing: 8) {
                 Image(systemName: "lightbulb")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.brand)
                 Text("建议")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
             }
             .padding(.horizontal, 10)
             .frame(height: 36)
-            .glassCapsule(tint: colorScheme == .dark ? .cyan : .indigo)
+            .glassCapsule(tint: colorScheme == .dark ? AppTheme.brandSoft : AppTheme.brand)
         }
         .buttonStyle(.plain)
     }

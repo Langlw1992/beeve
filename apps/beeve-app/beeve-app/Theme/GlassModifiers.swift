@@ -10,12 +10,13 @@ struct AppCardModifier: ViewModifier {
         content
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(Color(.secondarySystemGroupedBackground))
+                    .fill(AppTheme.surface)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+                    .strokeBorder(tint.opacity(0.10), lineWidth: 1)
             )
+            .shadow(color: Color.black.opacity(0.04), radius: 16, y: 8)
     }
 }
 
@@ -28,7 +29,7 @@ struct GlassCapsuleModifier: ViewModifier {
         content
             .background(
                 Capsule()
-                    .fill(tint.opacity(0.1))
+                    .fill(tint.opacity(0.12))
             )
     }
 }
@@ -42,6 +43,10 @@ extension View {
 
     func glassCapsule(tint: Color = .indigo) -> some View {
         modifier(GlassCapsuleModifier(tint: tint))
+    }
+
+    func appChrome(cornerRadius: CGFloat = 22) -> some View {
+        background(AppTheme.chromeMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }
 }
 
@@ -60,7 +65,15 @@ struct PressableScaleButtonStyle: ButtonStyle {
 
 struct AppBackgroundView: View {
     var body: some View {
-        Color(.systemGroupedBackground)
+        LinearGradient(
+            colors: [
+                Color(uiColor: .systemGroupedBackground),
+                AppTheme.brand.opacity(0.06),
+                AppTheme.capture.opacity(0.05),
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
         .ignoresSafeArea()
     }
 }
@@ -72,6 +85,8 @@ struct DockGlowOverlay: View {
     var cornerRadius: CGFloat = 22
 
     var body: some View {
-        EmptyView()
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .stroke(tint.opacity(0.16), lineWidth: 1)
+            .blur(radius: 0.5)
     }
 }

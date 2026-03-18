@@ -32,6 +32,11 @@ struct FocusTimerView: View {
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
             .navigationTitle("专注")
+            .onAppear {
+                if durations.contains(store.defaultFocusDuration) {
+                    selectedDuration = store.defaultFocusDuration
+                }
+            }
         }
     }
 
