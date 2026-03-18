@@ -143,6 +143,5 @@ private struct DashboardFlashNotePreview: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard(tint: flashNote.category.tint, cornerRadius: 20)
-        .immersiveScrollMotion()
     }
 }
