@@ -91,6 +91,21 @@ final class BeeveStore {
         max(62, 90 - pendingCount * 4 + completedCount * 3)
     }
 
+    // MARK: - FlashNote Queries
+
+    var allFlashNotes: [FlashNote] {
+        let descriptor = FetchDescriptor<FlashNote>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        return (try? modelContext.fetch(descriptor)) ?? []
+    }
+
+    var pendingFlashNotes: [FlashNote] {
+        allFlashNotes.filter { $0.status == .pending }
+    }
+
+    var recentFlashNotes: [FlashNote] {
+        Array(allFlashNotes.prefix(10))
+    }
+
     // MARK: - Reminder Actions
 
     func addReminder(
@@ -144,6 +159,43 @@ final class BeeveStore {
 
     func deleteReminder(_ reminder: Reminder) {
         modelContext.delete(reminder)
+        try? modelContext.save()
+    }
+
+    // MARK: - FlashNote Actions
+
+    func addFlashNote(content: String) {
+        let cleanContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanContent.isEmpty else { return }
+
+        let flashNote = FlashNote(content: cleanContent)
+        modelContext.insert(flashNote)
+        try? modelContext.save()
+    }
+
+    func archiveFlashNote(_ flashNote: FlashNote) {
+        flashNote.status = .archived
+        try? modelContext.save()
+    }
+
+    func deleteFlashNote(_ flashNote: FlashNote) {
+        modelContext.delete(flashNote)
+        try? modelContext.save()
+    }
+
+    func processFlashNote(
+        _ flashNote: FlashNote,
+        category: FlashNoteCategory,
+        linkedReminderId: UUID? = nil,
+        linkedNoteId: UUID? = nil,
+        aiSuggestion: String? = nil
+    ) {
+        flashNote.category = category
+        flashNote.status = .processed
+        flashNote.processedAt = .now
+        flashNote.linkedReminderId = linkedReminderId
+        flashNote.linkedNoteId = linkedNoteId
+        flashNote.aiSuggestion = aiSuggestion
         try? modelContext.save()
     }
 

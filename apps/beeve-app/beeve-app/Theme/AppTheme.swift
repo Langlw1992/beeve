@@ -4,10 +4,11 @@ import UIKit
 // MARK: - Design Tokens
 
 enum AppSpacing {
-    static let pageTop: CGFloat = 12
+    static let pageTop: CGFloat = 20
     static let pageBottom: CGFloat = 42
-    static let section: CGFloat = 16
-    static let cardContent: CGFloat = 12
+    static let section: CGFloat = 24
+    static let cardContent: CGFloat = 16
+    static let cardCornerRadius: CGFloat = 16
 }
 
 // MARK: - Priority Color
@@ -26,20 +27,7 @@ extension ReminderPriority {
 
 func configureTabBarAppearance() {
     let appearance = UITabBarAppearance()
-    appearance.configureWithTransparentBackground()
-    appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
-    appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.50)
-    appearance.shadowColor = UIColor.white.withAlphaComponent(0.08)
-
-    let itemAppearance = UITabBarItemAppearance(style: .stacked)
-    itemAppearance.normal.iconColor = UIColor.secondaryLabel
-    itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
-    itemAppearance.selected.iconColor = UIColor.systemCyan
-    itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.systemCyan]
-
-    appearance.stackedLayoutAppearance = itemAppearance
-    appearance.inlineLayoutAppearance = itemAppearance
-    appearance.compactInlineLayoutAppearance = itemAppearance
+    appearance.configureWithDefaultBackground()
 
     UITabBar.appearance().standardAppearance = appearance
     UITabBar.appearance().scrollEdgeAppearance = appearance

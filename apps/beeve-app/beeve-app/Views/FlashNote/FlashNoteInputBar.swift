@@ -5,6 +5,7 @@ struct FlashNoteInputBar: View {
     @FocusState private var isFocused: Bool
     @State private var draft = ""
     @State private var feedbackTrigger = 0
+    var onSend: (() -> Void)? = nil
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 12) {
@@ -62,5 +63,6 @@ struct FlashNoteInputBar: View {
         draft = ""
         feedbackTrigger += 1
         isFocused = true
+        onSend?()
     }
 }

@@ -40,9 +40,9 @@ struct HeroOverviewCard: View {
             }
 
             HStack(spacing: 12) {
-                HeroMetric(title: "专注分", value: "\(focusScore)", tint: .indigo, level: Double(focusScore) / 100)
-                HeroMetric(title: "已完成", value: "\(completedCount)", tint: .green, level: min(1, Double(completedCount) / 6))
-                HeroMetric(title: "收件箱", value: "\(inboxCount)", tint: .purple, level: min(1, Double(inboxCount) / 6))
+                HeroMetric(title: "专注分", value: "\(focusScore)")
+                HeroMetric(title: "已完成", value: "\(completedCount)")
+                HeroMetric(title: "收件箱", value: "\(inboxCount)")
             }
         }
         .padding(22)
@@ -61,13 +61,9 @@ struct HeroOverviewCard: View {
 struct HeroMetric: View {
     let title: String
     let value: String
-    let tint: Color
-    let level: Double
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            MetricMiniBars(tint: tint, level: level)
-
             Text(value)
                 .font(.headline)
                 .contentTransition(.numericText())
@@ -77,7 +73,7 @@ struct HeroMetric: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard(tint: tint, cornerRadius: 18)
+        .appCard(cornerRadius: 18)
         .animation(.snappy, value: value)
     }
 }
@@ -98,7 +94,7 @@ struct DailyProgressRing: View {
             Circle()
                 .trim(from: 0, to: progress)
                 .stroke(
-                    AngularGradient(colors: [.blue, .indigo, .purple], center: .center),
+                    Color.indigo,
                     style: StrokeStyle(lineWidth: 10, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))

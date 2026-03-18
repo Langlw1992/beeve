@@ -6,103 +6,99 @@ struct DashboardView: View {
 
     let onAddReminder: () -> Void
     let onOpenFlashNotes: () -> Void
-    let onOpenReminders: () -> Void
-    let onOpenTools: () -> Void
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(store.greetingTitle)
-                            .font(.largeTitle.bold())
-                        Text(store.formattedToday)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: AppSpacing.section) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(store.greetingTitle)
+                                .font(.largeTitle.bold())
+                            Text(store.formattedToday)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
 
-                    HeroOverviewCard(
-                        focusScore: store.focusScore,
-                        completedCount: store.completedCount,
-                        pendingCount: store.pendingCount,
-                        inboxCount: store.inboxReminders.count,
-                        homeSuggestion: store.homeSuggestion
-                    )
+                        HeroOverviewCard(
+                            focusScore: store.focusScore,
+                            completedCount: store.completedCount,
+                            pendingCount: store.pendingCount,
+                            inboxCount: store.inboxReminders.count,
+                            homeSuggestion: store.homeSuggestion
+                        )
 
-                    if let nextReminder = store.nextImportantReminder {
-                        NextReminderCard(reminder: nextReminder, onOpenReminders: onOpenReminders)
-                    }
-
-                    GlassSection(title: "最近闪念", symbol: "bolt.fill", tint: .purple) {
-                        VStack(spacing: 12) {
-                            if recentFlashNotes.isEmpty {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text("还没有闪念")
-                                        .font(.headline)
-                                    Text("底部闪念页可随手记录，先收集再整理。")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            } else {
-                                ForEach(recentFlashNotes) { flashNote in
-                                    DashboardFlashNotePreview(flashNote: flashNote)
+                        if let nextReminder = store.nextImportantReminder {
+                            NextReminderCard(reminder: nextReminder) {
+                                withAnimation(.snappy) {
+                                    isTodayExpanded = true
+                                    proxy.scrollTo(todaySectionID, anchor: .top)
                                 }
                             }
-
-                            ActionChip(title: "查看全部", systemImage: "arrow.right", tint: .purple, action: onOpenFlashNotes)
-                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                    }
 
-                    if !store.pendingPreviewReminders.isEmpty {
-                        ExpandableSectionCard(
-                            title: "今天进行中",
-                            symbol: "bolt.badge.clock",
-                            tint: .blue,
-                            isExpanded: $isTodayExpanded
-                        ) {
-                            VStack(spacing: 12) {
-                                ForEach(store.pendingPreviewReminders) { reminder in
-                                    ReminderPreviewRow(reminder: reminder) {
-                                        withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
-                                            store.toggleReminder(reminder)
+                        if !store.pendingPreviewReminders.isEmpty {
+                            ExpandableSectionCard(
+                                title: "今天进行中",
+                                symbol: "bolt.badge.clock",
+                                tint: .blue,
+                                isExpanded: $isTodayExpanded
+                            ) {
+                                VStack(spacing: 12) {
+                                    ForEach(store.pendingPreviewReminders) { reminder in
+                                        ReminderPreviewRow(reminder: reminder) {
+                                            withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
+                                                store.toggleReminder(reminder)
+                                            }
                                         }
                                     }
                                 }
                             }
+                            .id(todaySectionID)
+                        }
+
+                        GlassSection(title: "最近闪念", symbol: "bolt.fill", tint: .purple) {
+                            VStack(spacing: 12) {
+                                if recentFlashNotes.isEmpty {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("还没有闪念")
+                                            .font(.headline)
+                                        Text("记录页可随手记录，先收集再整理。")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                } else {
+                                    ForEach(recentFlashNotes) { flashNote in
+                                        DashboardFlashNotePreview(flashNote: flashNote)
+                                    }
+                                }
+
+                                ActionChip(title: "查看全部", systemImage: "arrow.right", tint: .purple, action: onOpenFlashNotes)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                     }
-
-                    if let suggestion = store.completionSuggestion {
-                        CompletionSuggestionCard(
-                            suggestion: suggestion,
-                            onTapDestination: { destination in
-                                store.clearCompletionSuggestion()
-                                switch destination {
-                                case .reminders: onOpenReminders()
-                                case .tools, .assistant: onOpenTools()
-                                }
-                            },
-                            onDismiss: { store.clearCompletionSuggestion() }
-                        )
+                    .padding(.horizontal)
+                    .padding(.top, AppSpacing.pageTop)
+                    .padding(.bottom, AppSpacing.pageBottom)
+                }
+                .scrollIndicators(.hidden)
+                .background(AppBackgroundView())
+                .navigationTitle("Beeve")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("新增", systemImage: "plus", action: onAddReminder)
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .sensoryFeedback(.success, trigger: store.completedCount)
+                .sensoryFeedback(.impact(weight: .light), trigger: store.pendingCount)
             }
-            .scrollIndicators(.hidden)
-            .background(AppBackgroundView())
-            .navigationTitle("Beeve")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("新增", systemImage: "plus", action: onAddReminder)
-                }
-            }
-            .sensoryFeedback(.success, trigger: store.completedCount)
-            .sensoryFeedback(.impact(weight: .light), trigger: store.pendingCount)
         }
+    }
+
+    private var todaySectionID: String {
+        "dashboard-today-section"
     }
 
     private var recentFlashNotes: [FlashNote] {
@@ -129,7 +125,8 @@ private struct DashboardFlashNotePreview: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .glassCapsule(tint: flashNote.status.tint)
+                        .foregroundStyle(.secondary)
+                        .background(Color(.tertiarySystemFill), in: Capsule())
 
                     Text(flashNote.createdAt.formatted(date: .abbreviated, time: .shortened))
                         .font(.caption)
@@ -142,6 +139,6 @@ private struct DashboardFlashNotePreview: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard(tint: flashNote.category.tint, cornerRadius: 20)
+        .appCard(cornerRadius: 20)
     }
 }
