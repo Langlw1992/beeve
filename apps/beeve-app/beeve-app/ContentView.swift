@@ -13,22 +13,17 @@ struct ContentView: View {
     @State private var showAddReminder = false
     @State private var showQuickCapture = false
 
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            Tab("首页", systemImage: "house.fill", value: .home) {
-                DashboardView(
-                    onAddReminder: { showAddReminder = true },
-                    onOpenFlashNotes: { selectedTab = .record }
-                )
-            }
+    private let tabBarInsetHeight: CGFloat = 88
 
-            Tab("记录", systemImage: "clock.arrow.circlepath", value: .record) {
-                FlashNoteListView()
-            }
-        }
-        .tint(.indigo)
-        .overlay(alignment: .bottom) {
-            quickCaptureButton
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            currentTabView
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    Color.clear
+                        .frame(height: tabBarInsetHeight)
+                }
+
+            customTabBar
         }
         .sheet(isPresented: $showAddReminder) {
             AddReminderSheet()
@@ -38,24 +33,81 @@ struct ContentView: View {
             QuickCaptureSheet()
         }
         .onAppear {
-            configureTabBarAppearance()
             setupNotifications()
         }
     }
 
-    private var quickCaptureButton: some View {
+    @ViewBuilder
+    private var currentTabView: some View {
+        switch selectedTab {
+        case .home:
+            DashboardView(
+                onAddReminder: { showAddReminder = true },
+                onOpenFlashNotes: { selectedTab = .record }
+            )
+        case .record:
+            FlashNoteListView()
+        }
+    }
+
+    private var customTabBar: some View {
+        HStack(alignment: .bottom, spacing: 12) {
+            tabButton(tab: .home, symbol: "house.fill", label: "首页")
+
+            centerButton
+                .frame(width: 84)
+
+            tabButton(tab: .record, symbol: "clock.arrow.circlepath", label: "记录")
+        }
+        .padding(.horizontal, 32)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+        .background(alignment: .bottom) {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea(edges: .bottom)
+        }
+    }
+
+    private func tabButton(tab: AppTab, symbol: String, label: String) -> some View {
+        Button {
+            selectedTab = tab
+        } label: {
+            VStack(spacing: 4) {
+                Image(systemName: symbol)
+                    .font(.system(size: 22, weight: .semibold))
+                Text(label)
+                    .font(.caption2)
+            }
+            .foregroundStyle(selectedTab == tab ? Color.indigo : .secondary)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var centerButton: some View {
         Button {
             showQuickCapture = true
         } label: {
-            Image(systemName: "mic.fill")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 56, height: 56)
-                .background(Color.indigo, in: Circle())
-                .shadow(color: Color.indigo.opacity(0.3), radius: 8, y: 4)
+            ZStack {
+                Circle()
+                    .fill(Color(uiColor: .systemBackground))
+                    .frame(width: 64, height: 64)
+
+                Circle()
+                    .fill(Color.indigo)
+                    .frame(width: 56, height: 56)
+                    .overlay {
+                        Image(systemName: "mic.fill")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(.white)
+                    }
+                    .shadow(color: Color.indigo.opacity(0.25), radius: 8, y: 4)
+            }
         }
         .buttonStyle(PressableScaleButtonStyle())
-        .padding(.bottom, 18)
+        .offset(y: -20)
         .accessibilityLabel("AI 速记")
     }
 
