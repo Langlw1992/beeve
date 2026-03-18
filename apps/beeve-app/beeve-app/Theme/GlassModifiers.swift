@@ -43,10 +43,6 @@ extension View {
     func glassCapsule(tint: Color = .indigo) -> some View {
         modifier(GlassCapsuleModifier(tint: tint))
     }
-
-    func immersiveScrollMotion() -> some View {
-        self
-    }
 }
 
 // MARK: - Button Styles
