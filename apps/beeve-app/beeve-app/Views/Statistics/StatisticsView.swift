@@ -8,7 +8,7 @@ struct StatisticsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                VStack(alignment: .leading, spacing: DSSpace.lg) {
                     // Overview cards
                     overviewSection
 
@@ -21,9 +21,9 @@ struct StatisticsView: View {
                     // Completion trend
                     completionTrend
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .padding(.horizontal, DSSpace.md)
+                .padding(.top, DSComponent.pageTopInset)
+                .padding(.bottom, DSComponent.pageBottomInset)
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
@@ -34,12 +34,12 @@ struct StatisticsView: View {
     // MARK: - Overview
 
     private var overviewSection: some View {
-        GlassSection(title: "概览", symbol: "chart.pie.fill", tint: .indigo) {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                StatCard(title: "待处理", value: "\(store.pendingCount)", tint: .blue, symbol: "tray.full")
-                StatCard(title: "已完成", value: "\(store.completedCount)", tint: .green, symbol: "checkmark.circle")
-                StatCard(title: "收件箱", value: "\(store.inboxReminders.count)", tint: .purple, symbol: "tray")
-                StatCard(title: "专注分", value: "\(store.focusScore)", tint: .orange, symbol: "brain.head.profile")
+        GlassSection(title: "概览", symbol: "chart.pie.fill", tint: DSColor.focus) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DSSpace.sm) {
+                StatCard(title: "待处理", value: "\(store.pendingCount)", tint: DSColor.info, symbol: "tray.full")
+                StatCard(title: "已完成", value: "\(store.completedCount)", tint: DSColor.success, symbol: "checkmark.circle")
+                StatCard(title: "收件箱", value: "\(store.inboxReminders.count)", tint: DSColor.brand, symbol: "tray")
+                StatCard(title: "专注分", value: "\(store.focusScore)", tint: DSColor.warning, symbol: "brain.head.profile")
             }
         }
     }
@@ -51,35 +51,35 @@ struct StatisticsView: View {
         let totalMinutes = sessions.reduce(0) { $0 + $1.elapsedMinutes }
         let completed = sessions.filter(\.isCompleted).count
 
-        return GlassSection(title: "今日专注", symbol: "timer", tint: .orange) {
-            HStack(spacing: 16) {
-                VStack(spacing: 4) {
+        return GlassSection(title: "今日专注", symbol: "timer", tint: DSColor.warning) {
+            HStack(spacing: DSSpace.md) {
+                VStack(spacing: DSSpace.xxs) {
                     Text("\(totalMinutes)")
-                        .font(.title.bold())
-                        .foregroundStyle(.orange)
+                        .font(DSType.numeric)
+                        .foregroundStyle(DSColor.warning)
                     Text("分钟")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
 
-                VStack(spacing: 4) {
+                VStack(spacing: DSSpace.xxs) {
                     Text("\(completed)")
-                        .font(.title.bold())
-                        .foregroundStyle(.green)
+                        .font(DSType.numeric)
+                        .foregroundStyle(DSColor.success)
                     Text("完成")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
 
-                VStack(spacing: 4) {
+                VStack(spacing: DSSpace.xxs) {
                     Text("\(sessions.count)")
-                        .font(.title.bold())
-                        .foregroundStyle(.indigo)
+                        .font(DSType.numeric)
+                        .foregroundStyle(DSColor.focus)
                     Text("总次数")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -91,35 +91,36 @@ struct StatisticsView: View {
     private var habitSection: some View {
         let habits = allHabits
 
-        return GlassSection(title: "习惯", symbol: "flame.fill", tint: .green) {
+        return GlassSection(title: "习惯", symbol: "flame.fill", tint: DSColor.success) {
             if habits.isEmpty {
                 Text("还没有创建习惯。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
             } else {
-                VStack(spacing: 10) {
+                VStack(spacing: DSSpace.sm) {
                     ForEach(habits) { habit in
-                        HStack(spacing: 10) {
+                        HStack(spacing: DSSpace.sm) {
                             Image(systemName: habit.symbol)
                                 .foregroundStyle(habit.color)
                                 .frame(width: 24)
 
                             Text(habit.title)
-                                .font(.subheadline)
+                                .font(DSType.body)
+                                .fixedSize(horizontal: false, vertical: true)
 
                             Spacer()
 
-                            HStack(spacing: 4) {
+                            HStack(spacing: DSSpace.xxs) {
                                 Image(systemName: "flame.fill")
-                                    .font(.caption2)
-                                    .foregroundStyle(.orange)
+                                    .font(DSType.meta)
+                                    .foregroundStyle(DSColor.warning)
                                 Text("\(habit.currentStreak)天")
-                                    .font(.caption.weight(.semibold))
+                                    .font(DSType.captionBold)
                             }
 
                             Text("\(habit.totalCompletions)次")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(DSType.caption)
+                                .foregroundStyle(DSColor.textSecondary)
                         }
                     }
                 }
@@ -142,21 +143,21 @@ struct StatisticsView: View {
         }
         let maxVal = max(days.map(\.1).max() ?? 1, 1)
 
-        return GlassSection(title: "最近 7 天完成", symbol: "chart.bar", tint: .blue) {
-            HStack(alignment: .bottom, spacing: 8) {
+        return GlassSection(title: "最近 7 天完成", symbol: "chart.bar", tint: DSColor.info) {
+            HStack(alignment: .bottom, spacing: DSSpace.xs) {
                 ForEach(days, id: \.0) { day in
-                    VStack(spacing: 4) {
+                    VStack(spacing: DSSpace.xxs) {
                         Text("\(day.1)")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(.indigo)
+                            .font(DSType.captionBold)
+                            .foregroundStyle(DSColor.focus)
 
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(Color.indigo.gradient)
+                        RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous)
+                            .fill(DSColor.focus.gradient)
                             .frame(height: CGFloat(day.1) / CGFloat(maxVal) * 60 + 4)
 
                         Text(day.0)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .font(DSType.meta)
+                            .foregroundStyle(DSColor.textSecondary)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -188,20 +189,20 @@ struct StatCard: View {
     let symbol: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DSSpace.xs) {
             HStack {
                 Image(systemName: symbol)
-                    .font(.caption)
+                    .font(DSType.caption)
                     .foregroundStyle(tint)
                 Spacer()
             }
             Text(value)
-                .font(.title2.bold())
+                .font(DSType.numeric)
             Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(DSType.caption)
+                .foregroundStyle(DSColor.textSecondary)
         }
-        .padding(12)
-        .appCard(tint: tint, cornerRadius: 16)
+        .padding(DSSpace.sm)
+        .appCard(tint: tint, cornerRadius: DSRadius.card)
     }
 }

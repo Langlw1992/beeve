@@ -8,13 +8,13 @@ struct HabitsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                VStack(alignment: .leading, spacing: DSSpace.lg) {
                     if habits.isEmpty {
                         emptyState
                     } else {
                         // Today overview
-                        GlassSection(title: "今日打卡", symbol: "checkmark.seal", tint: .green) {
-                            VStack(spacing: 12) {
+                        GlassSection(title: "今日打卡", symbol: "checkmark.seal", tint: DSColor.success) {
+                            VStack(spacing: DSSpace.sm) {
                                 ForEach(habits) { habit in
                                     HabitCheckRow(habit: habit) {
                                         checkIn(habit)
@@ -24,17 +24,17 @@ struct HabitsView: View {
                         }
 
                         // Streaks
-                        GlassSection(title: "连续天数", symbol: "flame.fill", tint: .orange) {
-                            HStack(spacing: 16) {
+                        GlassSection(title: "连续天数", symbol: "flame.fill", tint: DSColor.warning) {
+                            HStack(spacing: DSSpace.md) {
                                 ForEach(habits) { habit in
-                                    VStack(spacing: 6) {
+                                    VStack(spacing: DSComponent.textBlockSpacing) {
                                         Text("\(habit.currentStreak)")
-                                            .font(.title2.bold())
+                                            .font(DSType.numeric)
                                             .foregroundStyle(habit.color)
                                         Text(habit.title)
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
-                                            .lineLimit(1)
+                                            .font(DSType.meta)
+                                            .foregroundStyle(DSColor.textSecondary)
+                                            .fixedSize(horizontal: false, vertical: true)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
@@ -42,14 +42,14 @@ struct HabitsView: View {
                         }
 
                         // Heatmap-style weekly view
-                        GlassSection(title: "最近 7 天", symbol: "calendar", tint: .indigo) {
+                        GlassSection(title: "最近 7 天", symbol: "calendar", tint: DSColor.focus) {
                             HabitWeekGrid(habits: habits)
                         }
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .padding(.horizontal, DSSpace.md)
+                .padding(.top, DSComponent.pageTopInset)
+                .padding(.bottom, DSComponent.pageBottomInset)
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
@@ -82,21 +82,20 @@ struct HabitsView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DSSpace.md) {
             Image(systemName: "flame")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
+                .font(DSType.hero)
+                .foregroundStyle(DSColor.textSecondary)
             Text("还没有习惯")
-                .font(.headline)
+                .font(DSType.section)
             Text("创建你的第一个习惯，每天打卡积累动力。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(DSType.body)
+                .foregroundStyle(DSColor.textSecondary)
             Button("创建习惯") { showAddHabit = true }
-                .buttonStyle(.borderedProminent)
-                .tint(.green)
+                .buttonStyle(DSPrimaryButtonStyle(tint: DSColor.success))
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 48)
+        .padding(.vertical, DSSpace.xl + DSSpace.md)
     }
 }
 
@@ -107,41 +106,42 @@ struct HabitCheckRow: View {
     let onCheckIn: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DSSpace.sm) {
             Button {
                 withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
                     onCheckIn()
                 }
             } label: {
                 Image(systemName: habit.isCompletedToday ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(habit.isCompletedToday ? .green : habit.color)
+                    .font(DSType.section)
+                    .foregroundStyle(habit.isCompletedToday ? DSColor.success : habit.color)
             }
             .buttonStyle(.plain)
             .sensoryFeedback(.impact(weight: .medium), trigger: habit.isCompletedToday)
 
             Image(systemName: habit.symbol)
                 .foregroundStyle(habit.color)
-                .font(.subheadline)
+                .font(DSType.label)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: DSSpace.xxs) {
                 Text(habit.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(DSType.bodyMedium)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text("\(habit.todayLog?.count ?? 0)/\(habit.targetCount) · \(habit.frequency.label)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.caption)
+                    .foregroundStyle(DSColor.textSecondary)
             }
 
             Spacer()
 
             if habit.currentStreak > 0 {
-                HStack(spacing: 3) {
+                HStack(spacing: DSSpace.xxs) {
                     Image(systemName: "flame.fill")
-                        .font(.caption2)
+                        .font(DSType.meta)
                     Text("\(habit.currentStreak)")
-                        .font(.caption.weight(.bold))
+                        .font(DSType.captionBold)
                 }
-                .foregroundStyle(.orange)
+                .foregroundStyle(DSColor.warning)
             }
         }
     }
@@ -160,30 +160,30 @@ struct HabitWeekGrid: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: DSSpace.xs) {
             // Header
-            HStack(spacing: 4) {
+            HStack(spacing: DSSpace.xxs) {
                 Text("")
                     .frame(width: 60)
                 ForEach(weekDates, id: \.timeIntervalSince1970) { date in
                     Text(date.formatted(.dateTime.weekday(.narrow)))
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
+                        .font(DSType.meta.weight(.medium))
+                        .foregroundStyle(DSColor.textSecondary)
                         .frame(maxWidth: .infinity)
                 }
             }
 
             ForEach(habits) { habit in
-                HStack(spacing: 4) {
+                HStack(spacing: DSSpace.xxs) {
                     Text(habit.title)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .font(DSType.meta)
+                        .foregroundStyle(DSColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 60, alignment: .leading)
 
                     ForEach(weekDates, id: \.timeIntervalSince1970) { date in
                         let done = hasLog(habit: habit, on: date)
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous)
                             .fill(done ? habit.color : habit.color.opacity(0.1))
                             .frame(height: 20)
                             .frame(maxWidth: .infinity)
@@ -218,30 +218,33 @@ struct AddHabitSheet: View {
                 AppBackgroundView()
 
                 ScrollView {
-                    VStack(spacing: AppSpacing.section) {
-                        GlassSection(title: "习惯", symbol: "flame", tint: .green) {
+                    VStack(spacing: DSSpace.lg) {
+                        GlassSection(title: "习惯", symbol: "flame", tint: DSColor.success) {
                             TextField("习惯名称", text: $title)
                                 .textFieldStyle(.roundedBorder)
                         }
 
-                        GlassSection(title: "图标", symbol: "star", tint: .orange) {
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 12) {
+                        GlassSection(title: "图标", symbol: "star", tint: DSColor.warning) {
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: DSSpace.sm) {
                                 ForEach(symbols, id: \.self) { sym in
                                     Button {
                                         symbol = sym
                                     } label: {
                                         Image(systemName: sym)
-                                            .font(.title3)
-                                            .frame(width: 44, height: 44)
-                                            .background(symbol == sym ? Color.green.opacity(0.2) : Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                                            .foregroundStyle(symbol == sym ? .green : .secondary)
+                                            .font(DSType.section)
+                                            .frame(width: DSComponent.circleIconLG, height: DSComponent.circleIconLG)
+                                            .background(
+                                                symbol == sym ? DSColor.success.opacity(0.2) : DSColor.textSecondary.opacity(0.08),
+                                                in: RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous)
+                                            )
+                                            .foregroundStyle(symbol == sym ? DSColor.success : DSColor.textSecondary)
                                     }
                                     .buttonStyle(.plain)
                                 }
                             }
                         }
 
-                        GlassSection(title: "频率", symbol: "calendar", tint: .indigo) {
+                        GlassSection(title: "频率", symbol: "calendar", tint: DSColor.focus) {
                             Picker("频率", selection: $frequency) {
                                 ForEach(HabitFrequency.allCases) { f in
                                     Text(f.label).tag(f)
@@ -250,12 +253,12 @@ struct AddHabitSheet: View {
                             .pickerStyle(.segmented)
                         }
 
-                        GlassSection(title: "每次目标", symbol: "target", tint: .cyan) {
+                        GlassSection(title: "每次目标", symbol: "target", tint: DSColor.ping) {
                             Stepper("每次 \(targetCount) 次", value: $targetCount, in: 1...10)
                         }
                     }
-                    .padding()
-                    .padding(.bottom, 24)
+                    .padding(DSSpace.md)
+                    .padding(.bottom, DSSpace.lg)
                 }
             }
             .navigationTitle("新习惯")

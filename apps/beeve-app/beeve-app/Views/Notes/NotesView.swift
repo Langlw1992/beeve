@@ -33,7 +33,7 @@ struct NotesView: View {
                         // Archived
                         let archived = filteredNotes.filter(\.isArchived)
                         if !archived.isEmpty {
-                            GlassSection(title: "归档", symbol: "archivebox", tint: .secondary) {
+                            GlassSection(title: "归档", symbol: "archivebox", tint: DSColor.textSecondary) {
                                 noteGrid(archived)
                             }
                         }
