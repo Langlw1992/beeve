@@ -11,7 +11,7 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                VStack(alignment: .leading, spacing: DSSpace.lg) {
                     header
                     primaryActionCard
                     inboxSummaryCard
@@ -27,9 +27,9 @@ struct TodayView: View {
                         followUpCard(for: suggestion)
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .padding(.horizontal, DSSpace.md)
+                .padding(.top, DSComponent.pageTopInset)
+                .padding(.bottom, DSComponent.pageBottomInset)
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
@@ -63,23 +63,26 @@ struct TodayView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: DSSpace.xs) {
             Text(store.greetingTitle)
-                .font(.largeTitle.bold())
+                .font(DSType.pageTitle)
+                .foregroundStyle(DSColor.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text(store.formattedToday)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(DSType.bodyMedium)
+                .foregroundStyle(DSColor.textSecondary)
 
             if !store.memorySummaryLines.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
+                    HStack(spacing: DSSpace.xs) {
                         ForEach(store.memorySummaryLines, id: \.self) { item in
                             Text(item)
-                                .font(.caption.weight(.medium))
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .glassCapsule(tint: AppTheme.brand)
+                                .font(DSType.captionBold)
+                                .foregroundStyle(DSColor.textPrimary)
+                                .padding(.horizontal, DSSpace.sm)
+                                .padding(.vertical, DSSpace.xxs)
+                                .glassCapsule(tint: DSColor.brand)
                         }
                     }
                 }
@@ -90,68 +93,70 @@ struct TodayView: View {
     private var primaryActionCard: some View {
         let action = store.todayPrimaryAction
 
-        return VStack(alignment: .leading, spacing: 18) {
-            SurfaceKicker(title: "下一步", symbol: "sparkles", tint: AppTheme.brand)
+        return VStack(alignment: .leading, spacing: DSSpace.md) {
+            SurfaceKicker(title: "下一步", symbol: "sparkles", tint: DSColor.brand)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DSSpace.xs) {
                 Text(action.title)
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .font(DSType.pageTitle)
+                    .foregroundStyle(DSColor.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(action.detail)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: DSSpace.sm) {
                 Button {
                     performPrimaryAction(action)
                 } label: {
                     Label(action.buttonTitle, systemImage: action.buttonSystemImage)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.brand)
+                .buttonStyle(DSPrimaryButtonStyle(tint: DSColor.brand))
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DSSpace.xxs) {
                     Text("\(store.focusScore)")
-                        .font(.title3.bold())
+                        .font(DSType.numeric)
+                        .foregroundStyle(DSColor.textPrimary)
                     Text("专注分")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .appCard(tint: AppTheme.warning, cornerRadius: 18)
+                .padding(.horizontal, DSSpace.sm)
+                .padding(.vertical, DSSpace.sm)
+                .appCard(tint: DSColor.warning, cornerRadius: DSRadius.card)
             }
         }
-        .padding(22)
-        .appCard(tint: AppTheme.brand, cornerRadius: 30)
+        .padding(DSSpace.md)
+        .appCard(tint: DSColor.brand, cornerRadius: DSRadius.hero)
     }
 
     private var inboxSummaryCard: some View {
-        GlassSection(title: "今日承诺摘要", symbol: "calendar.badge.clock", tint: AppTheme.ping) {
-            VStack(spacing: 12) {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
-                    InboxMetric(title: "今日已排", value: store.todayPlanReminders.count, tint: AppTheme.success)
-                    InboxMetric(title: "待处理 Ping", value: store.pingBacklogCount, tint: AppTheme.ping)
-                    InboxMetric(title: "待分拣任务", value: store.inboxReminders.count, tint: AppTheme.brand)
+        GlassSection(title: "今日承诺摘要", symbol: "calendar.badge.clock", tint: DSColor.ping) {
+            VStack(spacing: DSSpace.sm) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: DSSpace.sm) {
+                    InboxMetric(title: "今日已排", value: store.todayPlanReminders.count, tint: DSColor.success)
+                    InboxMetric(title: "待处理 Ping", value: store.pingBacklogCount, tint: DSColor.ping)
+                    InboxMetric(title: "待分拣任务", value: store.inboxReminders.count, tint: DSColor.brand)
                 }
 
                 Text(store.triageSummary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 10) {
+                HStack(spacing: DSSpace.sm) {
                     Button("查看日程") {
                         destination = .planner
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.brand))
 
                     Button("打开 Ping") {
                         onSwitchTab(.ping)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.ping))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -159,27 +164,29 @@ struct TodayView: View {
     }
 
     private func followUpCard(for suggestion: CompletionSuggestion) -> some View {
-        GlassSection(title: "下一步建议", symbol: "arrow.forward.circle.fill", tint: AppTheme.success) {
-            VStack(alignment: .leading, spacing: 12) {
+        GlassSection(title: "下一步建议", symbol: "arrow.forward.circle.fill", tint: DSColor.success) {
+            VStack(alignment: .leading, spacing: DSSpace.sm) {
                 Text(suggestion.title)
-                    .font(.headline)
+                    .font(DSType.section)
+                    .foregroundStyle(DSColor.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(suggestion.detail)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 10) {
+                HStack(spacing: DSSpace.sm) {
                     Button(suggestion.primaryLabel) {
                         handleFollowUpDestination(suggestion.primaryDestination)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.success)
+                    .buttonStyle(DSPrimaryButtonStyle(tint: DSColor.success))
 
                     if let label = suggestion.secondaryLabel, let destination = suggestion.secondaryDestination {
                         Button(label) {
                             handleFollowUpDestination(destination)
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.success))
                     }
                 }
             }
@@ -241,12 +248,17 @@ struct TodayView: View {
     private var profileAvatar: some View {
         if let initial = store.preferredName?.trimmingCharacters(in: .whitespacesAndNewlines).first {
             Text(String(initial).uppercased())
-                .font(.caption.weight(.bold))
-                .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
-                .background(Circle().fill(AppTheme.brand))
+                .font(DSType.captionBold)
+                .foregroundStyle(DSColor.surface2)
+                .frame(width: DSComponent.circleIconSM, height: DSComponent.circleIconSM)
+                .background(Circle().fill(DSColor.brand))
         } else {
-            CircleIconBadge(symbol: "person.fill", tint: AppTheme.brand, size: 34, iconSize: 14)
+            CircleIconBadge(
+                symbol: "person.fill",
+                tint: DSColor.brand,
+                size: DSComponent.circleIconSM,
+                iconSize: DSComponent.iconSizeSM
+            )
         }
     }
 }
@@ -257,17 +269,18 @@ private struct InboxMetric: View {
     let tint: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: DSComponent.textBlockSpacing) {
             Text("\(value)")
-                .font(.title3.bold())
+                .font(DSType.numeric)
+                .foregroundStyle(DSColor.textPrimary)
                 .contentTransition(.numericText())
             Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(DSType.caption)
+                .foregroundStyle(DSColor.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .appCard(tint: tint, cornerRadius: 18)
+        .padding(DSSpace.sm)
+        .appCard(tint: tint, cornerRadius: DSRadius.card)
     }
 }
 
@@ -278,11 +291,11 @@ private struct AgendaTimelineCard: View {
     let onOpenReminders: () -> Void
 
     var body: some View {
-        GlassSection(title: "今日承诺摘要", symbol: "timeline.selection", tint: AppTheme.ping) {
+        GlassSection(title: "今日承诺摘要", symbol: "timeline.selection", tint: DSColor.ping) {
             VStack(spacing: 0) {
                 ForEach(Array(reminders.enumerated()), id: \.element.id) { index, reminder in
                     Button(action: onOpenReminders) {
-                        HStack(alignment: .top, spacing: 12) {
+                        HStack(alignment: .top, spacing: DSSpace.sm) {
                             VStack(spacing: 0) {
                                 Circle()
                                     .fill(reminder.priority.color)
@@ -291,31 +304,32 @@ private struct AgendaTimelineCard: View {
                                 if index < reminders.count - 1 {
                                     Rectangle()
                                         .fill(reminder.priority.color.opacity(0.20))
-                                        .frame(width: 2, height: 44)
+                                        .frame(width: 2, height: DSComponent.rowMinHeight)
                                 }
                             }
 
-                            VStack(alignment: .leading, spacing: 5) {
+                            VStack(alignment: .leading, spacing: DSComponent.textBlockSpacing) {
                                 Text(store.scheduleText(for: reminder))
-                                    .font(.caption.weight(.semibold))
+                                    .font(DSType.captionBold)
                                     .foregroundStyle(reminder.priority.color)
 
                                 Text(reminder.title)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.primary)
+                                    .font(DSType.bodyLarge.weight(.semibold))
+                                    .foregroundStyle(DSColor.textPrimary)
                                     .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
 
                                 if !reminder.note.isEmpty {
                                     Text(reminder.note)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(DSType.caption)
+                                        .foregroundStyle(DSColor.textSecondary)
                                         .lineLimit(2)
                                 }
                             }
 
                             Spacer()
                         }
-                        .padding(.vertical, 8)
+                        .padding(.vertical, DSSpace.xs)
                     }
                     .buttonStyle(PressableScaleButtonStyle())
                 }
