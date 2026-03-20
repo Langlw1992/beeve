@@ -28,14 +28,14 @@ struct SurfaceKicker: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: DSSpace.xs) {
             Image(systemName: symbol)
                 .foregroundStyle(tint)
             Text(title)
                 .lineLimit(1)
         }
-        .font(.subheadline.weight(.semibold))
-        .foregroundStyle(.secondary)
+        .font(DSType.meta.weight(.semibold))
+        .foregroundStyle(DSColor.textSecondary)
     }
 }
 
@@ -46,9 +46,9 @@ struct PriorityPill: View {
 
     var body: some View {
         Text(priority.label)
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, 9)
-            .padding(.vertical, 4)
+            .font(DSType.meta.weight(.medium))
+            .padding(.horizontal, DSSpace.xs)
+            .padding(.vertical, DSSpace.xxs)
             .background(priority.color.opacity(0.10), in: Capsule())
             .foregroundStyle(priority.color.opacity(0.9))
     }
@@ -61,7 +61,7 @@ struct MetricMiniBars: View {
     let level: Double
 
     var body: some View {
-        HStack(alignment: .bottom, spacing: 4) {
+        HStack(alignment: .bottom, spacing: DSSpace.xxs) {
             ForEach(0..<5, id: \.self) { index in
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
                     .fill(index < highlightedBars ? tint : tint.opacity(0.18))
@@ -86,15 +86,15 @@ struct ActionChip: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 8) {
+            HStack(spacing: DSSpace.xs) {
                 Image(systemName: systemImage)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(DSColor.textSecondary)
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .font(DSType.body.weight(.semibold))
+                    .foregroundStyle(DSColor.textPrimary)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .padding(.horizontal, DSSpace.sm)
+            .padding(.vertical, DSSpace.xs)
             .glassCapsule(tint: tint)
         }
         .buttonStyle(PressableScaleButtonStyle())
@@ -119,12 +119,12 @@ struct GlassSection<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: DSSpace.sm) {
             SurfaceKicker(title: title, symbol: symbol, tint: tint)
             content
         }
-        .padding(18)
-        .appCard(tint: tint, cornerRadius: 26)
+        .padding(DSSpace.md)
+        .appCard(tint: tint, cornerRadius: DSRadius.hero)
     }
 }
 
@@ -138,18 +138,18 @@ struct ExpandableSectionCard<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: DSSpace.sm) {
             Button {
                 withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
                     isExpanded.toggle()
                 }
             } label: {
-                HStack(spacing: 10) {
+                HStack(spacing: DSSpace.xs) {
                     SurfaceKicker(title: title, symbol: symbol, tint: tint)
                     Spacer()
                     Image(systemName: "chevron.down")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(.secondary)
+                        .font(DSType.meta.weight(.bold))
+                        .foregroundStyle(DSColor.textSecondary)
                         .rotationEffect(.degrees(isExpanded ? 0 : -90))
                 }
             }
@@ -161,8 +161,8 @@ struct ExpandableSectionCard<Content: View>: View {
                     .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity), removal: .opacity))
             }
         }
-        .padding(18)
-        .appCard(tint: tint, cornerRadius: 26)
+        .padding(DSSpace.md)
+        .appCard(tint: tint, cornerRadius: DSRadius.hero)
     }
 }
 
@@ -175,20 +175,21 @@ struct HeroMiniBanner: View {
     let tint: Color
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
+        HStack(alignment: .top, spacing: DSSpace.sm) {
             CircleIconBadge(symbol: symbol, tint: tint, size: 44, iconSize: 18)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
-                    .font(.headline)
+                    .font(DSType.section)
+                    .foregroundStyle(DSColor.textPrimary)
                 Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
             }
             Spacer()
         }
-        .padding(18)
-        .appCard(tint: tint, cornerRadius: 24)
+        .padding(DSSpace.md)
+        .appCard(tint: tint, cornerRadius: DSRadius.hero)
     }
 }
 
@@ -199,20 +200,19 @@ struct AssistantToolbarButton: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let capsuleTint = colorScheme == .dark ? DSColor.brandSoft : DSColor.brand
+
         Button(action: action) {
-            HStack(spacing: 8) {
+            HStack(spacing: DSSpace.xs) {
                 Image(systemName: "lightbulb")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.brand)
+                    .font(DSType.body.weight(.semibold))
+                    .foregroundStyle(DSColor.brand)
                 Text("建议")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .font(DSType.body.weight(.semibold))
+                    .foregroundStyle(DSColor.textPrimary)
             }
-            .padding(.horizontal, 10)
-            .frame(height: 36)
-            .glassCapsule(tint: colorScheme == .dark ? AppTheme.brandSoft : AppTheme.brand)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(DSCapsuleButtonStyle(tint: capsuleTint))
     }
 }
 
@@ -224,31 +224,31 @@ struct SegmentedFilterBar: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
+            HStack(spacing: DSSpace.xs) {
                 ForEach(ReminderFilter.allCases) { filter in
                     Button {
                         selection = filter
                     } label: {
                         Text(filter.label)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(selection == filter ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                            .padding(.horizontal, 16)
-                            .frame(height: 36)
+                            .font(DSType.body.weight(.semibold))
+                            .foregroundStyle(selection == filter ? AnyShapeStyle(.white) : AnyShapeStyle(DSColor.textPrimary))
+                            .padding(.horizontal, DSSpace.md)
+                            .frame(height: 40)
                             .background(
                                 selection == filter
                                     ? AnyShapeStyle(
-                                        LinearGradient(colors: [Color.cyan, Color.indigo], startPoint: .leading, endPoint: .trailing)
+                                        LinearGradient(colors: [DSColor.ping, DSColor.brand], startPoint: .leading, endPoint: .trailing)
                                     )
                                     : AnyShapeStyle(.clear),
                                 in: Capsule()
                             )
-                            .glassCapsule(tint: selection == filter ? .cyan : (colorScheme == .dark ? .white : .indigo))
+                            .glassCapsule(tint: selection == filter ? DSColor.ping : (colorScheme == .dark ? DSColor.stroke : DSColor.brand))
                     }
                     .buttonStyle(.plain)
                 }
             }
-            .padding(6)
-            .glassCapsule(tint: colorScheme == .dark ? .indigo : .cyan)
+            .padding(DSSpace.xxs)
+            .glassCapsule(tint: colorScheme == .dark ? DSColor.brandSoft : DSColor.ping)
         }
     }
 }

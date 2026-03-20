@@ -5,18 +5,29 @@ import SwiftUI
 struct AppCardModifier: ViewModifier {
     let tint: Color
     let cornerRadius: CGFloat
+    @Environment(\.colorScheme) private var colorScheme
 
     func body(content: Content) -> some View {
+        let shadow = DSShadow.card(for: colorScheme)
+
         content
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(AppTheme.surface)
+                    .fill(DSColor.surface1)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(tint.opacity(0.10), lineWidth: 1)
+                    .strokeBorder(DSColor.stroke.opacity(colorScheme == .dark ? 0.24 : 0.12), lineWidth: 1)
             )
-            .shadow(color: Color.black.opacity(0.04), radius: 16, y: 8)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(tint.opacity(colorScheme == .dark ? 0.16 : 0.10), lineWidth: 1)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(shadow.compensationColor, lineWidth: shadow.compensationLineWidth)
+            )
+            .shadow(color: shadow.color, radius: shadow.radius, x: shadow.x, y: shadow.y)
     }
 }
 
@@ -24,12 +35,17 @@ struct AppCardModifier: ViewModifier {
 
 struct GlassCapsuleModifier: ViewModifier {
     let tint: Color
+    @Environment(\.colorScheme) private var colorScheme
 
     func body(content: Content) -> some View {
         content
             .background(
                 Capsule()
-                    .fill(tint.opacity(0.12))
+                    .fill(tint.opacity(colorScheme == .dark ? 0.18 : 0.12))
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(tint.opacity(colorScheme == .dark ? 0.18 : 0.12), lineWidth: 1)
             )
     }
 }
@@ -37,16 +53,20 @@ struct GlassCapsuleModifier: ViewModifier {
 // MARK: - View Extensions
 
 extension View {
-    func appCard(tint: Color = .indigo, cornerRadius: CGFloat = AppSpacing.cardCornerRadius) -> some View {
+    func appCard(tint: Color = DSColor.brand, cornerRadius: CGFloat = DSRadius.card) -> some View {
         modifier(AppCardModifier(tint: tint, cornerRadius: cornerRadius))
     }
 
-    func glassCapsule(tint: Color = .indigo) -> some View {
+    func glassCapsule(tint: Color = DSColor.brand) -> some View {
         modifier(GlassCapsuleModifier(tint: tint))
     }
 
-    func appChrome(cornerRadius: CGFloat = 22) -> some View {
-        background(AppTheme.chromeMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    func appChrome(cornerRadius: CGFloat = DSRadius.hero) -> some View {
+        background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(DSColor.stroke.opacity(0.12), lineWidth: 1)
+            )
     }
 }
 
@@ -67,9 +87,9 @@ struct AppBackgroundView: View {
     var body: some View {
         LinearGradient(
             colors: [
-                Color(uiColor: .systemGroupedBackground),
-                AppTheme.brand.opacity(0.06),
-                AppTheme.capture.opacity(0.05),
+                DSColor.bg,
+                DSColor.brand.opacity(0.06),
+                DSColor.ping.opacity(0.05),
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
@@ -82,7 +102,7 @@ struct AppBackgroundView: View {
 
 struct DockGlowOverlay: View {
     let tint: Color
-    var cornerRadius: CGFloat = 22
+    var cornerRadius: CGFloat = DSRadius.hero
 
     var body: some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
