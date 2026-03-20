@@ -33,7 +33,7 @@ export async function requireSession(
   const session = await getSessionOrNull(headers, disableCookieCache)
 
   if (!session?.user || !session.session) {
-    throw new ServiceError(401, 'UNAUTHORIZED', 'Authentication required.')
+    throw new ServiceError(401, 'UNAUTHORIZED', '需要先登录。')
   }
 
   return session
@@ -43,7 +43,7 @@ export async function requireAdminSession(headers: Headers) {
   const session = await requireSession(headers)
 
   if (!isAdminUser(session.user)) {
-    throw new ServiceError(403, 'FORBIDDEN', 'Admin access required.')
+    throw new ServiceError(403, 'FORBIDDEN', '需要管理员权限。')
   }
 
   return session

@@ -30,7 +30,7 @@ export async function handleService<T>(
 
     set.status = 500
     return {
-      error: 'Unexpected server error.',
+      error: '服务器发生未知错误。',
       code: 'INTERNAL_SERVER_ERROR',
     }
   }

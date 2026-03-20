@@ -47,7 +47,7 @@ function assertBatchActionAllowed(
     throw new ServiceError(
       400,
       'INVALID_BATCH_ACTION',
-      'You cannot apply this batch action to the current admin account.',
+      '不能对当前管理员账号执行这类批量操作。',
     )
   }
 }
@@ -60,7 +60,7 @@ export async function applyBatchUserAction(
   const userIds = Array.from(new Set(input.userIds.filter(Boolean)))
 
   if (userIds.length === 0) {
-    throw new ServiceError(400, 'EMPTY_SELECTION', 'Select at least one user.')
+    throw new ServiceError(400, 'EMPTY_SELECTION', '请至少选择一名用户。')
   }
 
   assertBatchActionAllowed(session.user.id, userIds, input.action)
@@ -83,7 +83,7 @@ export async function applyBatchUserAction(
         body: {
           userId,
           banReason:
-            input.action.banReason || 'Updated through admin batch action.',
+            input.action.banReason || '通过管理员批量操作更新。',
         },
       })
       continue

@@ -31,7 +31,7 @@ export async function updateCurrentUserProfile(
   input: ProfileUpdateInput,
 ): Promise<CurrentUserDto> {
   if (!input.name) {
-    throw new ServiceError(400, 'INVALID_PROFILE', 'Name is required.')
+    throw new ServiceError(400, 'INVALID_PROFILE', '请填写姓名。')
   }
 
   await requireSession(headers)
@@ -71,7 +71,7 @@ export async function revokeUserSession(headers: Headers, token: string) {
   await requireSession(headers)
 
   if (!token) {
-    throw new ServiceError(400, 'INVALID_SESSION', 'Session token is required.')
+    throw new ServiceError(400, 'INVALID_SESSION', '请提供会话令牌。')
   }
 
   await auth.api.revokeSession({

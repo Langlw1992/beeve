@@ -29,16 +29,23 @@ import {
 import {requireAdmin} from '@/lib/guards'
 import {loadAdminUsersData, loadCurrentUserData} from '@/lib/loaders/account'
 import {AppLayout} from '@/components/AppLayout'
+import {formatUserRoleLabel, isAdminRole} from '@/lib/auth/policy'
 import {applyAdminBatchAction} from '@/lib/services/client/account'
 import type {AppUserDto, BatchUserAction} from '@/lib/services/contracts'
 import {countAdminUsers} from '@/lib/services/serializers'
-import {isAdminRole} from '@/lib/auth/policy'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: () => requireAdmin(),
   loader: async () => loadCurrentUserData(),
   component: AdminPage,
 })
+
+const batchActionLabels: Record<BatchUserAction['type'], string> = {
+  'set-role': '调整角色',
+  ban: '封禁',
+  unban: '解除封禁',
+  'revoke-sessions': '回收会话',
+}
 
 function AdminPage() {
   const me = Route.useLoaderData()
@@ -86,11 +93,11 @@ function AdminPage() {
       void refetchUsers()
       setSelection({})
       setActionMessage(
-        `${result.processedUserIds.length} user(s) updated via ${result.action}.`,
+        `已处理 ${result.processedUserIds.length} 位用户，执行“${batchActionLabels[result.action]}”。`,
       )
     } catch (error) {
       setActionMessage(
-        error instanceof Error ? error.message : 'Failed to update users.',
+        error instanceof Error ? error.message : '无法更新用户。',
       )
     } finally {
       setPendingAction(null)
@@ -101,7 +108,7 @@ function AdminPage() {
     ...columns<AppUserDto>([
       {
         key: 'name',
-        title: 'User',
+        title: '用户',
         render: (_value, user) => (
           <div class="flex items-center gap-3">
             <Show
@@ -127,37 +134,37 @@ function AdminPage() {
       },
       {
         key: 'role',
-        title: 'Role',
+        title: '角色',
         render: (_value, user) => (
           <Badge variant={isAdminRole(user.role) ? 'default' : 'secondary'}>
-            {user.role}
+            {formatUserRoleLabel(user.role)}
           </Badge>
         ),
       },
       {
         key: 'banned',
-        title: 'Status',
+        title: '状态',
         render: (_value, user) => (
           <Show
             when={!user.banned}
-            fallback={<Badge variant="destructive">Banned</Badge>}
+            fallback={<Badge variant="destructive">已封禁</Badge>}
           >
-            <Badge variant="outline">Active</Badge>
+            <Badge variant="outline">正常</Badge>
           </Show>
         ),
       },
       {
         key: 'createdAt',
-        title: 'Joined',
+        title: '加入时间',
         render: (_value, user) => (
           <span class="text-muted-foreground">
-            {new Date(user.createdAt).toLocaleDateString()}
+            {new Date(user.createdAt).toLocaleDateString('zh-CN')}
           </span>
         ),
       },
     ]),
     actionColumn<AppUserDto>({
-      title: 'Actions',
+      title: '操作',
       render: (user) => (
         <div class="flex items-center justify-end gap-1">
           <Show when={!isAdminRole(user.role)}>
@@ -167,7 +174,7 @@ function AdminPage() {
               onClick={() =>
                 runBatchAction({type: 'set-role', role: 'admin'}, [user.id])
               }
-              title="Promote to admin"
+              title="设为管理员"
             >
               <Shield class="size-3.5" />
             </Button>
@@ -179,7 +186,7 @@ function AdminPage() {
               onClick={() =>
                 runBatchAction({type: 'set-role', role: 'user'}, [user.id])
               }
-              title="Demote to user"
+              title="降为普通成员"
             >
               <CheckCircle class="size-3.5" />
             </Button>
@@ -189,7 +196,7 @@ function AdminPage() {
               variant="ghost"
               size="sm"
               onClick={() => runBatchAction({type: 'ban'}, [user.id])}
-              title="Ban user"
+              title="封禁用户"
             >
               <Ban class="size-3.5 text-destructive" />
             </Button>
@@ -199,7 +206,7 @@ function AdminPage() {
               variant="ghost"
               size="sm"
               onClick={() => runBatchAction({type: 'unban'}, [user.id])}
-              title="Unban user"
+              title="解除封禁"
             >
               <CheckCircle class="size-3.5 text-green-500" />
             </Button>
@@ -208,7 +215,7 @@ function AdminPage() {
             variant="ghost"
             size="sm"
             onClick={() => runBatchAction({type: 'revoke-sessions'}, [user.id])}
-            title="Revoke user sessions"
+            title="回收用户会话"
           >
             <LogOut class="size-3.5" />
           </Button>
@@ -221,12 +228,16 @@ function AdminPage() {
     <AppLayout
       user={me().user}
       currentPath="/admin"
-      pageTitle="Admin workspace"
-      pageDescription="Administrative routes are still guarded on the server, while the user roster streams in underneath this shell."
+      pageTitle="管理后台"
+      pageDescription="管理员路由仍由服务端校验，用户列表会在壳层下方按需加载。"
       pageActions={
-        <Button variant="outline" onClick={() => void refetchUsers()} loading={users.loading}>
+        <Button
+          variant="outline"
+          onClick={() => void refetchUsers()}
+          loading={users.loading}
+        >
           <RefreshCw class="size-4" />
-          Refresh
+          刷新数据
         </Button>
       }
     >
@@ -234,15 +245,14 @@ function AdminPage() {
         <Card variant="outlined" size="lg">
           <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <h2 class="text-lg font-semibold tracking-tight">User operations</h2>
+              <h2 class="text-lg font-semibold tracking-tight">用户管理</h2>
               <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
-                This area is optimized for high-signal tasks: search, select, then
-                apply one controlled action across a batch.
+                先搜索、再选择，然后对批量用户执行一个明确操作。
               </p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <Badge variant="outline">{selectedUserIds().length} selected</Badge>
-              <Badge variant="outline">Server-checked admin access</Badge>
+              <Badge variant="outline">已选 {selectedUserIds().length} 人</Badge>
+              <Badge variant="outline">服务端已校验管理员权限</Badge>
             </div>
           </div>
         </Card>
@@ -290,17 +300,17 @@ function AdminUsersSection(props: {
       <div class="grid gap-4 sm:grid-cols-3">
         <StatCard
           icon={<Users class="size-5 text-primary" />}
-          label="Total users"
+          label="用户总数"
           value={String(props.rawUsers()?.total ?? 0)}
         />
         <StatCard
           icon={<Shield class="size-5 text-primary" />}
-          label="Admins"
+          label="管理员"
           value={String(countAdminUsers(allUsers()))}
         />
         <StatCard
           icon={<Ban class="size-5 text-destructive" />}
-          label="Banned"
+          label="已封禁"
           value={String(allUsers().filter((user) => user.banned).length)}
         />
       </div>
@@ -309,7 +319,7 @@ function AdminUsersSection(props: {
         <div class="mb-4 flex flex-col gap-3">
           <Input
             type="search"
-            placeholder="Search users by name or email..."
+            placeholder="按姓名或邮箱搜索用户..."
             prefix={<Search class="size-4" />}
             value={props.searchQuery()}
             onInput={props.onSearchQuery}
@@ -326,7 +336,7 @@ function AdminUsersSection(props: {
                 void props.onRunBatchAction({type: 'set-role', role: 'admin'})
               }
             >
-              Promote
+              设为管理员
             </Button>
             <Button
               size="sm"
@@ -337,7 +347,7 @@ function AdminUsersSection(props: {
                 void props.onRunBatchAction({type: 'set-role', role: 'user'})
               }
             >
-              Demote
+              降为普通成员
             </Button>
             <Button
               size="sm"
@@ -346,7 +356,7 @@ function AdminUsersSection(props: {
               loading={props.pendingAction() === 'ban'}
               onClick={() => void props.onRunBatchAction({type: 'ban'})}
             >
-              Ban
+              封禁
             </Button>
             <Button
               size="sm"
@@ -355,7 +365,7 @@ function AdminUsersSection(props: {
               loading={props.pendingAction() === 'unban'}
               onClick={() => void props.onRunBatchAction({type: 'unban'})}
             >
-              Unban
+              解除封禁
             </Button>
             <Button
               size="sm"
@@ -366,7 +376,7 @@ function AdminUsersSection(props: {
                 void props.onRunBatchAction({type: 'revoke-sessions'})
               }
             >
-              Revoke sessions
+              回收会话
             </Button>
           </div>
 
@@ -380,7 +390,7 @@ function AdminUsersSection(props: {
           columns={props.userColumns as never}
           loading={false}
           hoverable
-          emptyText="No users found"
+          emptyText="暂无符合条件的用户"
           pageSize={20}
           selectable
           getRowId={(row) => row.id}

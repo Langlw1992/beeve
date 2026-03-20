@@ -8,7 +8,7 @@ export function useAuthSession() {
 
 export async function signInWithSocial(
   provider: SocialProvider,
-  callbackURL = '/dashboard',
+  callbackURL = '/settings?tab=profile',
 ) {
   return authClient.signIn.social({
     provider,
