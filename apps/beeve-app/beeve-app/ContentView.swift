@@ -31,7 +31,7 @@ struct ContentView: View {
                     Label("工作台", systemImage: "square.grid.2x2")
                 }
         }
-        .tint(AppTheme.brand)
+        .tint(DSColor.brand)
         .sheet(isPresented: Binding(
             get: { !hasCompletedOnboarding },
             set: { isPresented in

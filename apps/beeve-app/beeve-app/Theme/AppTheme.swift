@@ -43,10 +43,44 @@ enum DSSpace {
 enum DSType {
     static let hero = Font.system(size: 34, weight: .bold, design: .rounded)
     static let pageTitle = Font.system(size: 28, weight: .bold, design: .rounded)
+    static let title = Font.system(size: 22, weight: .bold, design: .rounded)
     static let section = Font.system(size: 18, weight: .semibold, design: .rounded)
+    static let label = Font.system(size: 15, weight: .medium, design: .rounded)
+    static let labelBold = Font.system(size: 15, weight: .semibold, design: .rounded)
+    static let bodyLarge = Font.system(size: 17, weight: .regular, design: .default)
     static let body = Font.body
+    static let bodyMedium = Font.body.weight(.medium)
+    static let caption = Font.caption
+    static let captionBold = Font.caption.weight(.semibold)
     static let meta = Font.footnote
+    static let numeric = Font.system(size: 20, weight: .semibold, design: .rounded)
     static let numericLarge = Font.system(size: 32, weight: .bold, design: .rounded)
+}
+
+enum DSComponent {
+    static let pageTopInset: CGFloat = 20
+    static let pageBottomInset: CGFloat = 42
+    static let rowMinHeight: CGFloat = 44
+    static let badgeHeight: CGFloat = 24
+    static let badgeHeightLarge: CGFloat = 40
+    static let segmentedControlHeight: CGFloat = 40
+    static let toggleScale: CGFloat = 0.9
+    static let iconSizeXS: CGFloat = 12
+    static let iconSizeSM: CGFloat = 14
+    static let iconSizeMD: CGFloat = 16
+    static let iconSizeLG: CGFloat = 18
+    static let iconSizeXL: CGFloat = 22
+    static let circleIconSM: CGFloat = 34
+    static let circleIconMD: CGFloat = 38
+    static let circleIconLG: CGFloat = 44
+    static let circleIconXL: CGFloat = 52
+    static let circleIconXXL: CGFloat = 56
+    static let miniBarCornerRadius: CGFloat = 3
+    static let miniBarWidth: CGFloat = 6
+    static let miniBarBaseHeight: CGFloat = 8
+    static let miniBarHeightStep: CGFloat = 5
+    static let sectionDividerInset: CGFloat = 50
+    static let textBlockSpacing: CGFloat = 6
 }
 
 struct DSShadowStyle {
@@ -117,7 +151,7 @@ struct DSPrimaryButtonStyle: ButtonStyle {
             .font(DSType.body.weight(.semibold))
             .foregroundStyle(.white)
             .padding(.horizontal, DSSpace.md)
-            .frame(minHeight: 44)
+            .frame(minHeight: DSComponent.rowMinHeight)
             .background(
                 RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous)
                     .fill(tint)
@@ -137,7 +171,7 @@ struct DSSecondaryButtonStyle: ButtonStyle {
             .font(DSType.body.weight(.semibold))
             .foregroundStyle(tint)
             .padding(.horizontal, DSSpace.md)
-            .frame(minHeight: 44)
+            .frame(minHeight: DSComponent.rowMinHeight)
             .background(
                 RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous)
                     .fill(DSColor.surface2)
@@ -160,7 +194,7 @@ struct DSTextButtonStyle: ButtonStyle {
             .font(DSType.body.weight(.semibold))
             .foregroundStyle(tint)
             .padding(.horizontal, DSSpace.xs)
-            .frame(minHeight: 44)
+            .frame(minHeight: DSComponent.rowMinHeight)
             .opacity(configuration.isPressed ? 0.72 : 1)
             .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
     }
@@ -174,7 +208,7 @@ struct DSCapsuleButtonStyle: ButtonStyle {
         configuration.label
             .font(DSType.body.weight(.semibold))
             .padding(.horizontal, DSSpace.sm)
-            .frame(minHeight: 40)
+            .frame(minHeight: DSComponent.badgeHeightLarge)
             .background(
                 Capsule()
                     .fill(tint.opacity(colorScheme == .dark ? 0.18 : 0.12))
@@ -187,27 +221,6 @@ struct DSCapsuleButtonStyle: ButtonStyle {
             .brightness(configuration.isPressed ? -0.02 : 0)
             .animation(.spring(response: 0.22, dampingFraction: 0.78), value: configuration.isPressed)
     }
-}
-
-@available(*, deprecated, message: "Use DSSpace tokens instead.")
-enum AppSpacing {
-    static let pageTop: CGFloat = 20
-    static let pageBottom: CGFloat = 42
-    static let section: CGFloat = DSSpace.lg
-    static let cardContent: CGFloat = DSSpace.md
-    static let cardCornerRadius: CGFloat = DSRadius.card
-}
-
-@available(*, deprecated, message: "Use DSColor / DSShadow tokens instead.")
-enum AppTheme {
-    static let brand = DSColor.brand
-    static let brandSoft = DSColor.brandSoft
-    static let ping = DSColor.ping
-    static let success = DSColor.success
-    static let warning = DSColor.warning
-    static let surface = DSColor.surface1
-    static let elevatedSurface = DSColor.surface2
-    static let chromeMaterial: Material = .ultraThinMaterial
 }
 
 // MARK: - Priority Color
