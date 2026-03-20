@@ -14,21 +14,21 @@ struct ContentView: View {
             }
             .tag(AppTab.today)
             .tabItem {
-                Label("Today", systemImage: "sparkles")
+                Label("今日", systemImage: "sparkles")
             }
 
-            CaptureView { tab in
+            PingView { tab in
                 selectedTab = tab
             }
-            .tag(AppTab.capture)
+            .tag(AppTab.ping)
             .tabItem {
-                Label("Capture", systemImage: "square.and.pencil")
+                Label("Ping", systemImage: "antenna.radiowaves.left.and.right")
             }
 
-            ProfileView()
-                .tag(AppTab.me)
+            WorkspaceView()
+                .tag(AppTab.workspace)
                 .tabItem {
-                    Label("Me", systemImage: "person.crop.circle")
+                    Label("工作台", systemImage: "square.grid.2x2")
                 }
         }
         .tint(AppTheme.brand)
@@ -84,8 +84,8 @@ struct ContentView: View {
         switch route {
         case .today:
             selectedTab = .today
-        case .capture:
-            selectedTab = .capture
+        case .ping:
+            selectedTab = .ping
         }
 
         UserDefaults.standard.removeObject(forKey: "beeve.intent.route")

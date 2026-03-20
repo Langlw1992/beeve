@@ -4,6 +4,7 @@ struct TodayView: View {
     @Environment(BeeveStore.self) private var store
     @State private var destination: SecondaryDestination?
     @State private var showAssistant = false
+    @State private var showProfile = false
 
     let onSwitchTab: (AppTab) -> Void
 
@@ -25,8 +26,6 @@ struct TodayView: View {
                     if let suggestion = store.completionSuggestion {
                         followUpCard(for: suggestion)
                     }
-
-                    quickAccessGrid
                 }
                 .padding(.horizontal)
                 .padding(.top, AppSpacing.pageTop)
@@ -34,10 +33,18 @@ struct TodayView: View {
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
-            .navigationTitle("Today")
+            .navigationTitle("今日")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarLeading) {
                     AssistantToolbarButton { showAssistant = true }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showProfile = true
+                    } label: {
+                        profileAvatar
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .navigationDestination(item: $destination) { item in
@@ -48,6 +55,9 @@ struct TodayView: View {
                     handleAssistantAction(action)
                 }
                 .presentationDetents([.large])
+            }
+            .sheet(isPresented: $showProfile) {
+                ProfileView()
             }
         }
     }
@@ -119,10 +129,11 @@ struct TodayView: View {
     }
 
     private var inboxSummaryCard: some View {
-        GlassSection(title: "待处理收件箱", symbol: "tray.full", tint: AppTheme.capture) {
+        GlassSection(title: "今日承诺摘要", symbol: "calendar.badge.clock", tint: AppTheme.ping) {
             VStack(spacing: 12) {
-                HStack(spacing: 12) {
-                    InboxMetric(title: "待理解记录", value: store.captureBacklogCount, tint: AppTheme.capture)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
+                    InboxMetric(title: "今日已排", value: store.todayPlanReminders.count, tint: AppTheme.success)
+                    InboxMetric(title: "待处理 Ping", value: store.pingBacklogCount, tint: AppTheme.ping)
                     InboxMetric(title: "待分拣任务", value: store.inboxReminders.count, tint: AppTheme.brand)
                 }
 
@@ -132,13 +143,13 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 HStack(spacing: 10) {
-                    Button("打开 Capture") {
-                        onSwitchTab(.capture)
+                    Button("查看日程") {
+                        destination = .planner
                     }
                     .buttonStyle(.bordered)
 
-                    Button("查看任务") {
-                        destination = .reminders
+                    Button("打开 Ping") {
+                        onSwitchTab(.ping)
                     }
                     .buttonStyle(.bordered)
                 }
@@ -147,65 +158,39 @@ struct TodayView: View {
         }
     }
 
-    private var quickAccessGrid: some View {
-        GlassSection(title: "常用入口", symbol: "square.grid.2x2.fill", tint: AppTheme.warning) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
-                ForEach(quickLinks) { link in
-                    Button {
-                        destination = link.destination
-                    } label: {
-                        VStack(alignment: .leading, spacing: 10) {
-                            CircleIconBadge(symbol: link.symbol, tint: link.tint, size: 40, iconSize: 16)
-                            Text(link.title)
-                                .font(.headline)
-                                .foregroundStyle(.primary)
-                            Text(link.detail)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.leading)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 132, alignment: .topLeading)
-                        .padding(16)
-                        .appCard(tint: link.tint, cornerRadius: 20)
-                    }
-                    .buttonStyle(.plain)
-                    .buttonStyle(PressableScaleButtonStyle())
-                }
-            }
-        }
-    }
-
     private func followUpCard(for suggestion: CompletionSuggestion) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            SurfaceKicker(title: suggestion.title, symbol: "checkmark.circle.fill", tint: AppTheme.success)
-            Text(suggestion.detail)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        GlassSection(title: "下一步建议", symbol: "arrow.forward.circle.fill", tint: AppTheme.success) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(suggestion.title)
+                    .font(.headline)
 
-            HStack(spacing: 10) {
-                Button(suggestion.primaryLabel) {
-                    handleFollowUpDestination(suggestion.primaryDestination)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.success)
+                Text(suggestion.detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
 
-                if let label = suggestion.secondaryLabel, let destination = suggestion.secondaryDestination {
-                    Button(label) {
-                        handleFollowUpDestination(destination)
+                HStack(spacing: 10) {
+                    Button(suggestion.primaryLabel) {
+                        handleFollowUpDestination(suggestion.primaryDestination)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.success)
+
+                    if let label = suggestion.secondaryLabel, let destination = suggestion.secondaryDestination {
+                        Button(label) {
+                            handleFollowUpDestination(destination)
+                        }
+                        .buttonStyle(.bordered)
+                    }
                 }
             }
         }
-        .padding(18)
-        .appCard(tint: AppTheme.success, cornerRadius: 26)
     }
 
     private func handleFollowUpDestination(_ destination: FollowUpDestination) {
         switch destination {
         case .reminders:
             self.destination = .reminders
-        case .tools:
+        case .focus:
             self.destination = .focus
         case .assistant:
             showAssistant = true
@@ -224,8 +209,8 @@ struct TodayView: View {
     }
 
     private func handleAssistantAction(_ action: AssistantActionSuggestion) {
-        if action.kind == .capture {
-            onSwitchTab(.capture)
+        if action.kind == .ping {
+            onSwitchTab(.ping)
             return
         }
         if let prompt = action.prompt {
@@ -252,13 +237,17 @@ struct TodayView: View {
         }
     }
 
-    private var quickLinks: [QuickLink] {
-        [
-            QuickLink(title: "任务", detail: "收件箱、今天、即将到来", symbol: "checklist", tint: AppTheme.brand, destination: .reminders),
-            QuickLink(title: "规划", detail: "把今天排成一条时间线", symbol: "calendar", tint: AppTheme.capture, destination: .planner),
-            QuickLink(title: "专注", detail: "开始 \(store.defaultFocusDuration) 分钟深度工作", symbol: "timer", tint: AppTheme.warning, destination: .focus),
-            QuickLink(title: "笔记", detail: "沉淀长文本和灵感脉络", symbol: "note.text", tint: AppTheme.success, destination: .notes),
-        ]
+    @ViewBuilder
+    private var profileAvatar: some View {
+        if let initial = store.preferredName?.trimmingCharacters(in: .whitespacesAndNewlines).first {
+            Text(String(initial).uppercased())
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.white)
+                .frame(width: 34, height: 34)
+                .background(Circle().fill(AppTheme.brand))
+        } else {
+            CircleIconBadge(symbol: "person.fill", tint: AppTheme.brand, size: 34, iconSize: 14)
+        }
     }
 }
 
@@ -282,13 +271,57 @@ private struct InboxMetric: View {
     }
 }
 
-private struct QuickLink: Identifiable {
-    let id = UUID()
-    let title: String
-    let detail: String
-    let symbol: String
-    let tint: Color
-    let destination: SecondaryDestination
+private struct AgendaTimelineCard: View {
+    @Environment(BeeveStore.self) private var store
+
+    let reminders: [Reminder]
+    let onOpenReminders: () -> Void
+
+    var body: some View {
+        GlassSection(title: "今日承诺摘要", symbol: "timeline.selection", tint: AppTheme.ping) {
+            VStack(spacing: 0) {
+                ForEach(Array(reminders.enumerated()), id: \.element.id) { index, reminder in
+                    Button(action: onOpenReminders) {
+                        HStack(alignment: .top, spacing: 12) {
+                            VStack(spacing: 0) {
+                                Circle()
+                                    .fill(reminder.priority.color)
+                                    .frame(width: 10, height: 10)
+
+                                if index < reminders.count - 1 {
+                                    Rectangle()
+                                        .fill(reminder.priority.color.opacity(0.20))
+                                        .frame(width: 2, height: 44)
+                                }
+                            }
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(store.scheduleText(for: reminder))
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(reminder.priority.color)
+
+                                Text(reminder.title)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .multilineTextAlignment(.leading)
+
+                                if !reminder.note.isEmpty {
+                                    Text(reminder.note)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                            }
+
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .buttonStyle(PressableScaleButtonStyle())
+                }
+            }
+        }
+    }
 }
 
 #Preview {

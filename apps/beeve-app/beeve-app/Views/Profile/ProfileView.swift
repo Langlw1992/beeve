@@ -21,7 +21,7 @@ struct ProfileView: View {
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
-            .navigationTitle("Me")
+            .navigationTitle("设置")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("新增记忆", systemImage: "plus") {
@@ -41,7 +41,7 @@ struct ProfileView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [AppTheme.brand, AppTheme.capture],
+                            colors: [AppTheme.brand, AppTheme.ping],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -71,7 +71,7 @@ struct ProfileView: View {
     }
 
     private var memorySection: some View {
-        GlassSection(title: "Memory", symbol: "brain.head.profile", tint: AppTheme.capture) {
+        GlassSection(title: "记忆", symbol: "brain.head.profile", tint: AppTheme.ping) {
             if store.allMemoryItems.isEmpty {
                 Text("还没有保存任何偏好。你可以添加工作时段、默认专注时长或称呼。")
                     .font(.subheadline)
@@ -80,7 +80,7 @@ struct ProfileView: View {
                 VStack(spacing: 12) {
                     ForEach(store.allMemoryItems) { item in
                         HStack(spacing: 12) {
-                            CircleIconBadge(symbol: symbol(for: item.category), tint: item.isEnabled ? AppTheme.capture : .secondary)
+                            CircleIconBadge(symbol: symbol(for: item.category), tint: item.isEnabled ? AppTheme.ping : .secondary)
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(item.title)
@@ -116,15 +116,15 @@ struct ProfileView: View {
             VStack(spacing: 14) {
                 ProfileSettingRow(
                     title: "当前主路径",
-                    subtitle: "Today / Capture / Me 三段式，先收集再推进",
+                    subtitle: "今日 / Ping / 工作台 三段式，先 Ping 再推进",
                     symbol: "square.grid.2x2",
                     tint: AppTheme.brand
                 )
                 ProfileSettingRow(
-                    title: "默认快速收集",
-                    subtitle: "先进入 Capture 队列，再决定它是任务还是笔记",
-                    symbol: "square.and.pencil",
-                    tint: AppTheme.capture
+                    title: "默认快速 Ping",
+                    subtitle: "先进入 Ping 收件箱，再决定它是任务还是笔记",
+                    symbol: "antenna.radiowaves.left.and.right",
+                    tint: AppTheme.ping
                 )
                 ProfileSettingRow(
                     title: "专注节奏",
@@ -173,8 +173,8 @@ struct ProfileView: View {
                 }
 
                 ProfileActionButton(
-                    title: "通知与提醒",
-                    subtitle: "管理晨间计划、晚间回顾和提醒权限",
+                    title: "通知与任务",
+                    subtitle: "管理晨间计划、晚间回顾和任务通知",
                     symbol: "bell.badge",
                     tint: AppTheme.warning,
                     action: {}
@@ -211,7 +211,7 @@ private struct AddMemorySheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: AppSpacing.section) {
-                GlassSection(title: "记忆内容", symbol: "brain.head.profile", tint: AppTheme.capture) {
+                GlassSection(title: "记忆内容", symbol: "brain.head.profile", tint: AppTheme.ping) {
                     VStack(spacing: 12) {
                         TextField("标题，例如：工作时段", text: $title)
                             .textFieldStyle(.roundedBorder)

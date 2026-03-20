@@ -56,7 +56,7 @@ struct RemindersView: View {
                         ContentUnavailableView(
                             "当前筛选下没有事项",
                             systemImage: "line.3.horizontal.decrease.circle",
-                            description: Text("试试切换筛选，或先快速收集一条新提醒。")
+                            description: Text("试试切换筛选，或先快速记下一条新任务。")
                         )
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 32)
@@ -128,7 +128,7 @@ struct RemindersView: View {
             .scrollContentBackground(.hidden)
             .background(AppBackgroundView())
             .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
-            .navigationTitle("提醒")
+            .navigationTitle("任务")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(isEditing ? "完成" : "编辑") {
