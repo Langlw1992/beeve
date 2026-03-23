@@ -14,8 +14,8 @@
     "db:generate": "pnpm --filter @beeve/auth auth:schema:generate && pnpm --filter @beeve/auth db:generate"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
-    "turbo": "^2.8.1",
+    "@biomejs/biome": "^2.4.8",
+    "turbo": "^2.8.20",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"
   },

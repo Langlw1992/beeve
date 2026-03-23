@@ -22,7 +22,7 @@ import {
   Info,
   AlertTriangle,
   LoaderCircle,
-} from 'lucide-solid'
+} from '../../internal/icons'
 
 // ==================== 类型定义 ====================
 

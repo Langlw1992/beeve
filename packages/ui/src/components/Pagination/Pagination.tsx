@@ -35,7 +35,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from 'lucide-solid'
+} from '../../internal/icons'
 import {Button} from '../Button'
 import {Input} from '../Input'
 

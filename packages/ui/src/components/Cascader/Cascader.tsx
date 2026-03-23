@@ -38,7 +38,7 @@ import {
 import {isServer, Portal} from 'solid-js/web'
 import * as popover from '@zag-js/popover'
 import {useMachine, normalizeProps} from '@zag-js/solid'
-import {ChevronDown, ChevronRight, X, Check} from 'lucide-solid'
+import {Check, ChevronDown, ChevronRight, X} from '../../internal/icons'
 
 import {cascaderStyles} from './styles'
 import type {

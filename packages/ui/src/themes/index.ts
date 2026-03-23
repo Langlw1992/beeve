@@ -87,6 +87,31 @@ ${formatVars(darkVars)}
 }
 
 /**
+ * Generate inline style string for a resolved theme mode.
+ * Inline CSS variables are used for SSR so later-loaded stylesheets
+ * cannot override the initial theme palette.
+ */
+export function generateThemeStyleString(
+  baseColor: BaseColorName,
+  themeColor: ThemeColorName,
+  radius: number | 'full',
+  mode: 'light' | 'dark',
+): string {
+  const vars = getThemeVariables(baseColor, themeColor, mode)
+  const isFull = radius === 'full'
+  const radiusValue = isFull ? '9999px' : `${radius}rem`
+  const radiusLgValue = isFull ? '1.5rem' : `${radius}rem`
+  const radiusSmValue = isFull ? '0.5rem' : `${Number(radius) * 0.75}rem`
+
+  return [
+    `--radius: ${radiusValue}`,
+    `--radius-lg: ${radiusLgValue}`,
+    `--radius-sm: ${radiusSmValue}`,
+    ...Object.entries(vars).map(([key, value]) => `--${key}: ${value}`),
+  ].join('; ')
+}
+
+/**
  * Apply theme variables to DOM
  */
 export function applyThemeToDOM(

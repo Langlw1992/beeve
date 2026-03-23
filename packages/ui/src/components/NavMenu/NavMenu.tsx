@@ -49,7 +49,7 @@ import {
   type Component,
 } from 'solid-js'
 import {tv} from 'tailwind-variants'
-import {ChevronRight, ChevronDown} from 'lucide-solid'
+import {ChevronDown, ChevronRight} from '../../internal/icons'
 import * as navigationMenu from '@zag-js/navigation-menu'
 import {normalizeProps, useMachine} from '@zag-js/solid'
 import {useCollapsible} from '../../primitives/collapsible'

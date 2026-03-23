@@ -2,8 +2,8 @@
  * Beeve UI Theme System
  */
 
-/* 扫描组件中使用的 Tailwind 类名 */
-@source "../../dist";
+/* 单一官方样式入口，链接工作区时扫描源码，发布包会在构建时重写到 dist/source */
+@source "..";
 
 /* 默认主题变量 (Neutral base + Blue theme) */
 :root {

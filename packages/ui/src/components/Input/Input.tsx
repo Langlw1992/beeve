@@ -12,8 +12,8 @@ import {
   type Component,
   type JSX,
 } from 'solid-js'
-import {X, Eye, EyeOff, Plus, Minus} from 'lucide-solid'
 import {tv, type VariantProps} from 'tailwind-variants'
+import {Eye, EyeOff, Minus, Plus, X} from '../../internal/icons'
 
 const inputVariants = tv({
   slots: {

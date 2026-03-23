@@ -11,8 +11,8 @@ import {
   type Component,
   type JSX,
 } from 'solid-js'
-import {Check, Minus} from 'lucide-solid'
 import {tv, type VariantProps} from 'tailwind-variants'
+import {Check, Minus} from '../../internal/icons'
 
 const checkboxVariants = tv({
   slots: {

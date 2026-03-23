@@ -1,6 +1,5 @@
-// src/routes/__root.tsx
 /// <reference types="vite/client" />
-import * as Solid from 'solid-js'
+import type {JSX} from 'solid-js'
 import {
   Outlet,
   createRootRoute,
@@ -8,10 +7,18 @@ import {
   Scripts,
 } from '@tanstack/solid-router'
 import {HydrationScript} from 'solid-js/web'
-import {ThemeProvider, themeScript} from '@beeve/ui'
+import {
+  ThemeProvider,
+  defaultThemeConfig,
+  generateThemeStyleString,
+  themeScript,
+  type ThemeConfig,
+} from '@beeve/ui'
 import '@/styles.css'
+import {loadThemeConfigData} from '@/lib/loaders/theme'
 
 export const Route = createRootRoute({
+  loader: async () => loadThemeConfigData(),
   head: () => ({
     meta: [
       {
@@ -30,25 +37,46 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  const themeConfig = Route.useLoaderData()
+
   return (
-    <RootDocument>
-      <ThemeProvider>
+    <RootDocument themeConfig={themeConfig()}>
+      <ThemeProvider defaultConfig={themeConfig()}>
         <Outlet />
       </ThemeProvider>
     </RootDocument>
   )
 }
 
-function RootDocument({children}: Readonly<{children: Solid.JSX.Element}>) {
+function RootDocument(
+  props: Readonly<{
+    children: JSX.Element
+    themeConfig?: ThemeConfig
+  }>,
+) {
+  const themeConfig = props.themeConfig ?? defaultThemeConfig
+  const initialMode = themeConfig.mode === 'dark' ? 'dark' : 'light'
+  const htmlClass = initialMode === 'dark' ? 'dark' : undefined
+  const htmlStyle = generateThemeStyleString(
+    themeConfig.baseColor,
+    themeConfig.themeColor,
+    themeConfig.radius,
+    initialMode,
+  )
+
   return (
-    <html lang="zh-CN">
+    <html
+      lang="zh-CN"
+      class={htmlClass}
+      style={htmlStyle}
+    >
       <head>
+        <HeadContent />
         <HydrationScript />
         <script innerHTML={themeScript()} />
       </head>
       <body class="min-h-screen bg-background text-foreground antialiased">
-        <HeadContent />
-        <Solid.Suspense>{children}</Solid.Suspense>
+        {props.children}
         <Scripts />
       </body>
     </html>

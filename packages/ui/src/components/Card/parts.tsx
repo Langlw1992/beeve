@@ -5,8 +5,8 @@
 import {Card as CardComponent} from './Card'
 import type {Component, JSX} from 'solid-js'
 import {tv} from 'tailwind-variants'
+import {twMerge} from 'tailwind-merge'
 
-// 复用 Card 的样式
 const cardParts = tv({
   slots: {
     header: 'flex flex-col space-y-1.5 p-6',
@@ -19,48 +19,43 @@ const cardParts = tv({
 
 const styles = cardParts()
 
-// CardHeader 子组件
 export const CardHeader: Component<{class?: string; children: JSX.Element}> = (
   props,
 ) => (
-  <div class={[styles.header(), props.class].filter(Boolean).join(' ')}>
+  <div class={twMerge(styles.header(), props.class)}>
     {props.children}
   </div>
 )
 
-// CardTitle 子组件
 export const CardTitle: Component<{class?: string; children: JSX.Element}> = (
   props,
 ) => (
-  <h3 class={[styles.title(), props.class].filter(Boolean).join(' ')}>
+  <h3 class={twMerge(styles.title(), props.class)}>
     {props.children}
   </h3>
 )
 
-// CardDescription 子组件
 export const CardDescription: Component<{
   class?: string
   children: JSX.Element
 }> = (props) => (
-  <p class={[styles.description(), props.class].filter(Boolean).join(' ')}>
+  <p class={twMerge(styles.description(), props.class)}>
     {props.children}
   </p>
 )
 
-// CardContent 子组件
 export const CardContent: Component<{class?: string; children: JSX.Element}> = (
   props,
 ) => (
-  <div class={[styles.content(), props.class].filter(Boolean).join(' ')}>
+  <div class={twMerge(styles.content(), props.class)}>
     {props.children}
   </div>
 )
 
-// CardFooter 子组件
 export const CardFooter: Component<{class?: string; children: JSX.Element}> = (
   props,
 ) => (
-  <div class={[styles.footer(), props.class].filter(Boolean).join(' ')}>
+  <div class={twMerge(styles.footer(), props.class)}>
     {props.children}
   </div>
 )

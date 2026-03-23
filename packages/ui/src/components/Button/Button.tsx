@@ -4,8 +4,8 @@
  */
 
 import {splitProps, Show, type Component, type JSX} from 'solid-js'
-import {LoaderCircle} from 'lucide-solid'
 import {tv, type VariantProps} from 'tailwind-variants'
+import {LoaderCircle} from '../../internal/icons'
 
 const buttonVariants = tv({
   base: [

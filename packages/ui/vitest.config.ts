@@ -24,24 +24,13 @@ export default defineConfig({
     deps: {
       optimizer: {
         web: {
-          include: [
-            'solid-js',
-            'lucide-solid',
-            '@zag-js/solid',
-            '@zag-js/combobox',
-            '@zag-js/dialog',
-          ],
+          include: ['solid-js', '@zag-js/solid', '@zag-js/combobox', '@zag-js/dialog'],
         },
       },
     },
     server: {
       deps: {
-        inline: [
-          'lucide-solid',
-          '@zag-js/solid',
-          '@zag-js/combobox',
-          '@zag-js/dialog',
-        ],
+        inline: ['@zag-js/solid', '@zag-js/combobox', '@zag-js/dialog'],
       },
     },
   },

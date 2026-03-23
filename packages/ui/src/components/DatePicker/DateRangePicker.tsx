@@ -13,8 +13,8 @@ import {
   type Component,
 } from 'solid-js'
 import {Portal} from 'solid-js/web'
-import {Calendar, ChevronLeft, ChevronRight, X} from 'lucide-solid'
 import type {VariantProps} from 'tailwind-variants'
+import {Calendar, ChevronLeft, ChevronRight, X} from '../../internal/icons'
 import {
   DateFormatter,
   type DateValue,

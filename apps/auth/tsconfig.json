@@ -3,6 +3,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "moduleResolution": "Bundler",
+    "customConditions": ["solid"],
     "module": "ESNext",
     "target": "ES2022",
     "skipLibCheck": true,

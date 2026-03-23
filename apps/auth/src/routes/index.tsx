@@ -53,6 +53,12 @@ function IndexPage() {
                 <ArrowRight class="size-4" />
               </Button>
             </Link>
+            <Link to="/ui-preview">
+              <Button variant="outline" size="lg" class="gap-2 px-8">
+                UI preview
+                <ArrowRight class="size-4" />
+              </Button>
+            </Link>
             <a
               href="https://github.com/Langlw1992/beeve"
               target="_blank"

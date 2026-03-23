@@ -39,7 +39,7 @@ import {
   type ComponentProps,
 } from 'solid-js'
 import {tv} from 'tailwind-variants'
-import {PanelLeft, PanelLeftClose} from 'lucide-solid'
+import {PanelLeft, PanelLeftClose} from '../../internal/icons'
 
 // ==================== 常量 ====================
 

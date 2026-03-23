@@ -101,7 +101,7 @@ export const Dialog: Component<DialogProps> = (props) => {
 }
 ```
 
-**注意**：Cascader 组件目前有 SSR 问题，已临时禁用导出。
+**注意**：Cascader 组件使用 client-only Portal，但当前实现可在 SSR 环境安全渲染触发器，并在客户端挂载弹层。
 
 ### 4. 样式约定
 
@@ -171,5 +171,5 @@ pnpm typecheck           # 类型检查
 - [ ] 使用 `tv()` 定义变体
 - [ ] 导出类型和组件
 - [ ] 在 `src/index.ts` 中注册导出
-- [ ] 添加 Storybook 故事（如适用）
+- [ ] 添加预览页或示例（如适用）
 - [ ] 运行 `pnpm typecheck` 确认无错误

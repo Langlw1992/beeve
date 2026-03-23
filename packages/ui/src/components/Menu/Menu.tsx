@@ -55,7 +55,7 @@ import {
 } from 'solid-js'
 import {Portal} from 'solid-js/web'
 import {tv} from 'tailwind-variants'
-import {ChevronRight, Check} from 'lucide-solid'
+import {Check, ChevronRight} from '../../internal/icons'
 import * as menu from '@zag-js/menu'
 import {useMachine, normalizeProps, type PropTypes} from '@zag-js/solid'
 import type {

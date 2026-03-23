@@ -10,8 +10,8 @@ import {
   mergeProps,
 } from 'solid-js'
 import {Portal} from 'solid-js/web'
-import {Calendar, ChevronLeft, ChevronRight} from 'lucide-solid'
 import type {VariantProps} from 'tailwind-variants'
+import {Calendar, ChevronLeft, ChevronRight} from '../../internal/icons'
 import {DatePickerCalendar} from './DatePickerCalendar'
 import {formatDate} from '../../utils/formatDate'
 import {

@@ -16,7 +16,7 @@ import {
   ChevronsUpDown,
   ChevronRight,
   Loader2,
-} from 'lucide-solid'
+} from '../../internal/icons'
 import {tableVariants} from './styles'
 import {Checkbox} from '../Checkbox'
 import type {TableSize, TableVariant} from './types'

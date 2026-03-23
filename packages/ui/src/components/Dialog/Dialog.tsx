@@ -29,8 +29,8 @@ import {Portal} from 'solid-js/web'
 import * as dialog from '@zag-js/dialog'
 import * as presence from '@zag-js/presence'
 import {useMachine, normalizeProps} from '@zag-js/solid'
-import {X} from 'lucide-solid'
 import {tv} from 'tailwind-variants'
+import {X} from '../../internal/icons'
 import {Button} from '../Button'
 
 // ==================== 样式定义 ====================

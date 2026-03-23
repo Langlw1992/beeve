@@ -16,7 +16,7 @@ import {Portal} from 'solid-js/web'
 import * as select from '@zag-js/select'
 import {normalizeProps, useMachine} from '@zag-js/solid'
 import {tv, type VariantProps} from 'tailwind-variants'
-import {ChevronDown, X, Check, Search} from 'lucide-solid'
+import {Check, ChevronDown, Search, X} from '../../internal/icons'
 
 import type {
   SelectOption,

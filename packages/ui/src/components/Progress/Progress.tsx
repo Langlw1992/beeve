@@ -24,7 +24,7 @@ import {
   type JSX,
 } from 'solid-js'
 import {tv, type VariantProps} from 'tailwind-variants'
-import {Check, X} from 'lucide-solid'
+import {Check, X} from '../../internal/icons'
 
 // ==================== 样式定义 ====================
 
