@@ -45,7 +45,7 @@ export function serializePreferences(themeMode?: string | null): UserPreferences
 export function serializeUser(user: UserLike): AppUserDto {
   return {
     id: user.id,
-    name: user.name?.trim() || 'Unnamed user',
+    name: user.name?.trim() || '未命名用户',
     email: user.email,
     emailVerified: user.emailVerified,
     image: user.image ?? null,

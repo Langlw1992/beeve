@@ -29,7 +29,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Beeve Auth',
+        title: 'Beeve 认证中心',
       },
     ],
   }),

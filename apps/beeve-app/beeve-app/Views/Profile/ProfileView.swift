@@ -9,19 +9,19 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                VStack(alignment: .leading, spacing: DSSpace.lg) {
                     profileHero
                     memorySection
                     preferencesSection
                     accountSection
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .padding(.horizontal, DSSpace.md)
+                .padding(.top, DSComponent.pageTopInset)
+                .padding(.bottom, DSComponent.pageBottomInset)
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
-            .navigationTitle("Me")
+            .navigationTitle("设置")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("新增记忆", systemImage: "plus") {
@@ -36,12 +36,12 @@ struct ProfileView: View {
     }
 
     private var profileHero: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: DSSpace.sm) {
+            HStack(spacing: DSSpace.sm) {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [AppTheme.brand, AppTheme.capture],
+                            colors: [DSColor.brand, DSColor.ping],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -49,46 +49,49 @@ struct ProfileView: View {
                     .frame(width: 64, height: 64)
                     .overlay(
                         Text((authService.currentUser?.name ?? store.preferredName ?? "Beeve").prefix(1).uppercased())
-                            .font(.title2.bold())
-                            .foregroundStyle(.white)
+                            .font(DSType.title)
+                            .foregroundStyle(DSColor.surface2)
                     )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DSSpace.xxs) {
                     Text(authService.currentUser?.name ?? store.preferredName ?? "Beeve 用户")
-                        .font(.title2.bold())
+                        .font(DSType.title)
+                        .foregroundStyle(DSColor.textPrimary)
                     Text(authService.isAuthenticated ? "已登录" : "Beeve 会根据你的偏好逐步贴合你的工作方式")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.body)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
             }
 
             Text("你的记忆、通知和账号设置都集中在这里。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(DSType.body)
+                .foregroundStyle(DSColor.textSecondary)
         }
-        .padding(20)
-        .appCard(tint: AppTheme.brand, cornerRadius: 28)
+        .padding(DSSpace.md)
+        .appCard(tint: DSColor.brand, cornerRadius: DSRadius.hero)
     }
 
     private var memorySection: some View {
-        GlassSection(title: "Memory", symbol: "brain.head.profile", tint: AppTheme.capture) {
+        GlassSection(title: "记忆", symbol: "brain.head.profile", tint: DSColor.ping) {
             if store.allMemoryItems.isEmpty {
                 Text("还没有保存任何偏好。你可以添加工作时段、默认专注时长或称呼。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.body)
+                    .foregroundStyle(DSColor.textSecondary)
             } else {
-                VStack(spacing: 12) {
+                VStack(spacing: DSSpace.sm) {
                     ForEach(store.allMemoryItems) { item in
-                        HStack(spacing: 12) {
-                            CircleIconBadge(symbol: symbol(for: item.category), tint: item.isEnabled ? AppTheme.capture : .secondary)
+                        HStack(spacing: DSSpace.sm) {
+                            CircleIconBadge(symbol: symbol(for: item.category), tint: item.isEnabled ? DSColor.ping : DSColor.textSecondary)
 
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: DSSpace.xxs) {
                                 Text(item.title)
-                                    .font(.subheadline.weight(.semibold))
+                                    .font(DSType.labelBold)
+                                    .foregroundStyle(DSColor.textPrimary)
                                 Text(item.value)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(DSType.caption)
+                                    .foregroundStyle(DSColor.textSecondary)
                             }
+                            .layoutPriority(1)
 
                             Spacer()
 
@@ -97,6 +100,7 @@ struct ProfileView: View {
                                 set: { _ in store.toggleMemory(item) }
                             ))
                             .labelsHidden()
+                            .scaleEffect(DSComponent.toggleScale)
 
                             Button(role: .destructive) {
                                 store.deleteMemory(item)
@@ -112,46 +116,46 @@ struct ProfileView: View {
     }
 
     private var preferencesSection: some View {
-        GlassSection(title: "偏好设置", symbol: "slider.horizontal.3", tint: AppTheme.brand) {
-            VStack(spacing: 14) {
+        GlassSection(title: "偏好设置", symbol: "slider.horizontal.3", tint: DSColor.brand) {
+            VStack(spacing: DSSpace.sm) {
                 ProfileSettingRow(
                     title: "当前主路径",
-                    subtitle: "Today / Capture / Me 三段式，先收集再推进",
+                    subtitle: "今日 / Ping / 工作台 三段式，先 Ping 再推进",
                     symbol: "square.grid.2x2",
-                    tint: AppTheme.brand
+                    tint: DSColor.brand
                 )
                 ProfileSettingRow(
-                    title: "默认快速收集",
-                    subtitle: "先进入 Capture 队列，再决定它是任务还是笔记",
-                    symbol: "square.and.pencil",
-                    tint: AppTheme.capture
+                    title: "默认快速 Ping",
+                    subtitle: "先进入 Ping 收件箱，再决定它是任务还是笔记",
+                    symbol: "antenna.radiowaves.left.and.right",
+                    tint: DSColor.ping
                 )
                 ProfileSettingRow(
                     title: "专注节奏",
                     subtitle: "\(store.defaultFocusDuration) 分钟专注 + 5 分钟回顾",
                     symbol: "timer",
-                    tint: AppTheme.warning
+                    tint: DSColor.warning
                 )
             }
         }
     }
 
     private var accountSection: some View {
-        GlassSection(title: "账号与数据", symbol: "person.text.rectangle", tint: AppTheme.success) {
-            VStack(spacing: 12) {
+        GlassSection(title: "账号与数据", symbol: "person.text.rectangle", tint: DSColor.success) {
+            VStack(spacing: DSSpace.sm) {
                 if authService.isAuthenticated {
                     ProfileActionButton(
                         title: "已登录",
                         subtitle: authService.currentUser?.email ?? "已通过 Apple 账号登录",
                         symbol: "checkmark.shield.fill",
-                        tint: AppTheme.success,
+                        tint: DSColor.success,
                         action: {}
                     )
                     ProfileActionButton(
                         title: "退出登录",
                         subtitle: "清除本地登录状态",
                         symbol: "rectangle.portrait.and.arrow.right",
-                        tint: .red,
+                        tint: DSColor.danger,
                         action: { authService.signOut() }
                     )
                 } else {
@@ -168,22 +172,22 @@ struct ProfileView: View {
                         }
                     }
                     .signInWithAppleButtonStyle(.whiteOutline)
-                    .frame(height: 50)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .frame(height: DSComponent.rowMinHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: DSRadius.control, style: .continuous))
                 }
 
                 ProfileActionButton(
-                    title: "通知与提醒",
-                    subtitle: "管理晨间计划、晚间回顾和提醒权限",
+                    title: "通知与任务",
+                    subtitle: "管理晨间计划、晚间回顾和任务通知",
                     symbol: "bell.badge",
-                    tint: AppTheme.warning,
+                    tint: DSColor.warning,
                     action: {}
                 )
                 ProfileActionButton(
                     title: "隐私与数据",
                     subtitle: "所有记忆都可查看、停用和删除",
                     symbol: "lock.shield",
-                    tint: AppTheme.success,
+                    tint: DSColor.success,
                     action: {}
                 )
             }
@@ -210,9 +214,9 @@ private struct AddMemorySheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: AppSpacing.section) {
-                GlassSection(title: "记忆内容", symbol: "brain.head.profile", tint: AppTheme.capture) {
-                    VStack(spacing: 12) {
+            VStack(spacing: DSSpace.lg) {
+                GlassSection(title: "记忆内容", symbol: "brain.head.profile", tint: DSColor.ping) {
+                    VStack(spacing: DSSpace.sm) {
                         TextField("标题，例如：工作时段", text: $title)
                             .textFieldStyle(.roundedBorder)
                         TextField("值，例如：09:00 - 18:00", text: $value)
@@ -220,7 +224,7 @@ private struct AddMemorySheet: View {
                     }
                 }
 
-                GlassSection(title: "分类", symbol: "line.3.horizontal.decrease.circle", tint: AppTheme.brand) {
+                GlassSection(title: "分类", symbol: "line.3.horizontal.decrease.circle", tint: DSColor.brand) {
                     Picker("分类", selection: $category) {
                         ForEach(UserMemoryCategory.allCases) { item in
                             Text(item.label).tag(item)
@@ -229,7 +233,7 @@ private struct AddMemorySheet: View {
                     .pickerStyle(.segmented)
                 }
             }
-            .padding()
+            .padding(DSSpace.md)
             .background(AppBackgroundView())
             .navigationTitle("新增记忆")
             .navigationBarTitleDisplayMode(.inline)
@@ -256,15 +260,16 @@ struct ProfileSettingRow: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DSSpace.sm) {
             CircleIconBadge(symbol: symbol, tint: tint)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: DSSpace.xxs) {
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(DSType.labelBold)
+                    .foregroundStyle(DSColor.textPrimary)
                 Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.caption)
+                    .foregroundStyle(DSColor.textSecondary)
             }
             Spacer()
         }
@@ -280,21 +285,21 @@ struct ProfileActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 12) {
+            HStack(spacing: DSSpace.sm) {
                 CircleIconBadge(symbol: symbol, tint: tint)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DSSpace.xxs) {
                     Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
+                        .font(DSType.labelBold)
+                        .foregroundStyle(DSColor.textPrimary)
                     Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .font(DSType.captionBold)
+                    .foregroundStyle(DSColor.textTertiary)
             }
         }
         .buttonStyle(.plain)

@@ -20,34 +20,33 @@ struct AddReminderSheet: View {
                 AppBackgroundView()
 
                 ScrollView {
-                    VStack(spacing: AppSpacing.section) {
-                        GlassSection(title: "事项", symbol: "square.and.pencil", tint: .blue) {
-                            VStack(spacing: 12) {
-                                TextField("提醒标题", text: $title)
+                    VStack(spacing: DSSpace.lg) {
+                        GlassSection(title: "任务", symbol: "square.and.pencil", tint: DSColor.info) {
+                            VStack(spacing: DSSpace.sm) {
+                                TextField("任务标题", text: $title)
                                     .textFieldStyle(.roundedBorder)
 
                                 TextField("备注（可选）", text: $note, axis: .vertical)
                                     .textFieldStyle(.roundedBorder)
-                                    .lineLimit(2...4)
                             }
                         }
 
-                        GlassSection(title: "安排方式", symbol: "calendar.badge.clock", tint: .purple) {
-                            VStack(alignment: .leading, spacing: 12) {
+                        GlassSection(title: "安排方式", symbol: "calendar.badge.clock", tint: DSColor.brand) {
+                            VStack(alignment: .leading, spacing: DSSpace.sm) {
                                 Toggle("立即安排时间", isOn: $shouldSchedule)
                                 Text(shouldSchedule ? "保存后会直接进入今天/即将列表。" : "不安排时间会先进入收件箱，稍后再分拣。")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(DSType.caption)
+                                    .foregroundStyle(DSColor.textSecondary)
                             }
                         }
 
                         if shouldSchedule {
-                            GlassSection(title: "时间", symbol: "clock.fill", tint: .orange) {
-                                VStack(alignment: .leading, spacing: 12) {
+                            GlassSection(title: "时间", symbol: "clock.fill", tint: DSColor.warning) {
+                                VStack(alignment: .leading, spacing: DSSpace.sm) {
                                     DatePicker("时间", selection: $dueDate)
 
                                     ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack(spacing: 8) {
+                                        HStack(spacing: DSSpace.xs) {
                                             QuickTimeButton(title: "1小时后") {
                                                 dueDate = .now.addingTimeInterval(60 * 60)
                                             }
@@ -63,10 +62,10 @@ struct AddReminderSheet: View {
                             }
 
                             // Repeat rule
-                            GlassSection(title: "重复", symbol: "arrow.trianglehead.2.clockwise", tint: .cyan) {
-                                VStack(alignment: .leading, spacing: 12) {
+                            GlassSection(title: "重复", symbol: "arrow.trianglehead.2.clockwise", tint: DSColor.ping) {
+                                VStack(alignment: .leading, spacing: DSSpace.sm) {
                                     ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack(spacing: 8) {
+                                        HStack(spacing: DSSpace.xs) {
                                             RepeatChip(label: "不重复", isSelected: repeatRule == nil) {
                                                 repeatRule = nil
                                             }
@@ -79,15 +78,15 @@ struct AddReminderSheet: View {
                                     }
                                     if let rule = repeatRule {
                                         Text("完成后会自动生成下一个「\(rule.label)」任务。")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(DSType.caption)
+                                            .foregroundStyle(DSColor.textSecondary)
                                     }
                                 }
                             }
                         }
 
-                        GlassSection(title: "分类与优先级", symbol: "line.3.horizontal.decrease.circle", tint: .indigo) {
-                            VStack(spacing: 12) {
+                        GlassSection(title: "分类与优先级", symbol: "line.3.horizontal.decrease.circle", tint: DSColor.focus) {
+                            VStack(spacing: DSSpace.sm) {
                                 Picker("分类", selection: $category) {
                                     ForEach(ReminderCategory.allCases) { item in
                                         Text(item.label).tag(item)
@@ -105,9 +104,9 @@ struct AddReminderSheet: View {
                         }
 
                         // Tags
-                        GlassSection(title: "标签", symbol: "tag", tint: .purple) {
-                            VStack(alignment: .leading, spacing: 12) {
-                                FlowLayout(spacing: 8) {
+                        GlassSection(title: "标签", symbol: "tag", tint: DSColor.brand) {
+                            VStack(alignment: .leading, spacing: DSSpace.sm) {
+                                FlowLayout(spacing: DSSpace.xs) {
                                     ForEach(store.allTags, id: \.id) { tag in
                                         TagChip(
                                             tag: tag,
@@ -123,7 +122,7 @@ struct AddReminderSheet: View {
                                     }
                                 }
 
-                                HStack(spacing: 8) {
+                                HStack(spacing: DSSpace.xs) {
                                     TextField("新标签", text: $newTagName)
                                         .textFieldStyle(.roundedBorder)
                                     Button("添加") {
@@ -131,16 +130,16 @@ struct AddReminderSheet: View {
                                         newTagName = ""
                                     }
                                     .disabled(newTagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                                    .buttonStyle(.bordered)
+                                    .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.brand))
                                 }
                             }
                         }
                     }
-                    .padding()
-                    .padding(.bottom, 24)
+                    .padding(DSSpace.md)
+                    .padding(.bottom, DSSpace.lg)
                 }
             }
-            .navigationTitle("新建提醒")
+            .navigationTitle("新建任务")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("取消") { dismiss() }
@@ -186,7 +185,7 @@ struct QuickTimeButton: View {
 
     var body: some View {
         Button(title, action: action)
-            .buttonStyle(.bordered)
+            .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.info))
     }
 }
 
@@ -197,11 +196,11 @@ struct RepeatChip: View {
 
     var body: some View {
         Button(label, action: action)
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(isSelected ? Color.cyan.opacity(0.2) : Color.secondary.opacity(0.1), in: Capsule())
-            .foregroundStyle(isSelected ? .cyan : .secondary)
+            .font(DSType.captionBold)
+            .padding(.horizontal, DSSpace.sm)
+            .padding(.vertical, DSSpace.xs)
+            .glassCapsule(tint: isSelected ? DSColor.ping : DSColor.textSecondary)
+            .foregroundStyle(isSelected ? DSColor.ping : DSColor.textSecondary)
     }
 }
 
@@ -212,24 +211,24 @@ struct TagChip: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 4) {
+            HStack(spacing: DSSpace.xxs) {
                 Circle()
                     .fill(tag.color)
-                    .frame(width: 8, height: 8)
+                    .frame(width: DSSpace.xs, height: DSSpace.xs)
                 Text(tag.name)
-                    .font(.caption.weight(.medium))
+                    .font(DSType.caption.weight(.medium))
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(isSelected ? tag.color.opacity(0.2) : Color.secondary.opacity(0.08), in: Capsule())
-            .foregroundStyle(isSelected ? tag.color : .secondary)
+            .padding(.horizontal, DSSpace.sm)
+            .padding(.vertical, DSSpace.xxs)
+            .glassCapsule(tint: isSelected ? tag.color : DSColor.textSecondary)
+            .foregroundStyle(isSelected ? tag.color : DSColor.textSecondary)
         }
         .buttonStyle(.plain)
     }
 }
 
 struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
+    var spacing: CGFloat = DSSpace.xs
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let result = layout(proposal: proposal, subviews: subviews)

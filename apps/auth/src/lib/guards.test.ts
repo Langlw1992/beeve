@@ -1,7 +1,10 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 
 const {redirectMock, getSessionMock} = vi.hoisted(() => ({
-  redirectMock: vi.fn((options: {to: string}) => ({
+  redirectMock: vi.fn((options: {
+    to: string
+    search?: Record<string, unknown>
+  }) => ({
     __redirect: true,
     ...options,
   })),
@@ -45,7 +48,8 @@ describe('guards', () => {
 
     await expect(requireGuest()).rejects.toMatchObject({
       __redirect: true,
-      to: '/dashboard',
+      to: '/settings',
+      search: {tab: 'profile'},
     })
   })
 
@@ -63,7 +67,8 @@ describe('guards', () => {
 
     await expect(requireAdmin()).rejects.toMatchObject({
       __redirect: true,
-      to: '/dashboard',
+      to: '/settings',
+      search: {tab: 'profile'},
     })
   })
 

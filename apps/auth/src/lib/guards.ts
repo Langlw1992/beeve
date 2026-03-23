@@ -18,19 +18,22 @@ export async function requireAuth() {
 
 /**
  * 路由守卫 - 要求未登录（游客）
- * 已登录用户将被重定向到 /dashboard
+ * 已登录用户将被重定向到个人中心
  */
 export async function requireGuest() {
   const session = await getSession()
 
   if (session?.user) {
-    throw redirect({ to: '/dashboard' })
+    throw redirect({
+      to: '/settings',
+      search: {tab: 'profile'},
+    })
   }
 }
 
 /**
  * 路由守卫 - 要求管理员权限
- * 非管理员用户将被重定向到 /dashboard
+ * 非管理员用户将被重定向到个人中心
  */
 export async function requireAdmin() {
   const session = await getSession()
@@ -40,7 +43,10 @@ export async function requireAdmin() {
   }
 
   if (!isAdminUser(session.user)) {
-    throw redirect({ to: '/dashboard' })
+    throw redirect({
+      to: '/settings',
+      search: {tab: 'profile'},
+    })
   }
 
   return { user: session.user }

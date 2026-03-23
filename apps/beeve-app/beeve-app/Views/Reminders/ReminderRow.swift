@@ -20,8 +20,8 @@ struct ReminderRow: View {
                 subtaskSection
             }
         }
-        .padding(14)
-        .appCard(tint: reminder.priority.color, cornerRadius: 20)
+        .padding(DSSpace.md)
+        .appCard(tint: reminder.priority.color, cornerRadius: DSRadius.card)
         .contextMenu {
             Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
 
@@ -37,63 +37,65 @@ struct ReminderRow: View {
         }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             Button(reminder.isCompleted ? "恢复" : "完成", action: onToggle)
-                .tint(reminder.isCompleted ? .orange : .green)
+                .tint(reminder.isCompleted ? DSColor.warning : DSColor.success)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("删除", role: .destructive, action: onDelete)
 
             if !reminder.isCompleted {
                 Button("明早", action: onTomorrow)
-                    .tint(.blue)
+                    .tint(DSColor.info)
                 Button("今晚", action: onTonight)
-                    .tint(.indigo)
+                    .tint(DSColor.focus)
             }
         }
     }
 
     private var mainRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DSSpace.sm) {
             Button(action: onToggle) {
                 Image(systemName: reminder.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(reminder.isCompleted ? Color.green : reminder.priority.color)
+                    .font(DSType.section)
+                    .foregroundStyle(reminder.isCompleted ? DSColor.success : reminder.priority.color)
             }
             .buttonStyle(.plain)
 
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
+            VStack(alignment: .leading, spacing: DSComponent.textBlockSpacing) {
+                HStack(alignment: .top, spacing: DSComponent.textBlockSpacing) {
                     Text(reminder.title)
-                        .font(.headline)
+                        .font(DSType.bodyMedium)
                         .strikethrough(reminder.isCompleted)
-                        .foregroundStyle(reminder.isCompleted ? .secondary : .primary)
+                        .foregroundStyle(reminder.isCompleted ? DSColor.textSecondary : DSColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     if reminder.isRepeating {
                         Image(systemName: "arrow.trianglehead.2.clockwise")
-                            .font(.caption2)
-                            .foregroundStyle(.indigo)
+                            .font(DSType.meta)
+                            .foregroundStyle(DSColor.focus)
                     }
                 }
 
                 if !reminder.note.isEmpty {
                     Text(reminder.note)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.body)
+                        .foregroundStyle(DSColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                HStack(spacing: 6) {
+                HStack(alignment: .top, spacing: DSComponent.textBlockSpacing) {
                     PriorityPill(priority: reminder.priority)
 
                     if let summary = reminder.subtaskSummary {
                         Button {
                             withAnimation(.snappy) { showSubtasks.toggle() }
                         } label: {
-                            HStack(spacing: 3) {
+                            HStack(spacing: DSSpace.xxs) {
                                 Image(systemName: "checklist")
-                                    .font(.caption2)
+                                    .font(DSType.meta)
                                 Text(summary)
-                                    .font(.caption.weight(.semibold))
+                                    .font(DSType.captionBold)
                             }
-                            .foregroundStyle(.indigo)
+                            .foregroundStyle(DSColor.focus)
                         }
                         .buttonStyle(.plain)
                     }
@@ -101,43 +103,44 @@ struct ReminderRow: View {
                     // Tag pills
                     ForEach(reminder.tags ?? [], id: \.id) { tag in
                         Text(tag.name)
-                            .font(.caption2.weight(.medium))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
+                            .font(DSType.meta.weight(.medium))
+                            .padding(.horizontal, DSSpace.xs)
+                            .padding(.vertical, DSSpace.xxs)
                             .background(tag.color.opacity(0.2), in: Capsule())
                             .foregroundStyle(tag.color)
                     }
 
                     Text(scheduleText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .font(DSType.caption)
+                        .foregroundStyle(DSColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
     }
 
     private var subtaskSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Divider().padding(.vertical, 8)
+        VStack(alignment: .leading, spacing: DSSpace.xs) {
+            Divider().padding(.vertical, DSSpace.xs)
 
             ForEach(reminder.subtasks) { sub in
-                HStack(spacing: 10) {
+                HStack(spacing: DSSpace.sm) {
                     Button {
                         withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
                             store.toggleSubtask(sub)
                         }
                     } label: {
                         Image(systemName: sub.isCompleted ? "checkmark.circle.fill" : "circle")
-                            .font(.subheadline)
-                            .foregroundStyle(sub.isCompleted ? .green : .secondary)
+                            .font(DSType.bodyMedium)
+                            .foregroundStyle(sub.isCompleted ? DSColor.success : DSColor.textSecondary)
                     }
                     .buttonStyle(.plain)
 
                     Text(sub.title)
-                        .font(.subheadline)
+                        .font(DSType.body)
                         .strikethrough(sub.isCompleted)
-                        .foregroundStyle(sub.isCompleted ? .secondary : .primary)
+                        .foregroundStyle(sub.isCompleted ? DSColor.textSecondary : DSColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Spacer()
 
@@ -145,20 +148,20 @@ struct ReminderRow: View {
                         withAnimation(.snappy) { store.deleteSubtask(sub) }
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                            .font(DSType.caption)
+                            .foregroundStyle(DSColor.textTertiary)
                     }
                     .buttonStyle(.plain)
                 }
             }
 
             if !reminder.isCompleted {
-                HStack(spacing: 8) {
+                HStack(spacing: DSSpace.xs) {
                     Image(systemName: "plus.circle.dashed")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(DSType.bodyMedium)
+                        .foregroundStyle(DSColor.textSecondary)
                     TextField("添加子任务", text: $newSubtaskTitle)
-                        .font(.subheadline)
+                        .font(DSType.body)
                         .onSubmit {
                             guard !newSubtaskTitle.isEmpty else { return }
                             withAnimation(.snappy) {
@@ -172,8 +175,8 @@ struct ReminderRow: View {
             // Progress bar
             if !reminder.subtasks.isEmpty {
                 ProgressView(value: reminder.subtaskProgress)
-                    .tint(.indigo)
-                    .padding(.top, 4)
+                    .tint(DSColor.focus)
+                    .padding(.top, DSSpace.xxs)
             }
         }
     }

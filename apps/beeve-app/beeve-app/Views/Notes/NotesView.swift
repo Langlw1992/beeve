@@ -10,14 +10,14 @@ struct NotesView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                VStack(alignment: .leading, spacing: DSSpace.lg) {
                     if filteredNotes.isEmpty {
                         emptyState
                     } else {
                         // Favorites
                         let favorites = filteredNotes.filter(\.isFavorite)
                         if !favorites.isEmpty {
-                            GlassSection(title: "收藏", symbol: "star.fill", tint: .yellow) {
+                            GlassSection(title: "收藏", symbol: "star.fill", tint: DSColor.warning) {
                                 noteGrid(favorites)
                             }
                         }
@@ -25,7 +25,7 @@ struct NotesView: View {
                         // Recent
                         let recent = filteredNotes.filter { !$0.isFavorite && !$0.isArchived }
                         if !recent.isEmpty {
-                            GlassSection(title: "最近", symbol: "clock", tint: .cyan) {
+                            GlassSection(title: "最近", symbol: "clock", tint: DSColor.ping) {
                                 noteGrid(recent)
                             }
                         }
@@ -33,15 +33,15 @@ struct NotesView: View {
                         // Archived
                         let archived = filteredNotes.filter(\.isArchived)
                         if !archived.isEmpty {
-                            GlassSection(title: "归档", symbol: "archivebox", tint: .secondary) {
+                            GlassSection(title: "归档", symbol: "archivebox", tint: DSColor.textSecondary) {
                                 noteGrid(archived)
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top, AppSpacing.pageTop)
-                .padding(.bottom, AppSpacing.pageBottom)
+                .padding(.horizontal, DSSpace.md)
+                .padding(.top, DSComponent.pageTopInset)
+                .padding(.bottom, DSComponent.pageBottomInset)
             }
             .scrollIndicators(.hidden)
             .background(AppBackgroundView())
@@ -81,7 +81,7 @@ struct NotesView: View {
 
     @ViewBuilder
     private func noteGrid(_ notes: [Note]) -> some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: DSSpace.sm) {
             ForEach(notes) { note in
                 NoteCard(note: note) {
                     selectedNote = note
@@ -92,18 +92,18 @@ struct NotesView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: DSSpace.md) {
             Image(systemName: "note.text")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
+                .font(DSType.hero)
+                .foregroundStyle(DSColor.textSecondary)
             Text("还没有笔记")
-                .font(.headline)
+                .font(DSType.section)
             Text("点击右上角 + 开始记录。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(DSType.body)
+                .foregroundStyle(DSColor.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 48)
+        .padding(.vertical, DSSpace.xl + DSSpace.md)
     }
 }
 
@@ -115,33 +115,33 @@ struct NoteCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DSSpace.xs) {
                 HStack {
                     Text(note.displayTitle)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
+                        .font(DSType.bodyMedium)
+                        .foregroundStyle(DSColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Spacer()
                     if note.isFavorite {
                         Image(systemName: "star.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.yellow)
+                            .font(DSType.meta)
+                            .foregroundStyle(DSColor.warning)
                     }
                 }
 
                 Text(note.preview)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(3)
+                    .font(DSType.caption)
+                    .foregroundStyle(DSColor.textSecondary)
                     .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(note.updatedAt.formatted(date: .abbreviated, time: .shortened))
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .font(DSType.meta)
+                    .foregroundStyle(DSColor.textTertiary)
             }
-            .padding(12)
+            .padding(DSSpace.sm)
             .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
-            .appCard(tint: .cyan, cornerRadius: 16)
+            .appCard(tint: DSColor.ping, cornerRadius: DSRadius.card)
         }
         .buttonStyle(.plain)
     }
@@ -161,14 +161,14 @@ struct NoteEditorSheet: View {
 
                 VStack(spacing: 0) {
                     TextField("标题", text: $note.title)
-                        .font(.title2.bold())
-                        .padding(.horizontal)
-                        .padding(.top)
+                        .font(DSType.title)
+                        .padding(.horizontal, DSSpace.md)
+                        .padding(.top, DSSpace.md)
 
                     TextEditor(text: $note.content)
-                        .font(.body)
+                        .font(DSType.body)
                         .scrollContentBackground(.hidden)
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, DSSpace.sm)
                 }
             }
             .navigationTitle("编辑")

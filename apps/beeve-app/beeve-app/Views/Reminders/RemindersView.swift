@@ -12,7 +12,7 @@ struct RemindersView: View {
         NavigationStack {
             List(selection: isEditing ? Binding(get: { selectedReminders }, set: { selectedReminders = $0 }) : nil) {
                 Section {
-                    HStack(spacing: 8) {
+                    HStack(spacing: DSSpace.xs) {
                         SegmentedFilterBar(selection: $selectedFilter)
                         if !store.allTags.isEmpty {
                             Menu {
@@ -22,15 +22,15 @@ struct RemindersView: View {
                                 }
                             } label: {
                                 Image(systemName: filterTag != nil ? "tag.fill" : "tag")
-                                    .font(.subheadline)
-                                    .foregroundStyle(filterTag?.color ?? .secondary)
+                                    .font(DSType.meta)
+                                    .foregroundStyle(filterTag?.color ?? DSColor.textSecondary)
                             }
                         }
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, DSSpace.xxs)
                 }
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowBackground(Color.clear)
+                .listRowBackground(DSColor.surface2.opacity(0))
                 .listRowSeparator(.hidden)
 
                 // Smart Inbox triage banner
@@ -47,7 +47,7 @@ struct RemindersView: View {
                             }
                         )
                     }
-                    .listRowBackground(Color.clear)
+                    .listRowBackground(DSColor.surface2.opacity(0))
                     .listRowSeparator(.hidden)
                 }
 
@@ -56,12 +56,12 @@ struct RemindersView: View {
                         ContentUnavailableView(
                             "当前筛选下没有事项",
                             systemImage: "line.3.horizontal.decrease.circle",
-                            description: Text("试试切换筛选，或先快速收集一条新提醒。")
+                            description: Text("试试切换筛选，或先快速记下一条新任务。")
                         )
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 32)
+                        .padding(.vertical, DSSpace.xl)
                     }
-                    .listRowBackground(Color.clear)
+                    .listRowBackground(DSColor.surface2.opacity(0))
                     .listRowSeparator(.hidden)
                 } else {
                     ForEach(filteredSections, id: \.title) { section in
@@ -92,8 +92,8 @@ struct RemindersView: View {
                                     }
                                 )
                                 .tag(reminder.id)
-                                .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
-                                .listRowBackground(Color.clear)
+                                .listRowInsets(EdgeInsets(top: DSSpace.xs, leading: 0, bottom: DSSpace.xs, trailing: 0))
+                                .listRowBackground(DSColor.surface2.opacity(0))
                                 .listRowSeparator(.hidden)
                                 // Smart inbox quick triage swipe
                                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -101,7 +101,7 @@ struct RemindersView: View {
                                         Button("今天") {
                                             withAnimation(.snappy) { store.quickTriageToday(reminder) }
                                         }
-                                        .tint(.blue)
+                                        .tint(DSColor.info)
                                     }
                                 }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -109,11 +109,11 @@ struct RemindersView: View {
                                         Button("以后") {
                                             withAnimation(.snappy) { store.quickTriageSomeday(reminder) }
                                         }
-                                        .tint(.gray)
+                                        .tint(DSColor.textTertiary)
                                         Button("本周") {
                                             withAnimation(.snappy) { store.quickTriageThisWeek(reminder) }
                                         }
-                                        .tint(.orange)
+                                        .tint(DSColor.warning)
                                     }
                                 }
                             }
@@ -128,7 +128,7 @@ struct RemindersView: View {
             .scrollContentBackground(.hidden)
             .background(AppBackgroundView())
             .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
-            .navigationTitle("提醒")
+            .navigationTitle("任务")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(isEditing ? "完成" : "编辑") {
@@ -161,9 +161,9 @@ struct RemindersView: View {
     // MARK: - Batch Action Bar
 
     private var batchBar: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: DSSpace.md) {
             Text("\(selectedReminders.count) 项已选")
-                .font(.subheadline.weight(.semibold))
+                .font(DSType.bodyMedium)
 
             Spacer()
 
@@ -174,7 +174,7 @@ struct RemindersView: View {
                     selectedReminders.removeAll()
                 }
             }
-            .tint(.green)
+            .tint(DSColor.success)
 
             Button("今天") {
                 let items = selectedItems
@@ -183,7 +183,7 @@ struct RemindersView: View {
                     selectedReminders.removeAll()
                 }
             }
-            .tint(.blue)
+            .tint(DSColor.info)
 
             Button("删除", role: .destructive) {
                 let items = selectedItems
@@ -193,14 +193,10 @@ struct RemindersView: View {
                 }
             }
         }
-        .padding()
-        .background(.ultraThinMaterial, in: Capsule())
-        .overlay(
-            Capsule()
-                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.8)
-        )
-        .padding(.horizontal)
-        .padding(.bottom, 8)
+        .padding(DSSpace.md)
+        .appChrome(cornerRadius: DSRadius.full)
+        .padding(.horizontal, DSSpace.md)
+        .padding(.bottom, DSSpace.xs)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
@@ -225,18 +221,18 @@ struct RemindersView: View {
         switch selectedFilter {
         case .all:
             return [
-                ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: .purple),
-                ReminderListSection(title: "今天", items: store.todayReminders, tint: .blue),
-                ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: .orange),
+                ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: DSColor.brand),
+                ReminderListSection(title: "今天", items: store.todayReminders, tint: DSColor.info),
+                ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: DSColor.warning),
             ]
         case .inbox:
-            return [ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: .purple)]
+            return [ReminderListSection(title: "收件箱", items: store.inboxReminders, tint: DSColor.brand)]
         case .today:
-            return [ReminderListSection(title: "今天", items: store.todayReminders, tint: .blue)]
+            return [ReminderListSection(title: "今天", items: store.todayReminders, tint: DSColor.info)]
         case .upcoming:
-            return [ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: .orange)]
+            return [ReminderListSection(title: "即将到来", items: store.upcomingReminders, tint: DSColor.warning)]
         case .completed:
-            return [ReminderListSection(title: "已完成", items: store.completedReminders, tint: .green)]
+            return [ReminderListSection(title: "已完成", items: store.completedReminders, tint: DSColor.success)]
         }
     }
 }
@@ -254,25 +250,23 @@ struct SmartInboxBanner: View {
     let onTriageAll: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            CircleIconBadge(symbol: "tray.full.fill", tint: .purple, size: 36, iconSize: 14)
+        HStack(spacing: DSSpace.sm) {
+            CircleIconBadge(symbol: "tray.full.fill", tint: DSColor.brand, size: DSComponent.circleIconMD, iconSize: DSComponent.iconSizeSM)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: DSComponent.textBlockSpacing) {
                 Text("有 \(count) 条事项待分拣")
-                    .font(.subheadline.weight(.semibold))
+                    .font(DSType.bodyMedium)
                 Text("左滑安排到今天，右滑标记为以后处理")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(DSType.caption)
+                    .foregroundStyle(DSColor.textSecondary)
             }
 
             Spacer()
 
             Button("全部今天", action: onTriageAll)
-                .font(.caption.weight(.semibold))
-                .buttonStyle(.bordered)
-                .tint(.purple)
+                .buttonStyle(DSSecondaryButtonStyle(tint: DSColor.brand))
         }
-        .padding(12)
-        .appCard(tint: .purple, cornerRadius: 16)
+        .padding(DSSpace.sm)
+        .appCard(tint: DSColor.brand, cornerRadius: DSRadius.card)
     }
 }
