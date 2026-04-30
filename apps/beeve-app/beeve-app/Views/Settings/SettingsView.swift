@@ -14,6 +14,7 @@ struct SettingsView: View {
             Form {
                 if let active = preferences.first {
                     SettingsForm(preferences: active)
+                    DeepSeekSettingsForm()
 
                     Section {
                         Button("重置本机数据", role: .destructive) {
@@ -112,6 +113,53 @@ private struct SettingsForm: View {
 
     private func formatted(hour: Int, minute: Int) -> String {
         String(format: "%02d:%02d", hour, minute)
+    }
+}
+
+private struct DeepSeekSettingsForm: View {
+    @State private var apiKey = DeepSeekSettings.apiKey
+    @State private var model = DeepSeekSettings.model
+    @State private var isSaved = false
+
+    private let models = [
+        "deepseek-v4-flash",
+        "deepseek-v4-pro",
+        "deepseek-chat",
+    ]
+
+    var body: some View {
+        Section {
+            SecureField("API Key", text: $apiKey)
+                .textContentType(.password)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+
+            Picker("模型", selection: $model) {
+                ForEach(models, id: \.self) { model in
+                    Text(model).tag(model)
+                }
+            }
+
+            Button {
+                DeepSeekSettings.apiKey = apiKey
+                DeepSeekSettings.model = model
+                isSaved = true
+                BeeveHaptics.success()
+            } label: {
+                Label(isSaved ? "已保存" : "保存 DeepSeek 设置", systemImage: isSaved ? "checkmark" : "key")
+            }
+            .tint(BeeveDesign.accent)
+        } header: {
+            Text("DeepSeek")
+        } footer: {
+            Text("Key 仅保存在本机设置中。当前助手优先使用 DeepSeek，失败时回到本地建议。")
+        }
+        .onChange(of: apiKey) { _, _ in
+            isSaved = false
+        }
+        .onChange(of: model) { _, _ in
+            isSaved = false
+        }
     }
 }
 

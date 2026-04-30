@@ -1,13 +1,19 @@
 import SwiftData
 import SwiftUI
 
+private struct AssistantLaunch: Identifiable {
+    let id = UUID()
+    let intent: AssistantIntent
+    var seedText: String?
+}
+
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var preferences: [UserPreferences]
     @Query(sort: \DailyFocus.createdAt, order: .reverse) private var focuses: [DailyFocus]
     @Query(sort: \DayEntry.createdAt, order: .reverse) private var entries: [DayEntry]
     @Query(sort: \AchievementCard.createdAt, order: .reverse) private var cards: [AchievementCard]
-    @State private var isLogging = false
+    @State private var assistantLaunch: AssistantLaunch?
     @State private var isEditingFocus = false
     @State private var generatedCard: AchievementCard?
     @State private var hasAppeared = false
@@ -55,7 +61,7 @@ struct TodayView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    noteSection
+                    assistantSection
                     focusSection
                     entrySection(kind: .done)
                     entrySection(kind: .interrupted)
@@ -72,20 +78,20 @@ struct TodayView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         BeeveHaptics.lightImpact()
-                        isLogging = true
+                        assistantLaunch = AssistantLaunch(intent: .planToday)
                     } label: {
-                        Image(systemName: "plus")
-                            .accessibilityLabel("记录一件事")
+                        Image(systemName: "wand.and.sparkles")
+                            .accessibilityLabel("打开 Beeve AI")
                     }
                 }
-            }
-            .sheet(isPresented: $isLogging) {
-                QuickLogSheet()
-                    .presentationDetents([.medium])
             }
             .sheet(isPresented: $isEditingFocus) {
                 FocusEditorView(focus: todayFocus)
                     .presentationDetents([.medium])
+            }
+            .sheet(item: $assistantLaunch) { launch in
+                AssistantSheet(initialIntent: launch.intent, context: context, initialText: launch.seedText)
+                    .presentationDetents([.large])
             }
             .sheet(item: $generatedCard) { card in
                 NavigationStack {
@@ -109,33 +115,111 @@ struct TodayView: View {
         }
     }
 
-    private var noteSection: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .center, spacing: 16) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(zhDateText)
-                        .font(.footnote.weight(.medium))
-                        .foregroundStyle(.secondary)
-                    Text("给未来的自己")
-                        .font(.title3.weight(.semibold))
-                }
-                Spacer()
-                BeeveDayRing(progress: progressFraction)
-            }
-
-            Text(FutureSelfGenerator().note(for: context))
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(.primary)
-                .fixedSize(horizontal: false, vertical: true)
+    private var assistantSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            aiHero
+            presetSection
 
             HStack(spacing: 8) {
+                BeeveMiniMetric(title: "AI", value: DeepSeekSettings.isConfigured ? "DeepSeek" : "本地")
                 BeeveMiniMetric(title: "焦点", value: todayFocus == nil ? "未定" : "已定")
                 BeeveMiniMetric(title: "记录", value: "\(todayEntries.count)")
-                BeeveMiniMetric(title: "明天", value: "\(todayEntries.filter { $0.kind == .tomorrow }.count)")
             }
         }
-        .beevePanel(padding: 22, tint: BeeveDesign.accent)
         .beeveReveal(hasAppeared)
+    }
+
+    private var aiHero: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 14) {
+                Image(systemName: "sparkles")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 46, height: 46)
+                    .background(Color.white.opacity(0.18))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Beeve AI")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.82))
+                    Text("说一句，直接生成今天。")
+                        .font(.title2.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(zhDateText)
+                        .font(.caption.weight(.semibold))
+                    Text("\(Int(progressFraction * 100))%")
+                        .font(.title3.weight(.bold))
+                }
+                .foregroundStyle(.white.opacity(0.86))
+            }
+
+            Text("优先用导入、自然语言和预设提示，不从空白输入框开始。")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.84))
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 10) {
+                Button {
+                    assistantLaunch = AssistantLaunch(intent: .voiceCapture, seedText: "我现在想说的是：")
+                    BeeveHaptics.lightImpact()
+                } label: {
+                    Label("自然语言", systemImage: "waveform")
+                }
+                .buttonStyle(AIHeroButtonStyle())
+
+                Button {
+                    assistantLaunch = AssistantLaunch(intent: .importText)
+                    BeeveHaptics.lightImpact()
+                } label: {
+                    Label("导入内容", systemImage: "square.and.arrow.down")
+                }
+                .buttonStyle(AIHeroButtonStyle())
+            }
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(BeeveDesign.accentGradient)
+        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                .stroke(Color.white.opacity(0.26), lineWidth: 1)
+        }
+        .shadow(color: BeeveDesign.accent.opacity(0.16), radius: 18, x: 0, y: 10)
+    }
+
+    private var presetSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("预设提示")
+                    .font(.headline)
+                Spacer()
+                Text(DeepSeekSettings.isConfigured ? "DeepSeek 已接入" : "本地建议")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+            }
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                AssistantHomeAction(intent: .planToday, title: "安排今天", subtitle: "给我一个可执行焦点") {
+                    assistantLaunch = AssistantLaunch(intent: .planToday, seedText: "我今天需要完成：")
+                }
+                AssistantHomeAction(intent: .recover, title: "被打断了", subtitle: "帮我找回下一步") {
+                    assistantLaunch = AssistantLaunch(intent: .recover, seedText: "我刚刚被打断，因为：")
+                }
+                AssistantHomeAction(intent: .importText, title: "会议记录", subtitle: "提取待办和明天") {
+                    assistantLaunch = AssistantLaunch(intent: .importText, seedText: "请从这段内容里提取今日焦点：")
+                }
+                AssistantHomeAction(intent: .handoff, title: "留给明天", subtitle: "压成明早第一步") {
+                    assistantLaunch = AssistantLaunch(intent: .handoff, seedText: "明天需要接住：")
+                }
+            }
+        }
     }
 
     private var focusSection: some View {
@@ -365,6 +449,60 @@ private struct BeeveMiniMetric: View {
                 .stroke(BeeveDesign.border, lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct AIHeroButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.primary)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background(Color.white.opacity(configuration.isPressed ? 0.76 : 0.92))
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
+}
+
+private struct AssistantHomeAction: View {
+    let intent: AssistantIntent
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Image(systemName: intent.systemImage)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(BeeveDesign.accentDeep)
+                    .frame(width: 30, height: 30)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline.weight(.semibold))
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .foregroundStyle(.primary)
+            .padding(14)
+            .frame(minHeight: 66)
+            .background(BeeveDesign.elevatedSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
     }
 }
 
