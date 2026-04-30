@@ -34,7 +34,7 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 20) {
                     noteSection
                     focusSection
                     entrySection(kind: .done)
@@ -42,7 +42,9 @@ struct TodayView: View {
                     entrySection(kind: .tomorrow)
                     cardActionSection
                 }
-                .padding(16)
+                .padding(.horizontal, BeeveDesign.contentPadding)
+                .padding(.top, 12)
+                .padding(.bottom, 120)
             }
             .background(BeeveDesign.background)
             .navigationTitle("Today")
@@ -83,32 +85,54 @@ struct TodayView: View {
     }
 
     private var noteSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("From future-you")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(BeeveDesign.mutedText)
-                .textCase(.uppercase)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                BeeveIconBubble(systemImage: "sparkle.magnifyingglass", tint: BeeveDesign.accent)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(today.formatted(.dateTime.weekday(.wide).month().day()))
+                        .font(.footnote.weight(.medium))
+                        .foregroundStyle(.secondary)
+                    Text("From future-you")
+                        .font(.headline)
+                }
+            }
+
             Text(FutureSelfGenerator().note(for: context))
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .beevePanel()
+        .beevePanel(padding: 18)
     }
 
     private var focusSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("One real move")
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                BeeveIconBubble(systemImage: todayFocus == nil ? "target" : "target", tint: Color(.systemIndigo))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("One real move")
+                        .font(.headline)
+                    Text(todayFocus == nil ? "Pick the smallest thing that would make today feel less scattered." : "Keep the day pointed at one clear move.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
                 Button(todayFocus == nil ? "Set" : "Edit") {
                     isEditingFocus = true
                 }
                 .buttonStyle(.bordered)
+                .controlSize(.small)
             }
 
-            Text(todayFocus?.title ?? "Name the one thing that would make today feel less scattered.")
-                .foregroundStyle(todayFocus == nil ? BeeveDesign.mutedText : .primary)
+            if let todayFocus {
+                Text(todayFocus.title)
+                    .font(.body.weight(.medium))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+                    .background(BeeveDesign.elevatedSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+            }
         }
         .beevePanel()
     }
@@ -116,27 +140,39 @@ struct TodayView: View {
     private func entrySection(kind: DayEntryKind) -> some View {
         let sectionEntries = todayEntries.filter { $0.kind == kind }
 
-        return VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Label(kind.sectionTitle, systemImage: kind.systemImage)
-                    .font(.headline)
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .center, spacing: 12) {
+                BeeveIconBubble(systemImage: kind.systemImage, tint: tint(for: kind))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(kind.sectionTitle)
+                        .font(.headline)
+                    Text(kind.prompt)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
-                Text("\(sectionEntries.count)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(BeeveDesign.mutedText)
+                BeeveCountBadge(value: sectionEntries.count)
             }
 
             if sectionEntries.isEmpty {
-                Text("Nothing logged yet.")
-                    .foregroundStyle(BeeveDesign.mutedText)
+                Text(emptyMessage(for: kind))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 4)
             } else {
-                ForEach(sectionEntries) { entry in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(entry.text)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        if entry.persistentModelID != sectionEntries.last?.persistentModelID {
-                            Divider()
+                VStack(spacing: 0) {
+                    ForEach(sectionEntries) { entry in
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(entry.text)
+                                .font(.body)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                            if entry.persistentModelID != sectionEntries.last?.persistentModelID {
+                                Divider()
+                            }
                         }
+                        .padding(.vertical, 4)
                     }
                 }
             }
@@ -145,22 +181,43 @@ struct TodayView: View {
     }
 
     private var cardActionSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Close the loop")
-                .font(.headline)
-            Text("Turn today's fragments into an achievement card and a lighter start for tomorrow.")
-                .foregroundStyle(BeeveDesign.mutedText)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                BeeveIconBubble(systemImage: "rectangle.stack.badge.plus", tint: Color(.systemBrown))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Close the loop")
+                        .font(.headline)
+                    Text("Turn today's fragments into an achievement card and a lighter start for tomorrow.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
 
             Button {
                 generateCard()
             } label: {
                 Label("Generate today's card", systemImage: "sparkles")
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(BeevePrimaryButtonStyle())
         }
         .beevePanel()
+    }
+
+    private func tint(for kind: DayEntryKind) -> Color {
+        switch kind {
+        case .done: Color(.systemGreen)
+        case .interrupted: Color(.systemOrange)
+        case .tomorrow: Color(.systemIndigo)
+        }
+    }
+
+    private func emptyMessage(for kind: DayEntryKind) -> String {
+        switch kind {
+        case .done: "No wins logged yet. Add even the smallest useful move."
+        case .interrupted: "No interruptions named. Capture one when it pulls you away."
+        case .tomorrow: "No handoff yet. Leave future-you one clear thread."
+        }
     }
 
     private func generateCard() {

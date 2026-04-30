@@ -7,19 +7,28 @@ struct CardsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 20) {
                     if cards.isEmpty {
-                        Text("No cards yet. Collect one day first.")
-                            .foregroundStyle(BeeveDesign.mutedText)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .beevePanel()
+                        VStack(alignment: .leading, spacing: 14) {
+                            BeeveIconBubble(systemImage: "rectangle.stack.badge.plus")
+                            Text("No cards yet")
+                                .font(.title3.weight(.semibold))
+                            Text("Collect today first. Beeve will turn your notes into a compact record you can revisit.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .beevePanel(padding: 18)
                     } else {
                         ForEach(cards) { card in
                             AchievementCardView(card: card)
                         }
                     }
                 }
-                .padding(16)
+                .padding(.horizontal, BeeveDesign.contentPadding)
+                .padding(.top, 12)
+                .padding(.bottom, 120)
             }
             .navigationTitle("Cards")
             .background(BeeveDesign.background)

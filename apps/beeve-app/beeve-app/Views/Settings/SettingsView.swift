@@ -19,12 +19,18 @@ struct SettingsView: View {
                         Button("Reset local data", role: .destructive) {
                             isShowingResetConfirmation = true
                         }
+                    } header: {
+                        Text("Local data")
+                    } footer: {
+                        Text("This only affects data stored on this device.")
                     }
                 } else {
                     Text("Settings are not ready yet.")
                         .foregroundStyle(BeeveDesign.mutedText)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(BeeveDesign.background)
             .navigationTitle("Settings")
             .confirmationDialog("Reset Beeve data?", isPresented: $isShowingResetConfirmation) {
                 Button("Reset local data", role: .destructive) {
@@ -68,6 +74,7 @@ private struct SettingsForm: View {
             Stepper("Start: \(formatted(hour: preferences.workStartHour, minute: preferences.workStartMinute))", value: $preferences.workStartHour, in: 0...23)
             Stepper("End: \(formatted(hour: preferences.workEndHour, minute: preferences.workEndMinute))", value: $preferences.workEndHour, in: 0...23)
             Toggle("Daily reminders", isOn: $preferences.notificationsEnabled)
+                .tint(BeeveDesign.accent)
 
             Button {
                 saveSchedule()
@@ -78,6 +85,7 @@ private struct SettingsForm: View {
                     Text("Save reminder schedule")
                 }
             }
+            .tint(BeeveDesign.accent)
         }
     }
 

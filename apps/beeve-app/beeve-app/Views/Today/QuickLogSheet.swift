@@ -9,7 +9,15 @@ struct QuickLogSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Log one thing")
+                        .font(.title2.weight(.semibold))
+                    Text("Small, specific notes work better than a perfect recap.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
                 Picker("Kind", selection: $kind) {
                     ForEach(DayEntryKind.allCases) { kind in
                         Text(kind.title).tag(kind)
@@ -17,21 +25,40 @@ struct QuickLogSheet: View {
                 }
                 .pickerStyle(.segmented)
 
-                Text(kind.prompt)
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: 12) {
+                        BeeveIconBubble(systemImage: kind.systemImage, tint: tint(for: kind))
+                        Text(kind.prompt)
+                            .font(.headline)
+                    }
 
-                TextEditor(text: $text)
-                    .frame(minHeight: 140)
-                    .padding(8)
+                    ZStack(alignment: .topLeading) {
+                        if text.isEmpty {
+                            Text(placeholder(for: kind))
+                                .foregroundStyle(.tertiary)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 16)
+                        }
+
+                        TextEditor(text: $text)
+                            .scrollContentBackground(.hidden)
+                            .padding(10)
+                    }
+                    .frame(minHeight: 160)
+                    .background(BeeveDesign.elevatedSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
                     .overlay {
-                        RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous)
+                        RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
                             .stroke(BeeveDesign.border, lineWidth: 1)
                     }
+                }
+                .beevePanel()
 
                 Spacer()
             }
-            .padding(16)
-            .navigationTitle("Log one thing")
+            .padding(BeeveDesign.contentPadding)
+            .background(BeeveDesign.background)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -43,6 +70,22 @@ struct QuickLogSheet: View {
                     .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
+        }
+    }
+
+    private func tint(for kind: DayEntryKind) -> Color {
+        switch kind {
+        case .done: Color(.systemGreen)
+        case .interrupted: Color(.systemOrange)
+        case .tomorrow: Color(.systemIndigo)
+        }
+    }
+
+    private func placeholder(for kind: DayEntryKind) -> String {
+        switch kind {
+        case .done: "Example: shipped the first version of the focus screen"
+        case .interrupted: "Example: context switch pulled me into admin work"
+        case .tomorrow: "Example: start by tightening the card copy"
         }
     }
 
