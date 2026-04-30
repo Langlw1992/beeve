@@ -3,6 +3,7 @@ node_modules/
 # Build outputs
 dist/
 .turbo/
+.worktrees/
 .vscode/
 .idea/
 .intent
