@@ -174,3 +174,13 @@ struct OnboardingView: View {
         String(format: "%02d:%02d", hour, minute)
     }
 }
+
+#Preview {
+    let container = SampleData.previewContainer(
+        hasCompletedOnboarding: false,
+        includeHistory: false
+    )
+
+    OnboardingView(preferences: SampleData.previewPreferences(from: container))
+        .modelContainer(container)
+}

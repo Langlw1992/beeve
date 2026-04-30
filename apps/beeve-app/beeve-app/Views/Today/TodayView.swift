@@ -233,3 +233,8 @@ struct TodayView: View {
         generatedCard = card
     }
 }
+
+#Preview {
+    TodayView()
+        .modelContainer(SampleData.previewContainer())
+}

@@ -35,3 +35,13 @@ struct CardsView: View {
         }
     }
 }
+
+#Preview("With cards") {
+    CardsView()
+        .modelContainer(SampleData.previewContainer())
+}
+
+#Preview("Empty") {
+    CardsView()
+        .modelContainer(SampleData.previewContainer(includeHistory: false))
+}

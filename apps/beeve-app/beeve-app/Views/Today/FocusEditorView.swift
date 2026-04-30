@@ -81,3 +81,15 @@ struct FocusEditorView: View {
         dismiss()
     }
 }
+
+#Preview("New focus") {
+    FocusEditorView(focus: nil)
+        .modelContainer(SampleData.previewContainer())
+}
+
+#Preview("Edit focus") {
+    let container = SampleData.previewContainer()
+
+    FocusEditorView(focus: SampleData.previewFocus(from: container))
+        .modelContainer(container)
+}

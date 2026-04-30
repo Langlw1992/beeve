@@ -69,3 +69,22 @@ struct AchievementCardView: View {
         .beevePanel(padding: 18)
     }
 }
+
+#Preview {
+    AchievementCardView(card: AchievementCard(
+        title: "A practical day with a cleaner handoff",
+        summaryBullets: [
+            "Rebuilt the onboarding rhythm",
+            "Kept the Today screen focused",
+            "Verified the app in Simulator",
+        ],
+        interruptionReframe: "The interruptions counted too: Xcode setup and preview data.",
+        tomorrowPriorities: [
+            "Tighten card sharing",
+            "Review first-run copy on iPhone SE",
+        ],
+        closingLine: "Tomorrow starts lighter because the next thread is named."
+    ))
+    .padding(20)
+    .background(BeeveDesign.background)
+}

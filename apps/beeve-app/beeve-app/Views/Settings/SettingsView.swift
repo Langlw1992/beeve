@@ -106,3 +106,8 @@ private struct SettingsForm: View {
         String(format: "%02d:%02d", hour, minute)
     }
 }
+
+#Preview {
+    SettingsView()
+        .modelContainer(SampleData.previewContainer())
+}

@@ -52,3 +52,16 @@ struct ContentView: View {
         try? modelContext.save()
     }
 }
+
+#Preview("Today") {
+    ContentView()
+        .modelContainer(SampleData.previewContainer())
+}
+
+#Preview("Onboarding") {
+    ContentView()
+        .modelContainer(SampleData.previewContainer(
+            hasCompletedOnboarding: false,
+            includeHistory: false
+        ))
+}

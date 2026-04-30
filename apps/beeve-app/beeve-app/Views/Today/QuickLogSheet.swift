@@ -98,3 +98,8 @@ struct QuickLogSheet: View {
         dismiss()
     }
 }
+
+#Preview {
+    QuickLogSheet()
+        .modelContainer(SampleData.previewContainer())
+}
