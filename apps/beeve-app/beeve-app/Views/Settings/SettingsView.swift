@@ -31,7 +31,7 @@ struct SettingsView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .navigationTitle("设置")
             .confirmationDialog("重置 Beeve 数据？", isPresented: $isShowingResetConfirmation) {
                 Button("重置本机数据", role: .destructive) {

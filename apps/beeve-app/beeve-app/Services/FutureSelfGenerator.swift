@@ -8,15 +8,15 @@ struct FutureSelfGenerator {
 
         switch (context.preferences.tone, hour) {
         case (_, 5..<12):
-            return "\(prefix)今天只需要一个真正的推进。先把它定下来，别让日程替你决定。"
+            return "\(prefix)先定一个真正的推进。"
         case (.firm, 12..<17):
-            return "\(prefix)先别再开新坑。把已经在动的事情收住。"
+            return "\(prefix)别开新坑，收住这一件。"
         case (_, 12..<17):
-            return "\(prefix)午后先别加码，回到已经开始的那条线。"
+            return "\(prefix)先回到已经开始的那条线。"
         case (_, 17..<22):
-            return "\(prefix)先别急着说今天废了，写下真正往前走过的部分。"
+            return "\(prefix)先写下真正往前走的部分。"
         default:
-            return "\(prefix)给明天留一条清晰线索，而不是一堆噪音。"
+            return "\(prefix)给明天留一条清楚线索。"
         }
     }
 
@@ -26,11 +26,11 @@ struct FutureSelfGenerator {
         let tomorrow = context.tomorrowEntries.map(\.text).filter { !$0.isEmpty }
 
         let bullets = Array(done.prefix(5))
-        let title = bullets.isEmpty ? "这一天仍然值得被收起来" : "今天比感觉中走得更远"
+        let title = bullets.isEmpty ? "今天也有可收起的部分" : "今天往前走了"
 
         let reframe: String
         if interruptions.isEmpty {
-            reframe = "今天没有记录打断。保持简单，也保持诚实。"
+            reframe = "今天没有记录打断。"
         } else {
             reframe = "这些打断也算进今天：\(interruptions.prefix(2).joined(separator: "、"))。"
         }
@@ -38,8 +38,8 @@ struct FutureSelfGenerator {
         let focusFallback = context.focus?.isCompleted == false ? context.focus?.title : nil
         let priorities = Array((tomorrow + [focusFallback].compactMap { $0 }).prefix(3))
         let closingLine = priorities.isEmpty
-            ? "明天的你只需要一个清楚的开始。"
-            : "因为你已经命名了下一条线，明天会轻一点。"
+            ? "明天只需要一个清楚的开始。"
+            : "下一条线已经留好了。"
 
         return AchievementCard(
             date: context.date,

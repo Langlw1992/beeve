@@ -15,7 +15,7 @@ struct QuickLogSheet: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("记录一件事")
                         .font(.title2.weight(.semibold))
-                    Text("不用完整复盘，只写一个具体片段。")
+                    Text("写一个具体片段。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -67,7 +67,7 @@ struct QuickLogSheet: View {
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -99,9 +99,9 @@ struct QuickLogSheet: View {
 
     private func placeholder(for kind: DayEntryKind) -> String {
         switch kind {
-        case .done: "例如：把今天页的首屏层级收紧了"
-        case .interrupted: "例如：临时切去处理一次构建问题"
-        case .tomorrow: "例如：明早先检查卡片分享文案"
+        case .done: "例如：收紧了首页层级"
+        case .interrupted: "例如：被构建问题打断"
+        case .tomorrow: "例如：明早先看分享文案"
         }
     }
 

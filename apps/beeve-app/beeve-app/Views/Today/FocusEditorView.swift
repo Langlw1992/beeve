@@ -20,7 +20,7 @@ struct FocusEditorView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("今日焦点")
                         .font(.title2.weight(.semibold))
-                    Text("窄到今天能推进，也清楚到明天能判断。")
+                    Text("只写今天要推进的一件事。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -28,7 +28,7 @@ struct FocusEditorView: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 12) {
-                        BeeveIconBubble(systemImage: "target", tint: Color(.systemIndigo))
+                        BeeveIconBubble(systemImage: "target", tint: BeeveDesign.accentDeep)
                         BeeveSectionHeader(title: "一个真实推进")
                     }
 
@@ -38,7 +38,7 @@ struct FocusEditorView: View {
                         .focused($isTitleFocused)
                         .beeveInputSurface()
 
-                    Text("好的焦点是一个具体动作：今天能完成，或至少明显推进。")
+                    Text("越具体，越容易开始。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -48,7 +48,7 @@ struct FocusEditorView: View {
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

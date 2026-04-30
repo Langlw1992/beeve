@@ -69,7 +69,7 @@ struct AchievementCardView: View {
                         HStack(alignment: .top, spacing: 10) {
                             Image(systemName: "arrow.right.circle.fill")
                                 .font(.subheadline)
-                                .foregroundStyle(BeeveDesign.accent)
+                                .foregroundStyle(.secondary)
                                 .padding(.top, 2)
                             Text(priority)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -84,10 +84,14 @@ struct AchievementCardView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(BeeveDesign.warmGradient)
+                .background(BeeveDesign.accentGradient)
                 .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
+                        .stroke(Color.white.opacity(0.32), lineWidth: 1)
+                }
         }
-        .beevePanel(padding: 20, tint: BeeveDesign.warmAccent)
+        .beevePanel(padding: 22, tint: BeeveDesign.warmAccent)
         .accessibilityElement(children: .contain)
     }
 }
@@ -108,5 +112,5 @@ struct AchievementCardView: View {
         closingLine: "下一条线已经被命名，明天会轻一点。"
     ))
     .padding(20)
-    .background(BeeveDesign.background)
+    .background { BeeveSceneBackground() }
 }

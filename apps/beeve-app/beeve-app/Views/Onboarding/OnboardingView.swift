@@ -19,7 +19,7 @@ struct OnboardingView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 96)
             }
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 Button {

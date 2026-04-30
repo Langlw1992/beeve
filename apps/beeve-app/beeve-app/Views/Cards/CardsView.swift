@@ -20,7 +20,7 @@ struct CardsView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .beevePanel(padding: 20, tint: BeeveDesign.warmAccent)
+                        .beevePanel(padding: 22, tint: BeeveDesign.warmAccent)
                         .beeveReveal(hasAppeared)
                     } else {
                         ForEach(cards) { card in
@@ -34,7 +34,7 @@ struct CardsView: View {
                 .padding(.bottom, 120)
             }
             .navigationTitle("卡片")
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .onAppear {
                 hasAppeared = true
             }

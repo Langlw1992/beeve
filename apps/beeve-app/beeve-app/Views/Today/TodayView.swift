@@ -66,7 +66,7 @@ struct TodayView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 120)
             }
-            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .background { BeeveSceneBackground() }
             .navigationTitle("今天")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -124,7 +124,7 @@ struct TodayView: View {
             }
 
             Text(FutureSelfGenerator().note(for: context))
-                .font(.title2.weight(.bold))
+                .font(.title2.weight(.semibold))
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -134,7 +134,7 @@ struct TodayView: View {
                 BeeveMiniMetric(title: "明天", value: "\(todayEntries.filter { $0.kind == .tomorrow }.count)")
             }
         }
-        .beevePanel(padding: 20, tint: BeeveDesign.accent)
+        .beevePanel(padding: 22, tint: BeeveDesign.accent)
         .beeveReveal(hasAppeared)
     }
 
@@ -145,7 +145,7 @@ struct TodayView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("今日焦点")
                         .font(.headline)
-                    Text(todayFocus == nil ? "选一个足够小、但真的能推进的动作。" : "今天先围绕这一条线收束。")
+                    Text(todayFocus == nil ? "只选一件，今天先推进它。" : "今天先围绕这一件。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -175,7 +175,7 @@ struct TodayView: View {
                 .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
                 .transition(.move(edge: .top).combined(with: .opacity))
             } else {
-                Text("先把注意力落在一个点上，后面的记录会更有方向。")
+                Text("先定焦点，再记录。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 2)
@@ -198,7 +198,7 @@ struct TodayView: View {
                         .font(.headline)
                     Text(kind.prompt)
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(sectionTint)
                 }
                 Spacer()
                 BeeveCountBadge(value: sectionEntries.count)
@@ -207,7 +207,7 @@ struct TodayView: View {
             if sectionEntries.isEmpty {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "circle.dashed")
-                        .foregroundStyle(sectionTint)
+                        .foregroundStyle(.secondary)
                         .padding(.top, 2)
                     Text(emptyMessage(for: kind))
                         .font(.subheadline)
@@ -216,8 +216,12 @@ struct TodayView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(14)
-                .background(sectionTint.opacity(0.08))
+                .background(BeeveDesign.elevatedSurface)
                 .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
+                        .stroke(BeeveDesign.border, lineWidth: 1)
+                }
             } else {
                 VStack(spacing: 0) {
                     ForEach(sectionEntries) { entry in
@@ -254,7 +258,7 @@ struct TodayView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("收束今天")
                         .font(.headline)
-                    Text("把碎片整理成一张成就卡，也给明天留一个更轻的开头。")
+                    Text("把今天整理成一张卡。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -283,9 +287,9 @@ struct TodayView: View {
 
     private func emptyMessage(for kind: DayEntryKind) -> String {
         switch kind {
-        case .done: "还没有记录推进。哪怕只是一个小动作，也值得被收起来。"
-        case .interrupted: "还没有命名打断。写下来，它就不再只是混乱。"
-        case .tomorrow: "还没有交接给明天。留一句话，明早会轻很多。"
+        case .done: "还没有推进记录。"
+        case .interrupted: "还没有记录打断。"
+        case .tomorrow: "还没有留给明天。"
         }
     }
 
@@ -354,8 +358,12 @@ private struct BeeveMiniMetric: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(BeeveDesign.elevatedSurface.opacity(0.78))
+        .background(BeeveDesign.elevatedSurface)
         .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
+                .stroke(BeeveDesign.border, lineWidth: 1)
+        }
         .accessibilityElement(children: .combine)
     }
 }
