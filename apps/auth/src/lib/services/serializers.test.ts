@@ -35,8 +35,7 @@ describe('service serializers', () => {
     expect(normalizeThemeMode('dark')).toBe('dark')
     expect(normalizeThemeMode('other')).toBe('system')
     expect(serializePreferences('light')).toEqual({themeMode: 'light'})
-    expect(
-      serializeSession(
+    const session = serializeSession(
         {
           id: 'session_1',
           token: 'token_1',
@@ -44,11 +43,13 @@ describe('service serializers', () => {
           expiresAt: new Date('2026-01-03T00:00:00.000Z'),
         },
         'token_1',
-      ),
-    ).toMatchObject({
+      )
+
+    expect(session).toMatchObject({
       id: 'session_1',
       current: true,
     })
+    expect(session).not.toHaveProperty('token')
   })
 
   it('counts admin users through centralized role policy', () => {

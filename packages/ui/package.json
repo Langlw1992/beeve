@@ -5,31 +5,42 @@
   "main": "./dist/source/index.js",
   "module": "./dist/source/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.css",
+    "!src/**/*.stories.ts",
+    "!src/**/*.stories.tsx",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/test/**"
+  ],
   "sideEffects": ["./src/styles/index.css", "./dist/styles.css"],
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
       "solid": "./src/index.ts",
+      "types": "./dist/types/index.d.ts",
       "default": "./dist/source/index.js"
     },
     "./themes": {
-      "types": "./dist/types/themes/index.d.ts",
       "solid": "./src/themes/index.ts",
+      "types": "./dist/types/themes/index.d.ts",
       "default": "./dist/source/themes/index.js"
     },
     "./providers": {
-      "types": "./dist/types/providers/index.d.ts",
       "solid": "./src/providers/index.ts",
+      "types": "./dist/types/providers/index.d.ts",
       "default": "./dist/source/providers/index.js"
     },
     "./components/*": {
-      "types": "./dist/types/components/*/index.d.ts",
       "solid": "./src/components/*/index.ts",
+      "types": "./dist/types/components/*/index.d.ts",
       "default": "./dist/source/components/*/index.js"
     },
     "./styles": {
       "solid": "./src/styles/index.css",
+      "style": "./src/styles/index.css",
       "default": "./dist/styles.css"
     },
     "./package.json": "./package.json"
@@ -71,15 +82,15 @@
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
-    "jsdom": "^29.0.1",
-    "lucide-solid": "^0.577.0",
-    "solid-js": "^1.9.11",
-    "tailwindcss": "^4.2.2",
+    "jsdom": "^29.1.0",
+    "lucide-solid": "^1.14.0",
+    "solid-js": "^1.9.12",
+    "tailwindcss": "^4.2.4",
     "typescript": "^5.7.2",
-    "vite-plugin-solid": "^2.11.11",
-    "vitest": "^4.1.0"
+    "vite-plugin-solid": "^2.11.12",
+    "vitest": "^4.1.5"
   }
 }

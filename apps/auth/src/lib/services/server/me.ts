@@ -67,16 +67,31 @@ export async function listCurrentUserSessions(headers: Headers): Promise<UserSes
   }
 }
 
-export async function revokeUserSession(headers: Headers, token: string) {
-  await requireSession(headers)
+export async function revokeUserSession(headers: Headers, sessionId: string) {
+  const session = await requireSession(headers)
 
-  if (!token) {
-    throw new ServiceError(400, 'INVALID_SESSION', '请提供会话令牌。')
+  if (!sessionId) {
+    throw new ServiceError(400, 'INVALID_SESSION', '请提供会话 ID。')
+  }
+
+  const sessions = await auth.api.listSessions({headers})
+  const targetSession = sessions.find((item) => item.id === sessionId)
+
+  if (!targetSession) {
+    throw new ServiceError(404, 'SESSION_NOT_FOUND', '未找到该会话。')
+  }
+
+  if (targetSession.token === session.session.token) {
+    throw new ServiceError(
+      400,
+      'INVALID_SESSION',
+      '当前会话请通过退出登录结束。',
+    )
   }
 
   await auth.api.revokeSession({
     headers,
-    body: {token},
+    body: {token: targetSession.token},
   })
 
   return {success: true}

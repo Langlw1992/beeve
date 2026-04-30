@@ -58,8 +58,8 @@ export async function fetchUserSessions(): Promise<UserSessionsDto> {
   return unwrapResponse(result.data, '无法加载会话列表。')
 }
 
-export async function revokeUserSession(token: string) {
-  const result = await api().sessions.revoke.post({token})
+export async function revokeUserSession(sessionId: string) {
+  const result = await api().sessions.revoke.post({sessionId})
   return unwrapResponse(result.data, '无法撤销会话。')
 }
 

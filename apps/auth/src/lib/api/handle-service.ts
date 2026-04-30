@@ -1,4 +1,5 @@
 import {ServiceError} from '@/lib/services/server/context'
+import {ContractParseError} from '@/lib/services/contracts'
 
 export interface ApiErrorResponse {
   error: string
@@ -13,6 +14,14 @@ export async function handleService<T>(
     return await handler()
   } catch (error) {
     if (error instanceof ServiceError) {
+      set.status = error.status
+      return {
+        error: error.message,
+        code: error.code,
+      }
+    }
+
+    if (error instanceof ContractParseError) {
       set.status = error.status
       return {
         error: error.message,

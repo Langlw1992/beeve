@@ -63,7 +63,6 @@ export function serializeSession(
 ): UserSessionDto {
   return {
     id: session.id,
-    token: session.token,
     createdAt: new Date(session.createdAt).toISOString(),
     expiresAt: new Date(session.expiresAt).toISOString(),
     ipAddress: session.ipAddress ?? null,

@@ -236,11 +236,11 @@ function SettingsPage() {
     })
   }
 
-  const handleRevokeSession = async (token: string) => {
-    setRevoking(token)
+  const handleRevokeSession = async (sessionId: string) => {
+    setRevoking(sessionId)
 
     try {
-      await revokeUserSession(token)
+      await revokeUserSession(sessionId)
       void refetchSessions()
     } finally {
       setRevoking(null)
@@ -544,7 +544,7 @@ function SessionsTab(props: {
   revoking: () => string | null
   revokingOthers: () => boolean
   onRefresh: () => unknown
-  onRevokeSession: (token: string) => Promise<void>
+  onRevokeSession: (sessionId: string) => Promise<void>
   onRevokeOthers: () => Promise<void>
 }) {
   const sessionList = createMemo(() => props.sessions()?.sessions ?? [])
@@ -599,7 +599,7 @@ function SessionsTab(props: {
 
 function SessionRow(props: {
   sessionItem: UserSessionDto
-  onRevokeSession: (token: string) => Promise<void>
+  onRevokeSession: (sessionId: string) => Promise<void>
   revoking: () => string | null
 }) {
   const DeviceIcon = createMemo(() => {
@@ -660,8 +660,8 @@ function SessionRow(props: {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => props.onRevokeSession(props.sessionItem.token)}
-          loading={props.revoking() === props.sessionItem.token}
+          onClick={() => props.onRevokeSession(props.sessionItem.id)}
+          loading={props.revoking() === props.sessionItem.id}
           title="撤销会话"
         >
           <Trash2 class="size-4 text-destructive" />

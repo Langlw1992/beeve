@@ -5,15 +5,16 @@ import {
   revokeOtherUserSessions,
   revokeUserSession,
 } from '@/lib/services/server/me'
+import {assertTrustedWriteRequest} from '@/lib/api/request-guards'
 
-function parseSessionToken(body: unknown): string {
+function parseSessionId(body: unknown): string {
   if (
     typeof body === 'object' &&
     body !== null &&
-    'token' in body &&
-    typeof body.token === 'string'
+    'sessionId' in body &&
+    typeof body.sessionId === 'string'
   ) {
-    return body.token
+    return body.sessionId
   }
 
   return ''
@@ -25,11 +26,15 @@ export const sessionRoutes = new Elysia().group('/sessions', (group) =>
       handleService(set, () => listCurrentUserSessions(request.headers)),
     )
     .post('/revoke', ({request, body, set}) =>
-      handleService(set, () =>
-        revokeUserSession(request.headers, parseSessionToken(body)),
-      ),
+      handleService(set, () => {
+        assertTrustedWriteRequest(request.headers)
+        return revokeUserSession(request.headers, parseSessionId(body))
+      }),
     )
     .post('/revoke-others', ({request, set}) =>
-      handleService(set, () => revokeOtherUserSessions(request.headers)),
+      handleService(set, () => {
+        assertTrustedWriteRequest(request.headers)
+        return revokeOtherUserSessions(request.headers)
+      }),
     ),
 )

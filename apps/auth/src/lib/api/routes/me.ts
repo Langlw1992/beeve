@@ -9,6 +9,7 @@ import {
   updateCurrentUserPreferences,
   updateCurrentUserProfile,
 } from '@/lib/services/server/me'
+import {assertTrustedWriteRequest} from '@/lib/api/request-guards'
 
 export const meRoutes = new Elysia().group('/me', (group) =>
   group
@@ -16,19 +17,21 @@ export const meRoutes = new Elysia().group('/me', (group) =>
       handleService(set, () => getCurrentUser(request.headers)),
     )
     .post('/', ({request, body, set}) =>
-      handleService(set, () =>
-        updateCurrentUserProfile(
+      handleService(set, () => {
+        assertTrustedWriteRequest(request.headers)
+        return updateCurrentUserProfile(
           request.headers,
           parseProfileUpdateInput(body),
-        ),
-      ),
+        )
+      }),
     )
     .post('/preferences', ({request, body, set}) =>
-      handleService(set, () =>
-        updateCurrentUserPreferences(
+      handleService(set, () => {
+        assertTrustedWriteRequest(request.headers)
+        return updateCurrentUserPreferences(
           request.headers,
           parsePreferencesUpdateInput(body),
-        ),
-      ),
+        )
+      }),
     ),
 )

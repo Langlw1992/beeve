@@ -5,6 +5,7 @@ import {
   applyBatchUserAction,
   listAdminUsers,
 } from '@/lib/services/server/admin'
+import {assertTrustedWriteRequest} from '@/lib/api/request-guards'
 
 export const adminRoutes = new Elysia().group('/admin', (group) =>
   group.group('/users', (users) =>
@@ -13,12 +14,13 @@ export const adminRoutes = new Elysia().group('/admin', (group) =>
         handleService(set, () => listAdminUsers(request.headers)),
       )
       .post('/batch', ({request, body, set}) =>
-        handleService(set, () =>
-          applyBatchUserAction(
+        handleService(set, () => {
+          assertTrustedWriteRequest(request.headers)
+          return applyBatchUserAction(
             request.headers,
             parseBatchUserActionInput(body),
-          ),
-        ),
+          )
+        }),
       ),
   ),
 )

@@ -269,7 +269,12 @@ export const Badge: Component<BadgeProps> = (props) => {
   }
 
   // 独立使用 Badge 作为标签（带 variant 支持）
-  if (isStandalone() && !local.status && !local.text) {
+  if (
+    local.count === undefined &&
+    !local.dot &&
+    !local.status &&
+    !local.text
+  ) {
     const baseClasses =
       'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'
     const variantClasses = () => {

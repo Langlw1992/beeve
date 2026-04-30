@@ -1,5 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {
+  ContractParseError,
   isThemeMode,
   parseBatchUserActionInput,
   parsePreferencesUpdateInput,
@@ -55,5 +56,23 @@ describe('service contracts', () => {
       userIds: ['1'],
       action: {type: 'ban', banReason: 'abuse'},
     })
+  })
+
+  it('rejects unknown batch actions instead of defaulting to an effectful action', () => {
+    expect(() =>
+      parseBatchUserActionInput({
+        userIds: ['1'],
+        action: {type: 'delete-user'},
+      }),
+    ).toThrow(ContractParseError)
+  })
+
+  it('rejects invalid role changes instead of coercing them', () => {
+    expect(() =>
+      parseBatchUserActionInput({
+        userIds: ['1'],
+        action: {type: 'set-role', role: 'owner'},
+      }),
+    ).toThrow(ContractParseError)
   })
 })

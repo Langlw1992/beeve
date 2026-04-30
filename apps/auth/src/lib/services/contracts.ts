@@ -28,7 +28,6 @@ export interface CurrentUserDto {
 
 export interface UserSessionDto {
   id: string
-  token: string
   createdAt: string
   expiresAt: string
   ipAddress: string | null
@@ -68,6 +67,16 @@ export interface BatchUserActionInput {
 export interface BatchUserActionResult {
   action: BatchUserAction['type']
   processedUserIds: string[]
+}
+
+export class ContractParseError extends Error {
+  status = 400
+  code: string
+
+  constructor(code: string, message: string) {
+    super(message)
+    this.code = code
+  }
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -115,11 +124,18 @@ export function parsePreferencesUpdateInput(
 }
 
 export function parseBatchUserActionInput(value: unknown): BatchUserActionInput {
-  if (!isObject(value) || !Array.isArray(value.userIds) || !isObject(value.action)) {
-    return {
-      userIds: [],
-      action: {type: 'unban'},
-    }
+  if (!isObject(value) || !Array.isArray(value.userIds)) {
+    throw new ContractParseError(
+      'INVALID_BATCH_ACTION',
+      '批量操作参数格式无效。',
+    )
+  }
+
+  if (!isObject(value.action)) {
+    throw new ContractParseError(
+      'INVALID_BATCH_ACTION',
+      '请提供有效的批量操作。',
+    )
   }
 
   const userIds = value.userIds
@@ -130,11 +146,19 @@ export function parseBatchUserActionInput(value: unknown): BatchUserActionInput 
 
   if (actionType === 'set-role') {
     const role = value.action.role
+
+    if (role !== 'admin' && role !== 'user') {
+      throw new ContractParseError(
+        'INVALID_BATCH_ACTION',
+        '请提供有效的目标角色。',
+      )
+    }
+
     return {
       userIds,
       action: {
         type: 'set-role',
-        role: role === 'admin' ? 'admin' : 'user',
+        role,
       },
     }
   }
@@ -156,8 +180,15 @@ export function parseBatchUserActionInput(value: unknown): BatchUserActionInput 
     }
   }
 
-  return {
-    userIds,
-    action: {type: 'unban'},
+  if (actionType === 'unban') {
+    return {
+      userIds,
+      action: {type: 'unban'},
+    }
   }
+
+  throw new ContractParseError(
+    'INVALID_BATCH_ACTION',
+    '请提供有效的批量操作。',
+  )
 }
