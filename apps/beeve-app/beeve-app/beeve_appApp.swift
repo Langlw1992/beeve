@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 @main
@@ -6,5 +7,11 @@ struct BeeveAppApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [
+            UserPreferences.self,
+            DailyFocus.self,
+            DayEntry.self,
+            AchievementCard.self,
+        ])
     }
 }
