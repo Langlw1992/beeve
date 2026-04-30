@@ -28,22 +28,23 @@ struct ContentView: View {
             TodayView()
                 .tag(AppTab.today)
                 .tabItem {
-                    Label("Today", systemImage: "sun.max")
+                    Label("今天", systemImage: "sun.max")
                 }
 
             CardsView()
                 .tag(AppTab.cards)
                 .tabItem {
-                    Label("Cards", systemImage: "rectangle.stack")
+                    Label("卡片", systemImage: "rectangle.stack")
                 }
 
             SettingsView()
                 .tag(AppTab.settings)
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape")
+                    Label("设置", systemImage: "gearshape")
                 }
         }
         .tint(BeeveDesign.accent)
+        .animation(.snappy(duration: 0.22), value: selectedTab)
     }
 
     private func ensurePreferences() {
@@ -53,12 +54,12 @@ struct ContentView: View {
     }
 }
 
-#Preview("Today") {
+#Preview("今天") {
     ContentView()
         .modelContainer(SampleData.previewContainer())
 }
 
-#Preview("Onboarding") {
+#Preview("首次使用") {
     ContentView()
         .modelContainer(SampleData.previewContainer(
             hasCompletedOnboarding: false,

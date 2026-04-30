@@ -16,28 +16,29 @@ struct SettingsView: View {
                     SettingsForm(preferences: active)
 
                     Section {
-                        Button("Reset local data", role: .destructive) {
+                        Button("重置本机数据", role: .destructive) {
+                            BeeveHaptics.lightImpact()
                             isShowingResetConfirmation = true
                         }
                     } header: {
-                        Text("Local data")
+                        Text("本机数据")
                     } footer: {
-                        Text("This only affects data stored on this device.")
+                        Text("只会影响当前设备上的 Beeve 数据。")
                     }
                 } else {
-                    Text("Settings are not ready yet.")
+                    Text("设置暂时还没有准备好。")
                         .foregroundStyle(BeeveDesign.mutedText)
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(BeeveDesign.background)
-            .navigationTitle("Settings")
-            .confirmationDialog("Reset Beeve data?", isPresented: $isShowingResetConfirmation) {
-                Button("Reset local data", role: .destructive) {
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .navigationTitle("设置")
+            .confirmationDialog("重置 Beeve 数据？", isPresented: $isShowingResetConfirmation) {
+                Button("重置本机数据", role: .destructive) {
                     resetData()
                 }
             } message: {
-                Text("This removes preferences, entries, focuses, and cards from this device.")
+                Text("这会删除当前设备上的偏好设置、记录、焦点和卡片。")
             }
         }
     }
@@ -49,6 +50,7 @@ struct SettingsView: View {
         cards.forEach(modelContext.delete)
         modelContext.insert(UserPreferences())
         try? modelContext.save()
+        BeeveHaptics.success()
     }
 }
 
@@ -58,11 +60,15 @@ private struct SettingsForm: View {
     @State private var isSavingSchedule = false
 
     var body: some View {
-        Section("Future-you") {
-            TextField("Preferred name", text: $preferences.preferredName)
-            Picker("Tone", selection: Binding(
+        Section("未来的你") {
+            TextField("称呼", text: $preferences.preferredName)
+                .textContentType(.name)
+            Picker("语气", selection: Binding(
                 get: { preferences.tone },
-                set: { preferences.tone = $0 }
+                set: {
+                    BeeveHaptics.selection()
+                    preferences.tone = $0
+                }
             )) {
                 ForEach(FutureSelfTone.allCases) { tone in
                     Text(tone.label).tag(tone)
@@ -70,19 +76,20 @@ private struct SettingsForm: View {
             }
         }
 
-        Section("Workday") {
-            Stepper("Start: \(formatted(hour: preferences.workStartHour, minute: preferences.workStartMinute))", value: $preferences.workStartHour, in: 0...23)
-            Stepper("End: \(formatted(hour: preferences.workEndHour, minute: preferences.workEndMinute))", value: $preferences.workEndHour, in: 0...23)
-            Toggle("Daily reminders", isOn: $preferences.notificationsEnabled)
+        Section("工作节奏") {
+            Stepper("开始：\(formatted(hour: preferences.workStartHour, minute: preferences.workStartMinute))", value: $preferences.workStartHour, in: 0...23)
+            Stepper("结束：\(formatted(hour: preferences.workEndHour, minute: preferences.workEndMinute))", value: $preferences.workEndHour, in: 0...23)
+            Toggle("每日提醒", isOn: $preferences.notificationsEnabled)
                 .tint(BeeveDesign.accent)
 
             Button {
+                BeeveHaptics.lightImpact()
                 saveSchedule()
             } label: {
                 if isSavingSchedule {
                     ProgressView()
                 } else {
-                    Text("Save reminder schedule")
+                    Text("保存提醒时间")
                 }
             }
             .tint(BeeveDesign.accent)
@@ -98,6 +105,7 @@ private struct SettingsForm: View {
             preferences.updatedAt = .now
             try? modelContext.save()
             await NotificationScheduler().scheduleDailyReminders(preferences: preferences)
+            BeeveHaptics.success()
             isSavingSchedule = false
         }
     }

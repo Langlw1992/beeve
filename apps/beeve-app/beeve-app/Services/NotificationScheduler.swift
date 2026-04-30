@@ -23,24 +23,24 @@ struct NotificationScheduler {
 
         await schedule(
             id: "beeve.morning-focus",
-            title: "Future-you has one request",
-            body: "Pick the one thing that would make today feel less scattered.",
+            title: "未来的你有一个请求",
+            body: "先选一件最能让今天不散掉的事。",
             hour: preferences.workStartHour,
             minute: min(preferences.workStartMinute + 15, 59)
         )
 
         await schedule(
             id: "beeve.afternoon-collect",
-            title: "Collect before you continue",
-            body: "Do not open another loop yet. Write down what already moved.",
+            title: "继续之前，先收一下",
+            body: "先别开新线，写下已经往前走的部分。",
             hour: max(preferences.workEndHour - 1, 0),
             minute: preferences.workEndMinute
         )
 
         await schedule(
             id: "beeve.evening-card",
-            title: "Was today really wasted?",
-            body: "Future-you wants the evidence before you decide.",
+            title: "今天真的浪费了吗？",
+            body: "在下结论前，先把证据留给未来的自己。",
             hour: preferences.workEndHour,
             minute: min(preferences.workEndMinute + 30, 59)
         )

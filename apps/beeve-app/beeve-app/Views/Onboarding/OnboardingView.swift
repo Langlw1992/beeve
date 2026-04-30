@@ -5,6 +5,7 @@ struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var preferences: UserPreferences
     @State private var isSaving = false
+    @State private var hasAppeared = false
 
     var body: some View {
         NavigationStack {
@@ -18,17 +19,18 @@ struct OnboardingView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 96)
             }
-            .background(BeeveDesign.background)
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 Button {
+                    BeeveHaptics.lightImpact()
                     complete()
                 } label: {
                     if isSaving {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text("Start with today")
+                        Text("从今天开始")
                     }
                 }
                 .buttonStyle(BeevePrimaryButtonStyle())
@@ -39,23 +41,29 @@ struct OnboardingView: View {
                 .padding(.bottom, 12)
                 .background(.regularMaterial)
             }
+            .onAppear {
+                hasAppeared = true
+            }
         }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Set your rhythm")
+        VStack(alignment: .leading, spacing: 16) {
+            BeeveIconBubble(systemImage: "sparkles", tint: BeeveDesign.accent)
+
+            Text("给明天留一条清晰线索")
                 .font(.largeTitle.weight(.bold))
                 .foregroundStyle(.primary)
                 .lineLimit(2)
                 .minimumScaleFactor(0.75)
 
-            Text("Choose how future-you should speak, then give tomorrow a cleaner start.")
+            Text("Beeve 不要求你完美复盘。每天只收集一个推进、一次打断和一个明天的开头。")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.top, 8)
+        .beeveReveal(hasAppeared)
     }
 
     private var futureSelfPanel: some View {
@@ -63,27 +71,23 @@ struct OnboardingView: View {
             HStack(alignment: .top, spacing: 12) {
                 BeeveIconBubble(systemImage: "person.crop.circle.badge.checkmark")
                 BeeveSectionHeader(
-                    title: "Future-you",
-                    subtitle: "A short voice that keeps the day honest."
+                    title: "未来的你",
+                    subtitle: "选择一个不会打扰你、但能把你拉回来的声音。"
                 )
             }
 
-            TextField("Preferred name", text: $preferences.preferredName)
+            TextField("你希望 Beeve 怎么称呼你", text: $preferences.preferredName)
                 .textContentType(.name)
                 .textInputAutocapitalization(.words)
                 .font(.body)
-                .padding(.horizontal, 16)
-                .frame(minHeight: BeeveDesign.controlHeight)
-                .background(BeeveDesign.elevatedSurface)
-                .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                        .stroke(BeeveDesign.border, lineWidth: 1)
-                }
+                .beeveInputSurface()
 
-            Picker("Tone", selection: Binding(
+            Picker("语气", selection: Binding(
                 get: { preferences.tone },
-                set: { preferences.tone = $0 }
+                set: {
+                    BeeveHaptics.selection()
+                    preferences.tone = $0
+                }
             )) {
                 ForEach(FutureSelfTone.allCases) { tone in
                     Text(tone.label).tag(tone)
@@ -91,7 +95,8 @@ struct OnboardingView: View {
             }
             .pickerStyle(.segmented)
         }
-        .beevePanel()
+        .beevePanel(tint: BeeveDesign.accent)
+        .beeveReveal(hasAppeared, delay: 0.06)
     }
 
     private var rhythmPanel: some View {
@@ -99,19 +104,19 @@ struct OnboardingView: View {
             HStack(alignment: .top, spacing: 12) {
                 BeeveIconBubble(systemImage: "clock.badge.checkmark")
                 BeeveSectionHeader(
-                    title: "Workday rhythm",
-                    subtitle: "Reminders stay inside the hours you choose."
+                    title: "工作节奏",
+                    subtitle: "提醒只会出现在你设定的时间里。"
                 )
             }
 
             VStack(spacing: 0) {
                 Stepper(value: $preferences.workStartHour, in: 0...23) {
                     scheduleRow(
-                        title: "Start",
+                        title: "开始",
                         value: formatted(hour: preferences.workStartHour, minute: preferences.workStartMinute)
                     )
                 }
-                .accessibilityLabel("Workday start time")
+                .accessibilityLabel("工作日开始时间")
                 .accessibilityValue(formatted(hour: preferences.workStartHour, minute: preferences.workStartMinute))
 
                 Divider()
@@ -119,11 +124,11 @@ struct OnboardingView: View {
 
                 Stepper(value: $preferences.workEndHour, in: 0...23) {
                     scheduleRow(
-                        title: "End",
+                        title: "结束",
                         value: formatted(hour: preferences.workEndHour, minute: preferences.workEndMinute)
                     )
                 }
-                .accessibilityLabel("Workday end time")
+                .accessibilityLabel("工作日结束时间")
                 .accessibilityValue(formatted(hour: preferences.workEndHour, minute: preferences.workEndMinute))
 
                 Divider()
@@ -131,9 +136,9 @@ struct OnboardingView: View {
 
                 Toggle(isOn: $preferences.notificationsEnabled) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Daily reminders")
+                        Text("每日提醒")
                             .font(.body)
-                        Text("Gentle prompts when the day starts to blur.")
+                        Text("当一天开始散掉时，给你一个轻提示。")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -141,7 +146,8 @@ struct OnboardingView: View {
                 .tint(BeeveDesign.accent)
             }
         }
-        .beevePanel()
+        .beevePanel(tint: BeeveDesign.accentDeep)
+        .beeveReveal(hasAppeared, delay: 0.12)
     }
 
     private func scheduleRow(title: String, value: String) -> some View {
@@ -166,6 +172,7 @@ struct OnboardingView: View {
             preferences.hasCompletedOnboarding = true
             preferences.updatedAt = .now
             try? modelContext.save()
+            BeeveHaptics.success()
             isSaving = false
         }
     }

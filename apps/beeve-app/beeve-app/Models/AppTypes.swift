@@ -6,7 +6,7 @@ enum AppTab: Hashable {
     case settings
 }
 
-enum DayEntryKind: String, Codable, CaseIterable, Identifiable {
+enum DayEntryKind: String, Codable, CaseIterable, Identifiable, Equatable {
     case done
     case interrupted
     case tomorrow
@@ -15,17 +15,17 @@ enum DayEntryKind: String, Codable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .done: "Done"
-        case .interrupted: "Interrupted"
-        case .tomorrow: "Tomorrow"
+        case .done: "推进"
+        case .interrupted: "打断"
+        case .tomorrow: "明天"
         }
     }
 
     var sectionTitle: String {
         switch self {
-        case .done: "Moved forward"
-        case .interrupted: "Still counted"
-        case .tomorrow: "Tomorrow remembers"
+        case .done: "今天推进了"
+        case .interrupted: "被打断也算数"
+        case .tomorrow: "留给明天"
         }
     }
 
@@ -39,14 +39,14 @@ enum DayEntryKind: String, Codable, CaseIterable, Identifiable {
 
     var prompt: String {
         switch self {
-        case .done: "What moved forward?"
-        case .interrupted: "What pulled you away?"
-        case .tomorrow: "What should future-you remember?"
+        case .done: "哪件事真的往前走了？"
+        case .interrupted: "什么把你拉走了？"
+        case .tomorrow: "明天的你需要记住什么？"
         }
     }
 }
 
-enum FutureSelfTone: String, Codable, CaseIterable, Identifiable {
+enum FutureSelfTone: String, Codable, CaseIterable, Identifiable, Equatable {
     case calm
     case concise
     case firm
@@ -55,9 +55,9 @@ enum FutureSelfTone: String, Codable, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .calm: "Calm"
-        case .concise: "Concise"
-        case .firm: "Firm"
+        case .calm: "温和"
+        case .concise: "干脆"
+        case .firm: "直接"
         }
     }
 }

@@ -10,6 +10,14 @@ struct TodayView: View {
     @State private var isLogging = false
     @State private var isEditingFocus = false
     @State private var generatedCard: AchievementCard?
+    @State private var hasAppeared = false
+
+    private static let zhDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_Hans_CN")
+        formatter.dateFormat = "M月d日 EEEE"
+        return formatter
+    }()
 
     private var today: Date {
         Calendar.current.startOfDay(for: .now)
@@ -31,10 +39,22 @@ struct TodayView: View {
         DayContext(date: today, preferences: activePreferences, focus: todayFocus, entries: todayEntries)
     }
 
+    private var progressFraction: Double {
+        let focusScore = todayFocus == nil ? 0 : 1
+        let doneScore = min(todayEntries.filter { $0.kind == .done }.count, 1)
+        let tomorrowScore = min(todayEntries.filter { $0.kind == .tomorrow }.count, 1)
+        let interruptScore = min(todayEntries.filter { $0.kind == .interrupted }.count, 1)
+        return Double(focusScore + doneScore + tomorrowScore + interruptScore) / 4
+    }
+
+    private var zhDateText: String {
+        Self.zhDateFormatter.string(from: today)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
                     noteSection
                     focusSection
                     entrySection(kind: .done)
@@ -46,14 +66,16 @@ struct TodayView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 120)
             }
-            .background(BeeveDesign.background)
-            .navigationTitle("Today")
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .navigationTitle("今天")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        BeeveHaptics.lightImpact()
                         isLogging = true
                     } label: {
-                        Label("Log one thing", systemImage: "plus")
+                        Image(systemName: "plus")
+                            .accessibilityLabel("记录一件事")
                     }
                 }
             }
@@ -71,78 +93,106 @@ struct TodayView: View {
                         AchievementCardView(card: card)
                             .padding(16)
                     }
-                    .navigationTitle("Today's card")
+                    .navigationTitle("今日卡片")
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
-                            Button("Done") {
+                            Button("完成") {
                                 generatedCard = nil
                             }
                         }
                     }
                 }
             }
+            .onAppear {
+                hasAppeared = true
+            }
         }
     }
 
     private var noteSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                BeeveIconBubble(systemImage: "sparkle.magnifyingglass", tint: BeeveDesign.accent)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(today.formatted(.dateTime.weekday(.wide).month().day()))
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(zhDateText)
                         .font(.footnote.weight(.medium))
                         .foregroundStyle(.secondary)
-                    Text("From future-you")
-                        .font(.headline)
+                    Text("给未来的自己")
+                        .font(.title3.weight(.semibold))
                 }
+                Spacer()
+                BeeveDayRing(progress: progressFraction)
             }
 
             Text(FutureSelfGenerator().note(for: context))
-                .font(.title3.weight(.semibold))
+                .font(.title2.weight(.bold))
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 8) {
+                BeeveMiniMetric(title: "焦点", value: todayFocus == nil ? "未定" : "已定")
+                BeeveMiniMetric(title: "记录", value: "\(todayEntries.count)")
+                BeeveMiniMetric(title: "明天", value: "\(todayEntries.filter { $0.kind == .tomorrow }.count)")
+            }
         }
-        .beevePanel(padding: 18)
+        .beevePanel(padding: 20, tint: BeeveDesign.accent)
+        .beeveReveal(hasAppeared)
     }
 
     private var focusSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                BeeveIconBubble(systemImage: todayFocus == nil ? "target" : "target", tint: Color(.systemIndigo))
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .center, spacing: 12) {
+                BeeveIconBubble(systemImage: "target", tint: BeeveDesign.accentDeep)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("One real move")
+                    Text("今日焦点")
                         .font(.headline)
-                    Text(todayFocus == nil ? "Pick the smallest thing that would make today feel less scattered." : "Keep the day pointed at one clear move.")
+                    Text(todayFocus == nil ? "选一个足够小、但真的能推进的动作。" : "今天先围绕这一条线收束。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button(todayFocus == nil ? "Set" : "Edit") {
+                Button {
+                    BeeveHaptics.lightImpact()
                     isEditingFocus = true
+                } label: {
+                    Label(todayFocus == nil ? "设定" : "编辑", systemImage: todayFocus == nil ? "plus" : "pencil")
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
             }
 
             if let todayFocus {
-                Text(todayFocus.title)
-                    .font(.body.weight(.medium))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(14)
-                    .background(BeeveDesign.elevatedSurface)
-                    .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(BeeveDesign.accentDeep)
+                        .padding(.top, 2)
+                    Text(todayFocus.title)
+                        .font(.body.weight(.medium))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(16)
+                .background(BeeveDesign.elevatedSurface)
+                .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+                .transition(.move(edge: .top).combined(with: .opacity))
+            } else {
+                Text("先把注意力落在一个点上，后面的记录会更有方向。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 2)
             }
         }
-        .beevePanel()
+        .beevePanel(tint: BeeveDesign.accentDeep)
+        .beeveReveal(hasAppeared, delay: 0.05)
+        .animation(.snappy(duration: 0.28), value: todayFocus?.title)
     }
 
     private func entrySection(kind: DayEntryKind) -> some View {
         let sectionEntries = todayEntries.filter { $0.kind == kind }
+        let sectionTint = tint(for: kind)
 
         return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .center, spacing: 12) {
-                BeeveIconBubble(systemImage: kind.systemImage, tint: tint(for: kind))
+                BeeveIconBubble(systemImage: kind.systemImage, tint: sectionTint)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(kind.sectionTitle)
                         .font(.headline)
@@ -155,39 +205,56 @@ struct TodayView: View {
             }
 
             if sectionEntries.isEmpty {
-                Text(emptyMessage(for: kind))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 4)
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "circle.dashed")
+                        .foregroundStyle(sectionTint)
+                        .padding(.top, 2)
+                    Text(emptyMessage(for: kind))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(14)
+                .background(sectionTint.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
             } else {
                 VStack(spacing: 0) {
                     ForEach(sectionEntries) { entry in
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(entry.text)
-                                .font(.body)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .fixedSize(horizontal: false, vertical: true)
+                        VStack(spacing: 12) {
+                            HStack(alignment: .top, spacing: 10) {
+                                Image(systemName: "smallcircle.filled.circle")
+                                    .font(.caption)
+                                    .foregroundStyle(sectionTint)
+                                    .padding(.top, 5)
+                                Text(entry.text)
+                                    .font(.body)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                             if entry.persistentModelID != sectionEntries.last?.persistentModelID {
                                 Divider()
                             }
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 6)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
             }
         }
-        .beevePanel()
+        .beevePanel(tint: sectionTint)
+        .beeveReveal(hasAppeared, delay: revealDelay(for: kind))
+        .animation(.snappy(duration: 0.25), value: sectionEntries.count)
     }
 
     private var cardActionSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 12) {
-                BeeveIconBubble(systemImage: "rectangle.stack.badge.plus", tint: Color(.systemBrown))
+                BeeveIconBubble(systemImage: "rectangle.stack.badge.plus", tint: BeeveDesign.warmAccent)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Close the loop")
+                    Text("收束今天")
                         .font(.headline)
-                    Text("Turn today's fragments into an achievement card and a lighter start for tomorrow.")
+                    Text("把碎片整理成一张成就卡，也给明天留一个更轻的开头。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -195,13 +262,15 @@ struct TodayView: View {
             }
 
             Button {
+                BeeveHaptics.success()
                 generateCard()
             } label: {
-                Label("Generate today's card", systemImage: "sparkles")
+                Label("生成今日卡片", systemImage: "sparkles")
             }
             .buttonStyle(BeevePrimaryButtonStyle())
         }
-        .beevePanel()
+        .beevePanel(tint: BeeveDesign.warmAccent)
+        .beeveReveal(hasAppeared, delay: 0.25)
     }
 
     private func tint(for kind: DayEntryKind) -> Color {
@@ -214,9 +283,17 @@ struct TodayView: View {
 
     private func emptyMessage(for kind: DayEntryKind) -> String {
         switch kind {
-        case .done: "No wins logged yet. Add even the smallest useful move."
-        case .interrupted: "No interruptions named. Capture one when it pulls you away."
-        case .tomorrow: "No handoff yet. Leave future-you one clear thread."
+        case .done: "还没有记录推进。哪怕只是一个小动作，也值得被收起来。"
+        case .interrupted: "还没有命名打断。写下来，它就不再只是混乱。"
+        case .tomorrow: "还没有交接给明天。留一句话，明早会轻很多。"
+        }
+    }
+
+    private func revealDelay(for kind: DayEntryKind) -> Double {
+        switch kind {
+        case .done: 0.10
+        case .interrupted: 0.15
+        case .tomorrow: 0.20
         }
     }
 
@@ -231,6 +308,55 @@ struct TodayView: View {
         modelContext.insert(card)
         try? modelContext.save()
         generatedCard = card
+    }
+}
+
+private struct BeeveDayRing: View {
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color(.separator).opacity(0.18), lineWidth: 5)
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(
+                    BeeveDesign.accentGradient,
+                    style: StrokeStyle(lineWidth: 5, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+                .animation(.smooth(duration: 0.45), value: progress)
+            Text("\(Int(progress * 100))%")
+                .font(.caption.weight(.bold))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+        }
+        .frame(width: 58, height: 58)
+        .accessibilityLabel("今日进度")
+        .accessibilityValue("\(Int(progress * 100))%")
+    }
+}
+
+private struct BeeveMiniMetric: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(BeeveDesign.elevatedSurface.opacity(0.78))
+        .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }
 

@@ -6,24 +6,31 @@ struct QuickLogSheet: View {
     @Environment(\.modelContext) private var modelContext
     @State private var kind: DayEntryKind = .done
     @State private var text = ""
+    @State private var hasAppeared = false
+    @FocusState private var isTextFocused: Bool
 
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Log one thing")
+                    Text("记录一件事")
                         .font(.title2.weight(.semibold))
-                    Text("Small, specific notes work better than a perfect recap.")
+                    Text("不用完整复盘，只写一个具体片段。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .beeveReveal(hasAppeared)
 
-                Picker("Kind", selection: $kind) {
+                Picker("类型", selection: $kind) {
                     ForEach(DayEntryKind.allCases) { kind in
                         Text(kind.title).tag(kind)
                     }
                 }
                 .pickerStyle(.segmented)
+                .onChange(of: kind) { _, _ in
+                    BeeveHaptics.selection()
+                }
+                .beeveReveal(hasAppeared, delay: 0.05)
 
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 12) {
@@ -43,6 +50,7 @@ struct QuickLogSheet: View {
                         TextEditor(text: $text)
                             .scrollContentBackground(.hidden)
                             .padding(10)
+                            .focused($isTextFocused)
                     }
                     .frame(minHeight: 160)
                     .background(BeeveDesign.elevatedSurface)
@@ -52,22 +60,30 @@ struct QuickLogSheet: View {
                             .stroke(BeeveDesign.border, lineWidth: 1)
                     }
                 }
-                .beevePanel()
+                .beevePanel(tint: tint(for: kind))
+                .beeveReveal(hasAppeared, delay: 0.10)
+                .animation(.snappy(duration: 0.2), value: kind)
 
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
-            .background(BeeveDesign.background)
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("取消") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button("保存") {
                         save()
                     }
                     .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+            .onAppear {
+                hasAppeared = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    isTextFocused = true
                 }
             }
         }
@@ -83,9 +99,9 @@ struct QuickLogSheet: View {
 
     private func placeholder(for kind: DayEntryKind) -> String {
         switch kind {
-        case .done: "Example: shipped the first version of the focus screen"
-        case .interrupted: "Example: context switch pulled me into admin work"
-        case .tomorrow: "Example: start by tightening the card copy"
+        case .done: "例如：把今天页的首屏层级收紧了"
+        case .interrupted: "例如：临时切去处理一次构建问题"
+        case .tomorrow: "例如：明早先检查卡片分享文案"
         }
     }
 
@@ -95,6 +111,7 @@ struct QuickLogSheet: View {
 
         modelContext.insert(DayEntry(kind: kind, text: trimmed))
         try? modelContext.save()
+        BeeveHaptics.success()
         dismiss()
     }
 }

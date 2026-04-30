@@ -6,6 +6,8 @@ struct FocusEditorView: View {
     @Environment(\.modelContext) private var modelContext
     let focus: DailyFocus?
     @State private var title: String
+    @State private var hasAppeared = false
+    @FocusState private var isTitleFocused: Bool
 
     init(focus: DailyFocus?) {
         self.focus = focus
@@ -16,51 +18,53 @@ struct FocusEditorView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Today's focus")
+                    Text("今日焦点")
                         .font(.title2.weight(.semibold))
-                    Text("Keep it narrow enough that future-you can see whether it moved.")
+                    Text("窄到今天能推进，也清楚到明天能判断。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .beeveReveal(hasAppeared)
 
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 12) {
                         BeeveIconBubble(systemImage: "target", tint: Color(.systemIndigo))
-                        BeeveSectionHeader(title: "One real move")
+                        BeeveSectionHeader(title: "一个真实推进")
                     }
 
-                    TextField("What would make today feel less scattered?", text: $title)
+                    TextField("今天最值得推进的一件事", text: $title)
                         .font(.body)
                         .textInputAutocapitalization(.sentences)
-                        .padding(.horizontal, 16)
-                        .frame(minHeight: BeeveDesign.controlHeight)
-                        .background(BeeveDesign.elevatedSurface)
-                        .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                                .stroke(BeeveDesign.border, lineWidth: 1)
-                        }
+                        .focused($isTitleFocused)
+                        .beeveInputSurface()
 
-                    Text("Good focus: a concrete move you can finish or clearly advance today.")
+                    Text("好的焦点是一个具体动作：今天能完成，或至少明显推进。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                .beevePanel()
+                .beevePanel(tint: BeeveDesign.accentDeep)
+                .beeveReveal(hasAppeared, delay: 0.06)
 
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
-            .background(BeeveDesign.background)
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("取消") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button("保存") {
                         save()
                     }
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+            .onAppear {
+                hasAppeared = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.30) {
+                    isTitleFocused = true
                 }
             }
         }
@@ -78,16 +82,17 @@ struct FocusEditorView: View {
         }
 
         try? modelContext.save()
+        BeeveHaptics.success()
         dismiss()
     }
 }
 
-#Preview("New focus") {
+#Preview("新焦点") {
     FocusEditorView(focus: nil)
         .modelContainer(SampleData.previewContainer())
 }
 
-#Preview("Edit focus") {
+#Preview("编辑焦点") {
     let container = SampleData.previewContainer()
 
     FocusEditorView(focus: SampleData.previewFocus(from: container))

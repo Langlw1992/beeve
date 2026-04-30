@@ -3,26 +3,29 @@ import SwiftUI
 
 struct CardsView: View {
     @Query(sort: \AchievementCard.createdAt, order: .reverse) private var cards: [AchievementCard]
+    @State private var hasAppeared = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
                     if cards.isEmpty {
-                        VStack(alignment: .leading, spacing: 14) {
-                            BeeveIconBubble(systemImage: "rectangle.stack.badge.plus")
-                            Text("No cards yet")
-                                .font(.title3.weight(.semibold))
-                            Text("Collect today first. Beeve will turn your notes into a compact record you can revisit.")
+                        VStack(alignment: .leading, spacing: 16) {
+                            BeeveIconBubble(systemImage: "rectangle.stack.badge.plus", tint: BeeveDesign.warmAccent)
+                            Text("还没有卡片")
+                                .font(.title2.weight(.bold))
+                            Text("先完成一次今天的收集。Beeve 会把推进、打断和明天的开头整理成一张可以回看的卡片。")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .beevePanel(padding: 18)
+                        .beevePanel(padding: 20, tint: BeeveDesign.warmAccent)
+                        .beeveReveal(hasAppeared)
                     } else {
                         ForEach(cards) { card in
                             AchievementCardView(card: card)
+                                .beeveReveal(hasAppeared)
                         }
                     }
                 }
@@ -30,18 +33,21 @@ struct CardsView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 120)
             }
-            .navigationTitle("Cards")
-            .background(BeeveDesign.background)
+            .navigationTitle("卡片")
+            .background(BeeveDesign.subtleBackgroundGradient.ignoresSafeArea())
+            .onAppear {
+                hasAppeared = true
+            }
         }
     }
 }
 
-#Preview("With cards") {
+#Preview("有卡片") {
     CardsView()
         .modelContainer(SampleData.previewContainer())
 }
 
-#Preview("Empty") {
+#Preview("空状态") {
     CardsView()
         .modelContainer(SampleData.previewContainer(includeHistory: false))
 }

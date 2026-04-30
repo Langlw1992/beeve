@@ -3,11 +3,11 @@ import SwiftData
 
 enum SampleData {
     static let preferences = UserPreferences(preferredName: "Lang", hasCompletedOnboarding: true)
-    static let focus = DailyFocus(title: "Ship the first Beeve iOS loop")
+    static let focus = DailyFocus(title: "把 Beeve 的第一个 iOS 闭环跑通")
     static let entries = [
-        DayEntry(kind: .done, text: "Finished the product direction"),
-        DayEntry(kind: .interrupted, text: "Handled an urgent auth issue"),
-        DayEntry(kind: .tomorrow, text: "Create the first shareable achievement card"),
+        DayEntry(kind: .done, text: "敲定了产品方向和今天的主路径"),
+        DayEntry(kind: .interrupted, text: "临时处理了一次构建问题"),
+        DayEntry(kind: .tomorrow, text: "继续打磨第一张可分享的成就卡"),
     ]
 
     @MainActor
@@ -50,7 +50,7 @@ enum SampleData {
             return focus
         }
 
-        let focus = DailyFocus(title: "Polish the Beeve iOS preview flow")
+        let focus = DailyFocus(title: "打磨 Beeve 的 iOS 预览体验")
         container.mainContext.insert(focus)
         return focus
     }
@@ -76,24 +76,24 @@ enum SampleData {
             return
         }
 
-        context.insert(DailyFocus(date: today, title: "Polish the Beeve iOS preview flow"))
-        context.insert(DayEntry(date: today, kind: .done, text: "Tightened the Today screen hierarchy"))
-        context.insert(DayEntry(date: today, kind: .interrupted, text: "Switched context to fix the Xcode scheme"))
-        context.insert(DayEntry(date: today, kind: .tomorrow, text: "Review the first-run copy on a smaller phone"))
+        context.insert(DailyFocus(date: today, title: "把今天页做得更有呼吸感"))
+        context.insert(DayEntry(date: today, kind: .done, text: "重做了今天页的信息层级"))
+        context.insert(DayEntry(date: today, kind: .interrupted, text: "临时切去修复 Xcode 预览入口"))
+        context.insert(DayEntry(date: today, kind: .tomorrow, text: "在小屏手机上检查首次使用文案"))
         context.insert(AchievementCard(
             date: yesterday,
-            title: "A practical day with a cleaner handoff",
+            title: "一个更容易交接给明天的日子",
             summaryBullets: [
-                "Rebuilt the onboarding rhythm",
-                "Kept the Today screen focused",
-                "Verified the app in Simulator",
+                "重做了首次使用节奏",
+                "让今天页聚焦到一个推进",
+                "在模拟器里验证了主流程",
             ],
-            interruptionReframe: "The interruptions counted too: Xcode setup and preview data.",
+            interruptionReframe: "打断也算进今天：Xcode 设置和预览数据都被处理掉了。",
             tomorrowPriorities: [
-                "Tighten card sharing",
-                "Add empty-state illustration",
+                "收紧卡片分享体验",
+                "补齐空状态的情绪表达",
             ],
-            closingLine: "Tomorrow starts lighter because the next thread is named."
+            closingLine: "下一条线已经被命名，明天会轻一点。"
         ))
 
         try? context.save()
