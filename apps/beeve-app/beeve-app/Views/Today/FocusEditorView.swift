@@ -6,7 +6,6 @@ struct FocusEditorView: View {
     @Environment(\.modelContext) private var modelContext
     let focus: DailyFocus?
     @State private var title: String
-    @State private var hasAppeared = false
     @FocusState private var isTitleFocused: Bool
 
     init(focus: DailyFocus?) {
@@ -16,54 +15,49 @@ struct FocusEditorView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("今日焦点")
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("今天只选一件")
                         .font(.title2.weight(.semibold))
-                    Text("只写今天要推进的一件事。")
+                        .foregroundStyle(BeeveDesign.primaryText)
+                    Text("写得越具体，越容易开始。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                .beeveReveal(hasAppeared)
 
-                VStack(alignment: .leading, spacing: 14) {
-                    HStack(spacing: 12) {
-                        BeeveIconBubble(systemImage: "target", tint: BeeveDesign.accentDeep)
-                        BeeveSectionHeader(title: "一个真实推进")
-                    }
+                TextField("例如：补齐今天页记录入口", text: $title, axis: .vertical)
+                    .font(.body)
+                    .lineLimit(2...4)
+                    .textInputAutocapitalization(.sentences)
+                    .focused($isTitleFocused)
+                    .beeveInputSurface()
 
-                    TextField("今天最值得推进的一件事", text: $title)
-                        .font(.body)
-                        .textInputAutocapitalization(.sentences)
-                        .focused($isTitleFocused)
-                        .beeveInputSurface()
-
-                    Text("越具体，越容易开始。")
+                HStack(alignment: .top, spacing: 12) {
+                    BeeveIconBubble(systemImage: "target", tint: BeeveDesign.accent)
+                    Text("一个清楚的主线，比一整张清单更容易接住今天。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .beevePanel(tint: BeeveDesign.accentDeep)
-                .beeveReveal(hasAppeared, delay: 0.06)
+                .beevePanel(padding: 14, tint: BeeveDesign.accent)
 
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
             .background { BeeveSceneBackground() }
+            .navigationTitle("当前主线")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
-                        save()
-                    }
-                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Button("保存") { save() }
+                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
             .onAppear {
-                hasAppeared = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.30) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     isTitleFocused = true
                 }
             }
@@ -87,12 +81,12 @@ struct FocusEditorView: View {
     }
 }
 
-#Preview("新焦点") {
+#Preview("新主线") {
     FocusEditorView(focus: nil)
         .modelContainer(SampleData.previewContainer())
 }
 
-#Preview("编辑焦点") {
+#Preview("编辑主线") {
     let container = SampleData.previewContainer()
 
     FocusEditorView(focus: SampleData.previewFocus(from: container))

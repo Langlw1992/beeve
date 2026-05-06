@@ -4,43 +4,53 @@ import UIKit
 enum BeeveDesign {
     static let background = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.025, green: 0.027, blue: 0.037, alpha: 1)
-            : UIColor(red: 0.955, green: 0.968, blue: 0.984, alpha: 1)
+            ? UIColor(red: 0.090, green: 0.086, blue: 0.080, alpha: 1)
+            : UIColor(red: 0.986, green: 0.973, blue: 0.940, alpha: 1)
     })
+
     static let surface = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.105, green: 0.113, blue: 0.145, alpha: 1)
-            : UIColor(red: 0.985, green: 0.988, blue: 0.996, alpha: 1)
+            ? UIColor(red: 0.145, green: 0.139, blue: 0.129, alpha: 1)
+            : UIColor(red: 1.000, green: 0.994, blue: 0.974, alpha: 1)
     })
+
     static let elevatedSurface = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.145, green: 0.152, blue: 0.190, alpha: 1)
-            : UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+            ? UIColor(red: 0.185, green: 0.177, blue: 0.165, alpha: 1)
+            : UIColor.white.withAlphaComponent(0.82)
     })
+
     static let panelStart = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.130, green: 0.142, blue: 0.205, alpha: 1)
-            : UIColor(red: 0.966, green: 0.984, blue: 1, alpha: 1)
+            ? UIColor(red: 0.160, green: 0.154, blue: 0.142, alpha: 1)
+            : UIColor(red: 1.000, green: 0.992, blue: 0.968, alpha: 1)
     })
+
     static let panelEnd = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.100, green: 0.105, blue: 0.155, alpha: 1)
-            : UIColor(red: 0.998, green: 0.968, blue: 0.988, alpha: 1)
+            ? UIColor(red: 0.125, green: 0.121, blue: 0.113, alpha: 1)
+            : UIColor(red: 0.974, green: 0.984, blue: 0.962, alpha: 1)
     })
-    static let border = Color(.separator).opacity(0.18)
-    static let darkBorder = Color(.label).opacity(0.07)
-    static let accent = Color(.systemCyan)
-    static let accentDeep = Color(.systemIndigo)
-    static let warmAccent = Color(.systemPink)
+
+    static let border = Color(.separator).opacity(0.12)
+    static let darkBorder = Color(.label).opacity(0.06)
+    static let primaryText = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 0.92, green: 0.89, blue: 0.84, alpha: 1)
+            : UIColor(red: 0.16, green: 0.14, blue: 0.11, alpha: 1)
+    })
+    static let accent = Color(red: 0.48, green: 0.60, blue: 0.43)
+    static let accentDeep = Color(red: 0.42, green: 0.50, blue: 0.36)
+    static let warmAccent = Color(red: 0.70, green: 0.55, blue: 0.40)
     static let mutedText = Color.secondary
-    static let radius: CGFloat = 28
-    static let innerRadius: CGFloat = 22
-    static let controlHeight: CGFloat = 54
+    static let radius: CGFloat = 22
+    static let innerRadius: CGFloat = 16
+    static let controlHeight: CGFloat = 52
     static let contentPadding: CGFloat = 20
 
     static var accentGradient: LinearGradient {
         LinearGradient(
-            colors: [Color(.systemCyan), Color(.systemIndigo), Color(.systemPink)],
+            colors: [accent.opacity(0.92), warmAccent.opacity(0.72)],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
@@ -51,7 +61,7 @@ enum BeeveDesign {
         return LinearGradient(
             colors: [
                 panelStart,
-                tint.opacity(0.12),
+                tint.opacity(0.055),
                 panelEnd,
             ],
             startPoint: .topLeading,
@@ -61,7 +71,7 @@ enum BeeveDesign {
 }
 
 struct BeevePanel: ViewModifier {
-    var padding: CGFloat = 20
+    var padding: CGFloat = 18
     var radius: CGFloat = BeeveDesign.radius
     var tint: Color?
 
@@ -73,19 +83,12 @@ struct BeevePanel: ViewModifier {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                     .fill(BeeveDesign.panelGradient(tint: tint))
             }
-            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.72), Color.white.opacity(0.18), BeeveDesign.darkBorder],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
+                    .strokeBorder(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
             }
-            .shadow(color: Color(.label).opacity(0.06), radius: 14, x: 0, y: 8)
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
     }
 }
 
@@ -93,23 +96,23 @@ struct BeeveSceneBackground: View {
     var body: some View {
         ZStack {
             BeeveDesign.background
-            LinearGradient(
+            RadialGradient(
                 colors: [
-                    Color(.systemCyan).opacity(0.34),
-                    Color(.systemIndigo).opacity(0.22),
-                    Color(.systemPink).opacity(0.20),
-                    Color(.systemBackground).opacity(0.18),
+                    BeeveDesign.accent.opacity(0.16),
+                    .clear,
                 ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                center: .topTrailing,
+                startRadius: 20,
+                endRadius: 320
             )
-            LinearGradient(
+            RadialGradient(
                 colors: [
-                    Color(.systemBackground).opacity(0.04),
-                    Color(.systemBackground).opacity(0.32),
+                    Color(red: 0.92, green: 0.84, blue: 0.70).opacity(0.16),
+                    .clear,
                 ],
-                startPoint: .top,
-                endPoint: .bottom
+                center: .topLeading,
+                startRadius: 40,
+                endRadius: 300
             )
         }
         .ignoresSafeArea()
@@ -132,14 +135,15 @@ extension View {
             .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                    .stroke(Color.white.opacity(0.34), lineWidth: 1)
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
             }
     }
 
     func beeveReveal(_ isActive: Bool, delay: Double = 0) -> some View {
         opacity(isActive ? 1 : 0)
-            .offset(y: isActive ? 0 : 12)
-            .animation(.easeOut(duration: 0.28).delay(delay), value: isActive)
+            .offset(y: isActive ? 0 : 6)
+            .animation(.easeOut(duration: 0.22).delay(delay), value: isActive)
     }
 }
 
@@ -149,14 +153,9 @@ struct BeevePrimaryButtonStyle: ButtonStyle {
             .font(.body.weight(.semibold))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, minHeight: BeeveDesign.controlHeight)
-            .background(BeeveDesign.accentGradient)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(Color.white.opacity(0.32), lineWidth: 1)
-            }
-            .opacity(configuration.isPressed ? 0.86 : 1)
-            .shadow(color: BeeveDesign.accent.opacity(configuration.isPressed ? 0.08 : 0.24), radius: 18, x: 0, y: 10)
+            .background(configuration.isPressed ? BeeveDesign.accentDeep : BeeveDesign.accent)
+            .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
+            .opacity(configuration.isPressed ? 0.92 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
@@ -165,15 +164,15 @@ struct BeeveSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.body.weight(.semibold))
-            .foregroundStyle(.primary)
+            .foregroundStyle(BeeveDesign.accentDeep)
             .frame(maxWidth: .infinity, minHeight: BeeveDesign.controlHeight)
-            .background(BeeveDesign.elevatedSurface)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(BeeveDesign.elevatedSurface.opacity(configuration.isPressed ? 0.68 : 1))
+            .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(Color.white.opacity(0.34), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 17, style: .continuous)
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
             }
-            .opacity(configuration.isPressed ? 0.82 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
@@ -182,14 +181,15 @@ struct BeeveIconButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.body.weight(.semibold))
+            .foregroundStyle(BeeveDesign.accentDeep)
             .frame(minWidth: 44, minHeight: 44)
-            .background(BeeveDesign.elevatedSurface)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .background(BeeveDesign.elevatedSurface.opacity(configuration.isPressed ? 0.68 : 1))
+            .clipShape(Circle())
             .overlay {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(Color.white.opacity(0.32), lineWidth: 1)
+                Circle()
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
             }
-            .opacity(configuration.isPressed ? 0.76 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
@@ -200,9 +200,8 @@ struct BeeveSectionHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title.uppercased())
-                .font(.caption2.weight(.semibold))
-                .tracking(1.2)
+            Text(title)
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
 
             if let subtitle {
@@ -221,16 +220,12 @@ struct BeeveIconBubble: View {
 
     var body: some View {
         Image(systemName: systemImage)
-            .font(.subheadline.weight(.bold))
+            .font(.subheadline.weight(.semibold))
             .foregroundStyle(tint)
             .symbolRenderingMode(.hierarchical)
-            .frame(width: 36, height: 36)
+            .frame(width: 32, height: 32)
             .background(tint.opacity(0.12))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
-            }
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .accessibilityHidden(true)
     }
 }
@@ -243,11 +238,13 @@ struct BeeveCountBadge: View {
             .font(.footnote.weight(.semibold))
             .monospacedDigit()
             .foregroundStyle(.secondary)
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 9)
             .padding(.vertical, 5)
             .background(BeeveDesign.elevatedSurface)
             .overlay {
-                Capsule().stroke(BeeveDesign.border, lineWidth: 1)
+                Capsule()
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
             }
             .clipShape(Capsule())
     }

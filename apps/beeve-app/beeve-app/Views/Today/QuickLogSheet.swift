@@ -6,20 +6,38 @@ struct QuickLogSheet: View {
     @Environment(\.modelContext) private var modelContext
     @State private var kind: DayEntryKind = .done
     @State private var text = ""
-    @State private var hasAppeared = false
     @FocusState private var isTextFocused: Bool
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("记录一件事")
-                        .font(.title2.weight(.semibold))
-                    Text("写一个具体片段。")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .beeveReveal(hasAppeared)
+            VStack(alignment: .leading, spacing: 18) {
+                Text("不用整理。写下片段，Beeve 会帮你放到合适的位置。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                TextEditor(text: $text)
+                    .scrollContentBackground(.hidden)
+                    .padding(12)
+                    .frame(minHeight: 150)
+                    .background(BeeveDesign.elevatedSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous))
+                    .overlay(alignment: .topLeading) {
+                        if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            Text(placeholder(for: kind))
+                                .font(.body)
+                                .foregroundStyle(.tertiary)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 20)
+                                .allowsHitTesting(false)
+                        }
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous)
+                            .stroke(BeeveDesign.border, lineWidth: 1)
+                            .allowsHitTesting(false)
+                    }
+                    .focused($isTextFocused)
 
                 Picker("类型", selection: $kind) {
                     ForEach(DayEntryKind.allCases) { kind in
@@ -30,78 +48,73 @@ struct QuickLogSheet: View {
                 .onChange(of: kind) { _, _ in
                     BeeveHaptics.selection()
                 }
-                .beeveReveal(hasAppeared, delay: 0.05)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 12) {
-                        BeeveIconBubble(systemImage: kind.systemImage, tint: tint(for: kind))
-                        Text(kind.prompt)
-                            .font(.headline)
-                    }
-
-                    ZStack(alignment: .topLeading) {
-                        if text.isEmpty {
-                            Text(placeholder(for: kind))
-                                .foregroundStyle(.tertiary)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 16)
-                        }
-
-                        TextEditor(text: $text)
-                            .scrollContentBackground(.hidden)
-                            .padding(10)
-                            .focused($isTextFocused)
-                    }
-                    .frame(minHeight: 160)
-                    .background(BeeveDesign.elevatedSurface)
-                    .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                            .stroke(BeeveDesign.border, lineWidth: 1)
-                    }
-                }
-                .beevePanel(tint: tint(for: kind))
-                .beeveReveal(hasAppeared, delay: 0.10)
-                .animation(.snappy(duration: 0.2), value: kind)
+                suggestion
 
                 Spacer()
             }
             .padding(BeeveDesign.contentPadding)
             .background { BeeveSceneBackground() }
+            .navigationTitle("先说一句")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
-                        save()
-                    }
-                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Button("保存") { save() }
+                        .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .onAppear {
-                hasAppeared = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                    isTextFocused = true
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    save()
+                } label: {
+                    Text("写入今天")
                 }
+                .buttonStyle(BeevePrimaryButtonStyle())
+                .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .opacity(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.55 : 1)
+                .padding(.horizontal, BeeveDesign.contentPadding)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .background(.regularMaterial)
+            }
+            .onAppear {
+                isTextFocused = false
             }
         }
     }
 
+    private var suggestion: some View {
+        HStack(alignment: .top, spacing: 12) {
+            BeeveIconBubble(systemImage: kind.systemImage, tint: tint(for: kind))
+            VStack(alignment: .leading, spacing: 4) {
+                Text("建议写入\(kind.title)")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(BeeveDesign.primaryText)
+                Text(kind.prompt)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .beevePanel(padding: 14, tint: tint(for: kind))
+    }
+
     private func tint(for kind: DayEntryKind) -> Color {
         switch kind {
-        case .done: Color(.systemGreen)
-        case .interrupted: Color(.systemOrange)
-        case .tomorrow: Color(.systemIndigo)
+        case .done: BeeveDesign.accent
+        case .interrupted: BeeveDesign.warmAccent
+        case .tomorrow: Color(red: 0.49, green: 0.53, blue: 0.68)
         }
     }
 
     private func placeholder(for kind: DayEntryKind) -> String {
         switch kind {
-        case .done: "例如：收紧了首页层级"
+        case .done: "例如：确认了入口缺失的原因"
         case .interrupted: "例如：被构建问题打断"
-        case .tomorrow: "例如：明早先看分享文案"
+        case .tomorrow: "例如：明早先补今天页记录入口"
         }
     }
 
