@@ -97,7 +97,7 @@ struct TodayView: View {
                             .padding(BeeveDesign.contentPadding)
                     }
                     .background { BeeveSceneBackground() }
-                    .navigationTitle("交接")
+                    .navigationTitle("今日回看")
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
                             Button("完成") {
@@ -149,7 +149,7 @@ struct TodayView: View {
             HStack(spacing: 8) {
                 TodayMetric(value: context.doneEntries.count, label: "推进")
                 TodayMetric(value: context.interruptedEntries.count, label: "打断")
-                TodayMetric(value: context.tomorrowEntries.count, label: "交接")
+                TodayMetric(value: context.tomorrowEntries.count, label: "明天")
             }
             .padding(.top, 4)
         }
@@ -240,7 +240,7 @@ struct TodayView: View {
     private var handoffSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             BeeveSectionHeader(
-                title: "交接",
+                title: "整理今日",
                 subtitle: "把今天压成明天能接住的一句话。"
             )
 
@@ -248,9 +248,27 @@ struct TodayView: View {
                 BeeveHaptics.success()
                 generateCard()
             } label: {
-                Label("生成今日交接", systemImage: "rectangle.and.pencil.and.ellipsis")
+                HStack(spacing: 12) {
+                    BeeveIconBubble(systemImage: "arrow.triangle.2.circlepath", tint: BeeveDesign.warmAccent)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("整理今日回看")
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(BeeveDesign.primaryText)
+                        Text("收束推进、打断和明天线索")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(BeeveDesign.elevatedSurface)
+                .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
             }
-            .buttonStyle(BeeveSecondaryButtonStyle())
+            .buttonStyle(.plain)
         }
         .beevePanel(padding: 16, tint: BeeveDesign.warmAccent)
     }

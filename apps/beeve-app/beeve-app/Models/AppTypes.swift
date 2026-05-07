@@ -2,7 +2,7 @@ import Foundation
 
 enum AppTab: Hashable {
     case today
-    case cards
+    case review
     case settings
 }
 

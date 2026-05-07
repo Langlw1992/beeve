@@ -90,7 +90,7 @@ enum SampleData {
             ],
             interruptionReframe: "打断也算进今天：Xcode 设置和预览数据都被处理掉了。",
             tomorrowPriorities: [
-                "收紧卡片分享体验",
+                "收紧回看分享体验",
                 "补齐空状态的情绪表达",
             ],
             closingLine: "下一条线已经被命名，明天会轻一点。"

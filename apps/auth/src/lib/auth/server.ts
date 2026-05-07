@@ -81,7 +81,7 @@ export const auth = betterAuth({
 	secret: getAuthSecret(),
 	trustedOrigins: [appOrigin, "https://appleid.apple.com"],
 	emailAndPassword: {
-		enabled: false,
+		enabled: true,
 	},
 	socialProviders: {
 		...(googleOAuth

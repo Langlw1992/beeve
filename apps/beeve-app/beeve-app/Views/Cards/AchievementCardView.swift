@@ -19,7 +19,7 @@ struct AchievementCardView: View {
                     Text(Self.zhDateFormatter.string(from: card.date))
                         .font(.footnote.weight(.medium))
                         .foregroundStyle(.secondary)
-                    Text("今日收束")
+                    Text("今日回看")
                         .font(.headline)
                 }
                 Spacer()
@@ -106,7 +106,7 @@ struct AchievementCardView: View {
         ],
         interruptionReframe: "打断也算进今天：Xcode 设置和预览数据都被处理掉了。",
         tomorrowPriorities: [
-            "收紧卡片分享体验",
+            "收紧回看分享体验",
             "在 iPhone SE 上检查首次使用文案",
         ],
         closingLine: "下一条线已经被命名，明天会轻一点。"

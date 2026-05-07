@@ -4,6 +4,8 @@ import UIKit
 
 @main
 struct BeeveAppApp: App {
+    @StateObject private var authSession = BeeveAuthSession()
+
     init() {
         let titleColor = UIColor { traitCollection in
             traitCollection.userInterfaceStyle == .dark
@@ -23,6 +25,10 @@ struct BeeveAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(authSession)
+                .task {
+                    await authSession.refresh()
+                }
         }
         .modelContainer(for: [
             UserPreferences.self,

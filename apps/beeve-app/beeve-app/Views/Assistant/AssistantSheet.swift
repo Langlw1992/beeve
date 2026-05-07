@@ -15,6 +15,7 @@ struct AssistantSheet: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var hasAppeared = false
+    @State private var hasGenerated = false
     @State private var isImporting = false
     @FocusState private var isDraftFocused: Bool
 
@@ -32,17 +33,26 @@ struct AssistantSheet: View {
         ))
     }
 
+    private var canGenerate: Bool {
+        !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isLoading
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    assistantHeader
-                    inputSection
-                    replySection
+                VStack(alignment: .leading, spacing: 24) {
+                    header
+                    intentRail
+
+                    if hasGenerated {
+                        replySection
+                    } else {
+                        starterSection
+                    }
                 }
                 .padding(.horizontal, BeeveDesign.contentPadding)
-                .padding(.top, 16)
-                .padding(.bottom, 32)
+                .padding(.top, 12)
+                .padding(.bottom, hasGenerated ? 112 : 172)
             }
             .background { BeeveSceneBackground() }
             .navigationTitle("Beeve AI")
@@ -52,236 +62,295 @@ struct AssistantSheet: View {
                     Button("关闭") { dismiss() }
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                bottomBar
+            }
             .fileImporter(isPresented: $isImporting, allowedContentTypes: [.plainText, .text]) { result in
                 importText(from: result)
             }
             .onAppear {
                 hasAppeared = true
-                runAssistant()
+                isDraftFocused = draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
         }
     }
 
-    private var assistantHeader: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .top, spacing: 14) {
-                Image(systemName: "sparkles")
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 48, height: 48)
-                    .background(Color.white.opacity(0.18))
-                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    private var header: some View {
+        HStack(alignment: .top, spacing: 12) {
+            BeeveIconBubble(systemImage: "sparkles", tint: BeeveDesign.accent)
 
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Beeve AI 操作台")
-                        .font(.title2.weight(.semibold))
-                    Text("先选意图，再用导入或自然语言补充。")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.84))
-                }
-
-                Spacer()
-
-                Text(BeeveAPISettings.isConfigured ? "Beeve API" : "本地")
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .foregroundStyle(.primary)
-                    .background(Color.white.opacity(0.92))
-                    .clipShape(Capsule())
+            VStack(alignment: .leading, spacing: 4) {
+                Text("帮你收束今天")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(BeeveDesign.primaryText)
+                Text("描述现在的情况，Beeve 会压成一条主线和几条可写入的线索。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .foregroundStyle(.white)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(AssistantIntent.allCases) { intent in
-                        AssistantIntentButton(
-                            intent: intent,
-                            isSelected: selectedIntent == intent
-                        ) {
-                            selectedIntent = intent
-                            if draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                draft = intent.suggestedInput
-                            }
-                            BeeveHaptics.selection()
-                            runAssistant()
-                        }
-                    }
-                }
-            }
+            Spacer(minLength: 8)
+
+            Text(BeeveAPISettings.isConfigured ? "在线建议" : "基础建议")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(BeeveDesign.accentDeep)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(BeeveDesign.accent.opacity(0.12))
+                .clipShape(Capsule())
         }
-        .padding(22)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(BeeveDesign.accentGradient)
-        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .stroke(Color.white.opacity(0.26), lineWidth: 1)
-        }
-        .shadow(color: BeeveDesign.accent.opacity(0.14), radius: 18, x: 0, y: 10)
         .beeveReveal(hasAppeared)
     }
 
-    private var inputSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 10) {
-                Button {
-                    selectedIntent = .importText
-                    isImporting = true
-                    BeeveHaptics.lightImpact()
-                } label: {
-                    Label("导入文本", systemImage: "square.and.arrow.down")
-                }
-                .buttonStyle(BeeveSecondaryButtonStyle())
-
-                Button {
-                    selectedIntent = .voiceCapture
-                    isDraftFocused = true
-                    BeeveHaptics.lightImpact()
-                } label: {
-                    Label("自然语言", systemImage: "waveform")
-                }
-                .buttonStyle(BeeveSecondaryButtonStyle())
-            }
-
-            ZStack(alignment: .topLeading) {
-                if draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    Text("粘贴内容，或用一句话说明现在的情况")
-                        .foregroundStyle(.tertiary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 16)
-                }
-
-                TextEditor(text: $draft)
-                    .scrollContentBackground(.hidden)
-                    .padding(10)
-                    .focused($isDraftFocused)
-                    .frame(minHeight: 104)
-                    .onChange(of: draft) { _, _ in
-                        errorMessage = nil
-                    }
-            }
-            .background(BeeveDesign.elevatedSurface)
-            .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                    .stroke(BeeveDesign.border, lineWidth: 1)
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(Array(reply.quickPrompts.prefix(4)), id: \.self) { prompt in
-                        Button {
-                            draft = draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                                ? prompt
-                                : "\(draft)\n\(prompt)"
-                            BeeveHaptics.selection()
-                            runAssistant()
-                        } label: {
-                            Text(prompt)
-                                .font(.footnote.weight(.medium))
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(BeeveDesign.elevatedSurface)
-                                .clipShape(Capsule())
+    private var intentRail: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(AssistantIntent.allCases) { intent in
+                    AssistantIntentButton(
+                        intent: intent,
+                        isSelected: selectedIntent == intent
+                    ) {
+                        selectedIntent = intent
+                        if draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            draft = intent.suggestedInput
                         }
-                        .buttonStyle(.plain)
+                        hasGenerated = false
+                        errorMessage = nil
+                        BeeveHaptics.selection()
                     }
                 }
             }
-
-            Button {
-                BeeveHaptics.lightImpact()
-                runAssistant()
-            } label: {
-                if isLoading {
-                    ProgressView()
-                        .tint(.white)
-                } else {
-                    Label("生成建议", systemImage: "sparkles")
-                }
-            }
-            .buttonStyle(BeevePrimaryButtonStyle())
-        }
-        .padding(18)
-        .background(BeeveDesign.panelGradient(tint: BeeveDesign.accentDeep))
-        .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous)
-                .stroke(BeeveDesign.border, lineWidth: 1)
+            .padding(.vertical, 2)
         }
         .beeveReveal(hasAppeared, delay: 0.04)
     }
 
+    private var starterSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            BeeveSectionHeader(
+                title: "当前模式",
+                subtitle: selectedIntent.subtitle
+            )
+
+            VStack(alignment: .leading, spacing: 12) {
+                AssistantStarterRow(
+                    systemImage: "target",
+                    title: "先定主线",
+                    subtitle: "把今天压成一件能开始的事。"
+                )
+                Divider().padding(.leading, 44)
+                AssistantStarterRow(
+                    systemImage: "text.badge.checkmark",
+                    title: "再写入线索",
+                    subtitle: "推进、打断、明天分别只留一句。"
+                )
+            }
+            .padding(16)
+            .background(BeeveDesign.elevatedSurface)
+            .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous))
+        }
+        .beeveReveal(hasAppeared, delay: 0.08)
+    }
+
     private var replySection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                BeeveIconBubble(systemImage: selectedIntent.systemImage, tint: BeeveDesign.warmAccent)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(reply.headline)
-                        .font(.headline)
-                    Text(reply.message)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+            VStack(alignment: .leading, spacing: 6) {
+                Text(reply.headline)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(BeeveDesign.primaryText)
+                Text(reply.message)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if let errorMessage {
                 Label(errorMessage, systemImage: "exclamationmark.triangle")
                     .font(.footnote)
                     .foregroundStyle(Color(.systemOrange))
+                    .padding(.vertical, 4)
             }
 
-            AssistantActionRow(
-                title: "今日焦点",
-                value: reply.focus,
-                systemImage: "target",
-                tint: BeeveDesign.accentDeep,
-                actionTitle: "设定"
-            ) {
-                applyFocus()
+            VStack(spacing: 0) {
+                AssistantActionRow(
+                    title: "今日主线",
+                    value: reply.focus,
+                    systemImage: "target",
+                    tint: BeeveDesign.accentDeep,
+                    actionTitle: "设定"
+                ) {
+                    applyFocus()
+                }
+
+                Divider().padding(.leading, 58)
+
+                AssistantActionRow(
+                    title: "推进",
+                    value: reply.done,
+                    systemImage: "checkmark.circle",
+                    tint: Color(.systemGreen),
+                    actionTitle: "记录"
+                ) {
+                    addEntry(kind: .done, text: reply.done)
+                }
+
+                Divider().padding(.leading, 58)
+
+                AssistantActionRow(
+                    title: "打断",
+                    value: reply.interrupted,
+                    systemImage: "arrow.triangle.branch",
+                    tint: Color(.systemOrange),
+                    actionTitle: "记录"
+                ) {
+                    addEntry(kind: .interrupted, text: reply.interrupted)
+                }
+
+                Divider().padding(.leading, 58)
+
+                AssistantActionRow(
+                    title: "明天",
+                    value: reply.tomorrow,
+                    systemImage: "arrow.right.circle",
+                    tint: BeeveDesign.warmAccent,
+                    actionTitle: "记录"
+                ) {
+                    addEntry(kind: .tomorrow, text: reply.tomorrow)
+                }
+            }
+            .background(BeeveDesign.elevatedSurface)
+            .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous)
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
+            }
+        }
+        .beeveReveal(hasAppeared, delay: 0.08)
+        .animation(.easeOut(duration: 0.2), value: reply)
+    }
+
+    @ViewBuilder
+    private var bottomBar: some View {
+        if hasGenerated {
+            generatedActionBar
+        } else {
+            composerBar
+        }
+    }
+
+    private var composerBar: some View {
+        VStack(spacing: 10) {
+            if !reply.quickPrompts.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(Array(reply.quickPrompts.prefix(3)), id: \.self) { prompt in
+                            Button {
+                                draft = draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                    ? prompt
+                                    : "\(draft)\n\(prompt)"
+                                errorMessage = nil
+                                BeeveHaptics.selection()
+                            } label: {
+                                Text(prompt)
+                                    .font(.footnote.weight(.medium))
+                                    .foregroundStyle(BeeveDesign.primaryText)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(BeeveDesign.elevatedSurface)
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, BeeveDesign.contentPadding)
+                }
             }
 
-            AssistantActionRow(
-                title: "推进记录",
-                value: reply.done,
-                systemImage: "checkmark.circle",
-                tint: Color(.systemGreen),
-                actionTitle: "记录"
-            ) {
-                addEntry(kind: .done, text: reply.done)
-            }
+            HStack(alignment: .bottom, spacing: 10) {
+                Button {
+                    selectedIntent = .importText
+                    isImporting = true
+                    BeeveHaptics.lightImpact()
+                } label: {
+                    Image(systemName: "doc.text")
+                        .accessibilityLabel("导入文本")
+                }
+                .buttonStyle(BeeveIconButtonStyle())
 
-            AssistantActionRow(
-                title: "打断",
-                value: reply.interrupted,
-                systemImage: "arrow.triangle.branch",
-                tint: Color(.systemOrange),
-                actionTitle: "记录"
-            ) {
-                addEntry(kind: .interrupted, text: reply.interrupted)
-            }
+                TextField("今天想推进什么？", text: $draft, axis: .vertical)
+                    .lineLimit(1...4)
+                    .textInputAutocapitalization(.sentences)
+                    .focused($isDraftFocused)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(BeeveDesign.elevatedSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .stroke(BeeveDesign.border, lineWidth: 1)
+                            .allowsHitTesting(false)
+                    }
+                    .onChange(of: draft) { _, _ in
+                        errorMessage = nil
+                    }
 
-            AssistantActionRow(
-                title: "明天",
-                value: reply.tomorrow,
-                systemImage: "arrow.right.circle",
-                tint: BeeveDesign.warmAccent,
-                actionTitle: "记录"
-            ) {
-                addEntry(kind: .tomorrow, text: reply.tomorrow)
+                Button {
+                    BeeveHaptics.lightImpact()
+                    runAssistant()
+                } label: {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Image(systemName: "arrow.up")
+                            .font(.body.weight(.bold))
+                            .accessibilityLabel("生成建议")
+                    }
+                }
+                .buttonStyle(AssistantSendButtonStyle())
+                .disabled(!canGenerate)
+                .opacity(canGenerate ? 1 : 0.45)
             }
+            .padding(.horizontal, BeeveDesign.contentPadding)
+        }
+        .padding(.top, 10)
+        .padding(.bottom, 10)
+        .background(.regularMaterial)
+    }
+
+    private var generatedActionBar: some View {
+        HStack(spacing: 12) {
+            Button {
+                hasGenerated = false
+                isDraftFocused = true
+                BeeveHaptics.selection()
+            } label: {
+                Text("继续调整")
+                    .font(.body.weight(.medium))
+                    .frame(maxWidth: .infinity, minHeight: 50)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(BeeveDesign.accentDeep)
+            .background(BeeveDesign.elevatedSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
             Button {
                 applyAll()
             } label: {
-                Label("一键写入", systemImage: "tray.and.arrow.down.fill")
+                Label("写入今日", systemImage: "tray.and.arrow.down")
+                    .font(.body.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 50)
             }
-            .buttonStyle(BeevePrimaryButtonStyle())
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .background(BeeveDesign.accent)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
-        .beeveReveal(hasAppeared, delay: 0.08)
-        .animation(.easeOut(duration: 0.2), value: reply)
+        .padding(.horizontal, BeeveDesign.contentPadding)
+        .padding(.top, 10)
+        .padding(.bottom, 10)
+        .background(.regularMaterial)
     }
 
     private func runAssistant() {
@@ -290,6 +359,7 @@ struct AssistantSheet: View {
         withAnimation(.easeOut(duration: 0.18)) {
             reply = localReply
             errorMessage = nil
+            hasGenerated = true
         }
 
         guard let client = BeeveAssistantClient() else { return }
@@ -312,7 +382,7 @@ struct AssistantSheet: View {
                 }
             } catch {
                 await MainActor.run {
-                    errorMessage = "Beeve API 暂时不可用，先用本地建议。"
+                    errorMessage = "暂时无法获取在线建议，先用基础建议。"
                     isLoading = false
                 }
             }
@@ -336,8 +406,8 @@ struct AssistantSheet: View {
             let text = try String(contentsOf: url, encoding: .utf8)
             draft = String(text.prefix(1800))
             selectedIntent = .importText
+            hasGenerated = false
             BeeveHaptics.success()
-            runAssistant()
         } catch {
             errorMessage = "暂时只能导入 UTF-8 文本。"
         }
@@ -401,22 +471,48 @@ private struct AssistantIntentButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 7) {
+            HStack(spacing: 6) {
                 Image(systemName: intent.systemImage)
                     .font(.footnote.weight(.semibold))
                 Text(intent.title)
                     .font(.footnote.weight(.semibold))
                     .lineLimit(1)
             }
-            .foregroundStyle(isSelected ? Color.primary : Color.white)
+            .foregroundStyle(isSelected ? .white : BeeveDesign.primaryText)
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .background(isSelected ? Color.white.opacity(0.94) : Color.white.opacity(0.16))
+            .background(isSelected ? BeeveDesign.accent : BeeveDesign.elevatedSurface)
             .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(BeeveDesign.border, lineWidth: 1)
+                    .allowsHitTesting(false)
+            }
         }
         .buttonStyle(.plain)
         .accessibilityLabel(intent.title)
         .accessibilityHint(intent.subtitle)
+    }
+}
+
+private struct AssistantStarterRow: View {
+    let systemImage: String
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            BeeveIconBubble(systemImage: systemImage)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(BeeveDesign.primaryText)
+                Text(subtitle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
     }
 }
 
@@ -430,19 +526,15 @@ private struct AssistantActionRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: systemImage)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tint)
-                .frame(width: 32, height: 32)
-                .background(tint.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            BeeveIconBubble(systemImage: systemImage, tint: tint)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Text(value)
                     .font(.subheadline.weight(.medium))
+                    .foregroundStyle(BeeveDesign.primaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -450,17 +542,27 @@ private struct AssistantActionRow: View {
 
             Button(actionTitle, action: action)
                 .font(.footnote.weight(.semibold))
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .tint(tint)
+                .foregroundStyle(tint)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(tint.opacity(0.12))
+                .clipShape(Capsule())
         }
-        .padding(14)
-        .background(BeeveDesign.elevatedSurface)
-        .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: BeeveDesign.innerRadius, style: .continuous)
-                .stroke(BeeveDesign.border, lineWidth: 1)
-        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
+        .contentShape(Rectangle())
+    }
+}
+
+private struct AssistantSendButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(.white)
+            .frame(width: 46, height: 46)
+            .background(configuration.isPressed ? BeeveDesign.accentDeep : BeeveDesign.accent)
+            .clipShape(Circle())
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 

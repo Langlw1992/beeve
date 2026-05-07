@@ -3,18 +3,20 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var authSession: BeeveAuthSession
     @Query private var preferences: [UserPreferences]
     @Query private var focuses: [DailyFocus]
     @Query private var entries: [DayEntry]
     @Query private var cards: [AchievementCard]
     @State private var isShowingResetConfirmation = false
+    @State private var isShowingAuthSheet = false
 
     var body: some View {
         NavigationStack {
             Form {
                 if let active = preferences.first {
+                    AccountSettingsSection(isShowingAuthSheet: $isShowingAuthSheet)
                     SettingsForm(preferences: active)
-                    BeeveAPISettingsForm()
 
                     Section {
                         Button("重置本机数据", role: .destructive) {
@@ -39,7 +41,14 @@ struct SettingsView: View {
                     resetData()
                 }
             } message: {
-                Text("这会删除当前设备上的偏好设置、记录、焦点和卡片。")
+                Text("这会删除当前设备上的偏好设置、记录、焦点和回看内容。")
+            }
+            .sheet(isPresented: $isShowingAuthSheet) {
+                AuthSheet()
+                    .presentationDetents([.large])
+            }
+            .task {
+                await authSession.refresh()
             }
         }
     }
@@ -52,6 +61,50 @@ struct SettingsView: View {
         modelContext.insert(UserPreferences())
         try? modelContext.save()
         BeeveHaptics.success()
+    }
+}
+
+private struct AccountSettingsSection: View {
+    @EnvironmentObject private var authSession: BeeveAuthSession
+    @Binding var isShowingAuthSheet: Bool
+
+    var body: some View {
+        Section {
+            if authSession.isLoading {
+                HStack {
+                    ProgressView()
+                    Text("正在检查登录状态")
+                        .foregroundStyle(.secondary)
+                }
+            } else if let user = authSession.user {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(user.name?.isEmpty == false ? user.name! : user.email)
+                        .font(.body.weight(.medium))
+                    Text(user.email)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                Button("退出登录", role: .destructive) {
+                    Task {
+                        BeeveHaptics.lightImpact()
+                        await authSession.signOut()
+                    }
+                }
+            } else {
+                Button {
+                    BeeveHaptics.lightImpact()
+                    isShowingAuthSheet = true
+                } label: {
+                    Label("邮箱密码登录", systemImage: "person.crop.circle.badge.plus")
+                }
+                .tint(BeeveDesign.accent)
+            }
+        } header: {
+            Text("账号")
+        } footer: {
+            Text("登录后可以在这台设备上保持账号状态。")
+        }
     }
 }
 
@@ -116,38 +169,8 @@ private struct SettingsForm: View {
     }
 }
 
-private struct BeeveAPISettingsForm: View {
-    @State private var apiBaseURL = BeeveAPISettings.apiBaseURL
-    @State private var isSaved = false
-
-    var body: some View {
-        Section {
-            TextField("API 地址", text: $apiBaseURL)
-                .textContentType(.URL)
-                .keyboardType(.URL)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
-
-            Button {
-                BeeveAPISettings.apiBaseURL = apiBaseURL
-                isSaved = true
-                BeeveHaptics.success()
-            } label: {
-                Label(isSaved ? "已保存" : "保存 Beeve API 设置", systemImage: isSaved ? "checkmark" : "network")
-            }
-            .tint(BeeveDesign.accent)
-        } header: {
-            Text("Beeve API")
-        } footer: {
-            Text("App 只连接 Beeve 后端，模型服务密钥保存在服务端环境变量中。默认本机地址适合模拟器调试。")
-        }
-        .onChange(of: apiBaseURL) { _, _ in
-            isSaved = false
-        }
-    }
-}
-
 #Preview {
     SettingsView()
         .modelContainer(SampleData.previewContainer())
+        .environmentObject(BeeveAuthSession())
 }

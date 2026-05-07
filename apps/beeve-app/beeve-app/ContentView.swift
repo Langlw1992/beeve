@@ -32,9 +32,9 @@ struct ContentView: View {
                 }
 
             CardsView()
-                .tag(AppTab.cards)
+                .tag(AppTab.review)
                 .tabItem {
-                    Label("卡片", systemImage: "rectangle.stack")
+                    Label("回看", systemImage: "clock.arrow.circlepath")
                 }
 
             SettingsView()
@@ -57,6 +57,7 @@ struct ContentView: View {
 #Preview("今天") {
     ContentView()
         .modelContainer(SampleData.previewContainer())
+        .environmentObject(BeeveAuthSession())
 }
 
 #Preview("首次使用") {
@@ -65,4 +66,5 @@ struct ContentView: View {
             hasCompletedOnboarding: false,
             includeHistory: false
         ))
+        .environmentObject(BeeveAuthSession())
 }

@@ -150,11 +150,13 @@ enum AssistantSuggestionEngine {
 struct BeeveAssistantClient {
     var apiBaseURL: URL
 
-    init?(apiBaseURLString: String = BeeveAPISettings.apiBaseURL) {
+    static func apiBaseURL(apiBaseURLString: String = BeeveAPISettings.apiBaseURL) -> URL {
         let trimmed = apiBaseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let url = URL(string: trimmed) else {
-            return nil
-        }
+        return URL(string: trimmed) ?? URL(string: "http://localhost:3000/api")!
+    }
+
+    init?(apiBaseURLString: String = BeeveAPISettings.apiBaseURL) {
+        let url = Self.apiBaseURL(apiBaseURLString: apiBaseURLString)
         apiBaseURL = url
     }
 
@@ -221,9 +223,9 @@ enum BeeveAssistantClientError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidResponse:
-            "Beeve API 返回内容无法解析"
+            "在线建议暂时不可用"
         case let .requestFailed(statusCode, _):
-            "Beeve API 请求失败（\(statusCode)）"
+            "在线建议请求失败（\(statusCode)）"
         }
     }
 }
