@@ -2,6 +2,7 @@ import {describe, expect, it} from 'vitest'
 import {
   ContractParseError,
   isThemeMode,
+  parseAssistantRequestInput,
   parseBatchUserActionInput,
   parsePreferencesUpdateInput,
   parseProfileUpdateInput,
@@ -74,5 +75,35 @@ describe('service contracts', () => {
         action: {type: 'set-role', role: 'owner'},
       }),
     ).toThrow(ContractParseError)
+  })
+
+  it('parses assistant requests defensively', () => {
+    expect(
+      parseAssistantRequestInput({
+        intent: 'recover',
+        userText: '  被会议打断  ',
+        context: {
+          dateText: '5月7日 星期四',
+          preferredName: ' Lang ',
+          tone: '温和',
+          focusTitle: '  继续做 Beeve  ',
+          doneItems: [' A ', '', 'B'],
+          interruptedItems: ['会议'],
+          tomorrowItems: ['收尾'],
+        },
+      }),
+    ).toEqual({
+      intent: 'recover',
+      userText: '被会议打断',
+      context: {
+        dateText: '5月7日 星期四',
+        preferredName: 'Lang',
+        tone: '温和',
+        focusTitle: '继续做 Beeve',
+        doneItems: ['A', 'B'],
+        interruptedItems: ['会议'],
+        tomorrowItems: ['收尾'],
+      },
+    })
   })
 })

@@ -1,8 +1,16 @@
 import type {AppRole} from '@/lib/auth/policy'
 
 export const THEME_MODES = ['light', 'dark', 'system'] as const
+export const ASSISTANT_INTENTS = [
+  'planToday',
+  'importText',
+  'voiceCapture',
+  'recover',
+  'handoff',
+] as const
 
 export type ThemeMode = (typeof THEME_MODES)[number]
+export type AssistantIntent = (typeof ASSISTANT_INTENTS)[number]
 
 export interface UserPreferencesDto {
   themeMode: ThemeMode
@@ -69,6 +77,32 @@ export interface BatchUserActionResult {
   processedUserIds: string[]
 }
 
+export interface AssistantContextInput {
+  dateText: string
+  preferredName: string
+  tone: string
+  focusTitle: string | null
+  doneItems: string[]
+  interruptedItems: string[]
+  tomorrowItems: string[]
+}
+
+export interface AssistantRequestInput {
+  intent: AssistantIntent
+  userText: string
+  context: AssistantContextInput
+}
+
+export interface AssistantReplyDto {
+  headline: string
+  message: string
+  focus: string
+  done: string
+  interrupted: string
+  tomorrow: string
+  quickPrompts: string[]
+}
+
 export class ContractParseError extends Error {
   status = 400
   code: string
@@ -100,6 +134,10 @@ export function isThemeMode(value: unknown): value is ThemeMode {
   return THEME_MODES.includes(value as ThemeMode)
 }
 
+export function isAssistantIntent(value: unknown): value is AssistantIntent {
+  return ASSISTANT_INTENTS.includes(value as AssistantIntent)
+}
+
 export function parseProfileUpdateInput(value: unknown): ProfileUpdateInput {
   if (!isObject(value)) {
     return {name: '', image: null}
@@ -120,6 +158,56 @@ export function parsePreferencesUpdateInput(
 
   return {
     themeMode: value.themeMode,
+  }
+}
+
+function normalizeStringArray(value: unknown, maxItems = 12): string[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map((item) => normalizeString(item))
+    .filter(Boolean)
+    .slice(0, maxItems)
+}
+
+export function parseAssistantRequestInput(
+  value: unknown,
+): AssistantRequestInput {
+  if (!isObject(value)) {
+    throw new ContractParseError(
+      'INVALID_ASSISTANT_REQUEST',
+      'AI 请求参数格式无效。',
+    )
+  }
+
+  if (!isAssistantIntent(value.intent)) {
+    throw new ContractParseError(
+      'INVALID_ASSISTANT_INTENT',
+      '请提供有效的 AI 操作类型。',
+    )
+  }
+
+  if (!isObject(value.context)) {
+    throw new ContractParseError(
+      'INVALID_ASSISTANT_CONTEXT',
+      '请提供有效的今日上下文。',
+    )
+  }
+
+  return {
+    intent: value.intent,
+    userText: normalizeString(value.userText ?? value.draft).slice(0, 1800),
+    context: {
+      dateText: normalizeString(value.context.dateText),
+      preferredName: normalizeString(value.context.preferredName),
+      tone: normalizeString(value.context.tone),
+      focusTitle: normalizeNullableString(value.context.focusTitle),
+      doneItems: normalizeStringArray(value.context.doneItems),
+      interruptedItems: normalizeStringArray(value.context.interruptedItems),
+      tomorrowItems: normalizeStringArray(value.context.tomorrowItems),
+    },
   }
 }
 

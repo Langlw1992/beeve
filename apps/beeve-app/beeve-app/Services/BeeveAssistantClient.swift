@@ -51,25 +51,21 @@ struct AssistantReply: Codable, Equatable, Sendable {
     }
 }
 
-enum DeepSeekSettings {
-    private static let apiKeyStorageKey = "beeve.deepseek.apiKey"
-    private static let modelStorageKey = "beeve.deepseek.model"
+enum BeeveAPISettings {
+    private static let apiBaseURLStorageKey = "beeve.api.baseURL"
 
-    static var apiKey: String {
-        get { UserDefaults.standard.string(forKey: apiKeyStorageKey) ?? "" }
-        set { UserDefaults.standard.set(newValue.trimmingCharacters(in: .whitespacesAndNewlines), forKey: apiKeyStorageKey) }
-    }
-
-    static var model: String {
+    static var apiBaseURL: String {
         get {
-            let stored = UserDefaults.standard.string(forKey: modelStorageKey) ?? ""
-            return stored.isEmpty ? "deepseek-v4-flash" : stored
+            let stored = UserDefaults.standard.string(forKey: apiBaseURLStorageKey) ?? ""
+            return stored.isEmpty ? "http://localhost:3000/api" : stored
         }
-        set { UserDefaults.standard.set(newValue, forKey: modelStorageKey) }
+        set {
+            UserDefaults.standard.set(newValue.trimmingCharacters(in: .whitespacesAndNewlines), forKey: apiBaseURLStorageKey)
+        }
     }
 
     static var isConfigured: Bool {
-        !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        URL(string: apiBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)) != nil
     }
 }
 
@@ -151,150 +147,83 @@ enum AssistantSuggestionEngine {
     }
 }
 
-struct DeepSeekClient {
-    var apiKey: String
-    var model: String = DeepSeekSettings.model
-    var endpoint = URL(string: "https://api.deepseek.com/chat/completions")!
+struct BeeveAssistantClient {
+    var apiBaseURL: URL
+
+    init?(apiBaseURLString: String = BeeveAPISettings.apiBaseURL) {
+        let trimmed = apiBaseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: trimmed) else {
+            return nil
+        }
+        apiBaseURL = url
+    }
 
     func assistantReply(
         intent: AssistantIntent,
         userText: String,
         snapshot: AssistantContextSnapshot
     ) async throws -> AssistantReply {
-        let trimmedKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedKey.isEmpty else {
-            throw DeepSeekClientError.missingAPIKey
-        }
-
         let fallback = AssistantSuggestionEngine.makeReply(intent: intent, userText: userText, snapshot: snapshot)
-        let payload = DeepSeekChatRequest(
-            model: model,
-            messages: [
-                DeepSeekMessage(role: "system", content: Self.systemPrompt),
-                DeepSeekMessage(role: "user", content: Self.userPrompt(intent: intent, userText: userText, snapshot: snapshot)),
-            ],
-            temperature: 0.45,
-            maxTokens: 700,
-            stream: false,
-            responseFormat: DeepSeekResponseFormat(type: "json_object")
-        )
+        let endpoint = apiBaseURL.appendingPathComponent("assistant")
 
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(trimmedKey)", forHTTPHeaderField: "Authorization")
-        request.httpBody = try JSONEncoder().encode(payload)
+        request.httpBody = try JSONEncoder().encode(AssistantRequest(
+            intent: intent.rawValue,
+            userText: userText,
+            context: AssistantRequest.Context(snapshot: snapshot)
+        ))
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw DeepSeekClientError.invalidResponse
+            throw BeeveAssistantClientError.invalidResponse
         }
         guard (200..<300).contains(httpResponse.statusCode) else {
             let body = String(data: data, encoding: .utf8) ?? ""
-            throw DeepSeekClientError.requestFailed(statusCode: httpResponse.statusCode, body: body)
+            throw BeeveAssistantClientError.requestFailed(statusCode: httpResponse.statusCode, body: body)
         }
 
-        let chatResponse = try JSONDecoder().decode(DeepSeekChatResponse.self, from: data)
-        guard let content = chatResponse.choices.first?.message.content else {
-            throw DeepSeekClientError.invalidResponse
-        }
-
-        return try decodeReply(from: content).normalized(fallback: fallback)
-    }
-
-    private func decodeReply(from content: String) throws -> AssistantReply {
-        let trimmed = content
-            .replacingOccurrences(of: "```json", with: "")
-            .replacingOccurrences(of: "```", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if let data = trimmed.data(using: .utf8),
-           let reply = try? JSONDecoder().decode(AssistantReply.self, from: data) {
-            return reply
-        }
-
-        guard let firstBrace = trimmed.firstIndex(of: "{"),
-              let lastBrace = trimmed.lastIndex(of: "}") else {
-            throw DeepSeekClientError.invalidResponse
-        }
-
-        let json = String(trimmed[firstBrace...lastBrace])
-        guard let data = json.data(using: .utf8) else {
-            throw DeepSeekClientError.invalidResponse
-        }
-        return try JSONDecoder().decode(AssistantReply.self, from: data)
-    }
-
-    private static let systemPrompt = """
-    你是 Beeve 的中文 AI 助手。目标是减少用户输入，把零散内容整理为今天可执行的一步。语气直白、短、像 iOS 原生效率工具。不要长篇解释。
-    只输出 JSON，不要 Markdown。字段必须是：
-    headline, message, focus, done, interrupted, tomorrow, quickPrompts。
-    每个字段用中文。headline 不超过 12 个汉字，message 不超过 48 个汉字，focus/done/interrupted/tomorrow 各不超过 32 个汉字，quickPrompts 给 4 个短提示。
-    """
-
-    private static func userPrompt(
-        intent: AssistantIntent,
-        userText: String,
-        snapshot: AssistantContextSnapshot
-    ) -> String {
-        """
-        用户意图：\(intent.title)
-        用户补充：\(userText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "无" : userText)
-
-        今日上下文：
-        \(snapshot.compactSummary)
-        """
+        return try JSONDecoder().decode(AssistantReply.self, from: data).normalized(fallback: fallback)
     }
 }
 
-private struct DeepSeekChatRequest: Encodable {
-    let model: String
-    let messages: [DeepSeekMessage]
-    let temperature: Double
-    let maxTokens: Int
-    let stream: Bool
-    let responseFormat: DeepSeekResponseFormat
+private struct AssistantRequest: Encodable {
+    let intent: String
+    let userText: String
+    let context: Context
 
-    enum CodingKeys: String, CodingKey {
-        case model
-        case messages
-        case temperature
-        case maxTokens = "max_tokens"
-        case stream
-        case responseFormat = "response_format"
+    struct Context: Encodable {
+        let dateText: String
+        let preferredName: String
+        let tone: String
+        let focusTitle: String?
+        let doneItems: [String]
+        let interruptedItems: [String]
+        let tomorrowItems: [String]
+
+        init(snapshot: AssistantContextSnapshot) {
+            dateText = snapshot.dateText
+            preferredName = snapshot.preferredName
+            tone = snapshot.tone
+            focusTitle = snapshot.focusTitle
+            doneItems = snapshot.doneItems
+            interruptedItems = snapshot.interruptedItems
+            tomorrowItems = snapshot.tomorrowItems
+        }
     }
 }
 
-private struct DeepSeekMessage: Codable {
-    let role: String
-    let content: String
-}
-
-private struct DeepSeekResponseFormat: Encodable {
-    let type: String
-}
-
-private struct DeepSeekChatResponse: Decodable {
-    let choices: [Choice]
-
-    struct Choice: Decodable {
-        let message: DeepSeekMessage
-    }
-}
-
-enum DeepSeekClientError: LocalizedError {
-    case missingAPIKey
+enum BeeveAssistantClientError: LocalizedError {
     case invalidResponse
     case requestFailed(statusCode: Int, body: String)
 
     var errorDescription: String? {
         switch self {
-        case .missingAPIKey:
-            "缺少 DeepSeek API Key"
         case .invalidResponse:
-            "DeepSeek 返回内容无法解析"
+            "Beeve API 返回内容无法解析"
         case let .requestFailed(statusCode, _):
-            "DeepSeek 请求失败（\(statusCode)）"
+            "Beeve API 请求失败（\(statusCode)）"
         }
     }
 }

@@ -82,7 +82,7 @@ struct AssistantSheet: View {
 
                 Spacer()
 
-                Text(DeepSeekSettings.isConfigured ? "DeepSeek" : "本地")
+                Text(BeeveAPISettings.isConfigured ? "Beeve API" : "本地")
                     .font(.caption.weight(.semibold))
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
@@ -292,16 +292,14 @@ struct AssistantSheet: View {
             errorMessage = nil
         }
 
-        guard DeepSeekSettings.isConfigured else { return }
+        guard let client = BeeveAssistantClient() else { return }
 
         isLoading = true
         let intent = selectedIntent
         let text = draft
-        let apiKey = DeepSeekSettings.apiKey
-        let model = DeepSeekSettings.model
         Task {
             do {
-                let remoteReply = try await DeepSeekClient(apiKey: apiKey, model: model).assistantReply(
+                let remoteReply = try await client.assistantReply(
                     intent: intent,
                     userText: text,
                     snapshot: snapshot
@@ -314,7 +312,7 @@ struct AssistantSheet: View {
                 }
             } catch {
                 await MainActor.run {
-                    errorMessage = "DeepSeek 暂时不可用，先用本地建议。"
+                    errorMessage = "Beeve API 暂时不可用，先用本地建议。"
                     isLoading = false
                 }
             }

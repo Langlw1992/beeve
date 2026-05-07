@@ -14,7 +14,7 @@ struct SettingsView: View {
             Form {
                 if let active = preferences.first {
                     SettingsForm(preferences: active)
-                    DeepSeekSettingsForm()
+                    BeeveAPISettingsForm()
 
                     Section {
                         Button("重置本机数据", role: .destructive) {
@@ -116,48 +116,32 @@ private struct SettingsForm: View {
     }
 }
 
-private struct DeepSeekSettingsForm: View {
-    @State private var apiKey = DeepSeekSettings.apiKey
-    @State private var model = DeepSeekSettings.model
+private struct BeeveAPISettingsForm: View {
+    @State private var apiBaseURL = BeeveAPISettings.apiBaseURL
     @State private var isSaved = false
-
-    private let models = [
-        "deepseek-v4-flash",
-        "deepseek-v4-pro",
-        "deepseek-chat",
-    ]
 
     var body: some View {
         Section {
-            SecureField("API Key", text: $apiKey)
-                .textContentType(.password)
+            TextField("API 地址", text: $apiBaseURL)
+                .textContentType(.URL)
+                .keyboardType(.URL)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
 
-            Picker("模型", selection: $model) {
-                ForEach(models, id: \.self) { model in
-                    Text(model).tag(model)
-                }
-            }
-
             Button {
-                DeepSeekSettings.apiKey = apiKey
-                DeepSeekSettings.model = model
+                BeeveAPISettings.apiBaseURL = apiBaseURL
                 isSaved = true
                 BeeveHaptics.success()
             } label: {
-                Label(isSaved ? "已保存" : "保存 DeepSeek 设置", systemImage: isSaved ? "checkmark" : "key")
+                Label(isSaved ? "已保存" : "保存 Beeve API 设置", systemImage: isSaved ? "checkmark" : "network")
             }
             .tint(BeeveDesign.accent)
         } header: {
-            Text("DeepSeek")
+            Text("Beeve API")
         } footer: {
-            Text("Key 仅保存在本机设置中。当前助手优先使用 DeepSeek，失败时回到本地建议。")
+            Text("App 只连接 Beeve 后端，模型服务密钥保存在服务端环境变量中。默认本机地址适合模拟器调试。")
         }
-        .onChange(of: apiKey) { _, _ in
-            isSaved = false
-        }
-        .onChange(of: model) { _, _ in
+        .onChange(of: apiBaseURL) { _, _ in
             isSaved = false
         }
     }

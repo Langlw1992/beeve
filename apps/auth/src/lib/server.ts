@@ -3,6 +3,7 @@ import {cors} from '@elysiajs/cors'
 import {auth} from './auth/server'
 import {
   adminRoutes,
+  assistantRoutes,
   healthRoutes,
   meRoutes,
   sessionRoutes,
@@ -15,6 +16,7 @@ export const app = new Elysia({prefix: '/api'})
   // CORS - Better Auth 需要
   .use(cors({origin: appOrigin, credentials: true}))
   .use(healthRoutes)
+  .use(assistantRoutes)
   .use(meRoutes)
   .use(sessionRoutes)
   .use(adminRoutes)
