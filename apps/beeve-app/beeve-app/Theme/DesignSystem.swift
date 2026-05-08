@@ -4,44 +4,66 @@ import UIKit
 enum BeeveDesign {
     static let background = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.090, green: 0.086, blue: 0.080, alpha: 1)
-            : UIColor(red: 0.986, green: 0.973, blue: 0.940, alpha: 1)
+            ? UIColor(red: 0.058, green: 0.064, blue: 0.078, alpha: 1)
+            : UIColor(red: 0.965, green: 0.972, blue: 0.984, alpha: 1)
     })
 
     static let surface = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.145, green: 0.139, blue: 0.129, alpha: 1)
-            : UIColor(red: 1.000, green: 0.994, blue: 0.974, alpha: 1)
+            ? UIColor(red: 0.094, green: 0.102, blue: 0.122, alpha: 1)
+            : UIColor(red: 0.992, green: 0.996, blue: 1.000, alpha: 1)
     })
 
     static let elevatedSurface = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.185, green: 0.177, blue: 0.165, alpha: 1)
-            : UIColor.white.withAlphaComponent(0.82)
+            ? UIColor(red: 0.128, green: 0.139, blue: 0.166, alpha: 1)
+            : UIColor.white.withAlphaComponent(0.88)
     })
 
     static let panelStart = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.160, green: 0.154, blue: 0.142, alpha: 1)
-            : UIColor(red: 1.000, green: 0.992, blue: 0.968, alpha: 1)
+            ? UIColor(red: 0.118, green: 0.128, blue: 0.154, alpha: 1)
+            : UIColor(red: 0.996, green: 0.998, blue: 1.000, alpha: 1)
     })
 
     static let panelEnd = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.125, green: 0.121, blue: 0.113, alpha: 1)
-            : UIColor(red: 0.974, green: 0.984, blue: 0.962, alpha: 1)
+            ? UIColor(red: 0.082, green: 0.090, blue: 0.108, alpha: 1)
+            : UIColor(red: 0.936, green: 0.956, blue: 0.988, alpha: 1)
     })
 
     static let border = Color(.separator).opacity(0.12)
     static let darkBorder = Color(.label).opacity(0.06)
     static let primaryText = Color(UIColor { traitCollection in
         traitCollection.userInterfaceStyle == .dark
-            ? UIColor(red: 0.92, green: 0.89, blue: 0.84, alpha: 1)
-            : UIColor(red: 0.16, green: 0.14, blue: 0.11, alpha: 1)
+            ? UIColor(red: 0.930, green: 0.942, blue: 0.966, alpha: 1)
+            : UIColor(red: 0.100, green: 0.116, blue: 0.150, alpha: 1)
     })
-    static let accent = Color(red: 0.48, green: 0.60, blue: 0.43)
-    static let accentDeep = Color(red: 0.42, green: 0.50, blue: 0.36)
-    static let warmAccent = Color(red: 0.70, green: 0.55, blue: 0.40)
+    static let accent = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 0.360, green: 0.610, blue: 1.000, alpha: 1)
+            : UIColor(red: 0.050, green: 0.360, blue: 0.860, alpha: 1)
+    })
+    static let accentDeep = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 0.700, green: 0.830, blue: 1.000, alpha: 1)
+            : UIColor(red: 0.020, green: 0.230, blue: 0.580, alpha: 1)
+    })
+    static let accentPressed = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 0.160, green: 0.390, blue: 0.780, alpha: 1)
+            : UIColor(red: 0.020, green: 0.270, blue: 0.680, alpha: 1)
+    })
+    static let warmAccent = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 1.000, green: 0.650, blue: 0.310, alpha: 1)
+            : UIColor(red: 0.810, green: 0.420, blue: 0.100, alpha: 1)
+    })
+    static let tomorrowAccent = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark
+            ? UIColor(red: 0.720, green: 0.680, blue: 1.000, alpha: 1)
+            : UIColor(red: 0.350, green: 0.350, blue: 0.760, alpha: 1)
+    })
     static let mutedText = Color.secondary
     static let radius: CGFloat = 22
     static let innerRadius: CGFloat = 16
@@ -50,7 +72,7 @@ enum BeeveDesign {
 
     static var accentGradient: LinearGradient {
         LinearGradient(
-            colors: [accent.opacity(0.92), warmAccent.opacity(0.72)],
+            colors: [accent.opacity(0.95), tomorrowAccent.opacity(0.76)],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
@@ -98,7 +120,7 @@ struct BeeveSceneBackground: View {
             BeeveDesign.background
             RadialGradient(
                 colors: [
-                    BeeveDesign.accent.opacity(0.16),
+                    BeeveDesign.accent.opacity(0.13),
                     .clear,
                 ],
                 center: .topTrailing,
@@ -107,7 +129,7 @@ struct BeeveSceneBackground: View {
             )
             RadialGradient(
                 colors: [
-                    Color(red: 0.92, green: 0.84, blue: 0.70).opacity(0.16),
+                    BeeveDesign.warmAccent.opacity(0.10),
                     .clear,
                 ],
                 center: .topLeading,
@@ -153,7 +175,7 @@ struct BeevePrimaryButtonStyle: ButtonStyle {
             .font(.body.weight(.semibold))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, minHeight: BeeveDesign.controlHeight)
-            .background(configuration.isPressed ? BeeveDesign.accentDeep : BeeveDesign.accent)
+            .background(configuration.isPressed ? BeeveDesign.accentPressed : BeeveDesign.accent)
             .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
             .opacity(configuration.isPressed ? 0.92 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)

@@ -106,7 +106,7 @@ struct QuickLogSheet: View {
         switch kind {
         case .done: BeeveDesign.accent
         case .interrupted: BeeveDesign.warmAccent
-        case .tomorrow: Color(red: 0.49, green: 0.53, blue: 0.68)
+        case .tomorrow: BeeveDesign.tomorrowAccent
         }
     }
 

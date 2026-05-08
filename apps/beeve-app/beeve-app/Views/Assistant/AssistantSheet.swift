@@ -188,7 +188,7 @@ struct AssistantSheet: View {
                     title: "推进",
                     value: reply.done,
                     systemImage: "checkmark.circle",
-                    tint: Color(.systemGreen),
+                    tint: BeeveDesign.accent,
                     actionTitle: "记录"
                 ) {
                     addEntry(kind: .done, text: reply.done)
@@ -200,7 +200,7 @@ struct AssistantSheet: View {
                     title: "打断",
                     value: reply.interrupted,
                     systemImage: "arrow.triangle.branch",
-                    tint: Color(.systemOrange),
+                    tint: BeeveDesign.warmAccent,
                     actionTitle: "记录"
                 ) {
                     addEntry(kind: .interrupted, text: reply.interrupted)
@@ -212,7 +212,7 @@ struct AssistantSheet: View {
                     title: "明天",
                     value: reply.tomorrow,
                     systemImage: "arrow.right.circle",
-                    tint: BeeveDesign.warmAccent,
+                    tint: BeeveDesign.tomorrowAccent,
                     actionTitle: "记录"
                 ) {
                     addEntry(kind: .tomorrow, text: reply.tomorrow)
@@ -559,7 +559,7 @@ private struct AssistantSendButtonStyle: ButtonStyle {
         configuration.label
             .foregroundStyle(.white)
             .frame(width: 46, height: 46)
-            .background(configuration.isPressed ? BeeveDesign.accentDeep : BeeveDesign.accent)
+            .background(configuration.isPressed ? BeeveDesign.accentPressed : BeeveDesign.accent)
             .clipShape(Circle())
             .scaleEffect(configuration.isPressed ? 0.96 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)

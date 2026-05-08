@@ -52,11 +52,12 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 16) {
                     currentThreadSection
-                    nextActionsSection
-                    todaySignalsSection
-                    handoffSection
+                    if !todayEntries.isEmpty {
+                        todaySignalsSection
+                        handoffSection
+                    }
                 }
                 .padding(.horizontal, BeeveDesign.contentPadding)
                 .padding(.top, 8)
@@ -113,9 +114,9 @@ struct TodayView: View {
     private var currentThreadSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(zhDateText)
-                        .font(.subheadline)
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                     Text("当前主线")
                         .font(.footnote.weight(.semibold))
@@ -136,22 +137,24 @@ struct TodayView: View {
                 .tint(BeeveDesign.accent)
             }
 
-            Text(todayFocus?.title ?? "先写下今天最值得推进的一件事")
+            Text(todayFocus?.title ?? "今天最值得推进的一件事")
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(BeeveDesign.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(todayFocus == nil ? "主线越具体，今天越容易开始。" : nextStepText)
+            Text(todayFocus == nil ? "写得具体一点，等下更容易接住。" : nextStepText)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            HStack(spacing: 8) {
-                TodayMetric(value: context.doneEntries.count, label: "推进")
-                TodayMetric(value: context.interruptedEntries.count, label: "打断")
-                TodayMetric(value: context.tomorrowEntries.count, label: "明天")
+            if !todayEntries.isEmpty {
+                HStack(spacing: 8) {
+                    TodayMetric(value: context.doneEntries.count, label: "推进")
+                    TodayMetric(value: context.interruptedEntries.count, label: "打断")
+                    TodayMetric(value: context.tomorrowEntries.count, label: "明天")
+                }
+                .padding(.top, 4)
             }
-            .padding(.top, 4)
         }
         .beevePanel(padding: 18, tint: BeeveDesign.accent)
     }
@@ -164,43 +167,19 @@ struct TodayView: View {
         }
     }
 
-    private var nextActionsSection: some View {
+    private var todaySignalsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("现在可以做")
+            Text("今日摘要")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
 
             VStack(spacing: 0) {
-                TodayActionRow(
-                    systemImage: "square.and.pencil",
-                    title: "记录刚刚发生的事",
-                    subtitle: "一句话就够"
-                ) {
-                    BeeveHaptics.lightImpact()
-                    isShowingQuickLog = true
-                }
-
-                Divider().padding(.leading, 58)
-
-                TodayActionRow(
-                    systemImage: "arrow.uturn.backward",
-                    title: "找回下一步",
-                    subtitle: "被打断后继续"
-                ) {
-                    BeeveHaptics.lightImpact()
-                    assistantLaunch = AssistantLaunch(intent: .recover, seedText: "我刚刚被打断，因为：")
-                }
-
-                Divider().padding(.leading, 58)
-
-                TodayActionRow(
-                    systemImage: "sunrise",
-                    title: "留给明天",
-                    subtitle: "生成明早开头"
-                ) {
-                    BeeveHaptics.lightImpact()
-                    assistantLaunch = AssistantLaunch(intent: .handoff, seedText: "明天需要接住：")
+                ForEach(Array(signalRows.enumerated()), id: \.offset) { index, row in
+                    if index > 0 {
+                        Divider().padding(.leading, 58)
+                    }
+                    SignalSummaryRow(kind: row.kind, entries: row.entries)
                 }
             }
             .background(BeeveDesign.elevatedSurface)
@@ -213,37 +192,16 @@ struct TodayView: View {
         }
     }
 
-    private var todaySignalsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("今天留下的线索")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 4)
-
-            VStack(spacing: 0) {
-                SignalSummaryRow(kind: .done, entries: context.doneEntries)
-                Divider().padding(.leading, 58)
-                SignalSummaryRow(kind: .interrupted, entries: context.interruptedEntries)
-                Divider().padding(.leading, 58)
-                SignalSummaryRow(kind: .tomorrow, entries: context.tomorrowEntries)
-            }
-            .background(BeeveDesign.elevatedSurface)
-            .clipShape(RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: BeeveDesign.radius, style: .continuous)
-                    .stroke(BeeveDesign.border, lineWidth: 1)
-                    .allowsHitTesting(false)
-            }
-        }
+    private var signalRows: [(kind: DayEntryKind, entries: [DayEntry])] {
+        [
+            (.done, context.doneEntries),
+            (.interrupted, context.interruptedEntries),
+            (.tomorrow, context.tomorrowEntries),
+        ].filter { !$0.entries.isEmpty }
     }
 
     private var handoffSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            BeeveSectionHeader(
-                title: "整理今日",
-                subtitle: "把今天压成明天能接住的一句话。"
-            )
-
             Button {
                 BeeveHaptics.success()
                 generateCard()
@@ -251,10 +209,10 @@ struct TodayView: View {
                 HStack(spacing: 12) {
                     BeeveIconBubble(systemImage: "arrow.triangle.2.circlepath", tint: BeeveDesign.warmAccent)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("整理今日回看")
+                        Text("整理今日")
                             .font(.body.weight(.medium))
                             .foregroundStyle(BeeveDesign.primaryText)
-                        Text("收束推进、打断和明天线索")
+                        Text("生成明天能接住的一句话")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -279,7 +237,7 @@ struct TodayView: View {
             isShowingQuickLog = true
         } label: {
             HStack {
-                Text("发生了什么？")
+                Text("记录一个片段")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -344,40 +302,6 @@ private struct TodayMetric: View {
     }
 }
 
-private struct TodayActionRow: View {
-    let systemImage: String
-    let title: String
-    let subtitle: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                BeeveIconBubble(systemImage: systemImage)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(BeeveDesign.primaryText)
-                    Text(subtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 private struct SignalSummaryRow: View {
     let kind: DayEntryKind
     let entries: [DayEntry]
@@ -398,7 +322,7 @@ private struct SignalSummaryRow: View {
         switch kind {
         case .done: BeeveDesign.accent
         case .interrupted: BeeveDesign.warmAccent
-        case .tomorrow: Color(red: 0.49, green: 0.53, blue: 0.68)
+        case .tomorrow: BeeveDesign.tomorrowAccent
         }
     }
 

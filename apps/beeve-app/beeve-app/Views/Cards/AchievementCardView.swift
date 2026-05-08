@@ -38,7 +38,7 @@ struct AchievementCardView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.subheadline)
-                            .foregroundStyle(Color(.systemGreen))
+                            .foregroundStyle(BeeveDesign.accent)
                             .padding(.top, 2)
                         Text(bullet)
                             .font(.body)
